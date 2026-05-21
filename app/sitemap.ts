@@ -56,6 +56,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/client-operations`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
     }
   ];
 }

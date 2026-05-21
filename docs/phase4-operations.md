@@ -273,4 +273,28 @@ Dashboard responsibilities:
 - `/internal/automation-audit`: registry governance, runtime validation, observability audits, ALICE grounding audits, and critical gap detection.
 - `/lead-operations`: AI agency outreach ops, prospect management, reply/book rates, campaign health, and personalization workflows.
 
+## Operational Intelligence Consolidation
+
+The next consolidation layer connects the registry, runtime traces, Mission Control, client visibility, and ALICE reasoning into one operational intelligence platform.
+
+New runtime modules:
+
+- `lib/runtime/operational-graph.ts`: builds workflow graphs from registry definitions and live runtime health.
+- `lib/runtime/dependency-intelligence.ts`: detects missing providers, failed queues, stale workflows, disconnected handlers, orphaned events, missing observability, and invalid environment dependencies.
+- `lib/runtime/predictive-monitoring.ts`: forecasts SLA degradation, queue overload, workflow instability, retry spikes, provider outage risk, and dead-letter accumulation.
+- `lib/runtime/observability.ts`: provides structured operational logging, correlation propagation, runtime event aggregation, SLA instrumentation, and audit-safe trace logging.
+- `lib/client-operations.ts`: derives client-level operational score, automation maturity, engagement, reliability, SLA compliance, and automation ROI.
+
+Expanded surfaces:
+
+- `/client-operations`: per-client operational visibility, domain reliability, engagement metrics, SLA compliance, automation ROI, and ALICE client recommendations.
+- `/mission-control`: now includes live operational graph, predictive alerts, dependency issues, dead-letter explorer, trace explorer, and ALICE remediation feed.
+- `/api/mission-control/runtime-health`: now returns graph state, dependency issues, predictive alerts, replay recommendations, degraded workflows, and ALICE operations reasoning.
+
+Scoring rule:
+
+- Dashboards must derive operational state from `automationRegistry`, runtime traces, operational graph, and observability helpers.
+- Static runtime health placeholders are not allowed.
+- Empty runtime data returns zero-safe scores and visible instrumentation-pending states.
+
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.
