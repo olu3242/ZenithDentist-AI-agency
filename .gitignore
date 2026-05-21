@@ -1,2 +1,9 @@
 ZenithDentist-AI-agency/
 *.zip
+.next/
+node_modules/
+.env
+.env*.local
+coverage/
+out/
+tsconfig.tsbuildinfo
