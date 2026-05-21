@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith AI - Patient Revenue Engine</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <aside class="sidebar" aria-label="Primary">
+    <a class="brand" href="#home" data-route="home" aria-label="Zenith AI home">
+      <span class="brand-mark">Z</span>
+      <span>
+        <strong>ZENITH.AI</strong>
+        <small>Patient Revenue Engine</small>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <button class="nav-item active" data-route="home" type="button">Home</button>
+      <button class="nav-item" data-route="dashboard" type="button">Dashboard</button>
+      <button class="nav-item" data-route="patients" type="button">Patients</button>
+      <button class="nav-item" data-route="appointments" type="button">Appointments</button>
+      <button class="nav-item" data-route="pipeline" type="button">Recall Pipeline</button>
+      <button class="nav-item" data-route="outreach" type="button">Outreach</button>
+      <button class="nav-item" data-route="automation" type="button">Automation</button>
+      <button class="nav-item" data-route="reviews" type="button">Reviews</button>
+      <button class="nav-item" data-route="settings" type="button">Settings</button>
+    </nav>
+
+    <div class="practice-switcher">
+      <span class="eyebrow">Active Practice</span>
+      <strong id="practiceName">Dr. Chen Dental Studio</strong>
+      <small id="practiceMeta">Austin, TX - 6 chairs</small>
+    </div>
+  </aside>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow" id="routeEyebrow">Revenue recovery workspace</p>
+        <h1 id="routeTitle">Patient Revenue Engine</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" type="button" data-action="export" title="Export data" aria-label="Export data">↓</button>
+        <label class="icon-btn" title="Import data" aria-label="Import data">
+          ↑
+          <input id="importFile" type="file" accept="application/json" hidden>
+        </label>
+        <button class="primary" type="button" data-action="open-lead">New Lead</button>
+      </div>
+    </header>
+
+    <section class="toast" id="toast" role="status" aria-live="polite"></section>
+
+    <section class="view active" id="view-home" data-title="Patient Revenue Engine" data-eyebrow="Revenue recovery workspace">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="pill">40% no-show reduction target</span>
+          <h2>Recover missed revenue, refill empty chairs, and keep patient outreach moving.</h2>
+          <p>Zenith AI turns appointment reminders, recall campaigns, reviews, and ROI reporting into one operational workspace for dental practices.</p>
+          <div class="hero-actions">
+            <button class="primary" type="button" data-route="dashboard">Open Dashboard</button>
+            <button class="secondary" type="button" data-action="open-lead">Capture Lead</button>
+          </div>
+        </div>
+        <form class="lead-panel" id="leadForm">
+          <div class="panel-header">
+            <span>
+              <strong>ROI Snapshot</strong>
+              <small>Estimate monthly leakage and capture the lead.</small>
+            </span>
+          </div>
+          <div class="form-grid">
+            <label>Practice name<input name="practice" required value="Bright Smile Dental"></label>
+            <label>Email<input name="email" type="email" required value="ops@brightsmile.test"></label>
+            <label>Monthly appointments<input name="monthlyAppointments" type="number" min="1" value="420"></label>
+            <label>No-show rate %<input name="noShowPct" type="number" min="0" max="80" value="18"></label>
+            <label>Avg appointment value<input name="avgValue" type="number" min="1" value="310"></label>
+            <label>Admin hours/day<input name="adminHours" type="number" min="0" value="5"></label>
+          </div>
+          <div class="roi-result" id="roiResult"></div>
+          <button class="primary stretch" type="submit">Save Lead</button>
+        </form>
+      </div>
+
+      <div class="metric-grid" id="homeMetrics"></div>
+    </section>
+
+    <section class="view" id="view-dashboard" data-title="Practice Dashboard" data-eyebrow="Live operating view">
+      <div class="metric-grid" id="dashboardMetrics"></div>
+      <div class="split">
+        <section class="panel">
+          <div class="panel-header">
+            <span><strong>Revenue Trend</strong><small>Recovered revenue by month</small></span>
+          </div>
+          <div class="bar-chart" id="revenueChart"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-header">
+            <span><strong>Today</strong><small>Appointments needing attention</small></span>
+            <button class="secondary compact" data-route="appointments" type="button">View</button>
+          </div>
+          <div id="todayList" class="stack"></div>
+        </section>
+      </div>
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Next Best Actions</strong><small>Generated from current patient and appointment data</small></span>
+          <button class="primary compact" data-action="run-automation" type="button">Run Automation</button>
+        </div>
+        <div class="action-list" id="nextActions"></div>
+      </section>
+    </section>
+
+    <section class="view" id="view-patients" data-title="Patients" data-eyebrow="Patient lifecycle">
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Patient Directory</strong><small>Search, add, and segment patients.</small></span>
+          <button class="primary compact" data-action="add-patient" type="button">Add Patient</button>
+        </div>
+        <div class="toolbar">
+          <input id="patientSearch" type="search" placeholder="Search patients">
+          <select id="patientFilter" aria-label="Filter patients">
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="lapsed">Lapsed</option>
+            <option value="scheduled">Scheduled</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Status</th><th>Last visit</th><th>Recall due</th><th>Value</th><th></th></tr></thead>
+            <tbody id="patientsTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-appointments" data-title="Appointments" data-eyebrow="Chair schedule">
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Appointments</strong><small>Confirm, cancel, complete, and trigger reminders.</small></span>
+          <button class="primary compact" data-action="add-appointment" type="button">Add Appointment</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time</th><th>Patient</th><th>Procedure</th><th>Status</th><th>Value</th><th></th></tr></thead>
+            <tbody id="appointmentsTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-pipeline" data-title="Recall Pipeline" data-eyebrow="Lapsed patient recovery">
+      <div class="kanban" id="pipelineBoard"></div>
+    </section>
+
+    <section class="view" id="view-outreach" data-title="Outreach" data-eyebrow="Patient communications">
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Compose Outreach</strong><small>Log SMS, email, voice, or review requests.</small></span>
+        </div>
+        <form class="compose" id="outreachForm">
+          <select name="patientId" required aria-label="Patient"></select>
+          <select name="channel" aria-label="Channel">
+            <option value="sms">SMS</option>
+            <option value="email">Email</option>
+            <option value="voice">Voice</option>
+          </select>
+          <select name="type" aria-label="Type">
+            <option value="recall">Recall</option>
+            <option value="reminder">Reminder</option>
+            <option value="review">Review request</option>
+            <option value="reactivation">Reactivation</option>
+          </select>
+          <textarea name="message" required>Hi {{firstName}}, this is Dr. Chen Dental Studio. We have openings this week and would love to get your cleaning back on the calendar.</textarea>
+          <button class="primary" type="submit">Send & Log</button>
+        </form>
+      </section>
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Outreach Log</strong><small>Simulated delivery and response tracking.</small></span>
+        </div>
+        <div class="timeline" id="outreachLog"></div>
+      </section>
+    </section>
+
+    <section class="view" id="view-automation" data-title="Automation Engine" data-eyebrow="Rules and workflows">
+      <div class="rule-grid" id="automationRules"></div>
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>System Events</strong><small>Recent automation activity.</small></span>
+          <button class="secondary compact" data-action="clear-events" type="button">Clear</button>
+        </div>
+        <div class="timeline" id="eventsLog"></div>
+      </section>
+    </section>
+
+    <section class="view" id="view-reviews" data-title="Reviews" data-eyebrow="Reputation growth">
+      <div class="metric-grid" id="reviewMetrics"></div>
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Review Requests</strong><small>Ask completed patients for a public review.</small></span>
+          <button class="primary compact" data-action="request-reviews" type="button">Request Reviews</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Rating</th><th>Platform</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="reviewsTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-settings" data-title="Settings" data-eyebrow="Practice controls">
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Practice Profile</strong><small>Changes persist locally for this prototype.</small></span>
+        </div>
+        <form class="settings-grid" id="settingsForm">
+          <label>Practice name<input name="name"></label>
+          <label>Location<input name="location"></label>
+          <label>Chairs<input name="chairs" type="number" min="1"></label>
+          <label>Average appointment value<input name="avgValue" type="number" min="1"></label>
+          <label>Monthly appointments<input name="monthlyAppointments" type="number" min="1"></label>
+          <button class="primary" type="submit">Save Settings</button>
+          <button class="danger" type="button" data-action="reset-data">Reset Demo Data</button>
+        </form>
+      </section>
+      <section class="panel">
+        <div class="panel-header">
+          <span><strong>Reference Artifacts</strong><small>Original design and PRD files remain available.</small></span>
+        </div>
+        <div class="artifact-links">
+          <a href="zenith-ai-landing.html">Landing HTML</a>
+          <a href="zenith-ai-dashboard.html">Dashboard Mockup</a>
+          <a href="zenith-ai-prd.html">PRD</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="recordDialog">
+    <form method="dialog" id="recordForm">
+      <div class="panel-header">
+        <span><strong id="dialogTitle">Add Record</strong><small id="dialogHelp">Create a new item.</small></span>
+      </div>
+      <div class="dialog-body" id="dialogBody"></div>
+      <div class="dialog-actions">
+        <button class="secondary" value="cancel" type="button" data-action="close-dialog">Cancel</button>
+        <button class="primary" value="default" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
