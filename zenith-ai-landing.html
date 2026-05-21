@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenith AI — Stop Losing $10K/Month to No-Shows</title>
+<meta name="description" content="Zenith AI installs a Patient Revenue Engine™ that automatically fills chairs, recovers lapsed patients, and reduces front-desk overload for dental practices.">
+<meta property="og:title" content="Zenith AI — Patient Revenue Engine™">
+<meta property="og:description" content="Stop losing $10K/month to no-shows. We install the operational systems that recover revenue for dental practices.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f2ed;
+  --ink: #1a1410;
+  --rust: #c44b2b;
+  --teal: #1a7a6e;
+  --gold: #c8922a;
+  --ink-60: rgba(26,20,16,0.6);
+  --ink-30: rgba(26,20,16,0.3);
+  --card-bg: #ede9e2;
+  --border: rgba(26,20,16,0.1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════
+   NAVBAR
+═══════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(245,242,237,0.92);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  transition: all 0.4s ease;
+}
+
+.nav.scrolled {
+  height: 60px;
+  background: rgba(245,242,237,0.97);
+  box-shadow: 0 2px 40px rgba(26,20,16,0.06);
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.nav-logo span { color: var(--rust); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-60);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: color 0.25s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+.nav-cta {
+  background: var(--ink) !important;
+  color: var(--bg) !important;
+  padding: 10px 22px;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px;
+  transition: background 0.25s !important;
+}
+
+.nav-cta:hover { background: var(--rust) !important; color: #fff !important; }
+
+.nav-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  margin: 5px 0;
+  transition: all 0.3s;
+}
+
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 40px 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245,242,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,242,237,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 20s linear infinite;
+}
+
+@keyframes gridShift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(60px); }
+}
+
+.hero-glow-1 {
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,75,43,0.12) 0%, transparent 65%);
+  animation: glowPulse 6s ease-in-out infinite;
+}
+
+.hero-glow-2 {
+  position: absolute;
+  bottom: -300px; left: -200px;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,122,110,0.08) 0%, transparent 65%);
+  animation: glowPulse 8s ease-in-out infinite reverse;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(196,75,43,0.12);
+  border: 1px solid rgba(196,75,43,0.25);
+  padding: 7px 16px;
+  margin-bottom: 32px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(196,75,43,0.9);
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rust);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 1.02;
+  color: #f5f2ed;
+  margin-bottom: 28px;
+  letter-spacing: -0.5px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--rust);
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: rgba(245,242,237,0.6);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--rust);
+  color: #fff;
+  padding: 16px 32px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.3s;
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(196,75,43,0.35); }
+.btn-primary:hover::after { background: rgba(255,255,255,0.06); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: rgba(245,242,237,0.8);
+  padding: 16px 28px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(245,242,237,0.15);
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(245,242,237,0.4);
+  color: #f5f2ed;
+  background: rgba(245,242,237,0.05);
+}
+
+/* Dashboard Card */
+.hero-dashboard {
+  position: relative;
+}
+
+.dash-card {
+  background: rgba(245,242,237,0.05);
+  border: 1px solid rgba(245,242,237,0.1);
+  backdrop-filter: blur(12px);
+  padding: 28px;
+  animation: floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.dash-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.35);
+  margin-bottom: 20px;
+}
+
+.dash-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.dash-metric {
+  background: rgba(245,242,237,0.04);
+  border: 1px solid rgba(245,242,237,0.08);
+  padding: 18px 16px;
+  text-align: center;
+}
+
+.dash-metric-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--rust);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.dash-metric-val.teal { color: var(--teal); }
+.dash-metric-val.gold { color: var(--gold); }
+.dash-metric-val.green { color: #4caf79; }
+
+.dash-metric-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.4);
+}
+
+.recall-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.recall-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,242,237,0.5);
+  min-width: 100px;
+}
+
+.recall-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(245,242,237,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.recall-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 2px;
+  animation: fillBar 2.5s ease-out forwards;
+  width: 0;
+}
+
+@keyframes fillBar {
+  to { width: var(--fill); }
+}
+
+.recall-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--teal);
+  min-width: 28px;
+  text-align: right;
+}
+
+.float-metric {
+  position: absolute;
+  background: rgba(26,20,16,0.9);
+  border: 1px solid rgba(245,242,237,0.12);
+  padding: 14px 18px;
+  backdrop-filter: blur(16px);
+}
+
+.float-metric-1 {
+  top: -24px; left: -50px;
+  animation: floatCard 3.5s ease-in-out infinite 0.5s;
+}
+
+.float-metric-2 {
+  bottom: 20px; right: -40px;
+  animation: floatCard 5s ease-in-out infinite 1s;
+}
+
+.float-metric-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.float-metric-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.4);
+  margin-top: 4px;
+}
+
+.float-delta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #4caf79;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════
+   TRUST BAR
+═══════════════════════════════════ */
+.trust-bar {
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 40px;
+}
+
+.trust-bar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.trust-icon {
+  width: 32px; height: 32px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg);
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════════
+   PAIN SECTION
+═══════════════════════════════════ */
+.pain {
+  padding: 120px 40px;
+  background: var(--bg);
+}
+
+.section-inner { max-width: 1280px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.section-title em { font-style: italic; color: var(--rust); }
+
+.section-sub {
+  font-size: 16px;
+  color: var(--ink-60);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 64px;
+}
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.pain-card {
+  background: var(--card-bg);
+  padding: 40px 36px;
+  border: 1px solid var(--border);
+  transition: all 0.35s ease;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.pain-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+.pain-card:hover::before { transform: scaleX(1); }
+.pain-card:hover { background: var(--bg); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(26,20,16,0.08); }
+
+.pain-icon {
+  width: 52px; height: 52px;
+  background: rgba(196,75,43,0.08);
+  border: 1px solid rgba(196,75,43,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+.pain-problem {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.pain-desc { font-size: 14px; color: var(--ink-60); line-height: 1.65; margin-bottom: 24px; }
+
+.pain-loss {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--rust);
+  letter-spacing: 1px;
+  padding: 8px 14px;
+  background: rgba(196,75,43,0.06);
+  border-left: 2px solid var(--rust);
+  display: inline-block;
+}
+
+.pain-outcome {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.pain-outcome::before { content: '→ '; }
+
+/* ═══════════════════════════════════
+   PATIENT REVENUE ENGINE
+═══════════════════════════════════ */
+.pre-section {
+  padding: 120px 40px;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.pre-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245,242,237,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,242,237,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.pre-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.pre-section .section-label { color: rgba(196,75,43,0.8); }
+.pre-section .section-title { color: #f5f2ed; }
+.pre-section .section-sub { color: rgba(245,242,237,0.55); }
+
+.pre-lifecycle {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-bottom: 60px;
+}
+
+.lifecycle-stage {
+  background: rgba(245,242,237,0.04);
+  border: 1px solid rgba(245,242,237,0.08);
+  padding: 32px 28px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.lifecycle-stage:hover {
+  background: rgba(245,242,237,0.07);
+  border-color: rgba(196,75,43,0.3);
+}
+
+.lifecycle-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(196,75,43,0.7);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.lifecycle-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.lifecycle-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #f5f2ed;
+  margin-bottom: 10px;
+}
+
+.lifecycle-desc {
+  font-size: 13px;
+  color: rgba(245,242,237,0.5);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.lifecycle-metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--teal);
+  letter-spacing: 0.5px;
+}
+
+.lifecycle-connector {
+  position: absolute;
+  right: -2px; top: 50%;
+  transform: translateY(-50%);
+  width: 4px; height: 4px;
+  background: var(--rust);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════
+   ROI CALCULATOR
+═══════════════════════════════════ */
+.roi-section {
+  padding: 120px 40px;
+  background: var(--bg);
+}
+
+.roi-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 520px;
+  gap: 80px;
+  align-items: start;
+}
+
+.roi-calc-card {
+  background: var(--ink);
+  padding: 48px;
+  position: sticky;
+  top: 90px;
+}
+
+.calc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #f5f2ed;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(245,242,237,0.08);
+}
+
+.calc-field {
+  margin-bottom: 24px;
+}
+
+.calc-field label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.4);
+  margin-bottom: 10px;
+}
+
+.calc-input {
+  display: flex;
+  align-items: center;
+  background: rgba(245,242,237,0.05);
+  border: 1px solid rgba(245,242,237,0.1);
+  height: 48px;
+  transition: border-color 0.25s;
+}
+
+.calc-input:focus-within { border-color: var(--rust); }
+
+.calc-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f5f2ed;
+}
+
+.calc-input input::placeholder { color: rgba(245,242,237,0.2); }
+
+.calc-unit {
+  padding: 0 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,242,237,0.3);
+  border-left: 1px solid rgba(245,242,237,0.08);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.calc-output {
+  background: rgba(196,75,43,0.08);
+  border: 1px solid rgba(196,75,43,0.2);
+  padding: 28px;
+  margin-top: 28px;
+}
+
+.calc-output-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.35);
+  margin-bottom: 8px;
+}
+
+.calc-output-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--rust);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.calc-output-sub {
+  font-size: 13px;
+  color: rgba(245,242,237,0.4);
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(245,242,237,0.05);
+  font-size: 13px;
+}
+
+.calc-row-label { color: rgba(245,242,237,0.5); }
+.calc-row-val { color: rgba(245,242,237,0.85); font-family: 'JetBrains Mono', monospace; }
+
+/* ═══════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════ */
+.hiw {
+  padding: 120px 40px;
+  background: var(--card-bg);
+}
+
+.hiw-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.hiw-step {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 36px 28px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.hiw-step:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(26,20,16,0.08); }
+
+.hiw-step-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  font-weight: 800;
+  color: rgba(196,75,43,0.08);
+  line-height: 1;
+  position: absolute;
+  top: 20px; right: 24px;
+}
+
+.hiw-step-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 14px;
+}
+
+.hiw-step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.hiw-step-desc { font-size: 14px; color: var(--ink-60); line-height: 1.65; }
+
+.hiw-timeline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+}
+
+/* ═══════════════════════════════════
+   GUARANTEE
+═══════════════════════════════════ */
+.guarantee {
+  padding: 80px 40px;
+  background: var(--rust);
+  position: relative;
+  overflow: hidden;
+}
+
+.guarantee::before {
+  content: '"';
+  position: absolute;
+  top: -40px; left: 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 300px;
+  color: rgba(255,255,255,0.05);
+  line-height: 1;
+}
+
+.guarantee-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.guarantee h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.guarantee p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  max-width: 540px;
+}
+
+.guarantee-badge {
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.25);
+  padding: 32px 40px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.guarantee-badge-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.guarantee-badge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ═══════════════════════════════════
+   CASE STUDIES
+═══════════════════════════════════ */
+.cases {
+  padding: 120px 40px;
+  background: var(--bg);
+}
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+
+.case-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 40px;
+  transition: all 0.35s;
+}
+
+.case-card:hover { background: var(--bg); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(26,20,16,0.08); }
+
+.case-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+
+.case-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.case-desc { font-size: 14px; color: var(--ink-60); line-height: 1.65; margin-bottom: 28px; }
+
+.case-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+.case-metric-item { }
+
+.case-metric-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--rust);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.case-metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-30);
+}
+
+/* ═══════════════════════════════════
+   FINAL CTA
+═══════════════════════════════════ */
+.final-cta {
+  padding: 140px 40px;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.final-cta .hero-glow-1 { top: -100px; left: 50%; transform: translateX(-50%); }
+
+.final-cta-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.final-cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 800;
+  color: #f5f2ed;
+  line-height: 1.08;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.final-cta h2 em { font-style: italic; color: var(--rust); }
+
+.final-cta p {
+  font-size: 17px;
+  color: rgba(245,242,237,0.55);
+  line-height: 1.7;
+  margin-bottom: 48px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.final-cta-ctas {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.final-cta-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.25);
+}
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+.footer {
+  background: #0e0c0a;
+  padding: 60px 40px 40px;
+  border-top: 1px solid rgba(245,242,237,0.06);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.footer-brand .nav-logo { font-size: 20px; color: #f5f2ed; display: inline-block; margin-bottom: 16px; text-decoration: none; }
+
+.footer-brand p { font-size: 13px; color: rgba(245,242,237,0.35); line-height: 1.7; max-width: 200px; }
+
+.footer-col h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.3);
+  margin-bottom: 20px;
+}
+
+.footer-col ul { list-style: none; }
+
+.footer-col li { margin-bottom: 12px; }
+
+.footer-col a {
+  font-size: 13px;
+  color: rgba(245,242,237,0.5);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.footer-col a:hover { color: rgba(245,242,237,0.85); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(245,242,237,0.06);
+  padding-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,242,237,0.2);
+}
+
+/* ═══════════════════════════════════
+   SCROLL ANIMATIONS
+═══════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 60px; }
+  .hero-dashboard { display: none; }
+  .pain-grid { grid-template-columns: 1fr 1fr; }
+  .pre-lifecycle { grid-template-columns: 1fr 1fr; }
+  .hiw-steps { grid-template-columns: 1fr 1fr; }
+  .cases-grid { grid-template-columns: 1fr 1fr; }
+  .roi-wrapper { grid-template-columns: 1fr; }
+  .roi-calc-card { position: static; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-menu-btn { display: block; }
+  .hero { padding: 100px 20px 60px; }
+  .pain { padding: 80px 20px; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .pre-section { padding: 80px 20px; }
+  .pre-lifecycle { grid-template-columns: 1fr; }
+  .hiw { padding: 80px 20px; }
+  .hiw-steps { grid-template-columns: 1fr; }
+  .roi-section { padding: 80px 20px; }
+  .guarantee-inner { grid-template-columns: 1fr; gap: 40px; }
+  .cases { padding: 80px 20px; }
+  .cases-grid { grid-template-columns: 1fr; }
+  .final-cta { padding: 100px 20px; }
+  .footer { padding: 60px 20px 40px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 40px; }
+  .trust-bar-inner { gap: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav" id="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">ZENITH<span>.</span>AI</a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#roi">ROI Calculator</a></li>
+      <li><a href="#cases">Case Studies</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/faq">FAQ</a></li>
+      <li><a href="/book" class="nav-cta">Book Strategy Call</a></li>
+    </ul>
+    <button class="nav-menu-btn" id="menuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">Patient Revenue Engine™ — Operational Infrastructure</div>
+      <h1>Stop Losing<br><em>$10K/Month</em><br>to No-Shows.</h1>
+      <p class="hero-sub">Zenith AI installs a Patient Revenue Engine™ that automatically fills chairs, recovers lapsed patients, and reduces front-desk overload — without adding headcount.</p>
+      <div class="hero-ctas">
+        <a href="/book" class="btn-primary">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Book Strategy Call
+        </a>
+        <a href="#roi" class="btn-secondary">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          See Revenue Calculator
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-dashboard">
+      <div class="float-metric float-metric-1">
+        <div class="float-metric-val">$14,280</div>
+        <div class="float-metric-lbl">Revenue Recovered</div>
+        <div class="float-delta">↑ This month</div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-label">Patient Revenue Engine™ — Live Dashboard</div>
+        <div class="dash-metrics-grid">
+          <div class="dash-metric">
+            <div class="dash-metric-val">43%</div>
+            <div class="dash-metric-name">No-Show Reduction</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-val teal">28</div>
+            <div class="dash-metric-name">Patients Recovered</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-val gold">62</div>
+            <div class="dash-metric-name">Admin Hours Saved</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-val green">11</div>
+            <div class="dash-metric-name">New Reviews</div>
+          </div>
+        </div>
+        <div class="dash-label" style="margin-bottom: 12px;">Recall Pipeline — Last 30 Days</div>
+        <div class="recall-bar">
+          <span class="recall-label">90-day lapsed</span>
+          <div class="recall-track"><div class="recall-fill" style="--fill: 76%"></div></div>
+          <span class="recall-pct">76%</span>
+        </div>
+        <div class="recall-bar">
+          <span class="recall-label">180-day lapsed</span>
+          <div class="recall-track"><div class="recall-fill" style="--fill: 52%"></div></div>
+          <span class="recall-pct">52%</span>
+        </div>
+        <div class="recall-bar">
+          <span class="recall-label">365-day lapsed</span>
+          <div class="recall-track"><div class="recall-fill" style="--fill: 31%"></div></div>
+          <span class="recall-pct">31%</span>
+        </div>
+      </div>
+
+      <div class="float-metric float-metric-2">
+        <div class="float-metric-val" style="color: var(--teal)">90%</div>
+        <div class="float-metric-lbl">Days to 40% Reduction</div>
+        <div class="float-delta" style="color: var(--gold)">Guaranteed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-bar-inner">
+    <div class="trust-item">
+      <div class="trust-icon">✓</div>
+      Dentrix Compatible
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">✓</div>
+      Eaglesoft Compatible
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🔒</div>
+      HIPAA-Conscious Workflows
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon" style="background:var(--rust)">★</div>
+      40% No-Show Guarantee
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon" style="background:var(--teal)">⚡</div>
+      90-Day Guarantee
+    </div>
+  </div>
+</div>
+
+<!-- PAIN SECTION -->
+<section class="pain">
+  <div class="section-inner">
+    <div class="section-label reveal">The Revenue Leak</div>
+    <h2 class="section-title reveal reveal-delay-1">Your Practice Is Bleeding<br>Revenue <em>Every Single Day</em></h2>
+    <p class="section-sub reveal reveal-delay-2">Most dental practices have 4–6 systemic revenue leaks running in parallel. Zenith AI identifies and seals each one with intelligent operational systems.</p>
+
+    <div class="pain-grid">
+      <div class="pain-card reveal reveal-delay-1">
+        <div class="pain-icon">🪑</div>
+        <div class="pain-problem">Empty Chairs</div>
+        <p class="pain-desc">Every no-show and cancellation without same-day fill is a chair sitting idle at full overhead cost. Multiplied across a month, it's devastating.</p>
+        <div class="pain-loss">→ $350–$800 per empty slot</div>
+        <div class="pain-outcome">Automated fill protocols recover 40% of lost slots</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <div class="pain-icon">📋</div>
+        <div class="pain-problem">Front Desk Overload</div>
+        <p class="pain-desc">Your team is spending 4–6 hours per day managing phone calls, manual reminders, and recall outreach that should be fully automated.</p>
+        <div class="pain-loss">→ 60+ hours wasted per month</div>
+        <div class="pain-outcome">Operational systems reclaim 60 admin hours monthly</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <div class="pain-icon">📞</div>
+        <div class="pain-problem">Missed Recalls</div>
+        <p class="pain-desc">40–60% of patients due for recall never come back — not because they don't want to, but because no one followed up in a systematic, timely way.</p>
+        <div class="pain-loss">→ 15–30 patients lost per month</div>
+        <div class="pain-outcome">Recall engine recovers 15–30 patients per month</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <div class="pain-icon">⭐</div>
+        <div class="pain-problem">Low Review Volume</div>
+        <p class="pain-desc">Patients who have great experiences rarely leave reviews unprompted. Without a systematic ask, your online presence lags competitors who automate this.</p>
+        <div class="pain-loss">→ Invisible to 80% of new patients</div>
+        <div class="pain-outcome">Review generation captures 8–15 reviews monthly</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <div class="pain-icon">📄</div>
+        <div class="pain-problem">Intake Inefficiencies</div>
+        <p class="pain-desc">Paper intake forms delay chair time, create data entry burden, and lead to errors. Every minute in the waiting room filling out forms is a minute chairs sit empty.</p>
+        <div class="pain-loss">→ 12–15 min wasted per new patient</div>
+        <div class="pain-outcome">Digital intake cuts arrival-to-chair time by 60%</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <div class="pain-icon">📊</div>
+        <div class="pain-problem">No Operational Visibility</div>
+        <p class="pain-desc">Without a real-time view of no-show rates, recall pipeline, and revenue recovery, you can't manage what you can't measure. Gut feel isn't a strategy.</p>
+        <div class="pain-loss">→ Decisions made without data</div>
+        <div class="pain-outcome">Live dashboard shows every metric that matters</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PATIENT REVENUE ENGINE -->
+<section class="pre-section" id="how-it-works-pre">
+  <div class="pre-grid-bg"></div>
+  <div class="pre-inner">
+    <div class="section-label reveal">The Solution</div>
+    <h2 class="section-title reveal reveal-delay-1">The Patient Revenue Engine™</h2>
+    <p class="section-sub reveal reveal-delay-2" style="margin-bottom:60px">A fully integrated operational system that runs quietly in the background — recovering revenue, filling chairs, and building your reputation automatically.</p>
+
+    <div class="pre-lifecycle">
+      <div class="lifecycle-stage reveal reveal-delay-1">
+        <div class="lifecycle-num">01 / REMIND</div>
+        <span class="lifecycle-icon">🔔</span>
+        <div class="lifecycle-name">No-Show Prevention</div>
+        <p class="lifecycle-desc">Multi-touch SMS and email sequences at 48hr, 24hr, and 2hr before every appointment. Confirmation required or slot opens automatically.</p>
+        <div class="lifecycle-metric">↓ 40% no-show reduction</div>
+      </div>
+      <div class="lifecycle-stage reveal reveal-delay-2">
+        <div class="lifecycle-num">02 / RECALL</div>
+        <span class="lifecycle-icon">↩️</span>
+        <div class="lifecycle-name">Recall Recovery</div>
+        <p class="lifecycle-desc">Lapsed patients at 90, 180, and 365-day intervals receive personalized outreach sequences. Persistent without being pushy.</p>
+        <div class="lifecycle-metric">↑ 15–30 patients/month returned</div>
+      </div>
+      <div class="lifecycle-stage reveal reveal-delay-3">
+        <div class="lifecycle-num">03 / REVIEW</div>
+        <span class="lifecycle-icon">⭐</span>
+        <div class="lifecycle-name">Review Generation</div>
+        <p class="lifecycle-desc">Post-visit SMS (4hr delay) captures patient satisfaction. Positive experiences routed to Google. Neutral feedback captured internally.</p>
+        <div class="lifecycle-metric">↑ 8–15 reviews/month</div>
+      </div>
+      <div class="lifecycle-stage reveal reveal-delay-4">
+        <div class="lifecycle-num">04 / RETAIN</div>
+        <span class="lifecycle-icon">💎</span>
+        <div class="lifecycle-name">Intake & Retention</div>
+        <p class="lifecycle-desc">Digital pre-visit forms replace paper. Patient data auto-populates. Arrival-to-chair friction eliminated. Retention rate systematically improves.</p>
+        <div class="lifecycle-metric">↓ 60% faster patient intake</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section class="roi-section" id="roi">
+  <div class="section-inner">
+    <div class="roi-wrapper">
+      <div>
+        <div class="section-label reveal">ROI Calculator</div>
+        <h2 class="section-title reveal reveal-delay-1">See Exactly How Much<br>Revenue You're <em>Losing</em></h2>
+        <p class="section-sub reveal reveal-delay-2" style="margin-bottom:40px">Enter your practice numbers below and we'll calculate the exact revenue leakage your current operations are generating — and what's recoverable with the Patient Revenue Engine™.</p>
+
+        <div class="reveal reveal-delay-3">
+          <div style="background:var(--card-bg);border:1px solid var(--border);padding:32px;margin-bottom:24px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--rust);margin-bottom:16px;">What's Typically Recoverable</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+              <div>
+                <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--ink)">40%</div>
+                <div style="font-size:12px;color:var(--ink-60)">No-show reduction in 90 days</div>
+              </div>
+              <div>
+                <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--teal)">25%</div>
+                <div style="font-size:12px;color:var(--ink-60)">Lapsed patient recall rate</div>
+              </div>
+              <div>
+                <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold)">60%</div>
+                <div style="font-size:12px;color:var(--ink-60)">Admin time recovered</div>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:14px;color:var(--ink-60);line-height:1.7;">These are conservative estimates based on average outcomes across practices using the Patient Revenue Engine™. Your actual results may be higher.</p>
+        </div>
+      </div>
+
+      <div class="roi-calc-card reveal reveal-delay-2">
+        <div class="calc-title">Revenue Leakage Calculator</div>
+
+        <div class="calc-field">
+          <label>Monthly Appointments</label>
+          <div class="calc-input">
+            <input type="number" id="monthly-appts" placeholder="280" value="280">
+            <span class="calc-unit">APPTS/MO</span>
+          </div>
+        </div>
+
+        <div class="calc-field">
+          <label>Average Appointment Value</label>
+          <div class="calc-input">
+            <input type="number" id="avg-value" placeholder="420" value="420">
+            <span class="calc-unit">USD</span>
+          </div>
+        </div>
+
+        <div class="calc-field">
+          <label>Current No-Show Rate</label>
+          <div class="calc-input">
+            <input type="number" id="no-show" placeholder="18" value="18">
+            <span class="calc-unit">%</span>
+          </div>
+        </div>
+
+        <div class="calc-field">
+          <label>Admin Hours Lost Per Day</label>
+          <div class="calc-input">
+            <input type="number" id="admin-hours" placeholder="4" value="4">
+            <span class="calc-unit">HRS/DAY</span>
+          </div>
+        </div>
+
+        <div class="calc-output">
+          <div class="calc-output-label">Monthly Revenue Leakage</div>
+          <div class="calc-output-val" id="leakage-val">$21,166</div>
+          <div class="calc-output-sub">Your hidden operational loss per month</div>
+        </div>
+
+        <div style="margin-top:20px">
+          <div class="calc-row">
+            <span class="calc-row-label">No-show losses</span>
+            <span class="calc-row-val" id="no-show-loss">$21,168</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-row-label">Admin inefficiency</span>
+            <span class="calc-row-val" id="admin-loss">$1,936</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-row-label" style="color:rgba(196,75,43,0.9);font-weight:600">Annual leakage</span>
+            <span class="calc-row-val" style="color:var(--rust)" id="annual-loss">$276,432</span>
+          </div>
+          <div class="calc-row" style="border:none">
+            <span class="calc-row-label" style="color:var(--teal);font-weight:600">Recoverable annually</span>
+            <span class="calc-row-val" style="color:#4caf79" id="recoverable">$107,808</span>
+          </div>
+        </div>
+
+        <a href="/book" class="btn-primary" style="display:flex;justify-content:center;margin-top:28px;width:100%">
+          Book Strategy Call — It's Free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-label reveal">The Process</div>
+    <h2 class="section-title reveal reveal-delay-1">Up and Running in<br><em>Under Two Weeks</em></h2>
+    <p class="section-sub reveal reveal-delay-2">No lengthy implementations. No IT dependencies. We install, configure, and launch your Patient Revenue Engine™ with a streamlined 4-step process.</p>
+
+    <div class="hiw-steps">
+      <div class="hiw-step reveal reveal-delay-1">
+        <div class="hiw-step-num">01</div>
+        <div class="hiw-step-label">Week 1</div>
+        <div class="hiw-step-title">Practice Audit</div>
+        <p class="hiw-step-desc">We analyze your current no-show rate, recall gaps, review volume, and admin workflows to identify every revenue leak with precision.</p>
+        <div class="hiw-timeline">→ 60-minute audit call + data review</div>
+      </div>
+      <div class="hiw-step reveal reveal-delay-2">
+        <div class="hiw-step-num">02</div>
+        <div class="hiw-step-label">Week 1–2</div>
+        <div class="hiw-step-title">System Install</div>
+        <p class="hiw-step-desc">We configure the Patient Revenue Engine™ for your practice — integrated with your PMS, branded to your practice, calibrated to your patient flow.</p>
+        <div class="hiw-timeline">→ PMS sync + message sequences configured</div>
+      </div>
+      <div class="hiw-step reveal reveal-delay-3">
+        <div class="hiw-step-num">03</div>
+        <div class="hiw-step-label">Day 14</div>
+        <div class="hiw-step-title">Go Live</div>
+        <p class="hiw-step-desc">Systems activate. Reminders begin running. Recall outreach sequences deploy. Review generation starts. Dashboard goes live for your team.</p>
+        <div class="hiw-timeline">→ Full system activation</div>
+      </div>
+      <div class="hiw-step reveal reveal-delay-4">
+        <div class="hiw-step-num">04</div>
+        <div class="hiw-step-label">Ongoing</div>
+        <div class="hiw-step-title">Optimize</div>
+        <p class="hiw-step-desc">Monthly performance reviews. Message sequence optimization. New recall campaigns. Your system gets smarter the longer it runs.</p>
+        <div class="hiw-timeline">→ Continuous improvement cadence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<div class="guarantee">
+  <div class="guarantee-inner">
+    <div>
+      <h2>"40% No-Show Reduction in 90 Days — Or You Don't Pay."</h2>
+      <p>We're so confident in the Patient Revenue Engine™ that we back every engagement with a performance guarantee. If you don't see a measurable 40% reduction in your no-show rate within 90 days, you owe us nothing. No fine print. No asterisks.</p>
+    </div>
+    <div class="guarantee-badge">
+      <div class="guarantee-badge-num">90</div>
+      <div class="guarantee-badge-label">Day Guarantee</div>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDIES -->
+<section class="cases" id="cases">
+  <div class="section-inner">
+    <div class="section-label reveal">Results</div>
+    <h2 class="section-title reveal reveal-delay-1">Revenue Recovered.<br><em>Results Delivered.</em></h2>
+    <p class="section-sub reveal reveal-delay-2">Real operational improvements from practices running the Patient Revenue Engine™. Numbers represent 90-day post-installation outcomes.</p>
+
+    <div class="cases-grid">
+      <div class="case-card reveal reveal-delay-1">
+        <div class="case-tag">Solo Practice — 6 Chairs — Austin, TX</div>
+        <div class="case-title">Family Dental — Dr. Chen</div>
+        <p class="case-desc">23% no-show rate was draining the practice. Front desk spending 5 hours/day on manual outreach. No systematic recall program existed.</p>
+        <div class="case-metrics">
+          <div class="case-metric-item">
+            <div class="case-metric-val">47%</div>
+            <div class="case-metric-label">No-Show Reduction</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">31</div>
+            <div class="case-metric-label">Patients Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">$13.4K</div>
+            <div class="case-metric-label">Monthly Revenue Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">14</div>
+            <div class="case-metric-label">Reviews / Month</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card reveal reveal-delay-2">
+        <div class="case-tag">Multi-Provider — 10 Chairs — Nashville, TN</div>
+        <div class="case-title">Smiles Group — Dr. Patel</div>
+        <p class="case-desc">Group practice with 3 providers had inconsistent recall follow-up and no centralized outreach system. Revenue variation month-to-month was over 22%.</p>
+        <div class="case-metrics">
+          <div class="case-metric-item">
+            <div class="case-metric-val">41%</div>
+            <div class="case-metric-label">No-Show Reduction</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">26</div>
+            <div class="case-metric-label">Patients Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">$18.7K</div>
+            <div class="case-metric-label">Monthly Revenue Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">67</div>
+            <div class="case-metric-label">Admin Hours Saved</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card reveal reveal-delay-3">
+        <div class="case-tag">Cosmetic Practice — 8 Chairs — Dallas, TX</div>
+        <div class="case-title">Premier Dental — Dr. Williams</div>
+        <p class="case-desc">High-value cosmetic practice with premium appointment slots losing 18% to no-shows. Single no-show at $2,400 average value is devastating to the P&L.</p>
+        <div class="case-metrics">
+          <div class="case-metric-item">
+            <div class="case-metric-val">52%</div>
+            <div class="case-metric-label">No-Show Reduction</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">19</div>
+            <div class="case-metric-label">Patients Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">$24.1K</div>
+            <div class="case-metric-label">Monthly Revenue Recovered</div>
+          </div>
+          <div class="case-metric-item">
+            <div class="case-metric-val">11</div>
+            <div class="case-metric-label">Reviews / Month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="hero-glow-1"></div>
+  <div class="final-cta-inner">
+    <h2>Your Chairs Should<br>Never <em>Sit Empty</em>.</h2>
+    <p>Every day without the Patient Revenue Engine™ is another day losing $350–$800 per empty slot. Book a free 30-minute strategy call and we'll show you exactly what's recoverable in your practice.</p>
+    <div class="final-cta-ctas">
+      <a href="/book" class="btn-primary" style="font-size:16px;padding:18px 40px">
+        Book Free Strategy Call
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      <a href="#roi" class="btn-secondary" style="font-size:15px;padding:18px 32px">Calculate My Revenue Leakage</a>
+    </div>
+    <div class="final-cta-note">No commitment · Free 30-minute call · Results-backed guarantee</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="nav-logo">ZENITH<span style="color:var(--rust)">.</span>AI</a>
+      <p>Operational revenue infrastructure for dental practices. Patient Revenue Engine™ specialists.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="/how-it-works">How It Works</a></li>
+        <li><a href="/roi-calculator">ROI Calculator</a></li>
+        <li><a href="/case-studies">Case Studies</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Systems</h4>
+      <ul>
+        <li><a href="#">No-Show Prevention</a></li>
+        <li><a href="#">Recall Recovery</a></li>
+        <li><a href="#">Review Generation</a></li>
+        <li><a href="#">Digital Intake</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="/book">Book a Call</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">HIPAA Notice</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Zenith AI — EduRadius LLC. All rights reserved.</span>
+    <span>Patient Revenue Engine™ is a trademark of Zenith AI.</span>
+  </div>
+</footer>
+
+<script>
+// Navbar scroll
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ROI Calculator
+function formatCurrency(val) {
+  return '$' + Math.round(val).toLocaleString();
+}
+
+function recalculate() {
+  const appts = parseFloat(document.getElementById('monthly-appts').value) || 280;
+  const avgVal = parseFloat(document.getElementById('avg-value').value) || 420;
+  const noShowPct = parseFloat(document.getElementById('no-show').value) / 100 || 0.18;
+  const adminHrs = parseFloat(document.getElementById('admin-hours').value) || 4;
+
+  const noShowLoss = appts * noShowPct * avgVal;
+  const adminLoss = adminHrs * 22 * 22; // $22/hr * 22 working days
+  const totalLeakage = noShowLoss + adminLoss;
+  const annual = totalLeakage * 12;
+  const recoverable = (noShowLoss * 0.40 + adminLoss * 0.60) * 12;
+
+  document.getElementById('no-show-loss').textContent = formatCurrency(noShowLoss);
+  document.getElementById('admin-loss').textContent = formatCurrency(adminLoss);
+  document.getElementById('leakage-val').textContent = formatCurrency(totalLeakage);
+  document.getElementById('annual-loss').textContent = formatCurrency(annual);
+  document.getElementById('recoverable').textContent = formatCurrency(recoverable);
+}
+
+['monthly-appts','avg-value','no-show','admin-hours'].forEach(id => {
+  document.getElementById(id).addEventListener('input', recalculate);
+});
+recalculate();
+
+// Recall bars animate on scroll
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.recall-fill').forEach(bar => {
+        bar.style.width = bar.style.getPropertyValue('--fill');
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.dash-card').forEach(el => barObserver.observe(el));
+</script>
+</body>
+</html>

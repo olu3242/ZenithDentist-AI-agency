@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenith AI — Practice Dashboard & Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0d0b;
+  --bg2: #161310;
+  --bg3: #1d1a16;
+  --bg4: #252019;
+  --border: rgba(245,242,237,0.08);
+  --border2: rgba(245,242,237,0.04);
+  --text: #f5f2ed;
+  --text60: rgba(245,242,237,0.6);
+  --text35: rgba(245,242,237,0.35);
+  --rust: #c44b2b;
+  --rust-soft: rgba(196,75,43,0.15);
+  --teal: #1a7a6e;
+  --teal-soft: rgba(26,122,110,0.15);
+  --gold: #c8922a;
+  --gold-soft: rgba(200,146,42,0.15);
+  --green: #3d8f5f;
+  --green-soft: rgba(61,143,95,0.15);
+  --sidebar-w: 240px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ═══════════ SIDEBAR ═══════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sidebar-logo-text span { color: var(--rust); }
+
+.sidebar-logo-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  margin-top: 4px;
+}
+
+.sidebar-practice {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-avatar {
+  width: 32px; height: 32px;
+  background: var(--rust-soft);
+  border: 1px solid var(--rust);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--rust);
+  flex-shrink: 0;
+}
+
+.sidebar-practice-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.sidebar-practice-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sidebar-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  padding: 20px 20px 8px;
+}
+
+.sidebar-nav { list-style: none; padding: 0 8px; }
+
+.sidebar-nav li { margin-bottom: 2px; }
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 2px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text60);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-nav a:hover { background: rgba(245,242,237,0.04); color: var(--text); }
+.sidebar-nav a.active { background: var(--rust-soft); color: var(--text); border-left: 2px solid var(--rust); }
+
+.sidebar-nav .nav-icon {
+  font-size: 14px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-nav .nav-badge {
+  margin-left: auto;
+  background: var(--rust);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 6px;
+  font-weight: 600;
+}
+
+.sidebar-status {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ═══════════ MAIN ═══════════ */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.topbar-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text35);
+  letter-spacing: 1px;
+}
+
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+.topbar-btn {
+  padding: 8px 16px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.topbar-btn-ghost {
+  background: transparent;
+  color: var(--text60);
+  border: 1px solid var(--border);
+}
+
+.topbar-btn-ghost:hover { color: var(--text); border-color: rgba(245,242,237,0.2); }
+
+.topbar-btn-primary {
+  background: var(--rust);
+  color: #fff;
+}
+
+.topbar-btn-primary:hover { background: #a83d22; }
+
+.tab-switcher {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  background: var(--bg2);
+}
+
+.tab {
+  padding: 12px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text35);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+  user-select: none;
+}
+
+.tab:hover { color: var(--text60); }
+.tab.active { color: var(--text); border-bottom-color: var(--rust); }
+
+/* CONTENT */
+.content {
+  padding: 32px;
+  flex: 1;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* KPI STRIP */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-bottom: 28px;
+}
+
+.kpi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+
+.kpi-card:hover { border-color: rgba(245,242,237,0.15); }
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.kpi-card.rust::before { background: var(--rust); }
+.kpi-card.teal::before { background: var(--teal); }
+.kpi-card.gold::before { background: var(--gold); }
+.kpi-card.green::before { background: var(--green); }
+
+.kpi-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  margin-bottom: 12px;
+}
+
+.kpi-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.kpi-card.rust .kpi-value { color: var(--rust); }
+.kpi-card.teal .kpi-value { color: var(--teal); }
+.kpi-card.gold .kpi-value { color: var(--gold); }
+.kpi-card.green .kpi-value { color: #4caf79; }
+
+.kpi-delta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text35);
+}
+
+.kpi-delta-up { color: #4caf79; }
+.kpi-delta-down { color: var(--rust); }
+
+/* GRID LAYOUTS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 2px; }
+.grid-3-2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-bottom: 2px; }
+.grid-full { margin-bottom: 2px; }
+
+/* PANELS */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text60);
+}
+
+.panel-action {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--rust);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 0;
+  transition: opacity 0.2s;
+}
+
+.panel-action:hover { opacity: 0.7; }
+
+/* MINI CHART */
+.mini-chart {
+  padding: 20px 24px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.chart-bar {
+  flex: 1;
+  background: rgba(196,75,43,0.2);
+  border-top: 2px solid var(--rust);
+  transition: all 0.3s;
+  position: relative;
+  cursor: pointer;
+}
+
+.chart-bar:hover { background: rgba(196,75,43,0.35); }
+
+.chart-bar.teal {
+  background: rgba(26,122,110,0.2);
+  border-top-color: var(--teal);
+}
+
+.chart-bar.teal:hover { background: rgba(26,122,110,0.35); }
+
+.chart-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text60);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.chart-bar:hover .chart-tooltip { opacity: 1; }
+
+/* PIPELINE */
+.pipeline-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  padding: 20px 24px;
+}
+
+.pipeline-col-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  padding: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pipeline-count {
+  background: rgba(245,242,237,0.08);
+  padding: 1px 6px;
+  font-size: 9px;
+  color: var(--text60);
+}
+
+.pipeline-cards { display: flex; flex-direction: column; gap: 8px; }
+
+.pipeline-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.pipeline-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+}
+
+.stage-lapsed .pipeline-card::before { background: var(--rust); }
+.stage-outreach .pipeline-card::before { background: var(--gold); }
+.stage-responded .pipeline-card::before { background: var(--teal); }
+.stage-scheduled .pipeline-card::before { background: var(--green); }
+.stage-recovered .pipeline-card::before { background: #4caf79; }
+
+.pipeline-card:hover {
+  border-color: rgba(245,242,237,0.15);
+  transform: translateY(-1px);
+}
+
+.pipeline-patient-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.pipeline-patient-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  letter-spacing: 0.5px;
+}
+
+.pipeline-patient-tag {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+.tag-180 { color: var(--rust); border-color: rgba(196,75,43,0.3); background: var(--rust-soft); }
+.tag-90 { color: var(--gold); border-color: rgba(200,146,42,0.3); background: var(--gold-soft); }
+.tag-365 { color: #888; border-color: rgba(136,136,136,0.2); background: rgba(136,136,136,0.08); }
+
+/* APPOINTMENTS TABLE */
+.appt-table { width: 100%; border-collapse: collapse; }
+
+.appt-table th {
+  background: var(--bg3);
+  padding: 12px 20px;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  font-weight: 500;
+}
+
+.appt-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border2);
+  vertical-align: middle;
+}
+
+.appt-table tr:last-child td { border-bottom: none; }
+
+.appt-table tr:hover td { background: rgba(245,242,237,0.02); }
+
+.patient-cell { display: flex; align-items: center; gap: 10px; }
+
+.patient-avatar-sm {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.patient-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.patient-meta-sm { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text35); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.status-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+
+.badge-confirmed { background: var(--teal-soft); color: var(--teal); }
+.badge-confirmed::before { background: var(--teal); }
+.badge-pending { background: var(--gold-soft); color: var(--gold); }
+.badge-pending::before { background: var(--gold); }
+.badge-no-show { background: var(--rust-soft); color: var(--rust); }
+.badge-no-show::before { background: var(--rust); }
+.badge-completed { background: var(--green-soft); color: #4caf79; }
+.badge-completed::before { background: #4caf79; }
+
+.appt-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text60);
+}
+
+/* OUTREACH LOG */
+.outreach-list { padding: 4px 0; }
+
+.outreach-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border2);
+  transition: background 0.2s;
+}
+
+.outreach-item:hover { background: rgba(245,242,237,0.015); }
+
+.outreach-icon {
+  width: 32px; height: 32px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.outreach-icon.sms { background: var(--teal-soft); }
+.outreach-icon.recall { background: var(--rust-soft); }
+.outreach-icon.review { background: var(--gold-soft); }
+
+.outreach-content { flex: 1; }
+
+.outreach-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.outreach-detail {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  letter-spacing: 0.5px;
+}
+
+.outreach-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  white-space: nowrap;
+}
+
+.outreach-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.outreach-sent { background: var(--teal-soft); color: var(--teal); }
+.outreach-delivered { background: var(--green-soft); color: #4caf79; }
+.outreach-queued { background: var(--gold-soft); color: var(--gold); }
+
+/* RECALL SEGMENTS */
+.recall-segments {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 20px 24px;
+}
+
+.recall-segment {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.segment-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.segment-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.segment-label.rust { color: var(--rust); }
+.segment-label.gold { color: var(--gold); }
+.segment-label.dim { color: var(--text35); }
+
+.segment-count {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.segment-count.rust { color: var(--rust); }
+.segment-count.gold { color: var(--gold); }
+.segment-count.dim { color: var(--text35); }
+
+.segment-action {
+  background: transparent;
+  border: 1px solid;
+  padding: 6px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.segment-action.rust { border-color: var(--rust); color: var(--rust); }
+.segment-action.rust:hover { background: var(--rust-soft); }
+.segment-action.gold { border-color: var(--gold); color: var(--gold); }
+.segment-action.gold:hover { background: var(--gold-soft); }
+
+.segment-bar-track {
+  height: 4px;
+  background: rgba(245,242,237,0.06);
+  margin: 12px 0 8px;
+}
+
+.segment-bar-fill {
+  height: 100%;
+  transition: width 1s ease-out;
+}
+
+.segment-bar-fill.rust { background: var(--rust); }
+.segment-bar-fill.gold { background: var(--gold); }
+.segment-bar-fill.dim { background: rgba(245,242,237,0.2); }
+
+.segment-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+}
+
+/* AUTOMATION FLOW */
+.automation-flow {
+  padding: 24px;
+}
+
+.flow-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text35);
+  margin-bottom: 24px;
+}
+
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.flow-step {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.flow-step:not(:last-child) .flow-line {
+  position: absolute;
+  left: 14px;
+  top: 32px;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.flow-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  z-index: 1;
+  background: var(--bg);
+}
+
+.flow-dot.rust { border-color: var(--rust); color: var(--rust); background: var(--rust-soft); }
+.flow-dot.teal { border-color: var(--teal); color: var(--teal); background: var(--teal-soft); }
+.flow-dot.gold { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
+.flow-dot.green { border-color: #4caf79; color: #4caf79; background: var(--green-soft); }
+.flow-dot.dim { border-color: var(--border); color: var(--text35); }
+
+.flow-content {
+  padding-bottom: 24px;
+  flex: 1;
+}
+
+.flow-step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.flow-step-desc {
+  font-size: 11px;
+  color: var(--text35);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.flow-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.flow-tag.active { background: var(--teal-soft); color: var(--teal); }
+.flow-tag.scheduled { background: var(--gold-soft); color: var(--gold); }
+.flow-tag.triggered { background: var(--rust-soft); color: var(--rust); }
+
+/* REVIEW PANEL */
+.review-summary {
+  padding: 20px 24px;
+}
+
+.review-rating-big {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rating-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.rating-stars { color: var(--gold); font-size: 18px; letter-spacing: 2px; }
+.rating-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text35); letter-spacing: 1px; }
+
+.review-bars {}
+
+.review-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.review-bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  min-width: 12px;
+}
+
+.review-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(245,242,237,0.05);
+}
+
+.review-bar-fill { height: 100%; background: var(--gold); }
+
+.review-bar-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text35);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(245,242,237,0.1); }
+
+/* ANIM */
+@keyframes counterUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kpi-value { animation: counterUp 0.6s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">ZENITH<span>.</span>AI</div>
+    <div class="sidebar-logo-sub">Patient Revenue Engine™</div>
+  </div>
+
+  <div class="sidebar-practice">
+    <div class="sidebar-avatar">DC</div>
+    <div>
+      <div class="sidebar-practice-name">Dr. Chen Practice</div>
+      <div class="sidebar-practice-sub">Austin, TX · 6 Chairs</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Main</div>
+  <ul class="sidebar-nav">
+    <li><a class="active" onclick="switchTab('dashboard', this)">
+      <span class="nav-icon">◈</span> Dashboard
+    </a></li>
+    <li><a onclick="switchTab('pipeline', this)">
+      <span class="nav-icon">⟳</span> Recall Pipeline
+      <span class="nav-badge">47</span>
+    </a></li>
+    <li><a onclick="switchTab('appointments', this)">
+      <span class="nav-icon">◷</span> Appointments
+    </a></li>
+    <li><a onclick="switchTab('outreach', this)">
+      <span class="nav-icon">◉</span> Outreach Log
+    </a></li>
+  </ul>
+
+  <div class="sidebar-section-label">Systems</div>
+  <ul class="sidebar-nav">
+    <li><a onclick="switchTab('automation', this)">
+      <span class="nav-icon">⟡</span> Automation Engine
+    </a></li>
+    <li><a onclick="switchTab('reviews', this)">
+      <span class="nav-icon">★</span> Review Generation
+    </a></li>
+    <li><a>
+      <span class="nav-icon">↗</span> ROI Report
+    </a></li>
+    <li><a>
+      <span class="nav-icon">⊞</span> Settings
+    </a></li>
+  </ul>
+
+  <div class="sidebar-status">
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      ALL SYSTEMS ACTIVE
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="topbar-title">Practice Dashboard</div>
+      <div class="topbar-date">Wednesday, May 2025</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn topbar-btn-ghost">↓ Export Report</button>
+      <button class="topbar-btn topbar-btn-primary">+ Trigger Outreach</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-switcher">
+    <div class="tab active" onclick="switchTab('dashboard', this)" data-tab="dashboard">Overview</div>
+    <div class="tab" onclick="switchTab('pipeline', this)" data-tab="pipeline">Recall Pipeline</div>
+    <div class="tab" onclick="switchTab('appointments', this)" data-tab="appointments">Appointments</div>
+    <div class="tab" onclick="switchTab('outreach', this)" data-tab="outreach">Outreach Log</div>
+    <div class="tab" onclick="switchTab('automation', this)" data-tab="automation">Automation Engine</div>
+    <div class="tab" onclick="switchTab('reviews', this)" data-tab="reviews">Reviews</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD TAB ═══ -->
+    <div class="tab-content active" id="tab-dashboard">
+
+      <!-- KPI Strip -->
+      <div class="kpi-strip">
+        <div class="kpi-card rust">
+          <div class="kpi-label">No-Show Reduction</div>
+          <div class="kpi-value">47%</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↑ 12%</span> vs last month</div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-label">Patients Recovered</div>
+          <div class="kpi-value">31</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↑ 8</span> vs last month</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-label">Admin Hours Saved</div>
+          <div class="kpi-value">62</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↑ 9hrs</span> vs last month</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Revenue Recovered</div>
+          <div class="kpi-value">$13.4K</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↑ $2.1K</span> vs last month</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:2px">
+        <!-- No-show chart -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">No-Show Rate — 6 Months</span>
+            <button class="panel-action">View Full Report</button>
+          </div>
+          <div class="mini-chart">
+            <div class="chart-bar" style="height:88%"><div class="chart-tooltip">Oct: 23%</div></div>
+            <div class="chart-bar" style="height:80%"><div class="chart-tooltip">Nov: 21%</div></div>
+            <div class="chart-bar" style="height:72%"><div class="chart-tooltip">Dec: 19%</div></div>
+            <div class="chart-bar" style="height:58%"><div class="chart-tooltip">Jan: 15%</div></div>
+            <div class="chart-bar" style="height:46%"><div class="chart-tooltip">Feb: 12%</div></div>
+            <div class="chart-bar" style="height:30%"><div class="chart-tooltip">Mar: 8%</div></div>
+          </div>
+          <div style="padding:0 24px 16px;display:flex;gap:20px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--rust)">Start: 23%</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4caf79">Now: 8%</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text35)">= 47% reduction</span>
+          </div>
+        </div>
+
+        <!-- Revenue chart -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Revenue Recovered — Monthly</span>
+            <button class="panel-action">View Breakdown</button>
+          </div>
+          <div class="mini-chart">
+            <div class="chart-bar teal" style="height:30%"><div class="chart-tooltip">Oct: $3.2K</div></div>
+            <div class="chart-bar teal" style="height:45%"><div class="chart-tooltip">Nov: $5.8K</div></div>
+            <div class="chart-bar teal" style="height:55%"><div class="chart-tooltip">Dec: $7.1K</div></div>
+            <div class="chart-bar teal" style="height:68%"><div class="chart-tooltip">Jan: $9.4K</div></div>
+            <div class="chart-bar teal" style="height:80%"><div class="chart-tooltip">Feb: $11.2K</div></div>
+            <div class="chart-bar teal" style="height:95%"><div class="chart-tooltip">Mar: $13.4K</div></div>
+          </div>
+          <div style="padding:0 24px 16px;display:flex;gap:20px">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text35)">Total recovered:</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--teal)">$50,100 in 6 months</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Appointments Quick View -->
+      <div class="panel grid-full">
+        <div class="panel-header">
+          <span class="panel-title">Today's Appointments — May 20, 2025</span>
+          <button class="panel-action" onclick="switchTab('appointments', null)">View All</button>
+        </div>
+        <table class="appt-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Time</th>
+              <th>Procedure</th>
+              <th>Status</th>
+              <th>Value</th>
+              <th>Outreach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(26,122,110,0.15);color:var(--teal)">SR</div><div><div class="patient-name">Sarah Rivera</div><div class="patient-meta-sm">Patient since 2021</div></div></div></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">9:00 AM</td>
+              <td style="font-size:12px;color:var(--text60)">Cleaning + X-Ray</td>
+              <td><span class="status-badge badge-confirmed">Confirmed</span></td>
+              <td class="appt-value">$340</td>
+              <td><span class="outreach-sent outreach-status">Reminded 2×</span></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(200,146,42,0.15);color:var(--gold)">MT</div><div><div class="patient-name">Marcus Thompson</div><div class="patient-meta-sm">Recall patient</div></div></div></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">10:30 AM</td>
+              <td style="font-size:12px;color:var(--text60)">Crown Prep</td>
+              <td><span class="status-badge badge-pending">Unconfirmed</span></td>
+              <td class="appt-value">$1,240</td>
+              <td><span class="outreach-queued outreach-status">2hr Reminder Queued</span></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(196,75,43,0.15);color:var(--rust)">JL</div><div><div class="patient-name">Jennifer Liu</div><div class="patient-meta-sm">New patient</div></div></div></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">1:00 PM</td>
+              <td style="font-size:12px;color:var(--text60)">New Patient Exam</td>
+              <td><span class="status-badge badge-confirmed">Confirmed</span></td>
+              <td class="appt-value">$420</td>
+              <td><span class="outreach-delivered outreach-status">Intake Sent</span></td>
+            </tr>
+            <tr>
+              <td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(61,143,95,0.15);color:#4caf79">DK</div><div><div class="patient-name">David Kim</div><div class="patient-meta-sm">Recall — 8mo gap</div></div></div></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">3:30 PM</td>
+              <td style="font-size:12px;color:var(--text60)">Cleaning</td>
+              <td><span class="status-badge badge-confirmed">Confirmed</span></td>
+              <td class="appt-value">$280</td>
+              <td><span class="outreach-sent outreach-status">Recalled via PRE™</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PIPELINE TAB ═══ -->
+    <div class="tab-content" id="tab-pipeline">
+      <div class="panel grid-full" style="margin-bottom:2px">
+        <div class="panel-header">
+          <span class="panel-title">Recall Pipeline — Patient Lifecycle</span>
+          <button class="panel-action">Export Pipeline</button>
+        </div>
+        <div style="padding:0 24px 20px">
+          <div class="recall-segments">
+            <div class="recall-segment">
+              <div class="segment-header">
+                <div>
+                  <div class="segment-label rust">90-Day Lapsed</div>
+                  <div class="segment-count rust">24</div>
+                </div>
+                <button class="segment-action rust">Send Outreach</button>
+              </div>
+              <div class="segment-bar-track">
+                <div class="segment-bar-fill rust" style="width:76%"></div>
+              </div>
+              <div class="segment-meta">76% contacted this month · $7,200 recoverable</div>
+            </div>
+            <div class="recall-segment">
+              <div class="segment-header">
+                <div>
+                  <div class="segment-label gold">180-Day Lapsed</div>
+                  <div class="segment-count gold">15</div>
+                </div>
+                <button class="segment-action gold">Send Outreach</button>
+              </div>
+              <div class="segment-bar-track">
+                <div class="segment-bar-fill gold" style="width:52%"></div>
+              </div>
+              <div class="segment-meta">52% contacted this month · $4,500 recoverable</div>
+            </div>
+            <div class="recall-segment">
+              <div class="segment-header">
+                <div>
+                  <div class="segment-label dim">365-Day Lapsed</div>
+                  <div class="segment-count dim">8</div>
+                </div>
+              </div>
+              <div class="segment-bar-track">
+                <div class="segment-bar-fill dim" style="width:31%"></div>
+              </div>
+              <div class="segment-meta">31% contacted · Reactivation campaign active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Live Recall Board — Kanban Pipeline</span>
+          <button class="panel-action">+ Add to Pipeline</button>
+        </div>
+        <div class="pipeline-board">
+          <div>
+            <div class="pipeline-col-header">Lapsed <span class="pipeline-count">12</span></div>
+            <div class="pipeline-cards stage-lapsed">
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Angela Morris</div>
+                <div class="pipeline-patient-meta">Last visit: Aug 2024</div>
+                <div class="pipeline-patient-tag tag-180">180 Days</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Robert Hayes</div>
+                <div class="pipeline-patient-meta">Last visit: Sep 2024</div>
+                <div class="pipeline-patient-tag tag-90">90 Days</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Maria Santos</div>
+                <div class="pipeline-patient-meta">Last visit: May 2024</div>
+                <div class="pipeline-patient-tag tag-365">365 Days</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pipeline-col-header">Outreach Sent <span class="pipeline-count">18</span></div>
+            <div class="pipeline-cards stage-outreach">
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Kevin Walsh</div>
+                <div class="pipeline-patient-meta">SMS sent · 2 days ago</div>
+                <div class="pipeline-patient-tag tag-90">90 Days</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Linda Park</div>
+                <div class="pipeline-patient-meta">Email sent · 1 day ago</div>
+                <div class="pipeline-patient-tag tag-180">180 Days</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Tom Bradley</div>
+                <div class="pipeline-patient-meta">SMS sent · 3 days ago</div>
+                <div class="pipeline-patient-tag tag-90">90 Days</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pipeline-col-header">Responded <span class="pipeline-count">9</span></div>
+            <div class="pipeline-cards stage-responded">
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Carol Jenkins</div>
+                <div class="pipeline-patient-meta">Replied: "Yes, call me"</div>
+                <div class="pipeline-patient-tag tag-90">Follow Up</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Paul Nguyen</div>
+                <div class="pipeline-patient-meta">Clicked booking link</div>
+                <div class="pipeline-patient-tag tag-180">Hot Lead</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pipeline-col-header">Scheduled <span class="pipeline-count">6</span></div>
+            <div class="pipeline-cards stage-scheduled">
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">David Kim</div>
+                <div class="pipeline-patient-meta">May 20 · 3:30 PM</div>
+                <div class="pipeline-patient-tag tag-90">$280</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Sarah Wilson</div>
+                <div class="pipeline-patient-meta">May 22 · 10:00 AM</div>
+                <div class="pipeline-patient-tag tag-180">$420</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="pipeline-col-header">Recovered <span class="pipeline-count">31</span></div>
+            <div class="pipeline-cards stage-recovered">
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Jennifer Martinez</div>
+                <div class="pipeline-patient-meta">Completed May 15</div>
+                <div class="pipeline-patient-tag" style="color:#4caf79;border-color:rgba(76,175,121,0.3);background:rgba(76,175,121,0.08)">$380 ✓</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Michael Torres</div>
+                <div class="pipeline-patient-meta">Completed May 12</div>
+                <div class="pipeline-patient-tag" style="color:#4caf79;border-color:rgba(76,175,121,0.3);background:rgba(76,175,121,0.08)">$640 ✓</div>
+              </div>
+              <div class="pipeline-card">
+                <div class="pipeline-patient-name">Amanda Foster</div>
+                <div class="pipeline-patient-meta">Completed May 10</div>
+                <div class="pipeline-patient-tag" style="color:#4caf79;border-color:rgba(76,175,121,0.3);background:rgba(76,175,121,0.08)">$290 ✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ APPOINTMENTS TAB ═══ -->
+    <div class="tab-content" id="tab-appointments">
+      <div class="kpi-strip">
+        <div class="kpi-card rust">
+          <div class="kpi-label">Today's Scheduled</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-delta">4 unconfirmed</div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-label">Confirmed</div>
+          <div class="kpi-value">10</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">71%</span> confirmation rate</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-label">Today's Revenue</div>
+          <div class="kpi-value">$5,280</div>
+          <div class="kpi-delta">If all confirmed attend</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Month No-Show Rate</div>
+          <div class="kpi-value">8%</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↓ from 23%</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">All Appointments — May 2025</span>
+          <button class="panel-action">Filter by Status</button>
+        </div>
+        <table class="appt-table">
+          <thead>
+            <tr><th>Patient</th><th>Date & Time</th><th>Procedure</th><th>Provider</th><th>Status</th><th>Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(26,122,110,0.15);color:var(--teal)">SR</div><div><div class="patient-name">Sarah Rivera</div><div class="patient-meta-sm">DOB: 1988</div></div></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">May 20 · 9:00 AM</td><td style="font-size:12px;color:var(--text60)">Cleaning + X-Ray</td><td style="font-size:12px;color:var(--text35)">Dr. Chen</td><td><span class="status-badge badge-confirmed">Confirmed</span></td><td class="appt-value">$340</td></tr>
+            <tr><td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(196,75,43,0.15);color:var(--rust)">MT</div><div><div class="patient-name">Marcus Thompson</div><div class="patient-meta-sm">Crown — 2nd visit</div></div></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">May 20 · 10:30 AM</td><td style="font-size:12px;color:var(--text60)">Crown Placement</td><td style="font-size:12px;color:var(--text35)">Dr. Chen</td><td><span class="status-badge badge-pending">Pending</span></td><td class="appt-value">$1,240</td></tr>
+            <tr><td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(200,146,42,0.15);color:var(--gold)">JL</div><div><div class="patient-name">Jennifer Liu</div><div class="patient-meta-sm">New patient</div></div></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">May 20 · 1:00 PM</td><td style="font-size:12px;color:var(--text60)">New Patient Exam</td><td style="font-size:12px;color:var(--text35)">Dr. Chen</td><td><span class="status-badge badge-confirmed">Confirmed</span></td><td class="appt-value">$420</td></tr>
+            <tr><td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(196,75,43,0.15);color:var(--rust)">BW</div><div><div class="patient-name">Brian Wilson</div><div class="patient-meta-sm">High no-show risk</div></div></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">May 18 · 11:00 AM</td><td style="font-size:12px;color:var(--text60)">Filling (×2)</td><td style="font-size:12px;color:var(--text35)">Dr. Chen</td><td><span class="status-badge badge-no-show">No-Show</span></td><td class="appt-value">$560</td></tr>
+            <tr><td><div class="patient-cell"><div class="patient-avatar-sm" style="background:rgba(61,143,95,0.15);color:#4caf79">AP</div><div><div class="patient-name">Amy Peterson</div><div class="patient-meta-sm">Loyal patient</div></div></div></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text60)">May 17 · 2:00 PM</td><td style="font-size:12px;color:var(--text60)">Whitening</td><td style="font-size:12px;color:var(--text35)">Dr. Chen</td><td><span class="status-badge badge-completed">Completed</span></td><td class="appt-value">$380</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ OUTREACH LOG TAB ═══ -->
+    <div class="tab-content" id="tab-outreach">
+      <div class="kpi-strip">
+        <div class="kpi-card teal">
+          <div class="kpi-label">Messages Sent Today</div>
+          <div class="kpi-value">34</div>
+          <div class="kpi-delta">Automated by PRE™</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-label">Delivery Rate</div>
+          <div class="kpi-value">97%</div>
+          <div class="kpi-delta"><span class="kpi-delta-up">↑ 2%</span> vs avg</div>
+        </div>
+        <div class="kpi-card rust">
+          <div class="kpi-label">Response Rate</div>
+          <div class="kpi-value">31%</div>
+          <div class="kpi-delta">Industry avg: 12%</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Conversions</div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-delta">Bookings from outreach</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Outreach Activity Log — Today</span>
+          <button class="panel-action">View Full Log</button>
+        </div>
+        <div class="outreach-list">
+          <div class="outreach-item">
+            <div class="outreach-icon sms">📱</div>
+            <div class="outreach-content">
+              <div class="outreach-title">48hr Reminder — Marcus Thompson</div>
+              <div class="outreach-detail">Crown appointment · May 20 10:30 AM · SMS to +1 (512) 555-0134</div>
+            </div>
+            <div style="text-align:right">
+              <div class="outreach-time">8:30 AM</div>
+              <span class="outreach-status outreach-delivered">Delivered</span>
+            </div>
+          </div>
+          <div class="outreach-item">
+            <div class="outreach-icon recall">↩️</div>
+            <div class="outreach-content">
+              <div class="outreach-title">90-Day Recall — Angela Morris</div>
+              <div class="outreach-detail">Last visit Aug 2024 · Cleaning due · SMS + email sequence initiated</div>
+            </div>
+            <div style="text-align:right">
+              <div class="outreach-time">9:00 AM</div>
+              <span class="outreach-status outreach-sent">Sent</span>
+            </div>
+          </div>
+          <div class="outreach-item">
+            <div class="outreach-icon review">⭐</div>
+            <div class="outreach-content">
+              <div class="outreach-title">Review Request — Amy Peterson</div>
+              <div class="outreach-detail">Post-visit follow-up · Whitening May 17 · Routed to Google review link</div>
+            </div>
+            <div style="text-align:right">
+              <div class="outreach-time">10:15 AM</div>
+              <span class="outreach-status outreach-delivered">Delivered</span>
+            </div>
+          </div>
+          <div class="outreach-item">
+            <div class="outreach-icon sms">📱</div>
+            <div class="outreach-content">
+              <div class="outreach-title">24hr Reminder — Sarah Rivera</div>
+              <div class="outreach-detail">Cleaning appointment · May 20 9:00 AM · Patient confirmed ✓</div>
+            </div>
+            <div style="text-align:right">
+              <div class="outreach-time">9:00 AM <span style="color:#aaa">yesterday</span></div>
+              <span class="outreach-status outreach-delivered" style="background:rgba(76,175,121,0.15);color:#4caf79">Confirmed</span>
+            </div>
+          </div>
+          <div class="outreach-item">
+            <div class="outreach-icon recall">↩️</div>
+            <div class="outreach-content">
+              <div class="outreach-title">180-Day Recall — Robert Hayes</div>
+              <div class="outreach-detail">Last visit Sep 2024 · 2nd outreach attempt · Personalized re-engagement</div>
+            </div>
+            <div style="text-align:right">
+              <div class="outreach-time">11:30 AM</div>
+              <span class="outreach-status outreach-queued">Queued</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AUTOMATION TAB ═══ -->
+    <div class="tab-content" id="tab-automation">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Appointment Reminder Workflow</span>
+            <button class="panel-action" style="color:#4caf79">● Live</button>
+          </div>
+          <div class="automation-flow">
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot teal">📅</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Appointment Created in PMS</div>
+                  <div class="flow-step-desc">New appointment detected via Dentrix sync. Triggers Patient Revenue Engine™ workflow for this patient.</div>
+                  <span class="flow-tag active">Auto-detected</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot rust">⏰</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">48hr Reminder — SMS + Email</div>
+                  <div class="flow-step-desc">Personalized reminder sent 48 hours before appointment. Patient must confirm to lock slot.</div>
+                  <span class="flow-tag scheduled">T-48hrs</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot gold">🔔</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">24hr Reminder — SMS</div>
+                  <div class="flow-step-desc">Final day reminder. If unconfirmed, escalated outreach with rebooking offer if needed.</div>
+                  <span class="flow-tag scheduled">T-24hrs</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot rust">⚡</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">2hr Day-Of Reminder</div>
+                  <div class="flow-step-desc">Final reminder sent morning of appointment. Unconfirmed slots flagged for potential fill.</div>
+                  <span class="flow-tag triggered">T-2hrs</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot green">✓</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Attended → Review Request</div>
+                  <div class="flow-step-desc">Post-visit SMS (4hr delay). Positive → Google review link. Neutral → internal feedback form.</div>
+                  <span class="flow-tag active">4hr post-visit</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-dot dim">↩</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">No-Show → Recall Queue</div>
+                  <div class="flow-step-desc">Patient flagged as no-show. Added to 7-day follow-up queue with rebooking incentive sequence.</div>
+                  <span class="flow-tag triggered">Auto-triggered</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Recall Recovery Workflow</span>
+            <button class="panel-action" style="color:#4caf79">● Live</button>
+          </div>
+          <div class="automation-flow">
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot teal">🗓</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Daily Cron — Recall Detection</div>
+                  <div class="flow-step-desc">System runs daily at 8AM. All patients with last_visit > 90/180/365 days are segmented into recall queues.</div>
+                  <span class="flow-tag active">Daily 8:00 AM</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot gold">📋</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Segment Classification</div>
+                  <div class="flow-step-desc">Patients tagged: 90-Day (cleaning due), 180-Day (urgent recall), 365-Day (reactivation campaign).</div>
+                  <span class="flow-tag scheduled">Auto-segmented</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot rust">📱</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Outreach Sequence #1</div>
+                  <div class="flow-step-desc">Warm, personalized SMS: "Hi [name], it's time for your cleaning at [Practice]. Book in 60 seconds →"</div>
+                  <span class="flow-tag triggered">Day 1</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot gold">📧</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Outreach Sequence #2</div>
+                  <div class="flow-step-desc">Follow-up email (14 days if no response). Urgency framing. Easy one-click booking link.</div>
+                  <span class="flow-tag scheduled">Day 14</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot dim">📞</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Outreach Sequence #3</div>
+                  <div class="flow-step-desc">Final SMS (30 days). Re-engagement offer. If no response, patient marked lapsed_final for quarterly review.</div>
+                  <span class="flow-tag scheduled">Day 30</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-dot green">✓</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Rebooked → Revenue Recovered</div>
+                  <div class="flow-step-desc">Patient books appointment. Enters reminder workflow. Revenue recovered tracked in dashboard.</div>
+                  <span class="flow-tag active">Success</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ REVIEWS TAB ═══ -->
+    <div class="tab-content" id="tab-reviews">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Review Performance — May 2025</span>
+          </div>
+          <div class="review-summary">
+            <div class="review-rating-big">
+              <div class="rating-number">4.8</div>
+              <div>
+                <div class="rating-stars">★★★★★</div>
+                <div class="rating-count" style="margin-top:6px">Based on 147 reviews</div>
+                <div class="rating-count" style="color:var(--green);margin-top:4px">+11 this month</div>
+              </div>
+            </div>
+            <div class="review-bars">
+              <div class="review-bar-row"><span class="review-bar-label">5★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:82%"></div></div><span class="review-bar-count">121</span></div>
+              <div class="review-bar-row"><span class="review-bar-label">4★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:12%;background:var(--teal)"></div></div><span class="review-bar-count">18</span></div>
+              <div class="review-bar-row"><span class="review-bar-label">3★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:4%;background:var(--gold)"></div></div><span class="review-bar-count">6</span></div>
+              <div class="review-bar-row"><span class="review-bar-label">2★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:1%;background:var(--rust)"></div></div><span class="review-bar-count">2</span></div>
+              <div class="review-bar-row"><span class="review-bar-label">1★</span><div class="review-bar-track"><div class="review-bar-fill" style="width:0%"></div></div><span class="review-bar-count">0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Review Generation Workflow</span>
+            <button class="panel-action" style="color:#4caf79">● Active</button>
+          </div>
+          <div class="automation-flow">
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot green">✓</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Appointment Completed</div>
+                  <div class="flow-step-desc">Patient status updated to "completed" in dashboard. Review workflow triggered automatically.</div>
+                  <span class="flow-tag active">Auto-trigger</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot teal">⏰</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">4-Hour Delay</div>
+                  <div class="flow-step-desc">System waits 4 hours. Patient has settled in, positive experience fresh. Optimal review request timing.</div>
+                  <span class="flow-tag scheduled">T+4hrs</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-line"></div>
+                <div class="flow-dot gold">📱</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Review Request SMS</div>
+                  <div class="flow-step-desc">"How was your visit today? Tap to rate →". If 4-5 stars: routed to Google. If 1-3 stars: internal capture only.</div>
+                  <span class="flow-tag triggered">Sent</span>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-dot dim">⭐</div>
+                <div class="flow-content">
+                  <div class="flow-step-title">Published to Google</div>
+                  <div class="flow-step-desc">Happy patients directed to Google Business Profile link. Negative feedback captured internally for service recovery.</div>
+                  <span class="flow-tag active">Live</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(tabName, clickedEl) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  // Show selected
+  const el = document.getElementById('tab-' + tabName);
+  if (el) el.classList.add('active');
+
+  // Update tabs
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+
+  // Find matching tab
+  const matchingTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+  if (matchingTab) matchingTab.classList.add('active');
+
+  // Update sidebar — find by onclick attribute
+  if (clickedEl && clickedEl.tagName === 'A') {
+    clickedEl.classList.add('active');
+  } else {
+    // Activate the right sidebar item
+    document.querySelectorAll('.sidebar-nav a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(tabName)) {
+        a.classList.add('active');
+      }
+    });
+  }
+
+  // Update topbar title
+  const titles = {
+    dashboard: 'Practice Dashboard',
+    pipeline: 'Recall Pipeline',
+    appointments: 'Appointments',
+    outreach: 'Outreach Log',
+    automation: 'Automation Engine',
+    reviews: 'Review Generation'
+  };
+
+  const titleEl = document.getElementById('topbar-title');
+  if (titleEl) titleEl.textContent = titles[tabName] || 'Dashboard';
+}
+
+// Animate recall bar fills on page load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.segment-bar-fill').forEach(bar => {
+      const target = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = target; }, 100);
+    });
+  }, 300);
+});
+</script>
+</body>
+</html>

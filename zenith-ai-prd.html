@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenith AI — Product Requirements Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Syne:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f5f2ed;
+    --ink: #1a1410;
+    --rust: #c44b2b;
+    --teal: #1a7a6e;
+    --gold: #c8922a;
+    --ink-light: #3d2f28;
+    --bg-card: #ede9e2;
+    --border: #d4cfc8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    line-height: 1.7;
+  }
+
+  .cover {
+    min-height: 100vh;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,75,43,0.15) 0%, transparent 70%);
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(26,122,110,0.1) 0%, transparent 70%);
+  }
+
+  .cover-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 40px;
+    border: 1px solid rgba(196,75,43,0.3);
+    display: inline-block;
+    padding: 6px 16px;
+  }
+
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: #f5f2ed;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .cover h1 span { color: var(--rust); font-style: italic; }
+
+  .cover-sub {
+    font-size: 18px;
+    color: rgba(245,242,237,0.6);
+    max-width: 500px;
+    margin-bottom: 60px;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 600px;
+    border-top: 1px solid rgba(245,242,237,0.1);
+    padding-top: 40px;
+  }
+
+  .cover-meta-item label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,242,237,0.4);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .cover-meta-item span {
+    font-size: 14px;
+    color: rgba(245,242,237,0.85);
+    font-weight: 500;
+  }
+
+  .zenith-logo {
+    position: absolute;
+    top: 50px; right: 80px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: rgba(245,242,237,0.5);
+    letter-spacing: 2px;
+  }
+
+  .zenith-logo span { color: var(--rust); }
+
+  /* Table of Contents */
+  .toc {
+    padding: 80px;
+    background: var(--bg-card);
+    page-break-after: always;
+  }
+
+  .toc h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 40px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--rust);
+    min-width: 28px;
+    margin-top: 2px;
+  }
+
+  .toc-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .toc-sub {
+    font-size: 12px;
+    color: #8a7f75;
+    margin-top: 3px;
+  }
+
+  /* Content sections */
+  .section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:nth-child(even) { background: var(--bg-card); }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid var(--rust);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--rust);
+    margin-top: 6px;
+    min-width: 32px;
+  }
+
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+    margin-top: 40px;
+  }
+
+  .section h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--rust);
+    margin-bottom: 12px;
+    margin-top: 32px;
+  }
+
+  p { margin-bottom: 16px; color: var(--ink-light); font-size: 15px; }
+
+  .callout {
+    background: var(--ink);
+    color: #f5f2ed;
+    padding: 32px 40px;
+    margin: 32px 0;
+    border-left: 4px solid var(--rust);
+  }
+
+  .callout strong { color: var(--rust); }
+
+  .callout p { color: rgba(245,242,237,0.85); margin: 0; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 24px 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin: 24px 0; }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 28px;
+  }
+
+  .card-dark {
+    background: var(--ink);
+    color: #f5f2ed;
+    padding: 28px;
+  }
+
+  .card h4 { margin-top: 0; }
+
+  .metric-card {
+    background: var(--ink);
+    color: #f5f2ed;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--rust);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .metric-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,242,237,0.5);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+
+  th {
+    background: var(--ink);
+    color: #f5f2ed;
+    padding: 14px 20px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .badge-p0 { background: #fde8e8; color: #c44b2b; }
+  .badge-p1 { background: #fef3cd; color: #a67c00; }
+  .badge-p2 { background: #e8f4f2; color: #1a7a6e; }
+
+  ul, ol {
+    padding-left: 24px;
+    margin: 16px 0;
+    color: var(--ink-light);
+  }
+
+  li { margin-bottom: 8px; font-size: 15px; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,0,0,0.06);
+    padding: 2px 6px;
+    border-radius: 2px;
+    color: var(--rust);
+  }
+
+  pre {
+    background: var(--ink);
+    color: #d4cfc8;
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+
+  pre .comment { color: rgba(212,207,200,0.4); }
+  pre .keyword { color: var(--rust); }
+  pre .string { color: var(--teal); }
+  pre .type { color: var(--gold); }
+
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin: 32px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--rust), var(--teal));
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -36px;
+    top: 4px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--rust);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-phase {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .pipeline-step {
+    display: flex;
+    align-items: stretch;
+    margin: 8px 0;
+  }
+
+  .pipeline-num {
+    background: var(--rust);
+    color: #f5f2ed;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 16px 20px;
+    min-width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pipeline-content {
+    background: var(--ink);
+    color: #f5f2ed;
+    padding: 16px 24px;
+    flex: 1;
+  }
+
+  .pipeline-content strong { color: var(--gold); font-size: 14px; }
+  .pipeline-content p { color: rgba(245,242,237,0.65); font-size: 13px; margin: 4px 0 0; }
+
+  .page-footer {
+    background: var(--ink);
+    color: rgba(245,242,237,0.4);
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .page-footer .brand { color: rgba(245,242,237,0.7); }
+
+  @media print {
+    .cover { page-break-after: always; }
+    .section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="zenith-logo">ZENITH<span>.</span>AI</div>
+  <div class="cover-badge">Product Requirements Document — v1.0</div>
+  <h1>Patient Revenue<br><span>Engine™</span><br>Platform</h1>
+  <p class="cover-sub">Full-stack operational revenue infrastructure for dental practices. Recover lost revenue. Fill empty chairs. Automate retention.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <label>Prepared by</label>
+      <span>EduRadius LLC / Femi Adeyemo</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Document Status</label>
+      <span>Production Ready</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Version</label>
+      <span>v1.0 — 2025</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <div class="toc-grid">
+    <div>
+      <div class="toc-item"><div class="toc-number">01</div><div><div class="toc-label">Product Overview</div><div class="toc-sub">Vision, problem, market positioning</div></div></div>
+      <div class="toc-item"><div class="toc-number">02</div><div><div class="toc-label">Target Users & Personas</div><div class="toc-sub">Practice owners, front desk, admins</div></div></div>
+      <div class="toc-item"><div class="toc-number">03</div><div><div class="toc-label">Core Features (MVP)</div><div class="toc-sub">P0/P1/P2 feature matrix</div></div></div>
+      <div class="toc-item"><div class="toc-number">04</div><div><div class="toc-label">Patient Revenue Engine™</div><div class="toc-sub">System architecture & lifecycle</div></div></div>
+      <div class="toc-item"><div class="toc-number">05</div><div><div class="toc-label">Database Schema</div><div class="toc-sub">Full SQL — all tables, RLS, indexes</div></div></div>
+      <div class="toc-item"><div class="toc-number">06</div><div><div class="toc-label">API Endpoint Definitions</div><div class="toc-sub">All routes, auth, request/response</div></div></div>
+    </div>
+    <div>
+      <div class="toc-item"><div class="toc-number">07</div><div><div class="toc-label">Frontend Architecture</div><div class="toc-sub">Next.js 14 component structure</div></div></div>
+      <div class="toc-item"><div class="toc-number">08</div><div><div class="toc-label">Automation Engine</div><div class="toc-sub">Event system, triggers, retry logic</div></div></div>
+      <div class="toc-item"><div class="toc-number">09</div><div><div class="toc-label">Deployment Plan</div><div class="toc-sub">Vercel, Supabase, CI/CD</div></div></div>
+      <div class="toc-item"><div class="toc-number">10</div><div><div class="toc-label">ROI Calculator Logic</div><div class="toc-sub">Revenue leakage formula</div></div></div>
+      <div class="toc-item"><div class="toc-number">11</div><div><div class="toc-label">Non-Functional Requirements</div><div class="toc-sub">Performance, security, SLAs</div></div></div>
+      <div class="toc-item"><div class="toc-number">12</div><div><div class="toc-label">Roadmap & Monetization</div><div class="toc-sub">Phase 1–3 growth plan</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 01: PRODUCT OVERVIEW -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <h2>Product Overview</h2>
+  </div>
+
+  <h3>Vision Statement</h3>
+  <p>Zenith AI is the operational revenue infrastructure layer that dental practices install once and run forever. We exist at the intersection of AI-powered systems and dental operations — not as a tool, but as infrastructure that silently recovers revenue, fills chairs, and frees practitioners to focus on clinical excellence.</p>
+
+  <div class="callout">
+    <p><strong>Core Thesis:</strong> The average dental practice loses $8,000–$15,000/month to preventable operational failures — no-shows, lapsed recall patients, unreviewed care, and front-desk overload. Zenith AI installs the Patient Revenue Engine™ to systematically recover that revenue without adding headcount.</p>
+  </div>
+
+  <h3>Problem Being Solved</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Revenue Leakage</h4>
+      <ul>
+        <li>No-show rates averaging 18–25% across solo/group practices</li>
+        <li>Recall gap: 40–60% of patients due for recall never return</li>
+        <li>Each empty chair = $350–$800 lost per appointment slot</li>
+        <li>$120K–$180K in annual preventable revenue loss</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Operational Overload</h4>
+      <ul>
+        <li>Front desk spending 4–6 hours/day on manual outreach</li>
+        <li>No systematic follow-up for 80% of lapsed patients</li>
+        <li>Review generation manual, inconsistent, and often forgotten</li>
+        <li>Intake paperwork still largely paper-based or siloed</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Market Positioning</h3>
+  <div class="grid-3">
+    <div class="metric-card">
+      <div class="metric-value">$40B</div>
+      <div class="metric-label">US Dental Services Market</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">180K+</div>
+      <div class="metric-label">Active Dental Practices</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">$10K</div>
+      <div class="metric-label">Avg Monthly Revenue Leak</div>
+    </div>
+  </div>
+
+  <h3>Success Metrics (KPIs)</h3>
+  <table>
+    <thead><tr><th>KPI</th><th>Target (90 Days)</th><th>Measurement Method</th></tr></thead>
+    <tbody>
+      <tr><td>No-show rate reduction</td><td>40%+ improvement</td><td>Pre/post comparison via PMS data</td></tr>
+      <tr><td>Lapsed patients recovered/month</td><td>15–30 per practice</td><td>Re-booked appointments from recall list</td></tr>
+      <tr><td>Admin hours saved</td><td>60 hrs/month</td><td>Front desk time audit</td></tr>
+      <tr><td>New online reviews/month</td><td>8–15 per practice</td><td>Google Business Profile tracking</td></tr>
+      <tr><td>Revenue recovered/month</td><td>$8K–$15K</td><td>ROI calculator vs actual bookings</td></tr>
+      <tr><td>Discovery call conversion rate</td><td>35%+</td><td>Calendly → closed deal tracking</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 02: TARGET USERS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <h2>Target Users & Personas</h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>Primary — Practice Owner / Dentist</h4>
+      <p><strong>Dr. Marcus Webb</strong> — Solo practitioner, 8 chairs, $1.2M annual revenue</p>
+      <ul>
+        <li>Pain: Losing 20% revenue to no-shows, no time to fix it</li>
+        <li>Goal: Revenue recovery without hiring more staff</li>
+        <li>Decision trigger: Sees $10K+ monthly in preventable losses</li>
+        <li>Objection: "I've tried reminder services before, they don't work"</li>
+        <li>Trusted signal: ROI calculator + real before/after data</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Secondary — Practice Manager / Office Manager</h4>
+      <p><strong>Sandra K.</strong> — Office manager, multi-location group practice</p>
+      <ul>
+        <li>Pain: Coordinating patient outreach across 3 locations manually</li>
+        <li>Goal: Unified system that works without micromanagement</li>
+        <li>Decision trigger: Monthly ops reports showing recall gaps</li>
+        <li>Objection: "Will this work with Dentrix / our current PMS?"</li>
+        <li>Trusted signal: PMS compatibility list + setup simplicity</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Tertiary — Dental Group / DSO Director</h4>
+      <p><strong>Alex Nguyen</strong> — Regional director, 10-practice DSO</p>
+      <ul>
+        <li>Pain: Revenue inconsistency across locations, no central ops view</li>
+        <li>Goal: Standardized operational layer across all practices</li>
+        <li>Decision trigger: ROI analysis + enterprise pricing</li>
+        <li>Objection: "Security / HIPAA compliance"</li>
+        <li>Trusted signal: BAA, enterprise SLA, audit logging</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Influencer — Front Desk Coordinator</h4>
+      <p><strong>Maria T.</strong> — Front desk, solo practice, 5 years experience</p>
+      <ul>
+        <li>Pain: Manually calling recall patients during busy patient flow</li>
+        <li>Goal: System that handles outreach automatically</li>
+        <li>Decision trigger: Direct time savings, fewer phone calls to manage</li>
+        <li>Objection: "Will this create more work for me?"</li>
+        <li>Trusted signal: Simple dashboard, clear workflows</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 03: CORE FEATURES -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <h2>Core Features (MVP)</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Feature</th><th>Priority</th><th>Description</th><th>User Story</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Automated Appointment Reminders</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>Multi-touch reminder sequence (48hr, 24hr, 2hr) via SMS/email</td>
+        <td>As a practice owner, I want patients automatically reminded so my no-show rate drops.</td>
+      </tr>
+      <tr>
+        <td><strong>Recall Recovery System</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>Automated outreach to lapsed patients (3, 6, 12 month gaps)</td>
+        <td>As a dentist, I want patients who haven't returned to be automatically contacted.</td>
+      </tr>
+      <tr>
+        <td><strong>ROI Calculator</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>Interactive revenue leakage calculator with lead capture</td>
+        <td>As a visitor, I want to see exactly how much revenue I'm losing before booking.</td>
+      </tr>
+      <tr>
+        <td><strong>Practice Dashboard</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>Real-time operational metrics, no-show tracking, recall pipeline</td>
+        <td>As an office manager, I want a single view of operational health across the practice.</td>
+      </tr>
+      <tr>
+        <td><strong>Review Generation</strong></td>
+        <td><span class="badge badge-p1">P1</span></td>
+        <td>Post-visit SMS sequence requesting Google/Healthgrades reviews</td>
+        <td>As a practice owner, I want reviews generated automatically after appointments.</td>
+      </tr>
+      <tr>
+        <td><strong>Digital Intake</strong></td>
+        <td><span class="badge badge-p1">P1</span></td>
+        <td>Pre-visit digital forms replacing paper intake</td>
+        <td>As a patient, I want to complete intake forms before arriving so I can be seen faster.</td>
+      </tr>
+      <tr>
+        <td><strong>PMS Integration</strong></td>
+        <td><span class="badge badge-p1">P1</span></td>
+        <td>Dentrix, Eaglesoft, Open Dental read/write via API or CSV sync</td>
+        <td>As a practice manager, I want Zenith to sync with our existing PMS automatically.</td>
+      </tr>
+      <tr>
+        <td><strong>Multi-Location Support</strong></td>
+        <td><span class="badge badge-p2">P2</span></td>
+        <td>Tenant-level isolation per location with parent org rollup</td>
+        <td>As a DSO director, I want unified reporting across all locations.</td>
+      </tr>
+      <tr>
+        <td><strong>Calendly Booking Integration</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>Embedded discovery call booking on /book page</td>
+        <td>As a prospect, I want to book a strategy call instantly from the website.</td>
+      </tr>
+      <tr>
+        <td><strong>HIPAA-Conscious Workflows</strong></td>
+        <td><span class="badge badge-p0">P0</span></td>
+        <td>BAA-ready infrastructure, encrypted data, audit logs</td>
+        <td>As a practice owner, I need compliance assurance before adopting any system.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 04: PATIENT REVENUE ENGINE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <h2>Patient Revenue Engine™</h2>
+  </div>
+
+  <p>The Patient Revenue Engine™ is the core operational system — a multi-stage, automated patient lifecycle management system that operates continuously across four primary revenue recovery channels.</p>
+
+  <h3>Revenue Recovery Channels</h3>
+  <div class="grid-2">
+    <div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">01</div>
+        <div class="pipeline-content">
+          <strong>No-Show Prevention</strong>
+          <p>Triggered 48hr, 24hr, 2hr before appointment. SMS + email. Confirmation required or slot opened.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">02</div>
+        <div class="pipeline-content">
+          <strong>Recall Recovery</strong>
+          <p>Patients 90, 180, 365 days overdue trigger outreach sequence. 3-touch cadence per segment.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">03</div>
+        <div class="pipeline-content">
+          <strong>Review Generation</strong>
+          <p>Post-visit (4hr delay) SMS requesting review. Negative sentiment filtered before public routing.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">04</div>
+        <div class="pipeline-content">
+          <strong>Intake Optimization</strong>
+          <p>Digital pre-visit forms reduce chair time waste. Data auto-populates into PMS where supported.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4>Lifecycle State Machine</h4>
+      <pre>PATIENT STATES
+──────────────────────────────────
+new_patient
+  → intake_sent
+  → intake_complete
+  → appointment_scheduled
+    → reminder_48hr_sent
+    → reminder_24hr_sent
+    → reminder_2hr_sent
+    → confirmed | unresponsive
+  → attended → review_requested
+  → no_show → recall_queue_7d
+
+recall_queue (3mo gap)
+  → outreach_1_sent
+  → outreach_2_sent (14d)
+  → outreach_3_sent (30d)
+  → rebooked | lapsed_final</pre>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 05: DATABASE SCHEMA -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <h2>Database Schema</h2>
+  </div>
+
+  <h3>Core Tables</h3>
+  <pre><span class="comment">-- ================================================
+-- ZENITH AI — PRODUCTION DATABASE SCHEMA
+-- Supabase / PostgreSQL
+-- ================================================</span>
+
+<span class="comment">-- ENUMS</span>
+<span class="keyword">CREATE TYPE</span> <span class="type">patient_status</span> <span class="keyword">AS ENUM</span> (
+  <span class="string">'active'</span>, <span class="string">'lapsed_90'</span>, <span class="string">'lapsed_180'</span>, <span class="string">'lapsed_365'</span>, <span class="string">'inactive'</span>, <span class="string">'archived'</span>
+);
+
+<span class="keyword">CREATE TYPE</span> <span class="type">appointment_status</span> <span class="keyword">AS ENUM</span> (
+  <span class="string">'scheduled'</span>, <span class="string">'confirmed'</span>, <span class="string">'completed'</span>,
+  <span class="string">'no_show'</span>, <span class="string">'cancelled'</span>, <span class="string">'rescheduled'</span>
+);
+
+<span class="keyword">CREATE TYPE</span> <span class="type">outreach_channel</span> <span class="keyword">AS ENUM</span> (<span class="string">'sms'</span>, <span class="string">'email'</span>, <span class="string">'voice'</span>);
+<span class="keyword">CREATE TYPE</span> <span class="type">outreach_type</span> <span class="keyword">AS ENUM</span> (
+  <span class="string">'reminder_48hr'</span>, <span class="string">'reminder_24hr'</span>, <span class="string">'reminder_2hr'</span>,
+  <span class="string">'recall_90'</span>, <span class="string">'recall_180'</span>, <span class="string">'recall_365'</span>,
+  <span class="string">'review_request'</span>, <span class="string">'intake_form'</span>, <span class="string">'reactivation'</span>
+);
+
+<span class="comment">-- PRACTICES (Multi-tenant root)</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">practices</span> (
+  id             UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  name           TEXT <span class="keyword">NOT NULL</span>,
+  slug           TEXT <span class="keyword">UNIQUE NOT NULL</span>,
+  owner_email    TEXT <span class="keyword">NOT NULL</span>,
+  phone          TEXT,
+  address        TEXT,
+  city           TEXT,
+  state          TEXT,
+  zip            TEXT,
+  pms_software   TEXT, <span class="comment">-- 'dentrix' | 'eaglesoft' | 'opendental' | 'other'</span>
+  subscription   TEXT <span class="keyword">NOT NULL DEFAULT</span> <span class="string">'trial'</span>,
+  trial_ends_at  TIMESTAMPTZ,
+  settings       JSONB <span class="keyword">DEFAULT</span> <span class="string">'{}'</span>,
+  is_active      BOOLEAN <span class="keyword">DEFAULT</span> true,
+  created_at     TIMESTAMPTZ <span class="keyword">DEFAULT</span> now(),
+  updated_at     TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+
+<span class="comment">-- PATIENTS</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">patients</span> (
+  id              UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_id     UUID <span class="keyword">NOT NULL REFERENCES</span> practices(id) <span class="keyword">ON DELETE CASCADE</span>,
+  first_name      TEXT <span class="keyword">NOT NULL</span>,
+  last_name       TEXT <span class="keyword">NOT NULL</span>,
+  email           TEXT,
+  phone           TEXT,
+  dob             DATE,
+  last_visit      DATE,
+  next_recall_due DATE,
+  status          patient_status <span class="keyword">DEFAULT</span> <span class="string">'active'</span>,
+  pms_id          TEXT, <span class="comment">-- external PMS identifier</span>
+  metadata        JSONB <span class="keyword">DEFAULT</span> <span class="string">'{}'</span>,
+  created_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now(),
+  updated_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+<span class="keyword">CREATE INDEX</span> idx_patients_practice ON patients(practice_id);
+<span class="keyword">CREATE INDEX</span> idx_patients_status ON patients(status);
+<span class="keyword">CREATE INDEX</span> idx_patients_recall ON patients(next_recall_due);
+
+<span class="comment">-- APPOINTMENTS</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">appointments</span> (
+  id              UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_id     UUID <span class="keyword">NOT NULL REFERENCES</span> practices(id) <span class="keyword">ON DELETE CASCADE</span>,
+  patient_id      UUID <span class="keyword">NOT NULL REFERENCES</span> patients(id) <span class="keyword">ON DELETE CASCADE</span>,
+  scheduled_at    TIMESTAMPTZ <span class="keyword">NOT NULL</span>,
+  duration_mins   INTEGER <span class="keyword">NOT NULL DEFAULT</span> 60,
+  procedure_type  TEXT,
+  provider_name   TEXT,
+  chair_number    INTEGER,
+  status          appointment_status <span class="keyword">DEFAULT</span> <span class="string">'scheduled'</span>,
+  confirmed_at    TIMESTAMPTZ,
+  no_show_at      TIMESTAMPTZ,
+  revenue_value   NUMERIC(10,2),
+  notes           TEXT,
+  created_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now(),
+  updated_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+<span class="keyword">CREATE INDEX</span> idx_appt_practice ON appointments(practice_id);
+<span class="keyword">CREATE INDEX</span> idx_appt_patient ON appointments(patient_id);
+<span class="keyword">CREATE INDEX</span> idx_appt_scheduled ON appointments(scheduled_at);
+<span class="keyword">CREATE INDEX</span> idx_appt_status ON appointments(status);
+
+<span class="comment">-- OUTREACH LOG</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">outreach_events</span> (
+  id              UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_id     UUID <span class="keyword">NOT NULL REFERENCES</span> practices(id) <span class="keyword">ON DELETE CASCADE</span>,
+  patient_id      UUID <span class="keyword">NOT NULL REFERENCES</span> patients(id) <span class="keyword">ON DELETE CASCADE</span>,
+  appointment_id  UUID <span class="keyword">REFERENCES</span> appointments(id),
+  outreach_type   outreach_type <span class="keyword">NOT NULL</span>,
+  channel         outreach_channel <span class="keyword">NOT NULL</span>,
+  sent_at         TIMESTAMPTZ <span class="keyword">DEFAULT</span> now(),
+  delivered       BOOLEAN <span class="keyword">DEFAULT</span> false,
+  responded       BOOLEAN <span class="keyword">DEFAULT</span> false,
+  response_at     TIMESTAMPTZ,
+  provider_msg_id TEXT,
+  payload         JSONB,
+  created_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+
+<span class="comment">-- SYSTEM EVENTS (automation engine)</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">system_events</span> (
+  id           UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_id  UUID <span class="keyword">REFERENCES</span> practices(id),
+  event_type   TEXT <span class="keyword">NOT NULL</span>,
+  payload      JSONB <span class="keyword">NOT NULL DEFAULT</span> <span class="string">'{}'</span>,
+  processed    BOOLEAN <span class="keyword">DEFAULT</span> false,
+  created_at   TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+<span class="keyword">CREATE INDEX</span> idx_events_type ON system_events(event_type);
+<span class="keyword">CREATE INDEX</span> idx_events_processed ON system_events(processed) <span class="keyword">WHERE NOT</span> processed;
+
+<span class="comment">-- REVIEWS</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">reviews</span> (
+  id             UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_id    UUID <span class="keyword">NOT NULL REFERENCES</span> practices(id),
+  patient_id     UUID <span class="keyword">NOT NULL REFERENCES</span> patients(id),
+  appointment_id UUID <span class="keyword">REFERENCES</span> appointments(id),
+  rating         INTEGER <span class="keyword">CHECK</span> (rating <span class="keyword">BETWEEN</span> 1 <span class="keyword">AND</span> 5),
+  platform       TEXT, <span class="comment">-- 'google' | 'healthgrades' | 'yelp'</span>
+  published      BOOLEAN <span class="keyword">DEFAULT</span> false,
+  created_at     TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+
+<span class="comment">-- LEADS (from website ROI calculator)</span>
+<span class="keyword">CREATE TABLE</span> <span class="type">leads</span> (
+  id              UUID <span class="keyword">PRIMARY KEY DEFAULT</span> gen_random_uuid(),
+  practice_name   TEXT,
+  dentist_name    TEXT,
+  email           TEXT <span class="keyword">NOT NULL</span>,
+  phone           TEXT,
+  locations       INTEGER <span class="keyword">DEFAULT</span> 1,
+  pms_software    TEXT,
+  no_show_pct     NUMERIC(5,2),
+  monthly_appts   INTEGER,
+  avg_value       NUMERIC(10,2),
+  pain_points     TEXT[],
+  roi_estimate    NUMERIC(10,2),
+  utm_source      TEXT,
+  utm_medium      TEXT,
+  calendly_booked BOOLEAN <span class="keyword">DEFAULT</span> false,
+  created_at      TIMESTAMPTZ <span class="keyword">DEFAULT</span> now()
+);
+
+<span class="comment">-- RLS POLICIES</span>
+<span class="keyword">ALTER TABLE</span> patients <span class="keyword">ENABLE ROW LEVEL SECURITY</span>;
+<span class="keyword">ALTER TABLE</span> appointments <span class="keyword">ENABLE ROW LEVEL SECURITY</span>;
+<span class="keyword">ALTER TABLE</span> outreach_events <span class="keyword">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="keyword">CREATE POLICY</span> <span class="string">"practice_isolation"</span> <span class="keyword">ON</span> patients
+  <span class="keyword">FOR ALL USING</span> (practice_id = (auth.jwt() ->> <span class="string">'practice_id'</span>)::UUID);
+
+<span class="keyword">CREATE POLICY</span> <span class="string">"practice_isolation"</span> <span class="keyword">ON</span> appointments
+  <span class="keyword">FOR ALL USING</span> (practice_id = (auth.jwt() ->> <span class="string">'practice_id'</span>)::UUID);</pre>
+
+</div>
+
+<!-- SECTION 06: API ENDPOINTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <h2>API Endpoint Definitions</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th><th>Response</th></tr></thead>
+    <tbody>
+      <tr><td><code>POST</code></td><td><code>/api/auth/login</code></td><td>Public</td><td>Email + password login, returns JWT with practice_id claim</td><td><code>{ token, user, practice }</code></td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/leads</code></td><td>Public</td><td>Submit ROI calculator lead capture form</td><td><code>{ lead_id, roi_estimate }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/dashboard/metrics</code></td><td>JWT</td><td>Practice-level KPI summary: no-show rate, recalls, revenue recovered</td><td><code>{ no_show_rate, recalls_sent, revenue_recovered, reviews }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/patients</code></td><td>JWT</td><td>Paginated patient list with status filter, recall due date range</td><td><code>{ data[], total, page }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/patients/:id</code></td><td>JWT</td><td>Full patient profile + appointment history + outreach log</td><td><code>{ patient, appointments[], outreach[] }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/appointments</code></td><td>JWT</td><td>Scheduled/upcoming appointments with status filter</td><td><code>{ data[], total }</code></td></tr>
+      <tr><td><code>PATCH</code></td><td><code>/api/appointments/:id/status</code></td><td>JWT</td><td>Update appointment status (confirm, no-show, complete)</td><td><code>{ appointment }</code></td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/outreach/trigger</code></td><td>JWT + Service Key</td><td>Manually trigger outreach sequence for a patient</td><td><code>{ queued: true, event_id }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/recall/pipeline</code></td><td>JWT</td><td>All lapsed patients grouped by recall segment (90/180/365 days)</td><td><code>{ lapsed_90[], lapsed_180[], lapsed_365[] }</code></td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/pms/sync</code></td><td>JWT + Service Key</td><td>Trigger PMS data sync (Dentrix/Eaglesoft CSV upload or API pull)</td><td><code>{ synced: N, errors: [] }</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/reviews/summary</code></td><td>JWT</td><td>Review count, avg rating, platform breakdown for current month</td><td><code>{ total, avg_rating, by_platform }</code></td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/webhooks/twilio</code></td><td>Signature</td><td>Inbound SMS handling — patient responses routed to appropriate flow</td><td><code>200 OK</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 07: FRONTEND ARCHITECTURE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <h2>Frontend Architecture</h2>
+  </div>
+
+  <h3>Next.js 14 App Router Structure</h3>
+  <pre><span class="type">zenith-ai/</span>
+├── <span class="keyword">app/</span>                        <span class="comment"># Next.js 14 App Router</span>
+│   ├── (marketing)/
+│   │   ├── page.tsx             <span class="comment"># / — Home (Hero, Pain, PRE, ROI Preview)</span>
+│   │   ├── how-it-works/
+│   │   ├── case-studies/
+│   │   ├── about/
+│   │   ├── faq/
+│   │   ├── book/
+│   │   └── roi-calculator/
+│   ├── (dashboard)/
+│   │   ├── layout.tsx           <span class="comment"># Authenticated shell w/ sidebar</span>
+│   │   ├── dashboard/
+│   │   │   └── page.tsx         <span class="comment"># Main KPI metrics view</span>
+│   │   ├── patients/
+│   │   │   ├── page.tsx         <span class="comment"># Patient list with filters</span>
+│   │   │   └── [id]/page.tsx    <span class="comment"># Patient detail profile</span>
+│   │   ├── appointments/
+│   │   ├── recall/
+│   │   ├── reviews/
+│   │   └── settings/
+│   ├── api/                     <span class="comment"># API Route Handlers</span>
+│   │   ├── leads/route.ts
+│   │   ├── dashboard/metrics/route.ts
+│   │   ├── patients/route.ts
+│   │   ├── recall/pipeline/route.ts
+│   │   └── webhooks/twilio/route.ts
+│   ├── layout.tsx               <span class="comment"># Root layout — fonts, metadata</span>
+│   └── globals.css
+│
+├── <span class="keyword">components/</span>
+│   ├── ui/                      <span class="comment"># shadcn primitives</span>
+│   ├── marketing/
+│   │   ├── HeroSection.tsx
+│   │   ├── PainSection.tsx
+│   │   ├── RevenueEngine.tsx
+│   │   ├── ROICalculatorPreview.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── GuaranteeBlock.tsx
+│   │   ├── CaseStudiesGrid.tsx
+│   │   ├── TrustBar.tsx
+│   │   └── FinalCTA.tsx
+│   ├── dashboard/
+│   │   ├── MetricCard.tsx
+│   │   ├── RecallPipeline.tsx
+│   │   ├── AppointmentTable.tsx
+│   │   ├── RevenueChart.tsx
+│   │   ├── NoShowTracker.tsx
+│   │   └── PatientStatus.tsx
+│   ├── shared/
+│   │   ├── Navbar.tsx
+│   │   ├── FloatingMetrics.tsx
+│   │   ├── CTASection.tsx
+│   │   ├── FAQAccordion.tsx
+│   │   └── LeadCaptureModal.tsx
+│   └── forms/
+│       ├── ROICalculator.tsx
+│       ├── LeadQualificationForm.tsx
+│       └── BookingForm.tsx
+│
+├── <span class="keyword">lib/</span>
+│   ├── supabase/client.ts
+│   ├── supabase/server.ts
+│   ├── roi-calculator.ts        <span class="comment"># Revenue leakage formulas</span>
+│   ├── outreach.ts              <span class="comment"># Twilio SMS helpers</span>
+│   └── pms/
+│       ├── dentrix.ts
+│       └── eaglesoft.ts
+│
+├── <span class="keyword">data/</span>
+│   ├── pain-points.ts
+│   ├── how-it-works-steps.ts
+│   ├── case-studies.ts
+│   ├── faq.ts
+│   └── site-config.ts
+│
+├── <span class="keyword">types/</span>
+│   ├── patient.ts
+│   ├── appointment.ts
+│   ├── outreach.ts
+│   └── dashboard.ts
+│
+├── <span class="keyword">supabase/</span>
+│   ├── migrations/
+│   │   └── 001_initial_schema.sql
+│   └── seed.sql
+│
+├── .env.local.example
+├── next.config.ts
+├── tailwind.config.ts
+└── tsconfig.json</pre>
+
+</div>
+
+<!-- SECTION 08: AUTOMATION ENGINE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">08</div>
+    <h2>Automation Engine</h2>
+  </div>
+
+  <table>
+    <thead><tr><th>Event Type</th><th>Trigger</th><th>Downstream Action</th><th>Retry</th></tr></thead>
+    <tbody>
+      <tr><td><code>appointment_scheduled</code></td><td>New appointment inserted</td><td>Queue 48hr, 24hr, 2hr reminders via Twilio SMS</td><td>3x / 5min backoff</td></tr>
+      <tr><td><code>appointment_confirmed</code></td><td>Patient responds YES to SMS</td><td>Mark confirmed, cancel remaining reminders</td><td>2x</td></tr>
+      <tr><td><code>no_show_detected</code></td><td>Cron: 2hr post-appointment, status still scheduled</td><td>Mark no_show, add to 7-day recall queue, alert front desk</td><td>1x</td></tr>
+      <tr><td><code>appointment_completed</code></td><td>Status set to completed</td><td>Queue review request SMS (4hr delay)</td><td>3x</td></tr>
+      <tr><td><code>recall_overdue_90</code></td><td>Daily cron: last_visit > 90 days</td><td>Send recall outreach #1, update patient status</td><td>3x</td></tr>
+      <tr><td><code>recall_overdue_180</code></td><td>Daily cron: last_visit > 180 days</td><td>Send recall outreach #2 with urgency copy</td><td>3x</td></tr>
+      <tr><td><code>lead_submitted</code></td><td>ROI calculator form submitted</td><td>Send to Resend for follow-up email, Slack alert to team</td><td>2x</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 10: ROI CALCULATOR LOGIC -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2>ROI Calculator Logic</h2>
+  </div>
+
+  <h3>Revenue Leakage Formula</h3>
+  <pre><span class="comment">// lib/roi-calculator.ts</span>
+
+<span class="keyword">export interface</span> <span class="type">PracticeInputs</span> {
+  chairs: number;
+  monthly_appointments: number;
+  avg_appointment_value: number;
+  no_show_pct: number;
+  recall_lapsed_pct: number;
+  admin_hours_per_day: number;
+}
+
+<span class="keyword">export interface</span> <span class="type">ROIOutputs</span> {
+  monthly_no_show_loss: number;
+  monthly_recall_loss: number;
+  monthly_admin_cost: number;
+  total_monthly_leakage: number;
+  annual_leakage: number;
+  recoverable_monthly: number;
+  recoverable_annual: number;
+  admin_hours_saved: number;
+  review_growth_monthly: number;
+}
+
+<span class="keyword">export function</span> calculateROI(inputs: <span class="type">PracticeInputs</span>): <span class="type">ROIOutputs</span> {
+  <span class="comment">// No-show revenue loss</span>
+  const no_show_appts = inputs.monthly_appointments * (inputs.no_show_pct / 100);
+  const monthly_no_show_loss = no_show_appts * inputs.avg_appointment_value;
+
+  <span class="comment">// Recall revenue loss (lapsed patients who never returned)</span>
+  const recall_patients = inputs.monthly_appointments * 0.15;
+  const monthly_recall_loss = recall_patients * (inputs.recall_lapsed_pct / 100)
+    * inputs.avg_appointment_value;
+
+  <span class="comment">// Admin efficiency cost (at $22/hr blended front desk rate)</span>
+  const admin_cost_per_hour = 22;
+  const monthly_admin_cost = inputs.admin_hours_per_day * 22 * admin_cost_per_hour;
+
+  const total_monthly_leakage = monthly_no_show_loss + monthly_recall_loss + monthly_admin_cost;
+
+  <span class="comment">// Recovery rate: 40% no-show, 25% recall, 60% admin efficiency</span>
+  const recoverable_monthly =
+    (monthly_no_show_loss * 0.40) +
+    (monthly_recall_loss * 0.25) +
+    (monthly_admin_cost * 0.60);
+
+  return {
+    monthly_no_show_loss,
+    monthly_recall_loss,
+    monthly_admin_cost,
+    total_monthly_leakage,
+    annual_leakage: total_monthly_leakage * 12,
+    recoverable_monthly,
+    recoverable_annual: recoverable_monthly * 12,
+    admin_hours_saved: inputs.admin_hours_per_day * 0.6 * 22,
+    review_growth_monthly: Math.round(inputs.monthly_appointments * 0.05),
+  };
+}</pre>
+
+</div>
+
+<!-- SECTION 11: NON-FUNCTIONAL REQUIREMENTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <h2>Non-Functional Requirements</h2>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h4>Performance</h4>
+      <ul>
+        <li>Lighthouse score: 90+</li>
+        <li>LCP &lt; 2.5s (marketing pages)</li>
+        <li>Dashboard load &lt; 1s</li>
+        <li>API response &lt; 200ms (p95)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Security</h4>
+      <ul>
+        <li>HIPAA-conscious workflows</li>
+        <li>BAA-ready on request</li>
+        <li>All data encrypted at rest</li>
+        <li>TLS 1.3 in transit</li>
+        <li>Supabase RLS on all tables</li>
+        <li>Audit log for all PHI access</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Availability</h4>
+      <ul>
+        <li>SLA: 99.9% uptime</li>
+        <li>Vercel edge deployment</li>
+        <li>Supabase managed Postgres</li>
+        <li>Zero-downtime deploys</li>
+        <li>Automated DB backups daily</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 12: ROADMAP -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">12</div>
+    <h2>Roadmap & Monetization</h2>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-phase">Phase 1 — Q1 2025</div>
+      <div class="timeline-title">MVP Launch: Marketing Site + Core Automation</div>
+      <p>Landing page, ROI calculator, lead capture, appointment reminder system, recall outreach engine, basic dashboard.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--gold)"></div>
+      <div class="timeline-phase">Phase 2 — Q2 2025</div>
+      <div class="timeline-title">PMS Integration + Multi-Location</div>
+      <p>Dentrix/Eaglesoft sync, review generation automated, digital intake forms, multi-location tenant management.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--teal)"></div>
+      <div class="timeline-phase">Phase 3 — Q3 2025</div>
+      <div class="timeline-title">DSO Enterprise + API Platform</div>
+      <p>Enterprise contracts, white-label option, voice AI calling, predictive no-show risk scoring, AI patient sentiment analysis.</p>
+    </div>
+  </div>
+
+  <h3>Pricing Model</h3>
+  <table>
+    <thead><tr><th>Tier</th><th>Price</th><th>Target</th><th>Features</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Launch</strong></td><td>$997/mo</td><td>Solo practice, 1-3 chairs</td><td>Full PRE™, reminder system, recall engine, reviews</td></tr>
+      <tr><td><strong>Growth</strong></td><td>$1,997/mo</td><td>Mid-size, 4-8 chairs</td><td>All Launch + PMS sync, digital intake, analytics dashboard</td></tr>
+      <tr><td><strong>Enterprise</strong></td><td>Custom</td><td>DSO / multi-location</td><td>All Growth + multi-location, BAA, dedicated support, white-label</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="page-footer">
+  <span class="brand">ZENITH AI — CONFIDENTIAL</span>
+  <span>Patient Revenue Engine™ — Product Requirements Document v1.0</span>
+  <span>EduRadius LLC © 2025</span>
+</div>
+
+</body>
+</html>
