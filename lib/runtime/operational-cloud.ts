@@ -70,7 +70,7 @@ export async function getExecutiveIntelligenceCloudState(): Promise<ExecutiveInt
     roadmaps: cognition.executiveRoadmap,
     resilienceStrategy: recovery.resilienceScore < 70
       ? "Prioritize rollback-safe recovery, governance approvals, and SLA defense before runtime expansion."
-      : "Extend runtime orchestration coverage while preserving governance guardrails.",
+      : "Extend runtime infrastructure coverage while preserving governance guardrails.",
     governanceStrategy: mesh.escalationCount
       ? "Escalating agents should route through policy-controlled approvals and audit history."
       : "Current governance posture supports controlled autonomous recovery.",

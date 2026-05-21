@@ -83,6 +83,18 @@ export type AgentMessagePriority = "low" | "moderate" | "high" | "critical";
 export type RuntimeFabricEventStatus = "published" | "delivered" | "replayed" | "failed";
 export type OperationalExtensionStatus = "draft" | "active" | "paused" | "retired";
 export type OnboardingStepStatus = "not_started" | "in_progress" | "completed" | "blocked";
+export type GtmPipelineStage =
+  | "prospect_identified"
+  | "outreach_sent"
+  | "loom_audit_delivered"
+  | "discovery_booked"
+  | "proposal_sent"
+  | "closed_won"
+  | "onboarding"
+  | "live_optimization"
+  | "case_study_candidate"
+  | "referral_opportunity";
+export type ClientSuccessStatus = "healthy" | "watch" | "at_risk" | "expansion_ready";
 
 export interface Database {
   public: {
@@ -1413,6 +1425,151 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["operational_usage_meters"]["Row"]>;
         Relationships: [];
       };
+      gtm_prospects: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          practice_name: string;
+          contact_name: string | null;
+          email: string | null;
+          phone: string | null;
+          city: string | null;
+          state: string | null;
+          source: string;
+          pipeline_stage: GtmPipelineStage;
+          lead_score: number;
+          estimated_monthly_opportunity: number;
+          personalization_notes: string | null;
+          next_action: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["gtm_prospects"]["Row"]> & { practice_name: string };
+        Update: Partial<Database["public"]["Tables"]["gtm_prospects"]["Row"]>;
+        Relationships: [];
+      };
+      operational_audits_gtm: {
+        Row: {
+          id: string;
+          prospect_id: string | null;
+          audit_type: string;
+          no_show_findings: string | null;
+          review_findings: string | null;
+          recall_findings: string | null;
+          retention_findings: string | null;
+          revenue_leakage_estimate: number;
+          loom_url: string | null;
+          delivered_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_audits_gtm"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["operational_audits_gtm"]["Row"]>;
+        Relationships: [];
+      };
+      client_onboarding_playbooks: {
+        Row: {
+          id: string;
+          organization_id: string;
+          client_name: string;
+          status: string;
+          pms_assessment: Json;
+          baseline_scores: Json;
+          implementation_roadmap: Json;
+          launch_checklist: Json;
+          progress: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["client_onboarding_playbooks"]["Row"]> & { organization_id: string; client_name: string };
+        Update: Partial<Database["public"]["Tables"]["client_onboarding_playbooks"]["Row"]>;
+        Relationships: [];
+      };
+      case_study_results: {
+        Row: {
+          id: string;
+          organization_id: string;
+          client_name: string;
+          before_metrics: Json;
+          after_metrics: Json;
+          recovered_revenue: number;
+          no_show_reduction: number;
+          recall_patients_recovered: number;
+          reviews_generated: number;
+          admin_hours_saved: number;
+          testimonial_prompt: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["case_study_results"]["Row"]> & { organization_id: string; client_name: string };
+        Update: Partial<Database["public"]["Tables"]["case_study_results"]["Row"]>;
+        Relationships: [];
+      };
+      client_success_accounts: {
+        Row: {
+          id: string;
+          organization_id: string;
+          client_name: string;
+          status: ClientSuccessStatus;
+          health_score: number;
+          adoption_score: number;
+          retention_score: number;
+          expansion_score: number;
+          next_check_in_at: string | null;
+          qbr_due_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["client_success_accounts"]["Row"]> & { organization_id: string; client_name: string };
+        Update: Partial<Database["public"]["Tables"]["client_success_accounts"]["Row"]>;
+        Relationships: [];
+      };
+      referral_flywheel_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          client_name: string;
+          referral_source: string | null;
+          referral_target: string | null;
+          reward_status: string;
+          advocacy_stage: string;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["referral_flywheel_events"]["Row"]> & { organization_id: string; client_name: string };
+        Update: Partial<Database["public"]["Tables"]["referral_flywheel_events"]["Row"]>;
+        Relationships: [];
+      };
+      authority_content_assets: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          content_type: string;
+          title: string;
+          theme: string;
+          target_channel: string;
+          status: string;
+          asset_payload: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["authority_content_assets"]["Row"]> & { content_type: string; title: string; theme: string };
+        Update: Partial<Database["public"]["Tables"]["authority_content_assets"]["Row"]>;
+        Relationships: [];
+      };
+      service_packages: {
+        Row: {
+          id: string;
+          package_key: string;
+          name: string;
+          monthly_price: number | null;
+          implementation_price: number | null;
+          deliverables: Json;
+          kpi_targets: Json;
+          support_model: string;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["service_packages"]["Row"]> & { package_key: string; name: string; support_model: string };
+        Update: Partial<Database["public"]["Tables"]["service_packages"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1686,6 +1843,8 @@ export interface Database {
       runtime_fabric_event_status: RuntimeFabricEventStatus;
       operational_extension_status: OperationalExtensionStatus;
       onboarding_step_status: OnboardingStepStatus;
+      gtm_pipeline_stage: GtmPipelineStage;
+      client_success_status: ClientSuccessStatus;
     };
     CompositeTypes: Record<string, never>;
   };

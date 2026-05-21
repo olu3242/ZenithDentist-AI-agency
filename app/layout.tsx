@@ -15,24 +15,24 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: "Zenith AI Automation Agency | Patient Revenue Engine for Dental Practices",
-    template: "%s | Zenith AI Automation Agency"
+    default: "Zenith AI | Patient Revenue Engine for Dental Practices",
+    template: "%s | Zenith AI"
   },
   description:
     "Recover missed revenue, reduce no-shows, automate recall, and turn dental operations into a measurable revenue engine.",
   openGraph: {
-    title: "Zenith AI Automation Agency Patient Revenue Engine",
+    title: "Zenith AI Patient Revenue Engine",
     description:
       "A production-grade operational revenue intelligence platform for dental practices.",
     url: env.NEXT_PUBLIC_SITE_URL,
-    siteName: "Zenith AI Automation Agency",
+    siteName: "Zenith AI",
     images: [{ url: "/og", width: 1200, height: 630 }],
     locale: "en_US",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zenith AI Automation Agency Patient Revenue Engine",
+    title: "Zenith AI Patient Revenue Engine",
     description: "Recover missed revenue and automate dental patient operations."
   },
   alternates: {

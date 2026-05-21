@@ -19,7 +19,7 @@ export function reportToHtml(report: Report) {
         </style>
       </head>
       <body>
-        <div class="brand">Zenith AI Automation Agency Executive Briefing</div>
+        <div class="brand">Zenith AI Executive Briefing</div>
         <h1>${report.title}</h1>
         <p>${report.summary}</p>
         <div class="grid">

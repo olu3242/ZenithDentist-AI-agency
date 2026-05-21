@@ -12,9 +12,9 @@ export async function sendAuditEmails(result: FunnelResult) {
     return;
   }
 
-  const subject = `Zenith AI Automation Agency audit for ${result.lead.practice_name}`;
+  const subject = `Zenith AI audit for ${result.lead.practice_name}`;
   const html = `
-    <h1>Your Zenith AI Automation Agency revenue audit is ready</h1>
+    <h1>Your Zenith AI revenue audit is ready</h1>
     <p>${result.audit.audit_summary}</p>
     <p><strong>Projected monthly recovery:</strong> ${formatCurrency(result.audit.projected_recovery)}</p>
     <p>Book your implementation walkthrough from the audit page.</p>
@@ -22,13 +22,13 @@ export async function sendAuditEmails(result: FunnelResult) {
 
   await Promise.all([
     resend.emails.send({
-      from: "Zenith AI Automation Agency <audit@zenith-ai.com>",
+      from: "Zenith AI <audit@zenith-ai.com>",
       to: result.lead.email,
       subject,
       html
     }),
     resend.emails.send({
-      from: "Zenith AI Automation Agency <ops@zenith-ai.com>",
+      from: "Zenith AI <ops@zenith-ai.com>",
       to: "ops@zenith-ai.com",
       subject: `New audit request: ${result.lead.practice_name}`,
       html: `<p>${result.lead.practice_name} requested an audit. Projected recovery: ${formatCurrency(result.audit.projected_recovery)}.</p>`

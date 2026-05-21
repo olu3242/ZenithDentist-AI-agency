@@ -7,9 +7,9 @@ export default async function LeadOperationsPage() {
     <main className="min-h-screen bg-paper p-5 lg:p-8">
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith AI Automation Agency</p>
+          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith AI</p>
           <h1 className="mt-2 text-4xl font-black text-ink">Lead Operations</h1>
-          <p className="mt-2 max-w-3xl text-base font-semibold text-muted">AI agency outreach ops, prospect management, reply/book rates, campaign visibility, and personalization workflows.</p>
+          <p className="mt-2 max-w-3xl text-base font-semibold text-muted">Dental client acquisition, prospect management, reply/book rates, campaign visibility, and revenue-focused personalization.</p>
         </header>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Prospects" value={state.metrics.prospects} detail="Lead records" tone="teal" />

@@ -271,7 +271,7 @@ Dashboard responsibilities:
 - `/mission-control`: live operations, active workflows, provider health, retries, and orchestration visibility.
 - `/internal/runtime-health`: trace explorer, SLA breaches, dead letters, replay queue, degraded workflows, and ALICE remediation insights.
 - `/internal/automation-audit`: registry governance, runtime validation, observability audits, ALICE grounding audits, and critical gap detection.
-- `/lead-operations`: AI agency outreach ops, prospect management, reply/book rates, campaign health, and personalization workflows.
+- `/lead-operations`: Dental client acquisition, prospect management, reply/book rates, campaign health, and revenue-focused personalization.
 
 ## Operational Intelligence Consolidation
 

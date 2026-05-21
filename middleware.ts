@@ -9,7 +9,8 @@ export function middleware(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/mission-control") &&
     !request.nextUrl.pathname.startsWith("/api/mission-control") &&
     !request.nextUrl.pathname.startsWith("/lead-operations") &&
-    !request.nextUrl.pathname.startsWith("/client-operations")
+    !request.nextUrl.pathname.startsWith("/client-operations") &&
+    !request.nextUrl.pathname.startsWith("/gtm-command-center")
   ) {
     return NextResponse.next();
   }
@@ -21,7 +22,8 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/mission-control") ||
     request.nextUrl.pathname.startsWith("/api/mission-control") ||
     request.nextUrl.pathname.startsWith("/lead-operations") ||
-    request.nextUrl.pathname.startsWith("/client-operations");
+    request.nextUrl.pathname.startsWith("/client-operations") ||
+    request.nextUrl.pathname.startsWith("/gtm-command-center");
   const configuredToken = isInternal
     ? process.env.INTERNAL_ACCESS_TOKEN
     : isPortal
@@ -45,5 +47,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*", "/dashboard/:path*", "/mission-control/:path*", "/api/mission-control/:path*", "/lead-operations/:path*", "/client-operations/:path*"]
+  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*", "/dashboard/:path*", "/mission-control/:path*", "/api/mission-control/:path*", "/lead-operations/:path*", "/client-operations/:path*", "/gtm-command-center/:path*"]
 };

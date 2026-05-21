@@ -20,7 +20,7 @@ export async function answerOperationalQuery(question: string): Promise<AliceFra
   const latest = portalData.metrics[0];
   const provider = getIntelligenceProvider();
   await provider.complete({
-    system: "ALICE is the Autonomous Operational Intelligence Copilot for Zenith AI Automation Agency.",
+    system: "ALICE is the operational intelligence analyst for Zenith AI.",
     prompt: question,
     context: { health, latest }
   });
@@ -78,7 +78,7 @@ export async function coordinateEnterpriseIntelligence(
   const context = buildAliceEnterpriseContext(mode);
   const provider = getIntelligenceProvider();
   await provider.complete({
-    system: "ALICE is the Enterprise Healthcare Operational Intelligence Coordinator for Zenith AI Automation Agency.",
+    system: "ALICE is the enterprise healthcare operational intelligence coordinator for Zenith AI.",
     prompt,
     context: { cloud, latest, mode }
   });
