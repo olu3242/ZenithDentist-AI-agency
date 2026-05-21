@@ -1,12 +1,16 @@
 import { ALICECopilot } from "@/components/mission-control/alice-copilot";
+import { AgentCommunicationBus } from "@/components/mission-control/agent-communication-bus";
 import { AuditTimeline } from "@/components/mission-control/audit-timeline";
 import { AutonomousRecoveryCenter } from "@/components/mission-control/autonomous-recovery-center";
 import { DependencyIssuePanel } from "@/components/mission-control/dependency-issue-panel";
 import { DentalIntelligencePanel } from "@/components/mission-control/dental-intelligence-panel";
 import { ExecutiveKPIGrid } from "@/components/mission-control/executive-kpi-grid";
+import { ExecutiveIntelligenceCloud } from "@/components/mission-control/executive-intelligence-cloud";
 import { ExecutiveReportCard } from "@/components/mission-control/executive-report-card";
 import { GovernanceCenter } from "@/components/mission-control/governance-center";
 import { IncidentTimeline } from "@/components/mission-control/incident-timeline";
+import { InfrastructureAwarenessPanel } from "@/components/mission-control/infrastructure-awareness-panel";
+import { OperationalAgentGrid } from "@/components/mission-control/operational-agent-grid";
 import { OperationalGraph } from "@/components/mission-control/operational-graph";
 import { OperationalForecastPanel } from "@/components/mission-control/operational-forecast-panel";
 import { OperationalMemoryPanel } from "@/components/mission-control/operational-memory-panel";
@@ -16,10 +20,14 @@ import { ReplayCenter } from "@/components/mission-control/replay-center";
 import { RuntimeHealthDashboard } from "@/components/mission-control/runtime-health-dashboard";
 import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-bar";
 import { RuntimeHeatmap } from "@/components/mission-control/runtime-heatmap";
+import { RuntimeCognitionPanel } from "@/components/mission-control/runtime-cognition-panel";
+import { RuntimeDigitalTwin } from "@/components/mission-control/runtime-digital-twin";
+import { RuntimeSwarmViewer } from "@/components/mission-control/runtime-swarm-viewer";
 import { RuntimeTraceViewer } from "@/components/mission-control/runtime-trace-viewer";
 import { SimulationLab } from "@/components/mission-control/simulation-lab";
 import { TenantIntelligenceGrid } from "@/components/mission-control/tenant-intelligence-grid";
 import { generateOperationalInsights } from "@/lib/alice/operational-intelligence";
+import { getOperationalMeshState } from "@/lib/runtime/agent-mesh";
 import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-intelligence";
@@ -27,6 +35,9 @@ import { generateDentalOperationalPredictions } from "@/lib/runtime/dental-intel
 import { buildExecutiveReportSnapshot } from "@/lib/runtime/executive-reporting";
 import { getGovernanceState } from "@/lib/runtime/governance";
 import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
+import { getRuntimeDigitalTwinState } from "@/lib/runtime/digital-twin";
+import { getExecutiveIntelligenceCloudState, getInfrastructureAwarenessState } from "@/lib/runtime/operational-cloud";
+import { getOperationalCognitionState } from "@/lib/runtime/operational-cognition";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
 import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
@@ -37,7 +48,7 @@ import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
 import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 
 export default async function MissionControlPage() {
-  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence] = await Promise.all([
+  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),
     getRuntimeIncidents(),
@@ -49,7 +60,12 @@ export default async function MissionControlPage() {
     getAutonomousRecoveryState(),
     generateRuntimeForecasts(),
     buildSimulationCenterState(),
-    getTenantIntelligenceState()
+    getTenantIntelligenceState(),
+    getOperationalMeshState(),
+    getOperationalCognitionState(),
+    getRuntimeDigitalTwinState(),
+    getInfrastructureAwarenessState(),
+    getExecutiveIntelligenceCloudState()
   ]);
   const graph = buildWorkflowGraphFromRuntime(state);
   const dependencyIssues = detectDependencyIssuesFromRuntime(state);
@@ -61,7 +77,7 @@ export default async function MissionControlPage() {
         <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>
           <nav className="mt-5 grid gap-2 text-sm font-black text-muted">
-            {["Executive posture", "Runtime graph", "Governance", "Recovery", "Forecasting", "Simulation", "Audit history", "Operational memory"].map(item => (
+            {["Executive cloud", "Agent mesh", "Cognition", "Digital twin", "Runtime graph", "Governance", "Recovery", "Forecasting", "Simulation", "Audit history"].map(item => (
               <span key={item} className="rounded bg-paper px-3 py-2">{item}</span>
             ))}
           </nav>
@@ -74,7 +90,18 @@ export default async function MissionControlPage() {
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
           <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />
+          <ExecutiveIntelligenceCloud cloud={executiveCloud} />
+          <OperationalAgentGrid mesh={mesh} />
+          <div className="grid gap-6 xl:grid-cols-2">
+            <RuntimeCognitionPanel cognition={cognition} />
+            <InfrastructureAwarenessPanel awareness={awareness} />
+          </div>
+          <div className="grid gap-6 xl:grid-cols-2">
+            <RuntimeSwarmViewer mesh={mesh} />
+            <AgentCommunicationBus mesh={mesh} />
+          </div>
           <OperationalGraph graph={graph} />
+          <RuntimeDigitalTwin twin={twin} />
           <div className="grid gap-6 xl:grid-cols-2">
             <GovernanceCenter governance={governance} />
             <AutonomousRecoveryCenter recovery={recovery} />

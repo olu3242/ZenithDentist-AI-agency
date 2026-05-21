@@ -78,6 +78,8 @@ export type OperationalIncidentStatus = "open" | "mitigating" | "resolved" | "po
 export type OperationalIncidentSeverity = "low" | "moderate" | "high" | "critical";
 export type GovernanceDecisionStatus = "pending" | "approved" | "rejected" | "executed" | "rolled_back";
 export type RuntimeActionRisk = "low" | "moderate" | "high" | "critical";
+export type OperationalAgentStatus = "active" | "watching" | "coordinating" | "escalating" | "degraded";
+export type AgentMessagePriority = "low" | "moderate" | "high" | "critical";
 
 export interface Database {
   public: {
@@ -1185,6 +1187,104 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["operational_simulation_runs"]["Row"]>;
         Relationships: [];
       };
+      operational_agents: {
+        Row: {
+          id: string;
+          organization_id: string;
+          agent_key: string;
+          agent_name: string;
+          agent_type: string;
+          status: OperationalAgentStatus;
+          confidence: number;
+          responsibilities: string[];
+          last_signal_at: string | null;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_agents"]["Row"]> & {
+          organization_id: string;
+          agent_key: string;
+          agent_name: string;
+          agent_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_agents"]["Row"]>;
+        Relationships: [];
+      };
+      agent_bus_messages: {
+        Row: {
+          id: string;
+          organization_id: string;
+          source_agent_key: string;
+          target_agent_key: string | null;
+          message_type: string;
+          priority: AgentMessagePriority;
+          payload: Json;
+          correlation_id: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["agent_bus_messages"]["Row"]> & {
+          organization_id: string;
+          source_agent_key: string;
+          message_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["agent_bus_messages"]["Row"]>;
+        Relationships: [];
+      };
+      swarm_consensus_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          consensus_key: string;
+          participating_agents: string[];
+          consensus_score: number;
+          recommended_action: string;
+          risk_level: RuntimeActionRisk;
+          evidence: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["swarm_consensus_runs"]["Row"]> & {
+          organization_id: string;
+          consensus_key: string;
+          recommended_action: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["swarm_consensus_runs"]["Row"]>;
+        Relationships: [];
+      };
+      operational_digital_twins: {
+        Row: {
+          id: string;
+          organization_id: string;
+          twin_key: string;
+          runtime_model: Json;
+          simulation_state: Json;
+          resilience_score: number;
+          generated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_digital_twins"]["Row"]> & {
+          organization_id: string;
+          twin_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_digital_twins"]["Row"]>;
+        Relationships: [];
+      };
+      infrastructure_awareness_snapshots: {
+        Row: {
+          id: string;
+          organization_id: string;
+          global_health_score: number;
+          ecosystem_pressure: number;
+          provider_stability: Json;
+          tenant_patterns: Json;
+          orchestration_bottlenecks: Json;
+          generated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["infrastructure_awareness_snapshots"]["Row"]> & {
+          organization_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["infrastructure_awareness_snapshots"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1453,6 +1553,8 @@ export interface Database {
       operational_incident_severity: OperationalIncidentSeverity;
       governance_decision_status: GovernanceDecisionStatus;
       runtime_action_risk: RuntimeActionRisk;
+      operational_agent_status: OperationalAgentStatus;
+      agent_message_priority: AgentMessagePriority;
     };
     CompositeTypes: Record<string, never>;
   };

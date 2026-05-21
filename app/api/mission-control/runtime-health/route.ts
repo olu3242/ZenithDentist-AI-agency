@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateOperationalInsights, generateRemediationPlan, reasonAcrossOperations } from "@/lib/alice/operational-intelligence";
+import { getOperationalMeshState } from "@/lib/runtime/agent-mesh";
 import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-intelligence";
@@ -7,6 +8,9 @@ import { generateDentalOperationalPredictions } from "@/lib/runtime/dental-intel
 import { buildExecutiveReportSnapshot } from "@/lib/runtime/executive-reporting";
 import { getGovernanceState } from "@/lib/runtime/governance";
 import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
+import { getRuntimeDigitalTwinState } from "@/lib/runtime/digital-twin";
+import { getExecutiveIntelligenceCloudState, getInfrastructureAwarenessState } from "@/lib/runtime/operational-cloud";
+import { getOperationalCognitionState } from "@/lib/runtime/operational-cognition";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
 import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
@@ -19,7 +23,7 @@ import { planRetry } from "@/lib/runtime/self-healing";
 
 export async function GET(request: Request) {
   const runtime = await getRuntimeHealthState();
-  const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions, governance, recovery, forecasts, simulations, tenantIntelligence] = await Promise.all([
+  const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud] = await Promise.all([
     generateOperationalInsights(),
     generateRemediationPlan(),
     reasonAcrossOperations(),
@@ -32,7 +36,12 @@ export async function GET(request: Request) {
     getAutonomousRecoveryState(),
     generateRuntimeForecasts(),
     buildSimulationCenterState(),
-    getTenantIntelligenceState()
+    getTenantIntelligenceState(),
+    getOperationalMeshState(),
+    getOperationalCognitionState(),
+    getRuntimeDigitalTwinState(),
+    getInfrastructureAwarenessState(),
+    getExecutiveIntelligenceCloudState()
   ]);
   const graph = buildWorkflowGraphFromRuntime(runtime);
   const dependencyIssues = detectDependencyIssuesFromRuntime(runtime);
@@ -65,6 +74,11 @@ export async function GET(request: Request) {
     runtimeForecasts: forecasts,
     simulations,
     tenantIntelligence,
+    operationalMesh: mesh,
+    operationalCognition: cognition,
+    runtimeDigitalTwin: twin,
+    infrastructureAwareness: awareness,
+    executiveIntelligenceCloud: executiveCloud,
     operationalAlerts: aliceInsights,
     aliceRemediation: remediationPlan,
     aliceOperations
