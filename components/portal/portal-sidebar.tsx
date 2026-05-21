@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck, Brain, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck, Brain, ShieldCheck, SlidersHorizontal, CloudCog, Network, Radar, DatabaseZap } from "lucide-react";
 
 const nav = [
   { href: "/portal", label: "Overview", icon: Gauge },
+  { href: "/portal/cloud", label: "Cloud", icon: CloudCog },
+  { href: "/portal/orchestration", label: "Orchestration", icon: DatabaseZap },
+  { href: "/portal/knowledge", label: "Knowledge", icon: Network },
+  { href: "/portal/forecasting", label: "Forecasting", icon: Radar },
+  { href: "/portal/integrations", label: "PMS", icon: CloudCog },
   { href: "/portal/command", label: "Command", icon: ShieldCheck },
   { href: "/portal/alice", label: "ALICE", icon: Brain },
   { href: "/portal/dashboard", label: "Dashboard", icon: BarChart3 },
@@ -24,7 +29,7 @@ export function PortalSidebar({ unread }: { unread: number }) {
         <span className="grid h-10 w-10 place-items-center rounded bg-teal font-black">Z</span>
         <span>
           <strong className="block">ZENITH PORTAL</strong>
-          <small className="text-white/55">AI operations layer</small>
+          <small className="text-white/55">Healthcare cloud</small>
         </span>
       </Link>
       <div className="mt-6 flex items-center justify-between rounded border border-white/10 bg-white/8 p-3">

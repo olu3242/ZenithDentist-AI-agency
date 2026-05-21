@@ -2,6 +2,8 @@ import { getPortalData } from "@/lib/data/operations";
 import { getTenantData } from "@/lib/data/tenants";
 import { buildPredictiveInsights, calculatePracticeHealth } from "@/lib/health";
 import { getIntelligenceProvider } from "@/lib/ai/provider";
+import { buildAliceEnterpriseContext, getEnterpriseCloudState } from "@/lib/enterprise-cloud";
+import type { AliceOperationalMode } from "@/lib/database.types";
 
 export interface AliceFrameworkResponse {
   observation: string;
@@ -64,5 +66,32 @@ export async function generateAliceReport(period: "daily" | "weekly" | "monthly"
     risks: health.riskIndicators,
     opportunities: health.opportunities,
     confidence: 0.86
+  };
+}
+
+export async function coordinateEnterpriseIntelligence(
+  prompt: string,
+  mode: AliceOperationalMode = "enterprise_coordination"
+): Promise<AliceFrameworkResponse & { mode: AliceOperationalMode; grounding: string[] }> {
+  const [cloud, portalData] = await Promise.all([getEnterpriseCloudState(), getPortalData()]);
+  const latest = portalData.metrics[0];
+  const context = buildAliceEnterpriseContext(mode);
+  const provider = getIntelligenceProvider();
+  await provider.complete({
+    system: "ALICE is the Enterprise Healthcare Operational Intelligence Coordinator for Zenith AI.",
+    prompt,
+    context: { cloud, latest, mode }
+  });
+
+  const highestForecast = cloud.forecasts[0];
+  return {
+    mode,
+    grounding: context.grounding,
+    observation: `Enterprise health is ${cloud.enterpriseScore}/100 with ${cloud.integrations.length} PMS connections feeding the healthcare operational cloud.`,
+    operationalInterpretation: `${highestForecast?.forecast_type.replace(/_/g, " ") ?? "operational risk"} is the next enterprise constraint, driven by location-level scheduling and retention signals.`,
+    revenueImpact: `The Revenue Orchestration Intelligence Layer has prioritized $${cloud.revenueOpportunity.toLocaleString()} in recovery opportunities across current operating systems.`,
+    recommendation: "Approve the highest-confidence recovery playbook, stabilize degraded PMS sync, and use location-specific recall timing before broad growth spend.",
+    expectedImprovement: "Expected outcome is stronger chair utilization, 5-8 percentile points of benchmark movement, and lower retention volatility over the next 12 weeks.",
+    confidence: 0.88
   };
 }

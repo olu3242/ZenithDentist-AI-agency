@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck } from "lucide-react";
+import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck, CloudCog, DatabaseZap, PlugZap } from "lucide-react";
 
 const nav = [
+  { href: "/internal/cloud", label: "Cloud", icon: CloudCog },
+  { href: "/internal/orchestration", label: "Orchestration", icon: DatabaseZap },
+  { href: "/internal/integrations", label: "PMS", icon: PlugZap },
+  { href: "/internal/governance", label: "Governance", icon: ShieldCheck },
   { href: "/internal/platform", label: "Platform", icon: ShieldCheck },
   { href: "/internal/ai", label: "ALICE", icon: Brain },
   { href: "/internal/playbooks", label: "Playbooks", icon: GitBranch },

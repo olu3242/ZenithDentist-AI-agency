@@ -24,6 +24,27 @@ export type AliceMessageRole = "user" | "alice" | "system";
 export type EventSeverity = "info" | "success" | "warning" | "critical";
 export type ApprovalStatus = "pending" | "approved" | "rejected" | "implemented" | "rolled_back";
 export type PlaybookStatus = "draft" | "active" | "paused" | "retired";
+export type PMSProviderKey = "dentrix" | "eaglesoft" | "open_dental" | "carestream" | "future_provider";
+export type IntegrationStatus = "configured" | "syncing" | "degraded" | "paused" | "failed";
+export type CloudLayerKey =
+  | "operational_intelligence"
+  | "revenue_orchestration"
+  | "patient_engagement"
+  | "benchmark_intelligence"
+  | "autonomous_optimization"
+  | "ai_recommendation"
+  | "enterprise_governance"
+  | "healthcare_api"
+  | "operational_memory"
+  | "simulation_intelligence";
+export type AliceOperationalMode =
+  | "executive_intelligence"
+  | "forecasting"
+  | "benchmark_analysis"
+  | "enterprise_coordination"
+  | "autonomous_recommendation"
+  | "operational_risk_analysis";
+export type GovernanceStatus = "draft" | "review_required" | "approved" | "rejected" | "active" | "rolled_back";
 
 export interface Database {
   public: {
@@ -291,6 +312,247 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["approval_events"]["Row"]>;
         Relationships: [];
       };
+      pms_integrations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          provider: PMSProviderKey;
+          status: IntegrationStatus;
+          display_name: string;
+          sync_cursor: string | null;
+          last_sync_at: string | null;
+          last_success_at: string | null;
+          failover_provider: PMSProviderKey | null;
+          configuration: Json;
+          health_score: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["pms_integrations"]["Row"]> & {
+          organization_id: string;
+          provider: PMSProviderKey;
+          display_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["pms_integrations"]["Row"]>;
+        Relationships: [];
+      };
+      normalized_healthcare_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          integration_id: string | null;
+          source_provider: PMSProviderKey;
+          event_type: string;
+          occurred_at: string;
+          patient_ref: string | null;
+          provider_ref: string | null;
+          appointment_ref: string | null;
+          normalized_payload: Json;
+          forecast_features: Json;
+          benchmark_features: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["normalized_healthcare_events"]["Row"]> & {
+          organization_id: string;
+          source_provider: PMSProviderKey;
+          event_type: string;
+          occurred_at: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["normalized_healthcare_events"]["Row"]>;
+        Relationships: [];
+      };
+      healthcare_cloud_layers: {
+        Row: {
+          id: string;
+          organization_id: string;
+          layer_key: CloudLayerKey;
+          status: IntegrationStatus;
+          confidence: number;
+          throughput_score: number;
+          coordination_score: number;
+          metadata: Json;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["healthcare_cloud_layers"]["Row"]> & {
+          organization_id: string;
+          layer_key: CloudLayerKey;
+        };
+        Update: Partial<Database["public"]["Tables"]["healthcare_cloud_layers"]["Row"]>;
+        Relationships: [];
+      };
+      revenue_orchestration_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          run_at: string;
+          leakage_detected: number;
+          recovery_prioritized: number;
+          chair_utilization: number;
+          hygiene_retention: number;
+          bottlenecks: Json;
+          recommendations: Json;
+          confidence: number;
+        };
+        Insert: Partial<Database["public"]["Tables"]["revenue_orchestration_runs"]["Row"]> & {
+          organization_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["revenue_orchestration_runs"]["Row"]>;
+        Relationships: [];
+      };
+      knowledge_graph_nodes: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          node_type: string;
+          label: string;
+          properties: Json;
+          confidence: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["knowledge_graph_nodes"]["Row"]> & {
+          node_type: string;
+          label: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["knowledge_graph_nodes"]["Row"]>;
+        Relationships: [];
+      };
+      knowledge_graph_edges: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          source_node_id: string;
+          target_node_id: string;
+          relationship_type: string;
+          weight: number;
+          evidence: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["knowledge_graph_edges"]["Row"]> & {
+          source_node_id: string;
+          target_node_id: string;
+          relationship_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["knowledge_graph_edges"]["Row"]>;
+        Relationships: [];
+      };
+      enterprise_forecasts: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          forecast_type: string;
+          forecast_window: string;
+          probability: number;
+          projected_impact: Json;
+          drivers: Json;
+          recommended_response: Json;
+          confidence: number;
+          generated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["enterprise_forecasts"]["Row"]> & {
+          organization_id: string;
+          forecast_type: string;
+          forecast_window: string;
+          probability: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["enterprise_forecasts"]["Row"]>;
+        Relationships: [];
+      };
+      enterprise_playbooks: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          name: string;
+          category: string;
+          trigger_logic: Json;
+          escalation_paths: Json;
+          optimization_recommendations: Json;
+          rollback_logic: Json;
+          generated_adaptations: Json;
+          outcome_tracking: Json;
+          status: PlaybookStatus;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["enterprise_playbooks"]["Row"]> & {
+          name: string;
+          category: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["enterprise_playbooks"]["Row"]>;
+        Relationships: [];
+      };
+      alice_enterprise_memory: {
+        Row: {
+          id: string;
+          organization_id: string;
+          mode: AliceOperationalMode;
+          memory_title: string;
+          memory_body: string;
+          semantic_ref: string | null;
+          lineage: Json;
+          benchmark_context: Json;
+          effectiveness_score: number | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["alice_enterprise_memory"]["Row"]> & {
+          organization_id: string;
+          mode: AliceOperationalMode;
+          memory_title: string;
+          memory_body: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["alice_enterprise_memory"]["Row"]>;
+        Relationships: [];
+      };
+      enterprise_simulations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          scenario_name: string;
+          scenario_inputs: Json;
+          projected_enterprise_impact: Json;
+          staffing_pressure: number;
+          retention_trajectory: number;
+          operational_resilience: number;
+          revenue_recovery_projection: number;
+          benchmark_movement: Json;
+          confidence: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["enterprise_simulations"]["Row"]> & {
+          organization_id: string;
+          scenario_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["enterprise_simulations"]["Row"]>;
+        Relationships: [];
+      };
+      ai_governance_records: {
+        Row: {
+          id: string;
+          organization_id: string;
+          governed_object_type: string;
+          governed_object_id: string | null;
+          status: GovernanceStatus;
+          approval_chain: Json;
+          risk_controls: Json;
+          rollback_plan: Json;
+          audit_notes: string | null;
+          created_at: string;
+          decided_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["ai_governance_records"]["Row"]> & {
+          organization_id: string;
+          governed_object_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["ai_governance_records"]["Row"]>;
+        Relationships: [];
+      };
+      orchestration_events: EventTable<"orchestration">;
+      enterprise_events: EventTable<"enterprise">;
+      intelligence_events: EventTable<"intelligence">;
+      benchmark_events: EventTable<"benchmark">;
+      operational_risk_events: EventTable<"operational_risk">;
+      forecasting_events: EventTable<"forecasting">;
       leads: {
         Row: {
           id: string;
@@ -540,6 +802,11 @@ export interface Database {
       event_severity: EventSeverity;
       approval_status: ApprovalStatus;
       playbook_status: PlaybookStatus;
+      pms_provider_key: PMSProviderKey;
+      integration_status: IntegrationStatus;
+      cloud_layer_key: CloudLayerKey;
+      alice_operational_mode: AliceOperationalMode;
+      governance_status: GovernanceStatus;
     };
     CompositeTypes: Record<string, never>;
   };

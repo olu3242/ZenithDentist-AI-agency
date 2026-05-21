@@ -96,6 +96,15 @@ New protected surfaces:
 - `/internal/playbooks`
 - `/internal/operations`
 - `/internal/recommendations`
+- `/portal/cloud`
+- `/portal/orchestration`
+- `/portal/knowledge`
+- `/portal/forecasting`
+- `/portal/integrations`
+- `/internal/cloud`
+- `/internal/orchestration`
+- `/internal/integrations`
+- `/internal/governance`
 
 Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
 
@@ -128,5 +137,45 @@ Safety model:
 - Every proposed optimization is represented in an approval queue.
 - Playbooks include trigger conditions, goals, expected outcomes, rollback logic, and review flow.
 - Memory tables are tenant-scoped and ready for semantic retrieval references without exposing cross-tenant context.
+
+## Phase 10 and Phase 11 Enterprise Healthcare Cloud
+
+The enterprise cloud layer adds PMS abstraction, normalized healthcare events, revenue orchestration, knowledge graph storage, enterprise forecasts, simulation records, and governance controls.
+
+New APIs:
+
+- `/api/enterprise/cloud`
+- `/api/enterprise/orchestration`
+- `/api/enterprise/integrations`
+- `/api/enterprise/simulate`
+- `/api/alice/orchestration`
+
+New Supabase tables:
+
+- `pms_integrations`
+- `normalized_healthcare_events`
+- `healthcare_cloud_layers`
+- `revenue_orchestration_runs`
+- `knowledge_graph_nodes`
+- `knowledge_graph_edges`
+- `enterprise_forecasts`
+- `enterprise_playbooks`
+- `alice_enterprise_memory`
+- `enterprise_simulations`
+- `ai_governance_records`
+- `orchestration_events`
+- `enterprise_events`
+- `intelligence_events`
+- `benchmark_events`
+- `operational_risk_events`
+- `forecasting_events`
+
+Governance model:
+
+- PMS data is normalized into forecasting-ready and benchmark-ready event structures.
+- ALICE enterprise mode is grounded with operational metrics, benchmark snapshots, historical recommendations, forecasting outcomes, optimization effectiveness, and event history.
+- Revenue orchestration proposes recovery priorities but remains approval-gated.
+- Governance records store approval chains, risk controls, rollback plans, and audit notes.
+- Realtime subscriptions now include enterprise events, intelligence events, benchmark events, operational risk events, and forecasting events.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.
