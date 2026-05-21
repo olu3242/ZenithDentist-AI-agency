@@ -1,9 +1,14 @@
 import { ALICECopilot } from "@/components/mission-control/alice-copilot";
+import { AuditTimeline } from "@/components/mission-control/audit-timeline";
+import { AutonomousRecoveryCenter } from "@/components/mission-control/autonomous-recovery-center";
 import { DependencyIssuePanel } from "@/components/mission-control/dependency-issue-panel";
 import { DentalIntelligencePanel } from "@/components/mission-control/dental-intelligence-panel";
+import { ExecutiveKPIGrid } from "@/components/mission-control/executive-kpi-grid";
 import { ExecutiveReportCard } from "@/components/mission-control/executive-report-card";
+import { GovernanceCenter } from "@/components/mission-control/governance-center";
 import { IncidentTimeline } from "@/components/mission-control/incident-timeline";
 import { OperationalGraph } from "@/components/mission-control/operational-graph";
+import { OperationalForecastPanel } from "@/components/mission-control/operational-forecast-panel";
 import { OperationalMemoryPanel } from "@/components/mission-control/operational-memory-panel";
 import { PredictiveAlertFeed } from "@/components/mission-control/predictive-alert-feed";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
@@ -12,27 +17,39 @@ import { RuntimeHealthDashboard } from "@/components/mission-control/runtime-hea
 import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-bar";
 import { RuntimeHeatmap } from "@/components/mission-control/runtime-heatmap";
 import { RuntimeTraceViewer } from "@/components/mission-control/runtime-trace-viewer";
+import { SimulationLab } from "@/components/mission-control/simulation-lab";
+import { TenantIntelligenceGrid } from "@/components/mission-control/tenant-intelligence-grid";
 import { generateOperationalInsights } from "@/lib/alice/operational-intelligence";
+import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-intelligence";
 import { generateDentalOperationalPredictions } from "@/lib/runtime/dental-intelligence";
 import { buildExecutiveReportSnapshot } from "@/lib/runtime/executive-reporting";
+import { getGovernanceState } from "@/lib/runtime/governance";
 import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
+import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
 import { getProviderHealth } from "@/lib/runtime/provider-health";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
+import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
+import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 
 export default async function MissionControlPage() {
-  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights] = await Promise.all([
+  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),
     getRuntimeIncidents(),
     getOperationalMemoryState(),
     buildExecutiveReportSnapshot(),
     generateDentalOperationalPredictions(),
-    generateOperationalInsights()
+    generateOperationalInsights(),
+    getGovernanceState(),
+    getAutonomousRecoveryState(),
+    generateRuntimeForecasts(),
+    buildSimulationCenterState(),
+    getTenantIntelligenceState()
   ]);
   const graph = buildWorkflowGraphFromRuntime(state);
   const dependencyIssues = detectDependencyIssuesFromRuntime(state);
@@ -44,7 +61,7 @@ export default async function MissionControlPage() {
         <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>
           <nav className="mt-5 grid gap-2 text-sm font-black text-muted">
-            {["Runtime graph", "Predictive monitoring", "Trace explorer", "Replay center", "Incidents", "Operational memory"].map(item => (
+            {["Executive posture", "Runtime graph", "Governance", "Recovery", "Forecasting", "Simulation", "Audit history", "Operational memory"].map(item => (
               <span key={item} className="rounded bg-paper px-3 py-2">{item}</span>
             ))}
           </nav>
@@ -56,7 +73,16 @@ export default async function MissionControlPage() {
             <p className="mt-2 max-w-4xl text-base font-semibold text-muted">Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring.</p>
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
+          <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />
           <OperationalGraph graph={graph} />
+          <div className="grid gap-6 xl:grid-cols-2">
+            <GovernanceCenter governance={governance} />
+            <AutonomousRecoveryCenter recovery={recovery} />
+          </div>
+          <div className="grid gap-6 xl:grid-cols-2">
+            <OperationalForecastPanel forecasts={forecasts} />
+            <SimulationLab simulations={simulations} />
+          </div>
           <RuntimeHeatmap state={state} />
           <div className="grid gap-6 xl:grid-cols-2">
             <PredictiveAlertFeed alerts={predictiveAlerts} />
@@ -70,10 +96,12 @@ export default async function MissionControlPage() {
             <IncidentTimeline incidents={incidents} />
             <ProviderHealthPanel providers={providers} />
           </div>
+          <TenantIntelligenceGrid tenant={tenantIntelligence} />
           <DentalIntelligencePanel predictions={dentalPredictions} />
         </section>
         <aside className="space-y-6">
           <ALICECopilot insights={aliceInsights} alerts={predictiveAlerts} />
+          <AuditTimeline governance={governance} />
           <RuntimeHealthDashboard state={state} />
           <OperationalMemoryPanel memory={memory} />
           <ExecutiveReportCard report={report} />

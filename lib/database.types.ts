@@ -76,6 +76,8 @@ export type AutomationFailureCategory =
   | "retry_exhausted";
 export type OperationalIncidentStatus = "open" | "mitigating" | "resolved" | "postmortem";
 export type OperationalIncidentSeverity = "low" | "moderate" | "high" | "critical";
+export type GovernanceDecisionStatus = "pending" | "approved" | "rejected" | "executed" | "rolled_back";
+export type RuntimeActionRisk = "low" | "moderate" | "high" | "critical";
 
 export interface Database {
   public: {
@@ -1073,6 +1075,116 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["executive_report_snapshots"]["Row"]>;
         Relationships: [];
       };
+      runtime_governance_policies: {
+        Row: {
+          id: string;
+          organization_id: string;
+          policy_key: string;
+          policy_name: string;
+          policy_type: string;
+          enabled: boolean;
+          risk_threshold: RuntimeActionRisk;
+          requires_approval: boolean;
+          rules: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["runtime_governance_policies"]["Row"]> & {
+          organization_id: string;
+          policy_key: string;
+          policy_name: string;
+          policy_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["runtime_governance_policies"]["Row"]>;
+        Relationships: [];
+      };
+      runtime_governance_decisions: {
+        Row: {
+          id: string;
+          organization_id: string;
+          policy_id: string | null;
+          trace_id: string | null;
+          decision_type: string;
+          risk_level: RuntimeActionRisk;
+          status: GovernanceDecisionStatus;
+          requested_by: string | null;
+          approved_by: string | null;
+          decision_payload: Json;
+          created_at: string;
+          decided_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["runtime_governance_decisions"]["Row"]> & {
+          organization_id: string;
+          decision_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["runtime_governance_decisions"]["Row"]>;
+        Relationships: [];
+      };
+      runtime_audit_timeline: {
+        Row: {
+          id: string;
+          organization_id: string;
+          actor_type: string;
+          event_type: string;
+          title: string;
+          description: string;
+          trace_id: string | null;
+          correlation_id: string | null;
+          severity: RuntimeActionRisk;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["runtime_audit_timeline"]["Row"]> & {
+          organization_id: string;
+          event_type: string;
+          title: string;
+          description: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["runtime_audit_timeline"]["Row"]>;
+        Relationships: [];
+      };
+      autonomous_recovery_actions: {
+        Row: {
+          id: string;
+          organization_id: string;
+          trace_id: string | null;
+          action_key: string;
+          action_name: string;
+          risk_level: RuntimeActionRisk;
+          confidence: number;
+          rollback_safe: boolean;
+          approval_required: boolean;
+          status: string;
+          simulation: Json;
+          result_payload: Json;
+          created_at: string;
+          executed_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["autonomous_recovery_actions"]["Row"]> & {
+          organization_id: string;
+          action_key: string;
+          action_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["autonomous_recovery_actions"]["Row"]>;
+        Relationships: [];
+      };
+      operational_simulation_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          simulation_type: string;
+          input_payload: Json;
+          projected_payload: Json;
+          confidence: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_simulation_runs"]["Row"]> & {
+          organization_id: string;
+          simulation_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_simulation_runs"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1339,6 +1451,8 @@ export interface Database {
       automation_failure_category: AutomationFailureCategory;
       operational_incident_status: OperationalIncidentStatus;
       operational_incident_severity: OperationalIncidentSeverity;
+      governance_decision_status: GovernanceDecisionStatus;
+      runtime_action_risk: RuntimeActionRisk;
     };
     CompositeTypes: Record<string, never>;
   };

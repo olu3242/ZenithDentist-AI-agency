@@ -6,6 +6,8 @@ import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-inte
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
 import type { ProviderHealth } from "@/lib/runtime/provider-health";
+import type { AutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
+import type { GovernanceState } from "@/lib/runtime/governance";
 import { suggestRemediation } from "@/lib/runtime/self-healing";
 
 export async function summarizeAutomationHealth() {
@@ -187,5 +189,24 @@ export function buildRuntimeAnalystBriefing(input: {
     expectedOutcome: input.runtime.scores.operationalScore < 70
       ? "Resolving the top retry and SLA pressure should improve runtime confidence within the next operating cycle."
       : "Current controls should preserve SLA intelligence while operational volume scales."
+  };
+}
+
+export function buildExecutiveOperationalNarrative(input: {
+  runtime: RuntimeHealthState;
+  governance: GovernanceState;
+  recovery: AutonomousRecoveryState;
+}) {
+  const posture = input.runtime.scores.operationalScore >= 80 ? "stable" : input.runtime.scores.operationalScore >= 60 ? "watchlisted" : "elevated";
+  return {
+    executiveSummary: `Runtime posture is ${posture} with ${input.runtime.scores.operationalScore}/100 operational health and ${input.governance.trustScore}/100 governance trust.`,
+    riskForecast: input.runtime.slaBreaches.length
+      ? `${input.runtime.slaBreaches.length} SLA threats require executive visibility before runtime load expands.`
+      : "No active SLA threats are present in the current observation window.",
+    businessImpact: `${input.recovery.recoveryPlans.length} recovery paths are available, including ${input.recovery.safeToExecuteCount} rollback-safe actions.`,
+    governanceRecommendation: input.governance.pendingApprovals
+      ? `Review ${input.governance.pendingApprovals} pending approvals to preserve operational accountability.`
+      : "Governance controls are current; continue collecting audit history.",
+    optimizationRoadmap: input.recovery.recoveryPlans.slice(0, 3).map(plan => plan.title)
   };
 }
