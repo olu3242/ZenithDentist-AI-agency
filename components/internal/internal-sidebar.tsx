@@ -3,6 +3,7 @@ import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, Gi
 
 const nav = [
   { href: "/internal/mission-control", label: "Mission Control", icon: RadioTower },
+  { href: "/internal/runtime-health", label: "Runtime Health", icon: ShieldAlert },
   { href: "/internal/automation-audit", label: "E2E Audit", icon: ListChecks },
   { href: "/internal/events", label: "Events", icon: Network },
   { href: "/internal/grounding", label: "Grounding", icon: Target },

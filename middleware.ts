@@ -4,13 +4,20 @@ export function middleware(request: NextRequest) {
   if (
     !request.nextUrl.pathname.startsWith("/admin") &&
     !request.nextUrl.pathname.startsWith("/portal") &&
-    !request.nextUrl.pathname.startsWith("/internal")
+    !request.nextUrl.pathname.startsWith("/internal") &&
+    !request.nextUrl.pathname.startsWith("/dashboard") &&
+    !request.nextUrl.pathname.startsWith("/mission-control") &&
+    !request.nextUrl.pathname.startsWith("/lead-operations")
   ) {
     return NextResponse.next();
   }
 
   const isPortal = request.nextUrl.pathname.startsWith("/portal");
-  const isInternal = request.nextUrl.pathname.startsWith("/internal");
+  const isInternal =
+    request.nextUrl.pathname.startsWith("/internal") ||
+    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname.startsWith("/mission-control") ||
+    request.nextUrl.pathname.startsWith("/lead-operations");
   const configuredToken = isInternal
     ? process.env.INTERNAL_ACCESS_TOKEN
     : isPortal
@@ -34,5 +41,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*"]
+  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*", "/dashboard/:path*", "/mission-control/:path*", "/lead-operations/:path*"]
 };

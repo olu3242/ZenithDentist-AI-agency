@@ -62,6 +62,18 @@ export type AutomationDomainKey =
   | "benchmark_intelligence"
   | "enterprise_coordination";
 export type AutomationCoverageStatus = "complete" | "partial" | "missing" | "risk";
+export type AutomationTraceStatus = "running" | "completed" | "failed" | "replayed";
+export type AutomationTraceStageStatus = "started" | "completed" | "failed" | "skipped";
+export type AutomationFailureCategory =
+  | "infra"
+  | "auth"
+  | "provider"
+  | "timeout"
+  | "business_rule"
+  | "validation"
+  | "dependency"
+  | "partial_success"
+  | "retry_exhausted";
 
 export interface Database {
   public: {
@@ -891,6 +903,71 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["automation_coverage_results"]["Row"]>;
         Relationships: [];
       };
+      automation_traces: {
+        Row: {
+          id: string;
+          trace_id: string;
+          workflow_id: string;
+          organization_id: string;
+          domain: string;
+          event_name: string;
+          status: AutomationTraceStatus;
+          correlation_id: string;
+          started_at: string;
+          completed_at: string | null;
+          latency_ms: number | null;
+          retry_count: number;
+          failure_category: AutomationFailureCategory | null;
+          failure_reason: string | null;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_traces"]["Row"]> & {
+          workflow_id: string;
+          organization_id: string;
+          domain: string;
+          event_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_traces"]["Row"]>;
+        Relationships: [];
+      };
+      automation_trace_events: {
+        Row: {
+          id: string;
+          trace_id: string;
+          stage: string;
+          status: AutomationTraceStageStatus;
+          message: string;
+          created_at: string;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_trace_events"]["Row"]> & {
+          trace_id: string;
+          stage: string;
+          status: AutomationTraceStageStatus;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_trace_events"]["Row"]>;
+        Relationships: [];
+      };
+      automation_dead_letters: {
+        Row: {
+          id: string;
+          trace_id: string;
+          workflow_id: string;
+          payload: Json;
+          failure_reason: string;
+          replayable: boolean;
+          replayed_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_dead_letters"]["Row"]> & {
+          trace_id: string;
+          workflow_id: string;
+          failure_reason: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_dead_letters"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1152,6 +1229,9 @@ export interface Database {
       confidence_grade: ConfidenceGrade;
       automation_domain_key: AutomationDomainKey;
       automation_coverage_status: AutomationCoverageStatus;
+      automation_trace_status: AutomationTraceStatus;
+      automation_trace_stage_status: AutomationTraceStageStatus;
+      automation_failure_category: AutomationFailureCategory;
     };
     CompositeTypes: Record<string, never>;
   };

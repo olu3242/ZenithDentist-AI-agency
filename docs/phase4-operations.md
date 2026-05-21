@@ -115,6 +115,10 @@ New protected surfaces:
 - `/internal/confidence`
 - `/internal/simulations`
 - `/internal/automation-audit`
+- `/internal/runtime-health`
+- `/dashboard`
+- `/mission-control`
+- `/lead-operations`
 
 Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
 
@@ -199,6 +203,7 @@ New APIs:
 - `/api/mission-control/replay`
 - `/api/mission-control/evaluate`
 - `/api/mission-control/automation-audit`
+- `/api/mission-control/runtime-health`
 
 New Supabase tables:
 
@@ -247,5 +252,25 @@ The automation audit layer maps every core domain into production readiness crit
 - Revenue recovery: leakage detection and prioritization.
 
 Each automation blueprint declares triggers, actions, intelligence outputs, ALICE visibility, emitted event types, required pipelines, and required controls. Mission Control evaluates missing event emissions, replay readiness, telemetry coverage, and ALICE grounding visibility through `/internal/automation-audit`.
+
+## Runtime Intelligence Consolidation
+
+The canonical automation registry in `lib/automation/registry.ts` is the single operational contract for workflows, triggers, queue handlers, emitted events, replay requirements, SLA expectations, observability, and ALICE grounding surfaces.
+
+Runtime health is derived from live trace tables only:
+
+- `automation_traces`
+- `automation_trace_events`
+- `automation_dead_letters`
+
+Runtime health returns zero-safe results when no traces exist. It does not seed synthetic trace data.
+
+Dashboard responsibilities:
+
+- `/dashboard`: agency visibility, automation ROI, client health, pipeline value, revenue visibility, and SLA summary.
+- `/mission-control`: live operations, active workflows, provider health, retries, and orchestration visibility.
+- `/internal/runtime-health`: trace explorer, SLA breaches, dead letters, replay queue, degraded workflows, and ALICE remediation insights.
+- `/internal/automation-audit`: registry governance, runtime validation, observability audits, ALICE grounding audits, and critical gap detection.
+- `/lead-operations`: AI agency outreach ops, prospect management, reply/book rates, campaign health, and personalization workflows.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.

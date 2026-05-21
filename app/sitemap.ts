@@ -38,6 +38,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/dashboard`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/mission-control`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/lead-operations`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
     }
   ];
 }

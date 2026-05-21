@@ -8,17 +8,18 @@ export function AutomationBlueprintTable({ state }: { state: AutomationAuditStat
       <div className="mt-5 overflow-x-auto">
         <div className="min-w-[900px] divide-y divide-line rounded border border-line">
           {state.coverageResults.map(result => {
-            const blueprint = state.blueprints.find(item => item.id === result.blueprint_id);
+            const blueprint = state.blueprints.find(item => item.id === result.blueprintId);
             return (
-              <div key={result.id} className="grid grid-cols-[1.1fr_.9fr_.7fr_.7fr_.7fr] gap-4 bg-paper p-4">
+              <div key={result.id} className="grid grid-cols-[1.1fr_.9fr_.7fr_.7fr_.7fr_.7fr] gap-4 bg-paper p-4">
                 <div>
                   <strong className="text-sm font-black text-ink">{result.name}</strong>
                   <p className="mt-1 text-xs font-bold uppercase tracking-wider text-muted">{result.domain.replace(/_/g, " ")}</p>
                 </div>
-                <p className="text-sm font-semibold text-muted">{blueprint?.purpose}</p>
-                <Score label="ALICE" value={result.alice_visibility_score} />
-                <Score label="Replay" value={result.replay_readiness_score} />
-                <Score label="Telemetry" value={result.telemetry_score} />
+                <p className="text-sm font-semibold text-muted">{blueprint?.description}</p>
+                <Score label="ALICE" value={result.aliceVisibilityScore} />
+                <Score label="Replay" value={result.replayReadinessScore} />
+                <Score label="Observe" value={result.observabilityScore} />
+                <Score label="SLA" value={result.slaCoverageScore} />
               </div>
             );
           })}
@@ -32,7 +33,7 @@ function Score({ label, value }: { label: string; value: number }) {
   return (
     <div>
       <p className="text-xs font-black uppercase text-muted">{label}</p>
-      <p className="mt-1 text-xl font-black text-teal">{Math.round(value * 100)}%</p>
+      <p className="mt-1 text-xl font-black text-teal">{Math.round(value)}%</p>
     </div>
   );
 }

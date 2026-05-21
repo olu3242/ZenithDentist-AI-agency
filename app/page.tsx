@@ -11,7 +11,7 @@ export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Zenith AI",
+    name: "Zenith AI Automation Agency",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description: "Operational revenue intelligence system for dental practices."
@@ -38,7 +38,7 @@ export default function HomePage() {
                 Recover missed revenue before empty chairs become normal.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/78">
-                Zenith AI turns no-show risk, recall gaps, audit requests, bookings, and lead operations into a persistent Supabase-backed revenue intelligence platform.
+                Zenith AI Automation Agency turns no-show risk, recall gaps, audit requests, bookings, and lead operations into a persistent Supabase-backed revenue intelligence platform.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg"><a href="#roi">Run Revenue Audit <ArrowRight className="h-4 w-4" /></a></Button>
