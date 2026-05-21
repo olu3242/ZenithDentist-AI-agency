@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const supabase = createServiceClient();
 
   if (!supabase) {
-    logger.warn("calendly_webhook_supabase_missing", { eventId });
+    logger.warn("calendly_event_receiver_supabase_missing", { eventId });
     return NextResponse.json({ ok: true, persisted: false });
   }
 
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     calendly_event_id: eventId,
     scheduled_at: scheduledAt,
     booking_status: "scheduled",
-    notes: "Calendly webhook received"
+    notes: "Calendly event received"
   });
 
   await trackOutreachEvent({

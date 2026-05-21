@@ -13,6 +13,9 @@ const envSchema = z.object({
   PORTAL_ACCESS_TOKEN: z.string().min(12).optional(),
   INTERNAL_ACCESS_TOKEN: z.string().min(12).optional(),
   NEXT_PUBLIC_DEFAULT_ORG_SLUG: z.string().min(2).default("demo-dental-group"),
+  AI_PROVIDER: z.enum(["mock", "openai", "anthropic"]).default("mock"),
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000")
 });
 

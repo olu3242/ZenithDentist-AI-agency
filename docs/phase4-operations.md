@@ -7,7 +7,7 @@
 - Client portal AI operations layer with realtime-ready dashboards
 - Zod validation and React Hook Form
 - Resend transactional email
-- Calendly booking handoff and webhook endpoint
+- Calendly booking handoff and event receiver endpoint
 - Google Analytics, Meta Pixel, and LinkedIn event hooks
 - TailwindCSS with shadcn-style primitives
 
@@ -54,7 +54,7 @@ RLS is enabled on all tables. Current policies only allow service-role access, w
 3. Set production environment variables.
 4. Run the Supabase migration.
 5. Deploy.
-6. Configure Calendly webhook to `https://YOUR_DOMAIN/api/calendly/webhook`.
+6. Configure Calendly event delivery to `https://YOUR_DOMAIN/api/calendly/events`.
 
 ## Validation
 
@@ -88,6 +88,14 @@ New protected surfaces:
 - `/internal/benchmarks`
 - `/internal/revenue`
 - `/internal/platform-metrics`
+- `/portal/alice`
+- `/portal/command`
+- `/portal/simulations`
+- `/internal/platform`
+- `/internal/ai`
+- `/internal/playbooks`
+- `/internal/operations`
+- `/internal/recommendations`
 
 Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
 
@@ -97,5 +105,28 @@ Tenant isolation rules:
 - Scope operational metrics, automation events, reports, recommendations, notifications, usage, and benchmarks by `organization_id`.
 - Add `location_id` where location comparison or health scoring needs branch-level visibility.
 - Replace token scaffolds with Supabase Auth membership checks before production client access.
+
+## Phase 7 and Phase 8 Autonomous OS
+
+ALICE is implemented as a provider-abstracted operational intelligence layer with deterministic local behavior and future provider routing through `AI_PROVIDER`.
+
+New APIs:
+
+- `/api/alice/chat`
+- `/api/alice/insights`
+- `/api/alice/recommendations`
+- `/api/alice/reports`
+- `/api/alice/forecast`
+- `/api/alice/alerts`
+- `/api/autonomous/state`
+- `/api/autonomous/simulate`
+- `/api/autonomous/approvals`
+
+Safety model:
+
+- Autonomous recommendations do not self-apply.
+- Every proposed optimization is represented in an approval queue.
+- Playbooks include trigger conditions, goals, expected outcomes, rollback logic, and review flow.
+- Memory tables are tenant-scoped and ready for semantic retrieval references without exposing cross-tenant context.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.

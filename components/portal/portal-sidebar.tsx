@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck } from "lucide-react";
+import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck, Brain, ShieldCheck, SlidersHorizontal } from "lucide-react";
 
 const nav = [
   { href: "/portal", label: "Overview", icon: Gauge },
+  { href: "/portal/command", label: "Command", icon: ShieldCheck },
+  { href: "/portal/alice", label: "ALICE", icon: Brain },
   { href: "/portal/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/portal/revenue", label: "Revenue", icon: RefreshCw },
   { href: "/portal/patients", label: "Patients", icon: HeartPulse },
@@ -10,6 +12,7 @@ const nav = [
   { href: "/portal/recall", label: "Recall", icon: RefreshCw },
   { href: "/portal/locations", label: "Locations", icon: Building2 },
   { href: "/portal/reports", label: "Reports", icon: FileText },
+  { href: "/portal/simulations", label: "Simulations", icon: SlidersHorizontal },
   { href: "/portal/onboarding", label: "Onboarding", icon: ClipboardCheck },
   { href: "/portal/settings", label: "Settings", icon: Settings }
 ];

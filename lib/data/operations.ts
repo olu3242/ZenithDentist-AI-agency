@@ -161,7 +161,7 @@ export function seededPortalData(): PortalData {
     event("recall", "Patient 180 days overdue", "Launch recall sequence", "succeeded", "11 patients booked", 6200, 88),
     event("reviews", "Visit completed", "Send review request", "succeeded", "27 reviews generated", 0, 82),
     event("intake", "New patient booked", "Send intake packet", "succeeded", "18 packets completed", 0, 96),
-    event("booking", "Lead clicked audit CTA", "Create booking follow-up", "failed", "Calendly webhook pending", 0, 67)
+    event("booking", "Lead clicked audit CTA", "Create booking follow-up", "failed", "Calendly event delivery pending", 0, 67)
   ];
 
   const insights = generateOperationalInsights(metrics, automationEvents);

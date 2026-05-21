@@ -20,6 +20,10 @@ export type OrganizationRole = "owner" | "admin" | "practice_manager" | "front_d
 export type OrganizationType = "single_practice" | "multi_location" | "dso" | "enterprise";
 export type OnboardingStatus = "not_started" | "baseline" | "workflows" | "review" | "live";
 export type SubscriptionPlanKey = "starter" | "growth" | "enterprise";
+export type AliceMessageRole = "user" | "alice" | "system";
+export type EventSeverity = "info" | "success" | "warning" | "critical";
+export type ApprovalStatus = "pending" | "approved" | "rejected" | "implemented" | "rolled_back";
+export type PlaybookStatus = "draft" | "active" | "paused" | "retired";
 
 export interface Database {
   public: {
@@ -160,6 +164,131 @@ export interface Database {
           cohort: string;
         };
         Update: Partial<Database["public"]["Tables"]["benchmark_snapshots"]["Row"]>;
+        Relationships: [];
+      };
+      operational_scores: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          score_date: string;
+          overall_score: number;
+          no_show_score: number;
+          recall_score: number;
+          retention_score: number;
+          review_score: number;
+          efficiency_score: number;
+          reliability_score: number;
+          recommendation_adoption_score: number;
+          risk_indicators: Json;
+          opportunities: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_scores"]["Row"]> & {
+          organization_id: string;
+          score_date: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_scores"]["Row"]>;
+        Relationships: [];
+      };
+      alice_conversations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          created_by: string | null;
+          title: string;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["alice_conversations"]["Row"]> & {
+          organization_id: string;
+          title: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["alice_conversations"]["Row"]>;
+        Relationships: [];
+      };
+      alice_messages: {
+        Row: {
+          id: string;
+          conversation_id: string;
+          organization_id: string;
+          role: AliceMessageRole;
+          content: string;
+          response_framework: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["alice_messages"]["Row"]> & {
+          conversation_id: string;
+          organization_id: string;
+          role: AliceMessageRole;
+          content: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["alice_messages"]["Row"]>;
+        Relationships: [];
+      };
+      alice_memory: {
+        Row: {
+          id: string;
+          organization_id: string;
+          memory_type: string;
+          title: string;
+          content: string;
+          embedding_ref: string | null;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["alice_memory"]["Row"]> & {
+          organization_id: string;
+          memory_type: string;
+          title: string;
+          content: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["alice_memory"]["Row"]>;
+        Relationships: [];
+      };
+      operational_playbooks: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          name: string;
+          category: string;
+          status: PlaybookStatus;
+          trigger_conditions: Json;
+          operational_goals: Json;
+          recommended_actions: Json;
+          expected_outcomes: Json;
+          rollback_logic: Json;
+          approval_flow: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_playbooks"]["Row"]> & {
+          name: string;
+          category: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_playbooks"]["Row"]>;
+        Relationships: [];
+      };
+      recommendation_events: EventTable<"recommendation">;
+      prediction_events: EventTable<"prediction">;
+      anomaly_events: EventTable<"anomaly">;
+      simulation_events: EventTable<"simulation">;
+      optimization_events: EventTable<"optimization">;
+      approval_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          related_event_id: string | null;
+          approval_status: ApprovalStatus;
+          requested_by: string | null;
+          reviewed_by: string | null;
+          decision_notes: string | null;
+          created_at: string;
+          decided_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["approval_events"]["Row"]> & {
+          organization_id: string;
+          approval_status?: ApprovalStatus;
+        };
+        Update: Partial<Database["public"]["Tables"]["approval_events"]["Row"]>;
         Relationships: [];
       };
       leads: {
@@ -407,7 +536,34 @@ export interface Database {
       organization_type: OrganizationType;
       onboarding_status: OnboardingStatus;
       subscription_plan_key: SubscriptionPlanKey;
+      alice_message_role: AliceMessageRole;
+      event_severity: EventSeverity;
+      approval_status: ApprovalStatus;
+      playbook_status: PlaybookStatus;
     };
     CompositeTypes: Record<string, never>;
   };
 }
+
+type EventTable<T extends string> = {
+  Row: {
+    id: string;
+    organization_id: string;
+    location_id: string | null;
+    event_type: T;
+    title: string;
+    summary: string;
+    severity: EventSeverity;
+    confidence: number;
+    event_payload: Json;
+    created_at: string;
+  };
+  Insert: Partial<EventTable<T>["Row"]> & {
+    organization_id: string;
+    event_type: T;
+    title: string;
+    summary: string;
+  };
+  Update: Partial<EventTable<T>["Row"]>;
+  Relationships: [];
+};
