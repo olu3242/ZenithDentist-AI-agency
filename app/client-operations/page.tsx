@@ -3,6 +3,7 @@ import { ClientMaturityCard } from "@/components/mission-control/client-maturity
 import { DentalIntelligencePanel } from "@/components/mission-control/dental-intelligence-panel";
 import { ExecutiveReportCard } from "@/components/mission-control/executive-report-card";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
+import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
 import { RuntimeHeatmap } from "@/components/mission-control/runtime-heatmap";
 import { getClientOperationsState } from "@/lib/client-operations";
 import { generateDentalOperationalPredictions } from "@/lib/runtime/dental-intelligence";
@@ -18,6 +19,7 @@ export default async function ClientOperationsPage() {
   ]);
   return (
     <main className="min-h-screen bg-paper p-5 lg:p-8">
+      <RealtimeRefresh />
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
           <p className="text-xs font-black uppercase tracking-wider text-teal">Client operations layer</p>

@@ -82,10 +82,10 @@ export interface TenantData {
 
 export async function getTenantData(slug = getDefaultTenantContext().organizationSlug): Promise<TenantData> {
   const supabase = createServiceClient();
-  if (!supabase) return seededTenantData(slug);
+  if (!supabase) return emptyTenantData(slug);
 
   const { data: org } = await supabase.from("organizations").select("*").eq("slug", slug).maybeSingle();
-  if (!org) return seededTenantData(slug);
+  if (!org) return emptyTenantData(slug);
 
   const [locations, plans, usage, benchmarks] = await Promise.all([
     supabase.from("locations").select("*").eq("organization_id", org.id).order("is_primary", { ascending: false }),
@@ -104,112 +104,20 @@ export async function getTenantData(slug = getDefaultTenantContext().organizatio
   };
 }
 
-export function seededTenantData(slug = "demo-dental-group"): TenantData {
+export function emptyTenantData(slug = "unconfigured-tenant"): TenantData {
   const organization: Organization = {
-    id: "org-demo",
+    id: "org-unconfigured",
     created_at: new Date().toISOString(),
-    name: "Demo Dental Group",
+    name: "Unconfigured tenant",
     slug,
-    organization_type: "multi_location",
-    practice_size: 3,
-    active_plan: "growth",
-    onboarding_status: "workflows",
-    settings: {
-      reminderCadence: ["48hr", "24hr", "2hr"],
-      recallCadence: ["90d", "180d", "365d"],
-      reviewTiming: "2hr_after_visit",
-      escalationRules: { failedDelivery: "ops_alert", noShowRisk: "manager_digest" },
-      thresholds: { noShowRate: 10, confirmationRate: 88 }
-    },
-    branding: { primaryColor: "#177f75", logoText: "Demo Dental Group" },
+    organization_type: "single_practice",
+    practice_size: 0,
+    active_plan: "starter",
+    onboarding_status: "not_started",
+    settings: {},
+    branding: {},
     timezone: "America/Chicago",
-    primary_location_id: "loc-austin"
+    primary_location_id: null
   };
-  const locations: Location[] = [
-    location("loc-austin", organization.id, "Austin Flagship", "austin", 7, true),
-    location("loc-round-rock", organization.id, "Round Rock", "round-rock", 5, false),
-    location("loc-cedar-park", organization.id, "Cedar Park", "cedar-park", 4, false)
-  ];
-  const plans: SubscriptionPlan[] = [
-    plan("starter", "Starter", 799, 1, ["Reminder automation", "Monthly reporting"]),
-    plan("growth", "Growth", 1499, 3, ["Recall intelligence", "Benchmarks", "Multi-location dashboards"]),
-    plan("enterprise", "Enterprise", 3999, 25, ["Enterprise analytics", "Advanced benchmarks", "Dedicated success"])
-  ];
-  const usage: UsageMetric[] = [
-    usageMetric(organization.id, null, "2026-05-01", 4820, 914, 81, 14, 8, 126),
-    usageMetric(organization.id, null, "2026-04-01", 4310, 841, 72, 12, 7, 112)
-  ];
-  const benchmarks: BenchmarkSnapshot[] = [
-    {
-      id: "bench-demo",
-      organization_id: organization.id,
-      location_id: null,
-      benchmark_date: "2026-05-01",
-      cohort: "multi-location dental",
-      no_show_rate_p50: 12.4,
-      recall_recovery_p50: 24,
-      review_conversion_p50: 22,
-      admin_efficiency_p50: 58,
-      percentile_rankings: { noShow: 72, recall: 81, reviews: 54, efficiency: 76 },
-      created_at: new Date().toISOString()
-    }
-  ];
-
-  return { tenant: { organizationId: organization.id, organizationSlug: slug }, organization, locations, plans, usage, benchmarks };
-}
-
-function location(id: string, organizationId: string, name: string, slug: string, chairCount: number, isPrimary: boolean): Location {
-  return {
-    id,
-    organization_id: organizationId,
-    created_at: new Date().toISOString(),
-    name,
-    slug,
-    address: null,
-    timezone: "America/Chicago",
-    chair_count: chairCount,
-    is_primary: isPrimary,
-    settings: {}
-  };
-}
-
-function plan(planKey: SubscriptionPlan["plan_key"], name: string, price: number, locations: number, features: string[]): SubscriptionPlan {
-  return {
-    id: `plan-${planKey}`,
-    plan_key: planKey,
-    name,
-    price_monthly: price,
-    included_locations: locations,
-    included_usage: { reminders: planKey === "enterprise" ? 50000 : planKey === "growth" ? 6000 : 1500 },
-    features,
-    stripe_price_id: null,
-    is_active: true,
-    created_at: new Date().toISOString()
-  };
-}
-
-function usageMetric(
-  organizationId: string,
-  locationId: string | null,
-  month: string,
-  reminders: number,
-  recalls: number,
-  reviews: number,
-  users: number,
-  reports: number,
-  insights: number
-): UsageMetric {
-  return {
-    id: `usage-${month}-${locationId ?? "org"}`,
-    organization_id: organizationId,
-    location_id: locationId,
-    metric_month: month,
-    reminders_sent: reminders,
-    recalls_processed: recalls,
-    reviews_generated: reviews,
-    portal_users: users,
-    reports_generated: reports,
-    ai_insights_consumed: insights,
-    created_at: new Date().toISOString()
-  };
+  return { tenant: { organizationId: organization.id, organizationSlug: slug }, organization, locations: [], plans: [], usage: [], benchmarks: [] };
 }

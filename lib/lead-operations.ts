@@ -19,6 +19,7 @@ export async function getLeadOperationsState() {
   const closed = leads.filter(lead => lead.status === "won").length;
   const dead = leads.filter(lead => lead.status === "lost").length;
   const queued = Math.max(0, leads.length - sent);
+  const workflow = automationRegistry.find(item => item.id === "lead_created");
 
   const stageCounts: Record<OutreachStage, number> = {
     Queued: queued,
@@ -46,21 +47,31 @@ export async function getLeadOperationsState() {
       campaignHealth: leads.length ? Math.max(0, Math.min(100, Math.round((booked / Math.max(1, leads.length)) * 100 + (sent ? replied / sent * 40 : 0)))) : 0,
       prioritizationScore: leads.length ? Math.round(((booked + replied + discovery + proposal) / Math.max(1, leads.length)) * 100) : 0
     },
-    workflow: automationRegistry.find(item => item.id === "lead_created"),
+    workflow,
     prioritizedLeads: leads.slice(0, 12).map((lead, index) => ({
       id: lead.id,
       practiceName: lead.practice_name,
       status: lead.status,
-      score: Math.max(10, 100 - index * 7 + (lead.status === "booked" ? 12 : 0)),
+      score: calculateLeadPriority({
+        noShowRate: lead.no_show_rate,
+        locations: lead.locations,
+        staffSize: lead.staff_size,
+        status: lead.status,
+        rank: index
+      }),
       suggestion: lead.no_show_rate && lead.no_show_rate > 10
         ? "Lead with no-show recovery angle and quantified revenue leakage."
         : "Personalize around recall gaps, front-office capacity, and revenue recovery."
     })),
-    cadenceRecommendations: [
-      "Send first follow-up within 24 hours for audit-requested practices.",
-      "Move high no-show practices directly into revenue recovery personalization.",
-      "Escalate replied leads into discovery within one business day.",
-      "Queue proposal follow-up after discovery if ROI recovery exceeds $10K monthly."
-    ]
+    cadenceRecommendations: workflow?.actions ?? []
   };
+}
+
+function calculateLeadPriority(input: { noShowRate: number | null; locations: number; staffSize: number | null; status: string; rank: number }) {
+  const noShowWeight = Math.min(35, Number(input.noShowRate ?? 0) * 1.4);
+  const locationWeight = Math.min(25, input.locations * 8);
+  const staffingWeight = Math.min(25, Number(input.staffSize ?? 0) * 2);
+  const statusWeight = input.status === "booked" ? 15 : input.status === "contacted" ? 8 : 0;
+  const recencyWeight = Math.max(0, 10 - input.rank);
+  return Math.round(Math.min(100, noShowWeight + locationWeight + staffingWeight + statusWeight + recencyWeight));
 }

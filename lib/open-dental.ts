@@ -95,17 +95,8 @@ export function reconcileOpenDentalBatch(records: OpenDentalRecord[]) {
   };
 }
 
-export function seededOpenDentalRecords(): OpenDentalRecord[] {
-  const now = "2026-05-21T14:00:00.000Z";
-  return [
-    { remoteId: "apt-1041", entityType: "appointment", occurredAt: now, patientRef: "pat-880", providerRef: "prov-1", appointmentRef: "apt-1041", productionValue: 780, noShowRisk: 0.21, daypart: "afternoon" },
-    { remoteId: "can-221", entityType: "cancellation", occurredAt: now, patientRef: "pat-441", providerRef: "prov-2", appointmentRef: "apt-984", productionValue: 520, noShowRisk: 0.74, daypart: "wednesday_afternoon" },
-    { remoteId: "rec-180-44", entityType: "recall", occurredAt: now, patientRef: "pat-144", providerRef: "hyg-2", recallAgeDays: 188, productionValue: 340 },
-    { remoteId: "sched-prov-2", entityType: "provider_schedule", occurredAt: now, providerRef: "prov-2", productionValue: 0, hygieneUtilization: 0.86 },
-    { remoteId: "eng-774", entityType: "patient_engagement", occurredAt: now, patientRef: "pat-774", confirmationRate: 0.91 },
-    { remoteId: "hyg-usage-1", entityType: "hygiene_utilization", occurredAt: now, providerRef: "hyg-1", hygieneUtilization: 0.79 },
-    { remoteId: "metric-442", entityType: "scheduling_metric", occurredAt: now, noShowRisk: 0.29, confirmationRate: 0.88, daypart: "morning" }
-  ];
+export function pilotOpenDentalRecords(): OpenDentalRecord[] {
+  return [];
 }
 
 function mapOpenDentalEventType(entityType: OpenDentalEntityType): OpenDentalSyncResult["normalizedEventType"] {

@@ -1,7 +1,7 @@
 import { getAutonomousEngineState, runOperationalSimulation } from "@/lib/autonomous";
 import { getPortalData } from "@/lib/data/operations";
 import { getTenantData } from "@/lib/data/tenants";
-import type { Database, IntegrationStatus, PMSProviderKey, CloudLayerKey, AliceOperationalMode } from "@/lib/database.types";
+import type { Database, PMSProviderKey, AliceOperationalMode, Json } from "@/lib/database.types";
 import { calculatePracticeHealth } from "@/lib/health";
 import { getSupportedPMSProviders } from "@/lib/pms";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -39,9 +39,8 @@ export async function getEnterpriseCloudState(): Promise<EnterpriseCloudState> {
   const [tenantData, portalData] = await Promise.all([getTenantData(), getPortalData()]);
   const supabase = createServiceClient();
   const orgId = tenantData.tenant.organizationId ?? tenantData.organization.id;
-  const seeded = seededEnterpriseCloudData(orgId);
 
-  if (!supabase) return assembleEnterpriseState(seeded);
+  if (!supabase) return assembleEnterpriseState(emptyEnterpriseCloudData());
 
   const [integrations, layers, revenueRuns, nodes, edges, forecasts, playbooks, simulations, governance] = await Promise.all([
     supabase.from("pms_integrations").select("*").eq("organization_id", orgId).order("updated_at", { ascending: false }),
@@ -56,17 +55,17 @@ export async function getEnterpriseCloudState(): Promise<EnterpriseCloudState> {
   ]);
 
   const data: EnterpriseCloudData = {
-    integrations: integrations.data?.length ? integrations.data : seeded.integrations,
-    layers: layers.data?.length ? layers.data : seeded.layers,
-    revenueRuns: revenueRuns.data?.length ? revenueRuns.data : seeded.revenueRuns,
+    integrations: integrations.data ?? [],
+    layers: layers.data ?? [],
+    revenueRuns: revenueRuns.data ?? [],
     graph: {
-      nodes: nodes.data?.length ? nodes.data : seeded.graph.nodes,
-      edges: edges.data?.length ? edges.data : seeded.graph.edges
+      nodes: nodes.data ?? [],
+      edges: edges.data ?? []
     },
-    forecasts: forecasts.data?.length ? forecasts.data : seeded.forecasts,
-    playbooks: playbooks.data?.length ? playbooks.data : seeded.playbooks,
-    simulations: simulations.data?.length ? simulations.data : seeded.simulations,
-    governance: governance.data?.length ? governance.data : seeded.governance
+    forecasts: forecasts.data ?? [],
+    playbooks: playbooks.data ?? [],
+    simulations: simulations.data ?? [],
+    governance: governance.data ?? []
   };
 
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
@@ -76,16 +75,21 @@ export async function getEnterpriseCloudState(): Promise<EnterpriseCloudState> {
 export async function getRevenueOrchestrationState() {
   const [cloud, autonomous] = await Promise.all([getEnterpriseCloudState(), getAutonomousEngineState()]);
   const latestRun = cloud.revenueRuns[0];
+  const recommendations = toStringArray(latestRun?.recommendations);
+  const bottlenecks = toStringArray(latestRun?.bottlenecks);
   return {
     latestRun,
-    prioritizedRecoveries: [
-      { label: "High-value recall", value: "$18.4K", priority: "critical", confidence: 0.88 },
-      { label: "Chair utilization", value: "$11.7K", priority: "high", confidence: 0.84 },
-      { label: "Hygiene retention", value: "$9.2K", priority: "high", confidence: 0.81 }
-    ],
+    prioritizedRecoveries: latestRun
+      ? recommendations.map((recommendation, index) => ({
+          label: recommendation,
+          value: index === 0 ? `$${Math.round(latestRun.recovery_prioritized).toLocaleString()}` : "Measured in live run",
+          priority: index === 0 ? "critical" : "high",
+          confidence: latestRun.confidence
+        }))
+      : [],
     autonomousConfidence: autonomous.confidence,
-    bottlenecks: latestRun?.bottlenecks ?? [],
-    recommendations: latestRun?.recommendations ?? []
+    bottlenecks,
+    recommendations
   };
 }
 
@@ -124,20 +128,50 @@ export function buildAliceEnterpriseContext(mode: AliceOperationalMode = "execut
   };
 }
 
-function assembleEnterpriseState(data: EnterpriseCloudData, healthScore = 86): EnterpriseCloudState {
-  const layerAverage = Math.round(data.layers.reduce((sum, layer) => sum + layer.coordination_score, 0) / Math.max(1, data.layers.length));
-  const revenueOpportunity = Math.round(data.revenueRuns[0]?.recovery_prioritized ?? 38400);
-  const riskProbability = Math.round(Math.max(...data.forecasts.map(forecast => forecast.probability), 0.42) * 100);
+function assembleEnterpriseState(data: EnterpriseCloudData, healthScore = 0): EnterpriseCloudState {
+  const layerAverage = data.layers.length
+    ? Math.round(data.layers.reduce((sum, layer) => sum + layer.coordination_score, 0) / data.layers.length)
+    : 0;
+  const revenueOpportunity = Math.round(data.revenueRuns[0]?.recovery_prioritized ?? 0);
+  const highestForecastRisk = data.forecasts.length ? Math.max(...data.forecasts.map(forecast => forecast.probability)) : 0;
+  const riskProbability = Math.round(highestForecastRisk * 100);
+  const latestRevenueRun = data.revenueRuns[0];
+  const forecastConfidence = data.forecasts.length
+    ? Math.round(data.forecasts.reduce((sum, forecast) => sum + forecast.confidence, 0) / data.forecasts.length * 100)
+    : 0;
+  const governanceConfidence = data.governance.length
+    ? Math.round(data.governance.filter(record => record.status === "approved").length / data.governance.length * 100)
+    : 0;
   return {
     ...data,
     enterpriseScore: Math.round((healthScore + layerAverage) / 2),
     revenueOpportunity,
     riskProbability,
     confidenceMatrix: [
-      { label: "Revenue orchestration", reliability: 91, certainty: 87, lift: "+$38.4K" },
-      { label: "Forecasting", reliability: 86, certainty: 82, lift: "12-week horizon" },
-      { label: "Benchmark intelligence", reliability: 89, certainty: 84, lift: "74th percentile" },
-      { label: "Governance", reliability: 94, certainty: 91, lift: "Approval-safe" }
+      {
+        label: "Revenue recovery",
+        reliability: latestRevenueRun ? Math.round(latestRevenueRun.confidence * 100) : 0,
+        certainty: latestRevenueRun ? Math.round(latestRevenueRun.confidence * 100) : 0,
+        lift: latestRevenueRun ? `$${Math.round(latestRevenueRun.recovery_prioritized).toLocaleString()}` : "No live runs"
+      },
+      {
+        label: "Forecasting",
+        reliability: forecastConfidence,
+        certainty: forecastConfidence,
+        lift: data.forecasts[0]?.forecast_window ?? "No live forecasts"
+      },
+      {
+        label: "Benchmark intelligence",
+        reliability: healthScore,
+        certainty: healthScore,
+        lift: data.layers.length ? `${layerAverage}% layer coordination` : "No live benchmarks"
+      },
+      {
+        label: "Governance",
+        reliability: governanceConfidence,
+        certainty: governanceConfidence,
+        lift: data.governance.length ? `${data.governance.length} governance records` : "No live records"
+      }
     ],
     providerCoverage: getSupportedPMSProviders().map(provider => ({
       ...provider,
@@ -146,163 +180,20 @@ function assembleEnterpriseState(data: EnterpriseCloudData, healthScore = 86): E
   };
 }
 
-function seededEnterpriseCloudData(organizationId: string): EnterpriseCloudData {
-  const now = new Date().toISOString();
-  const integrations: PMSIntegration[] = [
-    integration("pms-dentrix", organizationId, "loc-austin", "dentrix", "syncing", "Austin Dentrix Core", 94),
-    integration("pms-open-dental", organizationId, "loc-round-rock", "open_dental", "configured", "Round Rock Open Dental", 91),
-    integration("pms-eaglesoft", organizationId, "loc-cedar-park", "eaglesoft", "degraded", "Cedar Park Eaglesoft", 76)
-  ];
-  const layers: HealthcareCloudLayer[] = [
-    layer(organizationId, "operational_intelligence", "syncing", 0.91, 93, 90),
-    layer(organizationId, "revenue_orchestration", "syncing", 0.88, 89, 92),
-    layer(organizationId, "patient_engagement", "configured", 0.84, 87, 86),
-    layer(organizationId, "benchmark_intelligence", "configured", 0.89, 90, 88),
-    layer(organizationId, "autonomous_optimization", "configured", 0.86, 86, 91),
-    layer(organizationId, "enterprise_governance", "configured", 0.93, 92, 94)
-  ];
-  const revenueRuns: RevenueOrchestrationRun[] = [{
-    id: "run-current",
-    organization_id: organizationId,
-    run_at: now,
-    leakage_detected: 62400,
-    recovery_prioritized: 38400,
-    chair_utilization: 83,
-    hygiene_retention: 78,
-    bottlenecks: ["Wednesday provider overload", "Cedar Park sync degradation", "180-day recall drop-off"],
-    recommendations: ["Protect high-value recall blocks", "Rebalance provider scheduling", "Prioritize hygiene retention outreach"],
-    confidence: 0.88
-  }];
-  const nodes: KnowledgeGraphNode[] = [
-    graphNode("node-scheduling", organizationId, "behavior", "Afternoon scheduling instability", 0.87),
-    graphNode("node-staffing", organizationId, "capacity", "Provider load imbalance", 0.82),
-    graphNode("node-recall", organizationId, "retention", "180-day recall recovery", 0.9),
-    graphNode("node-revenue", organizationId, "outcome", "Revenue recovery lift", 0.91)
-  ];
-  const edges: KnowledgeGraphEdge[] = [
-    graphEdge("edge-1", organizationId, nodes[0].id, nodes[3].id, "reduces", 0.74),
-    graphEdge("edge-2", organizationId, nodes[1].id, nodes[0].id, "amplifies", 0.68),
-    graphEdge("edge-3", organizationId, nodes[2].id, nodes[3].id, "increases", 0.81)
-  ];
-  const forecasts: EnterpriseForecast[] = [
-    forecast("forecast-staffing", organizationId, "staffing_shortage", 0.62, "Provider overload risk rises in 14 days", ["hygiene demand", "chair clustering"]),
-    forecast("forecast-retention", organizationId, "retention_volatility", 0.48, "Recall volatility likely without cadence adjustment", ["180-day segment growth", "late confirmations"]),
-    forecast("forecast-production", organizationId, "production_trajectory", 0.74, "Production trajectory improves if recovery queue is approved", ["chair utilization", "recall priority"])
-  ];
-  const playbooks: EnterprisePlaybook[] = [
-    enterprisePlaybook("ent-no-show", organizationId, "Enterprise No-show Recovery", "schedule_stability"),
-    enterprisePlaybook("ent-retention", organizationId, "Retention Optimization", "patient_retention"),
-    enterprisePlaybook("ent-staffing", organizationId, "Staffing Stabilization", "capacity")
-  ];
-  const simulations: EnterpriseSimulation[] = [{
-    id: "enterprise-sim-current",
-    organization_id: organizationId,
-    scenario_name: "Three-location retention acceleration",
-    scenario_inputs: { locationCount: 3, recallCadenceDelta: 3, staffingDelta: 1 },
-    projected_enterprise_impact: { revenue: 42800, benchmarkMovement: "+5 percentile points" },
-    staffing_pressure: 61,
-    retention_trajectory: 12.4,
-    operational_resilience: 88,
-    revenue_recovery_projection: 42800,
-    benchmark_movement: { recall: "+5", retention: "+4" },
-    confidence: 0.84,
-    created_at: now
-  }];
-  const governance: GovernanceRecord[] = [
-    governanceRecord("gov-retention", organizationId, "enterprise_playbook", "review_required", "Retention escalation requires owner review."),
-    governanceRecord("gov-schedule", organizationId, "optimization", "approved", "Schedule stabilization approved with rollback plan.")
-  ];
-
-  return { integrations, layers, revenueRuns, graph: { nodes, edges }, forecasts, playbooks, simulations, governance };
-}
-
-function integration(id: string, organizationId: string, locationId: string, provider: PMSProviderKey, status: IntegrationStatus, displayName: string, health: number): PMSIntegration {
-  const now = new Date().toISOString();
+function emptyEnterpriseCloudData(): EnterpriseCloudData {
   return {
-    id,
-    organization_id: organizationId,
-    location_id: locationId,
-    provider,
-    status,
-    display_name: displayName,
-    sync_cursor: "cursor-demo",
-    last_sync_at: now,
-    last_success_at: status === "degraded" ? new Date(Date.now() - 1000 * 60 * 48).toISOString() : now,
-    failover_provider: provider === "eaglesoft" ? "carestream" : null,
-    configuration: { syncTypes: ["appointments", "recalls", "production", "retention"] },
-    health_score: health,
-    created_at: now,
-    updated_at: now
+    integrations: [],
+    layers: [],
+    revenueRuns: [],
+    graph: { nodes: [], edges: [] },
+    forecasts: [],
+    playbooks: [],
+    simulations: [],
+    governance: []
   };
 }
 
-function layer(organizationId: string, key: CloudLayerKey, status: IntegrationStatus, confidence: number, throughput: number, coordination: number): HealthcareCloudLayer {
-  return {
-    id: `layer-${key}`,
-    organization_id: organizationId,
-    layer_key: key,
-    status,
-    confidence,
-    throughput_score: throughput,
-    coordination_score: coordination,
-    metadata: {},
-    updated_at: new Date().toISOString()
-  };
-}
-
-function graphNode(id: string, organizationId: string, nodeType: string, label: string, confidence: number): KnowledgeGraphNode {
-  return { id, organization_id: organizationId, node_type: nodeType, label, properties: {}, confidence, created_at: new Date().toISOString() };
-}
-
-function graphEdge(id: string, organizationId: string, source: string, target: string, relationship: string, weight: number): KnowledgeGraphEdge {
-  return { id, organization_id: organizationId, source_node_id: source, target_node_id: target, relationship_type: relationship, weight, evidence: {}, created_at: new Date().toISOString() };
-}
-
-function forecast(id: string, organizationId: string, type: string, probability: number, impact: string, drivers: string[]): EnterpriseForecast {
-  return {
-    id,
-    organization_id: organizationId,
-    location_id: null,
-    forecast_type: type,
-    forecast_window: "12 weeks",
-    probability,
-    projected_impact: { summary: impact },
-    drivers,
-    recommended_response: ["Review with ALICE", "Queue governance-safe optimization", "Measure outcome movement"],
-    confidence: Math.min(0.92, probability + 0.18),
-    generated_at: new Date().toISOString()
-  };
-}
-
-function enterprisePlaybook(id: string, organizationId: string, name: string, category: string): EnterprisePlaybook {
-  return {
-    id,
-    organization_id: organizationId,
-    name,
-    category,
-    trigger_logic: { threshold: "risk score above 60", cadence: "daily review" },
-    escalation_paths: ["Practice manager", "Executive owner"],
-    optimization_recommendations: ["Prioritize highest revenue recovery segment", "Track outcome movement for two cycles"],
-    rollback_logic: { restoreBaseline: true, reviewWindow: "7 days" },
-    generated_adaptations: ["Adjust by location performance", "Protect provider capacity"],
-    outcome_tracking: { primary: "revenue recovery", secondary: "retention lift" },
-    status: "active",
-    created_at: new Date().toISOString()
-  };
-}
-
-function governanceRecord(id: string, organizationId: string, type: string, status: GovernanceRecord["status"], notes: string): GovernanceRecord {
-  return {
-    id,
-    organization_id: organizationId,
-    governed_object_type: type,
-    governed_object_id: null,
-    status,
-    approval_chain: ["Practice manager", "Executive owner"],
-    risk_controls: ["Human review", "Rollback plan", "Outcome audit"],
-    rollback_plan: { restorePreviousCadence: true, auditWindow: "14 days" },
-    audit_notes: notes,
-    created_at: new Date().toISOString(),
-    decided_at: status === "approved" ? new Date().toISOString() : null
-  };
+function toStringArray(value: Json | null | undefined): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string");
 }

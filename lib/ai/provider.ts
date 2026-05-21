@@ -8,7 +8,7 @@ export interface IntelligenceRequest {
 
 export interface IntelligenceResponse {
   content: string;
-  provider: "mock" | "openai" | "anthropic";
+  provider: "local" | "openai" | "anthropic";
   model: string;
 }
 
@@ -16,17 +16,17 @@ export interface IntelligenceProvider {
   complete(request: IntelligenceRequest): Promise<IntelligenceResponse>;
 }
 
-class MockProvider implements IntelligenceProvider {
+class LocalProvider implements IntelligenceProvider {
   async complete(request: IntelligenceRequest): Promise<IntelligenceResponse> {
     return {
-      provider: "mock",
-      model: "deterministic-operational-core",
+      provider: "local",
+      model: "local-operational-core",
       content: `${request.system}\n\n${request.prompt}`
     };
   }
 }
 
-class OpenAIProvider extends MockProvider {
+class OpenAIProvider extends LocalProvider {
   async complete(request: IntelligenceRequest): Promise<IntelligenceResponse> {
     if (!env.OPENAI_API_KEY) return super.complete(request);
     return {
@@ -37,7 +37,7 @@ class OpenAIProvider extends MockProvider {
   }
 }
 
-class AnthropicProvider extends MockProvider {
+class AnthropicProvider extends LocalProvider {
   async complete(request: IntelligenceRequest): Promise<IntelligenceResponse> {
     if (!env.ANTHROPIC_API_KEY) return super.complete(request);
     return {
@@ -51,5 +51,5 @@ class AnthropicProvider extends MockProvider {
 export function getIntelligenceProvider(): IntelligenceProvider {
   if (env.AI_PROVIDER === "openai") return new OpenAIProvider();
   if (env.AI_PROVIDER === "anthropic") return new AnthropicProvider();
-  return new MockProvider();
+  return new LocalProvider();
 }

@@ -21,6 +21,7 @@ import { OperationalSDKExplorer } from "@/components/mission-control/operational
 import { PlatformizationPanel } from "@/components/mission-control/platformization-panel";
 import { PredictiveAlertFeed } from "@/components/mission-control/predictive-alert-feed";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
+import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
 import { ReplayCenter } from "@/components/mission-control/replay-center";
 import { RuntimeHealthDashboard } from "@/components/mission-control/runtime-health-dashboard";
 import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-bar";
@@ -85,6 +86,7 @@ export default async function MissionControlPage() {
   const replay = buildReplayCenterState(state);
   return (
     <main className="min-h-screen bg-paper">
+      <RealtimeRefresh />
       <div className="mx-auto grid max-w-[1600px] gap-5 p-5 lg:grid-cols-[230px_1fr_360px] lg:p-8">
         <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>

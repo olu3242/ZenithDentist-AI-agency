@@ -1,10 +1,12 @@
 import { MetricCard } from "@/components/metric-card";
+import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
 import { getLeadOperationsState, outreachStages } from "@/lib/lead-operations";
 
 export default async function LeadOperationsPage() {
   const state = await getLeadOperationsState();
   return (
     <main className="min-h-screen bg-paper p-5 lg:p-8">
+      <RealtimeRefresh />
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
           <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith AI</p>

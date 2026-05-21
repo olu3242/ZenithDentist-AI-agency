@@ -2,6 +2,7 @@ import "server-only";
 
 import { getAdminDashboardData } from "@/lib/data/leads";
 import { getClientOperationsState } from "@/lib/client-operations";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export const gtmStages = [
   "Prospect identified",
@@ -28,6 +29,7 @@ export interface ServicePackage {
 
 export async function getBusinessGrowthState() {
   const [admin, clientOps] = await Promise.all([getAdminDashboardData(), getClientOperationsState()]);
+  const supabase = createServiceClient();
   const leads = admin.leads;
   const roi = admin.roiCalculations;
   const bookings = admin.bookings;
@@ -51,6 +53,12 @@ export async function getBusinessGrowthState() {
   stageCounts["Live optimization"] = Math.max(0, won.length - Math.floor(won.length * 0.25));
   stageCounts["Case study candidate"] = Math.max(0, Math.floor(won.length * 0.5));
   stageCounts["Referral opportunity"] = Math.max(0, Math.floor(won.length * 0.35));
+  const [packagesResult, contentResult] = supabase
+    ? await Promise.all([
+        supabase.from("service_packages").select("*").order("monthly_price", { ascending: true }),
+        supabase.from("authority_content_assets").select("*").order("created_at", { ascending: false }).limit(12)
+      ])
+    : [{ data: [] }, { data: [] }];
 
   return {
     metrics: {
@@ -103,16 +111,18 @@ export async function getBusinessGrowthState() {
         "Guarantee framing"
       ]
     },
-    packages: servicePackages(),
+    packages: (packagesResult.data ?? []).map((pkg) => ({
+      key: pkg.package_key,
+      name: pkg.name,
+      implementationPrice: Number(pkg.implementation_price ?? 0),
+      monthlyPrice: Number(pkg.monthly_price ?? 0),
+      deliverables: Array.isArray(pkg.deliverables) ? pkg.deliverables.map(String) : [],
+      kpiTargets: Array.isArray(pkg.kpi_targets) ? pkg.kpi_targets.map(String) : [],
+      supportModel: pkg.support_model
+    })),
     proof: buildProofState(clientOps.scores.automationRoi, clientOps.scores.slaCompliance, clientOps.scores.engagementScore),
     retention: buildRetentionState(clientOps.scores),
-    contentIdeas: [
-      "How dental practices lose revenue through no-shows",
-      "The front desk overload problem in growing practices",
-      "Patient retention gaps most practices miss",
-      "Why full chairs depend on operational systems",
-      "How to measure recovered revenue after recall improvements"
-    ]
+    contentIdeas: (contentResult.data ?? []).map((asset) => asset.title)
   };
 }
 
@@ -147,36 +157,4 @@ function buildRetentionState(scores: { operationalScore: number; automationMatur
       "Identify referral opportunity after next milestone."
     ]
   };
-}
-
-function servicePackages(): ServicePackage[] {
-  return [
-    {
-      key: "starter_engine",
-      name: "Starter Engine",
-      implementationPrice: 2500,
-      monthlyPrice: 1500,
-      deliverables: ["Baseline audit", "No-show recovery setup", "Monthly performance report"],
-      kpiTargets: ["Reduce no-shows", "Improve response speed"],
-      supportModel: "Monthly optimization"
-    },
-    {
-      key: "patient_revenue_engine",
-      name: "Full Patient Revenue Engine™",
-      implementationPrice: 5000,
-      monthlyPrice: 3000,
-      deliverables: ["No-show, recall, review, and intake systems", "Operational dashboard", "Weekly optimization"],
-      kpiTargets: ["Recover revenue", "Improve patient retention", "Reduce admin overload"],
-      supportModel: "Weekly operating review"
-    },
-    {
-      key: "executive_operations",
-      name: "Executive Operations Layer",
-      implementationPrice: 8500,
-      monthlyPrice: 5000,
-      deliverables: ["Executive reporting", "Multi-location visibility", "Client success reviews"],
-      kpiTargets: ["Increase operational efficiency", "Improve leadership visibility"],
-      supportModel: "Executive business review"
-    }
-  ];
 }
