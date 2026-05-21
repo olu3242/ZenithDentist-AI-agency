@@ -73,4 +73,29 @@ Admin protection is currently scaffolded with `ADMIN_ACCESS_TOKEN` via middlewar
 
 Portal protection is scaffolded with `PORTAL_ACCESS_TOKEN`. Before real client rollout, replace this with Supabase Auth, practice membership checks, role claims for practice managers/staff/executives, and tenant-aware RLS policies.
 
+Internal platform routes are scaffolded with `INTERNAL_ACCESS_TOKEN` and are intended for Zenith operators only.
+
+Phase 6 adds multi-tenant tables for organizations, memberships, locations, subscription plans, usage metrics, and benchmark snapshots. Existing operational tables now include organization scope so RLS policies can evolve from service-role-only access to tenant-aware membership checks.
+
+## Phase 6 SaaS Evolution
+
+New protected surfaces:
+
+- `/portal/locations`
+- `/portal/onboarding`
+- `/internal/organizations`
+- `/internal/health`
+- `/internal/benchmarks`
+- `/internal/revenue`
+- `/internal/platform-metrics`
+
+Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
+
+Tenant isolation rules:
+
+- Resolve organization context before querying tenant records.
+- Scope operational metrics, automation events, reports, recommendations, notifications, usage, and benchmarks by `organization_id`.
+- Add `location_id` where location comparison or health scoring needs branch-level visibility.
+- Replace token scaffolds with Supabase Auth membership checks before production client access.
+
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.

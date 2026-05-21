@@ -51,6 +51,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
   const { data: roi, error: roiError } = await supabase
     .from("roi_calculations")
     .insert({
+      organization_id: null,
       lead_id: lead.id,
       chairs: input.chairs,
       monthly_appointments: input.monthlyAppointments,
@@ -74,6 +75,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
   const { data: audit, error: auditError } = await supabase
     .from("audits")
     .insert({
+      organization_id: null,
       lead_id: lead.id,
       audit_summary: `${input.practiceName} is leaking an estimated $${Math.round(
         projection.monthlyRevenueLoss

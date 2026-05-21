@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText } from "lucide-react";
+import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck } from "lucide-react";
 
 const nav = [
   { href: "/portal", label: "Overview", icon: Gauge },
@@ -8,7 +8,9 @@ const nav = [
   { href: "/portal/patients", label: "Patients", icon: HeartPulse },
   { href: "/portal/reviews", label: "Reviews", icon: Star },
   { href: "/portal/recall", label: "Recall", icon: RefreshCw },
+  { href: "/portal/locations", label: "Locations", icon: Building2 },
   { href: "/portal/reports", label: "Reports", icon: FileText },
+  { href: "/portal/onboarding", label: "Onboarding", icon: ClipboardCheck },
   { href: "/portal/settings", label: "Settings", icon: Settings }
 ];
 

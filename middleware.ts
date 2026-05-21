@@ -1,19 +1,28 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  if (!request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/portal")) {
+  if (
+    !request.nextUrl.pathname.startsWith("/admin") &&
+    !request.nextUrl.pathname.startsWith("/portal") &&
+    !request.nextUrl.pathname.startsWith("/internal")
+  ) {
     return NextResponse.next();
   }
 
   const isPortal = request.nextUrl.pathname.startsWith("/portal");
-  const configuredToken = isPortal ? process.env.PORTAL_ACCESS_TOKEN : process.env.ADMIN_ACCESS_TOKEN;
+  const isInternal = request.nextUrl.pathname.startsWith("/internal");
+  const configuredToken = isInternal
+    ? process.env.INTERNAL_ACCESS_TOKEN
+    : isPortal
+      ? process.env.PORTAL_ACCESS_TOKEN
+      : process.env.ADMIN_ACCESS_TOKEN;
   if (!configuredToken) {
     return NextResponse.next();
   }
 
   const token =
-    request.cookies.get(isPortal ? "zenith_portal_token" : "zenith_admin_token")?.value ||
-    request.headers.get(isPortal ? "x-portal-token" : "x-admin-token");
+    request.cookies.get(isInternal ? "zenith_internal_token" : isPortal ? "zenith_portal_token" : "zenith_admin_token")?.value ||
+    request.headers.get(isInternal ? "x-internal-token" : isPortal ? "x-portal-token" : "x-admin-token");
   if (token === configuredToken) {
     return NextResponse.next();
   }
@@ -25,5 +34,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/portal/:path*"]
+  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*"]
 };

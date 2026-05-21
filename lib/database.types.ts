@@ -16,13 +16,156 @@ export type AutomationEventStatus = "queued" | "running" | "succeeded" | "failed
 export type NotificationSeverity = "info" | "success" | "warning" | "critical";
 export type ReportPeriod = "weekly" | "monthly";
 export type RecommendationPriority = "low" | "medium" | "high" | "critical";
+export type OrganizationRole = "owner" | "admin" | "practice_manager" | "front_desk" | "analyst" | "executive_readonly";
+export type OrganizationType = "single_practice" | "multi_location" | "dso" | "enterprise";
+export type OnboardingStatus = "not_started" | "baseline" | "workflows" | "review" | "live";
+export type SubscriptionPlanKey = "starter" | "growth" | "enterprise";
 
 export interface Database {
   public: {
     Tables: {
+      organizations: {
+        Row: {
+          id: string;
+          created_at: string;
+          name: string;
+          slug: string;
+          organization_type: OrganizationType;
+          practice_size: number;
+          active_plan: SubscriptionPlanKey;
+          onboarding_status: OnboardingStatus;
+          settings: Json;
+          branding: Json;
+          timezone: string;
+          primary_location_id: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["organizations"]["Row"]> & {
+          name: string;
+          slug: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["organizations"]["Row"]>;
+        Relationships: [];
+      };
+      organization_members: {
+        Row: {
+          id: string;
+          organization_id: string;
+          user_id: string | null;
+          role: OrganizationRole;
+          permissions: Json;
+          invited_by: string | null;
+          invited_at: string;
+          accepted_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["organization_members"]["Row"]> & {
+          organization_id: string;
+          role: OrganizationRole;
+        };
+        Update: Partial<Database["public"]["Tables"]["organization_members"]["Row"]>;
+        Relationships: [];
+      };
+      locations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          created_at: string;
+          name: string;
+          slug: string;
+          address: string | null;
+          timezone: string;
+          chair_count: number;
+          is_primary: boolean;
+          settings: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["locations"]["Row"]> & {
+          organization_id: string;
+          name: string;
+          slug: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["locations"]["Row"]>;
+        Relationships: [];
+      };
+      user_roles: {
+        Row: {
+          id: string;
+          role: OrganizationRole;
+          description: string;
+          default_permissions: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["user_roles"]["Row"]> & {
+          role: OrganizationRole;
+          description: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["user_roles"]["Row"]>;
+        Relationships: [];
+      };
+      subscription_plans: {
+        Row: {
+          id: string;
+          plan_key: SubscriptionPlanKey;
+          name: string;
+          price_monthly: number;
+          included_locations: number;
+          included_usage: Json;
+          features: Json;
+          stripe_price_id: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["subscription_plans"]["Row"]> & {
+          plan_key: SubscriptionPlanKey;
+          name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["subscription_plans"]["Row"]>;
+        Relationships: [];
+      };
+      usage_metrics: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          metric_month: string;
+          reminders_sent: number;
+          recalls_processed: number;
+          reviews_generated: number;
+          portal_users: number;
+          reports_generated: number;
+          ai_insights_consumed: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["usage_metrics"]["Row"]> & {
+          organization_id: string;
+          metric_month: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["usage_metrics"]["Row"]>;
+        Relationships: [];
+      };
+      benchmark_snapshots: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          location_id: string | null;
+          benchmark_date: string;
+          cohort: string;
+          no_show_rate_p50: number;
+          recall_recovery_p50: number;
+          review_conversion_p50: number;
+          admin_efficiency_p50: number;
+          percentile_rankings: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["benchmark_snapshots"]["Row"]> & {
+          benchmark_date: string;
+          cohort: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["benchmark_snapshots"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
+          organization_id: string | null;
           created_at: string;
           updated_at: string;
           dentist_name: string | null;
@@ -49,6 +192,7 @@ export interface Database {
       roi_calculations: {
         Row: {
           id: string;
+          organization_id: string | null;
           lead_id: string;
           chairs: number;
           monthly_appointments: number;
@@ -68,6 +212,7 @@ export interface Database {
       audits: {
         Row: {
           id: string;
+          organization_id: string | null;
           lead_id: string;
           audit_summary: string;
           recommendations: Json;
@@ -81,6 +226,7 @@ export interface Database {
       bookings: {
         Row: {
           id: string;
+          organization_id: string | null;
           lead_id: string | null;
           calendly_event_id: string | null;
           scheduled_at: string | null;
@@ -95,6 +241,7 @@ export interface Database {
       outreach_events: {
         Row: {
           id: string;
+          organization_id: string | null;
           lead_id: string | null;
           event_type: OutreachEventType;
           event_metadata: Json;
@@ -121,6 +268,8 @@ export interface Database {
       automation_events: {
         Row: {
           id: string;
+          organization_id: string | null;
+          location_id: string | null;
           practice_id: string | null;
           workflow: string;
           trigger_name: string;
@@ -144,6 +293,8 @@ export interface Database {
       operational_metrics: {
         Row: {
           id: string;
+          organization_id: string | null;
+          location_id: string | null;
           practice_id: string | null;
           metric_date: string;
           no_show_rate: number;
@@ -165,6 +316,7 @@ export interface Database {
       insight_snapshots: {
         Row: {
           id: string;
+          organization_id: string | null;
           practice_id: string | null;
           title: string;
           summary: string;
@@ -185,6 +337,7 @@ export interface Database {
       recommendations: {
         Row: {
           id: string;
+          organization_id: string | null;
           practice_id: string | null;
           title: string;
           recommendation: string;
@@ -203,6 +356,7 @@ export interface Database {
       reports: {
         Row: {
           id: string;
+          organization_id: string | null;
           practice_id: string | null;
           period: ReportPeriod;
           title: string;
@@ -223,6 +377,7 @@ export interface Database {
       notifications: {
         Row: {
           id: string;
+          organization_id: string | null;
           practice_id: string | null;
           title: string;
           body: string;
@@ -248,6 +403,10 @@ export interface Database {
       notification_severity: NotificationSeverity;
       report_period: ReportPeriod;
       recommendation_priority: RecommendationPriority;
+      organization_role: OrganizationRole;
+      organization_type: OrganizationType;
+      onboarding_status: OnboardingStatus;
+      subscription_plan_key: SubscriptionPlanKey;
     };
     CompositeTypes: Record<string, never>;
   };

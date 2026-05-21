@@ -1,0 +1,32 @@
+import Link from "next/link";
+import { Activity, Building2, Gauge, LineChart, Wallet } from "lucide-react";
+
+const nav = [
+  { href: "/internal/organizations", label: "Organizations", icon: Building2 },
+  { href: "/internal/health", label: "Health", icon: Gauge },
+  { href: "/internal/benchmarks", label: "Benchmarks", icon: LineChart },
+  { href: "/internal/revenue", label: "Revenue", icon: Wallet },
+  { href: "/internal/platform-metrics", label: "Platform Metrics", icon: Activity }
+];
+
+export function InternalSidebar() {
+  return (
+    <aside className="border-r border-white/10 bg-ink p-5 text-white lg:min-h-screen">
+      <Link href="/internal/organizations" className="flex items-center gap-3">
+        <span className="grid h-10 w-10 place-items-center rounded bg-gold font-black">Z</span>
+        <span>
+          <strong className="block">ZENITH INTERNAL</strong>
+          <small className="text-white/55">Platform operations</small>
+        </span>
+      </Link>
+      <nav className="mt-8 grid gap-2">
+        {nav.map(item => (
+          <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded px-3 py-2 text-sm font-bold text-white/72 hover:bg-white/10 hover:text-white">
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+    </aside>
+  );
+}

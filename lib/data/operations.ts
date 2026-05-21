@@ -70,6 +70,7 @@ export function generateOperationalInsights(metrics: OperationalMetric[], events
   return [
     {
       id: "generated-recall",
+      organization_id: null,
       practice_id: null,
       title: `Recall recovery ${recallLift >= 0 ? "increased" : "softened"} ${Math.abs(recallLift)} this period`,
       summary: recallLift >= 0
@@ -83,6 +84,7 @@ export function generateOperationalInsights(metrics: OperationalMetric[], events
     },
     {
       id: "generated-cancellations",
+      organization_id: null,
       practice_id: null,
       title: "Wednesday afternoons show elevated cancellation risk",
       summary: "Confirmation performance dips midweek after lunch. Move the 24-hour reminder earlier and add a same-morning nudge.",
@@ -94,6 +96,7 @@ export function generateOperationalInsights(metrics: OperationalMetric[], events
     },
     {
       id: "generated-health",
+      organization_id: null,
       practice_id: null,
       title: failed ? `${failed} automation actions need review` : "Automation systems are operating normally",
       summary: failed
@@ -112,6 +115,7 @@ export function buildExecutiveReport(data: PortalData): Report {
   const summary = summarizePortal(data);
   return {
     id: "generated-current-report",
+    organization_id: null,
     practice_id: null,
     period: "weekly",
     title: "Weekly Revenue Intelligence Briefing",
@@ -136,6 +140,8 @@ export function seededPortalData(): PortalData {
     date.setDate(baseDate.getDate() - index * 7);
     return {
       id: `metric-${index}`,
+      organization_id: null,
+      location_id: null,
       practice_id: null,
       metric_date: date.toISOString().slice(0, 10),
       no_show_rate: 8 + index * 0.7,
@@ -186,6 +192,8 @@ function event(
 ): AutomationEvent {
   return {
     id: `event-${workflow}`,
+    organization_id: null,
+    location_id: null,
     practice_id: null,
     workflow,
     trigger_name: triggerName,
@@ -202,6 +210,7 @@ function event(
 function recommendation(title: string, body: string, priority: Recommendation["priority"], impact: string): Recommendation {
   return {
     id: `rec-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+    organization_id: null,
     practice_id: null,
     title,
     recommendation: body,
@@ -215,6 +224,7 @@ function recommendation(title: string, body: string, priority: Recommendation["p
 function notification(title: string, body: string, severity: Notification["severity"]): Notification {
   return {
     id: `note-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+    organization_id: null,
     practice_id: null,
     title,
     body,
