@@ -114,6 +114,7 @@ New protected surfaces:
 - `/internal/accuracy`
 - `/internal/confidence`
 - `/internal/simulations`
+- `/internal/automation-audit`
 
 Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
 
@@ -197,6 +198,7 @@ New APIs:
 - `/api/mission-control/state`
 - `/api/mission-control/replay`
 - `/api/mission-control/evaluate`
+- `/api/mission-control/automation-audit`
 
 New Supabase tables:
 
@@ -216,6 +218,9 @@ New Supabase tables:
 - `resilience_events`
 - `confidence_events`
 - `orchestration_dependency_events`
+- `automation_blueprints`
+- `automation_audit_runs`
+- `automation_coverage_results`
 
 Reliability model:
 
@@ -226,5 +231,21 @@ Reliability model:
 - ALICE grounding is evaluated against operational metrics, benchmark history, recommendation history, scheduling patterns, retention outcomes, and operational memory.
 - Recommendation lineage stores source signals, reasoning, supporting metrics, expected outcomes, historical effectiveness, and confidence.
 - Forecast accuracy and anomaly validation tables track drift, quality, false positives, precision, and escalation quality.
+
+## E2E Automation Audit
+
+The automation audit layer maps every core domain into production readiness criteria:
+
+- Scheduling intelligence: confirmations, no-show prevention, and waitlist recovery.
+- Recall recovery: overdue recall and inactive patient recovery.
+- Review acceleration: review requests and reputation risk detection.
+- Patient retention: churn risk and high-value patient protection.
+- Staffing intelligence: overload detection and staffing forecasts.
+- Executive intelligence: daily briefings and weekly reviews.
+- AI intelligence: forecasts, recommendations, anomaly detection, and confidence calibration.
+- Enterprise coordination: multi-location orchestration and benchmark intelligence.
+- Revenue recovery: leakage detection and prioritization.
+
+Each automation blueprint declares triggers, actions, intelligence outputs, ALICE visibility, emitted event types, required pipelines, and required controls. Mission Control evaluates missing event emissions, replay readiness, telemetry coverage, and ALICE grounding visibility through `/internal/automation-audit`.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.

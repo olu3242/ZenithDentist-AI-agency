@@ -50,6 +50,18 @@ export type PipelineKey = "ingestion" | "intelligence" | "recommendation" | "for
 export type ReplayStatus = "requested" | "running" | "completed" | "failed" | "cancelled";
 export type IntelligenceRunStatus = "queued" | "running" | "passed" | "warning" | "failed";
 export type ConfidenceGrade = "excellent" | "good" | "watch" | "poor";
+export type AutomationDomainKey =
+  | "scheduling_intelligence"
+  | "recall_recovery"
+  | "review_acceleration"
+  | "patient_retention"
+  | "revenue_recovery"
+  | "staffing_intelligence"
+  | "executive_intelligence"
+  | "ai_intelligence"
+  | "benchmark_intelligence"
+  | "enterprise_coordination";
+export type AutomationCoverageStatus = "complete" | "partial" | "missing" | "risk";
 
 export interface Database {
   public: {
@@ -801,6 +813,84 @@ export interface Database {
       resilience_events: EventTable<"resilience">;
       confidence_events: EventTable<"confidence">;
       orchestration_dependency_events: EventTable<"orchestration_dependency">;
+      automation_blueprints: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          domain: AutomationDomainKey;
+          name: string;
+          purpose: string;
+          triggers: Json;
+          actions: Json;
+          intelligence_outputs: Json;
+          alice_visibility: Json;
+          emitted_event_types: Json;
+          required_pipelines: Json;
+          required_controls: Json;
+          coverage_status: AutomationCoverageStatus;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_blueprints"]["Row"]> & {
+          domain: AutomationDomainKey;
+          name: string;
+          purpose: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_blueprints"]["Row"]>;
+        Relationships: [];
+      };
+      automation_audit_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          run_at: string;
+          total_blueprints: number;
+          complete_count: number;
+          partial_count: number;
+          missing_count: number;
+          risk_count: number;
+          coverage_score: number;
+          critical_gaps: Json;
+          recommendations: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_audit_runs"]["Row"]> & {
+          organization_id: string;
+          total_blueprints: number;
+          complete_count: number;
+          partial_count: number;
+          missing_count: number;
+          risk_count: number;
+          coverage_score: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_audit_runs"]["Row"]>;
+        Relationships: [];
+      };
+      automation_coverage_results: {
+        Row: {
+          id: string;
+          organization_id: string;
+          audit_run_id: string | null;
+          blueprint_id: string | null;
+          domain: AutomationDomainKey;
+          name: string;
+          coverage_status: AutomationCoverageStatus;
+          missing_controls: Json;
+          missing_event_types: Json;
+          missing_pipelines: Json;
+          alice_visibility_score: number;
+          replay_readiness_score: number;
+          telemetry_score: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_coverage_results"]["Row"]> & {
+          organization_id: string;
+          domain: AutomationDomainKey;
+          name: string;
+          coverage_status: AutomationCoverageStatus;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_coverage_results"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1060,6 +1150,8 @@ export interface Database {
       replay_status: ReplayStatus;
       intelligence_run_status: IntelligenceRunStatus;
       confidence_grade: ConfidenceGrade;
+      automation_domain_key: AutomationDomainKey;
+      automation_coverage_status: AutomationCoverageStatus;
     };
     CompositeTypes: Record<string, never>;
   };
