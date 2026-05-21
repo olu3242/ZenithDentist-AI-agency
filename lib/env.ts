@@ -10,6 +10,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_LINKEDIN_PARTNER_ID: z.string().min(1).optional(),
   CALENDLY_URL: z.string().url().default("https://calendly.com/your-team/revenue-audit"),
   ADMIN_ACCESS_TOKEN: z.string().min(12).optional(),
+  PORTAL_ACCESS_TOKEN: z.string().min(12).optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000")
 });
 

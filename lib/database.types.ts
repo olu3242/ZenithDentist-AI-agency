@@ -12,6 +12,10 @@ export type OutreachEventType =
   | "cta_clicked"
   | "faq_interaction"
   | "funnel_abandoned";
+export type AutomationEventStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
+export type NotificationSeverity = "info" | "success" | "warning" | "critical";
+export type ReportPeriod = "weekly" | "monthly";
+export type RecommendationPriority = "low" | "medium" | "high" | "critical";
 
 export interface Database {
   public: {
@@ -114,6 +118,125 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["faq_interactions"]["Row"]>;
         Relationships: [];
       };
+      automation_events: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          workflow: string;
+          trigger_name: string;
+          action_name: string;
+          outcome: string | null;
+          status: AutomationEventStatus;
+          success_rate: number | null;
+          recovery_amount: number;
+          event_metadata: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_events"]["Row"]> & {
+          workflow: string;
+          trigger_name: string;
+          action_name: string;
+          status?: AutomationEventStatus;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_events"]["Row"]>;
+        Relationships: [];
+      };
+      operational_metrics: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          metric_date: string;
+          no_show_rate: number;
+          recovered_revenue: number;
+          recall_recovery_count: number;
+          patient_engagement_rate: number;
+          review_requests_sent: number;
+          reviews_generated: number;
+          admin_hours_saved: number;
+          confirmation_rate: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_metrics"]["Row"]> & {
+          metric_date: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_metrics"]["Row"]>;
+        Relationships: [];
+      };
+      insight_snapshots: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          title: string;
+          summary: string;
+          category: string;
+          severity: NotificationSeverity;
+          confidence: number;
+          evidence: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["insight_snapshots"]["Row"]> & {
+          title: string;
+          summary: string;
+          category: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["insight_snapshots"]["Row"]>;
+        Relationships: [];
+      };
+      recommendations: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          title: string;
+          recommendation: string;
+          priority: RecommendationPriority;
+          expected_impact: string;
+          status: string;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["recommendations"]["Row"]> & {
+          title: string;
+          recommendation: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["recommendations"]["Row"]>;
+        Relationships: [];
+      };
+      reports: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          period: ReportPeriod;
+          title: string;
+          summary: string;
+          metrics: Json;
+          recommendations: Json;
+          report_url: string | null;
+          generated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["reports"]["Row"]> & {
+          period: ReportPeriod;
+          title: string;
+          summary: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reports"]["Row"]>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          practice_id: string | null;
+          title: string;
+          body: string;
+          severity: NotificationSeverity;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["notifications"]["Row"]> & {
+          title: string;
+          body: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["notifications"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -121,6 +244,10 @@ export interface Database {
       lead_status: LeadStatus;
       booking_status: BookingStatus;
       outreach_event_type: OutreachEventType;
+      automation_event_status: AutomationEventStatus;
+      notification_severity: NotificationSeverity;
+      report_period: ReportPeriod;
+      recommendation_priority: RecommendationPriority;
     };
     CompositeTypes: Record<string, never>;
   };

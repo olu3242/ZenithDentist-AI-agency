@@ -7,7 +7,13 @@ export type AnalyticsEvent =
   | "faq_interaction"
   | "cta_clicked"
   | "scroll_depth"
-  | "lead_submitted";
+  | "lead_submitted"
+  | "automation_success_rate"
+  | "recall_conversion"
+  | "review_conversion"
+  | "patient_engagement"
+  | "dashboard_usage"
+  | "report_download";
 
 declare global {
   interface Window {

@@ -4,6 +4,7 @@
 
 - Next.js 14 App Router with TypeScript
 - Supabase Postgres with service-role server access
+- Client portal AI operations layer with realtime-ready dashboards
 - Zod validation and React Hook Form
 - Resend transactional email
 - Calendly booking handoff and webhook endpoint
@@ -37,6 +38,12 @@ The schema creates:
 - `bookings`
 - `outreach_events`
 - `faq_interactions`
+- `automation_events`
+- `operational_metrics`
+- `insight_snapshots`
+- `recommendations`
+- `reports`
+- `notifications`
 
 RLS is enabled on all tables. Current policies only allow service-role access, which is correct for the server-action architecture. Before multi-user admin access, add Supabase Auth role claims and tenant-aware policies.
 
@@ -63,5 +70,7 @@ npm run smoke
 ## Security Notes
 
 Admin protection is currently scaffolded with `ADMIN_ACCESS_TOKEN` via middleware. This is intentionally minimal for Phase 4 and should be replaced with Supabase Auth, role claims, and audit logging before broader team access.
+
+Portal protection is scaffolded with `PORTAL_ACCESS_TOKEN`. Before real client rollout, replace this with Supabase Auth, practice membership checks, role claims for practice managers/staff/executives, and tenant-aware RLS policies.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.
