@@ -1,6 +1,8 @@
 import "server-only";
 
+import { getTenantData } from "@/lib/data/tenants";
 import { getRuntimeHealthState, type RuntimeHealthState } from "@/lib/runtime/automation-health";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface ProviderHealth {
   providerKey: string;
@@ -24,6 +26,30 @@ const providerMap = [
 export async function getProviderHealth() {
   const runtime = await getRuntimeHealthState();
   return calculateProviderHealth(runtime);
+}
+
+export async function captureProviderHealthSnapshot() {
+  const [runtime, tenant] = await Promise.all([getRuntimeHealthState(), getTenantData()]);
+  const organizationId = tenant.tenant.organizationId ?? tenant.organization.id;
+  const providers = calculateProviderHealth(runtime);
+  const supabase = createServiceClient();
+  if (!supabase || !providers.length) return { persisted: 0, providers };
+
+  const { error } = await supabase.from("provider_health_snapshots").insert(
+    providers.map(provider => ({
+      organization_id: organizationId,
+      provider_key: provider.providerKey,
+      status: provider.status,
+      uptime_score: provider.uptimeScore,
+      latency_ms: provider.latencyMs,
+      retry_rate: provider.retryRate,
+      failure_rate: provider.failureRate,
+      dependency_impact: provider.dependencyImpact,
+      confidence: provider.confidence
+    }))
+  );
+  if (error) throw new Error(`Unable to persist provider health snapshot: ${error.message}`);
+  return { persisted: providers.length, providers };
 }
 
 export function calculateProviderHealth(runtime: RuntimeHealthState): ProviderHealth[] {

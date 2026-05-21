@@ -8,11 +8,11 @@ import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
-import { getProviderHealth } from "@/lib/runtime/provider-health";
+import { captureProviderHealthSnapshot, getProviderHealth } from "@/lib/runtime/provider-health";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
 import { planRetry } from "@/lib/runtime/self-healing";
 
-export async function GET() {
+export async function GET(request: Request) {
   const runtime = await getRuntimeHealthState();
   const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions] = await Promise.all([
     generateOperationalInsights(),
@@ -28,6 +28,8 @@ export async function GET() {
   const dependencyIssues = detectDependencyIssuesFromRuntime(runtime);
   const predictiveAlerts = generatePredictiveOperationalAlertsFromRuntime(runtime);
   const replayCenter = buildReplayCenterState(runtime);
+  const shouldSnapshot = new URL(request.url).searchParams.get("snapshot") === "true";
+  const providerSnapshot = shouldSnapshot ? await captureProviderHealthSnapshot() : null;
   return NextResponse.json({
     liveTraces: runtime.traces,
     unhealthyWorkflows: runtime.unhealthyWorkflows,
@@ -42,6 +44,7 @@ export async function GET() {
     dependencyIssues,
     predictiveAlerts,
     providerHealth,
+    providerSnapshot,
     incidents,
     replayCenter,
     operationalMemory: memory,

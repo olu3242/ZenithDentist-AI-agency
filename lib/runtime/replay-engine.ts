@@ -1,8 +1,12 @@
 import "server-only";
 
+import type { PipelineKey } from "@/lib/database.types";
+import { getTenantData } from "@/lib/data/tenants";
 import type { RuntimeHealthState } from "@/lib/runtime/automation-health";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { planRetry, suggestRemediation } from "@/lib/runtime/self-healing";
+import { replayTrace } from "@/lib/runtime/trace-engine";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface ReplayCandidate {
   id: string;
@@ -21,6 +25,21 @@ export interface ReplayCenterState {
   replayableDeadLetters: number;
   blockedDeadLetters: number;
   averageConfidence: number;
+}
+
+export interface ReplayExecutionInput {
+  traceId: string;
+  dryRun?: boolean;
+  approved?: boolean;
+  reason?: string;
+}
+
+export interface ReplayExecutionResult {
+  mode: "preview" | "executed";
+  candidate: ReplayCandidate;
+  replayEventId?: string;
+  status: "ready" | "completed" | "blocked" | "failed";
+  message: string;
 }
 
 export async function getReplayCenterState() {
@@ -76,8 +95,101 @@ export function buildReplayCenterState(runtime: RuntimeHealthState): ReplayCente
   };
 }
 
+export async function executeReplay(input: ReplayExecutionInput): Promise<ReplayExecutionResult> {
+  const runtime = await getRuntimeHealthState();
+  const replayState = buildReplayCenterState(runtime);
+  const candidate = replayState.candidates.find(item => item.traceId === input.traceId);
+  if (!candidate) {
+    throw new Error("Replay candidate not found for the requested trace.");
+  }
+
+  if (input.dryRun !== false) {
+    return {
+      mode: "preview",
+      candidate,
+      status: candidate.rollbackSafe ? "ready" : "blocked",
+      message: candidate.rollbackSafe ? candidate.preview : "Replay requires operator approval before execution."
+    };
+  }
+
+  if (!candidate.rollbackSafe && !input.approved) {
+    return {
+      mode: "preview",
+      candidate,
+      status: "blocked",
+      message: "Replay is blocked until an operator approves the recovery path."
+    };
+  }
+
+  const supabase = createServiceClient();
+  if (!supabase) throw new Error("Replay execution requires Supabase service configuration.");
+  const tenant = await getTenantData();
+  const organizationId = tenant.tenant.organizationId ?? tenant.organization.id;
+  const pipeline = pipelineForCandidate(candidate);
+
+  const { data: replayEvent, error: insertError } = await supabase
+    .from("replay_events")
+    .insert({
+      organization_id: organizationId,
+      replay_scope: candidate.replayType,
+      target_pipeline: pipeline,
+      replay_reason: input.reason ?? candidate.suggestedAction,
+      replay_payload: {
+        traceId: candidate.traceId,
+        workflowId: candidate.workflowId,
+        confidence: candidate.confidence,
+        rollbackSafe: candidate.rollbackSafe,
+        operatorApproved: input.approved === true
+      },
+      status: "running",
+      started_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if (insertError) throw new Error(`Unable to persist replay event: ${insertError.message}`);
+
+  try {
+    await replayTrace(candidate.traceId);
+    await supabase
+      .from("replay_events")
+      .update({ status: "completed", completed_at: new Date().toISOString() })
+      .eq("id", replayEvent.id);
+    return {
+      mode: "executed",
+      candidate,
+      replayEventId: replayEvent.id,
+      status: "completed",
+      message: `${candidate.workflowId} replay queued with preserved trace lineage.`
+    };
+  } catch (error) {
+    await supabase
+      .from("replay_events")
+      .update({
+        status: "failed",
+        completed_at: new Date().toISOString(),
+        replay_payload: {
+          traceId: candidate.traceId,
+          workflowId: candidate.workflowId,
+          confidence: candidate.confidence,
+          failureReason: error instanceof Error ? error.message : String(error)
+        }
+      })
+      .eq("id", replayEvent.id);
+    throw error;
+  }
+}
+
 function calculateReplayConfidence(retryCount: number, recoverable: boolean, autoReplayRecommended: boolean) {
   if (!recoverable) return 25;
   const base = autoReplayRecommended ? 82 : 64;
   return Math.max(20, Math.min(95, base - retryCount * 7));
+}
+
+function pipelineForCandidate(candidate: ReplayCandidate): PipelineKey {
+  if (candidate.workflowId.includes("recall")) return "orchestration";
+  if (candidate.workflowId.includes("review")) return "notification";
+  if (candidate.workflowId.includes("lead")) return "intelligence";
+  if (candidate.workflowId.includes("payment") || candidate.workflowId.includes("invoice")) return "orchestration";
+  return "orchestration";
 }

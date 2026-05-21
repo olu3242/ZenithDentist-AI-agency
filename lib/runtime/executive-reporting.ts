@@ -1,12 +1,14 @@
 import "server-only";
 
 import { summarizeAutomationHealth } from "@/lib/alice/operational-intelligence";
+import type { Json } from "@/lib/database.types";
 import { getClientOperationsState } from "@/lib/client-operations";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
 import { getProviderHealth } from "@/lib/runtime/provider-health";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface ExecutiveReportSnapshot {
   title: string;
@@ -60,4 +62,27 @@ export async function buildExecutiveReportSnapshot(): Promise<ExecutiveReportSna
 
 export function renderExecutiveReportHtml(report: ExecutiveReportSnapshot) {
   return `<!doctype html><html><head><meta charset="utf-8"><title>${report.title}</title></head><body><h1>${report.title}</h1><p>${report.summary}</p><ul><li>Runtime health: ${report.runtimeHealth}%</li><li>SLA compliance: ${report.slaCompliance}%</li><li>Provider reliability: ${report.providerReliability}%</li><li>Automation ROI: $${report.automationRoi.toLocaleString()}</li></ul></body></html>`;
+}
+
+export async function persistExecutiveReportSnapshot(report: ExecutiveReportSnapshot) {
+  const runtime = await getRuntimeHealthState();
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("executive_report_snapshots")
+    .insert({
+      organization_id: runtime.organizationId,
+      report_type: "runtime_intelligence",
+      title: report.title,
+      summary: report.summary,
+      payload: report as unknown as Json,
+      export_metadata: {
+        formats: report.exportFormats,
+        generatedAt: report.generatedAt
+      }
+    })
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to persist executive report snapshot: ${error.message}`);
+  return data;
 }
