@@ -53,6 +53,12 @@ export function useOperationalRealtime(onChange: () => void) {
       .on("postgres_changes", { event: "*", schema: "public", table: "swarm_consensus_runs" }, onChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "operational_digital_twins" }, onChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "infrastructure_awareness_snapshots" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "runtime_event_fabric_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "recovery_orchestration_runs" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "tenant_onboarding_runs" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "operational_extensions" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "operational_api_keys" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "operational_usage_meters" }, onChange)
       .subscribe();
 
     return () => {

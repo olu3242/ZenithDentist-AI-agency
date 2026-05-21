@@ -80,6 +80,9 @@ export type GovernanceDecisionStatus = "pending" | "approved" | "rejected" | "ex
 export type RuntimeActionRisk = "low" | "moderate" | "high" | "critical";
 export type OperationalAgentStatus = "active" | "watching" | "coordinating" | "escalating" | "degraded";
 export type AgentMessagePriority = "low" | "moderate" | "high" | "critical";
+export type RuntimeFabricEventStatus = "published" | "delivered" | "replayed" | "failed";
+export type OperationalExtensionStatus = "draft" | "active" | "paused" | "retired";
+export type OnboardingStepStatus = "not_started" | "in_progress" | "completed" | "blocked";
 
 export interface Database {
   public: {
@@ -1285,6 +1288,131 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["infrastructure_awareness_snapshots"]["Row"]>;
         Relationships: [];
       };
+      runtime_event_fabric_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          event_key: string;
+          event_type: string;
+          source_system: string;
+          target_channel: string;
+          status: RuntimeFabricEventStatus;
+          correlation_id: string | null;
+          payload: Json;
+          published_at: string;
+          delivered_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["runtime_event_fabric_events"]["Row"]> & {
+          organization_id: string;
+          event_key: string;
+          event_type: string;
+          source_system: string;
+          target_channel: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["runtime_event_fabric_events"]["Row"]>;
+        Relationships: [];
+      };
+      recovery_orchestration_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          orchestration_key: string;
+          status: string;
+          risk_level: RuntimeActionRisk;
+          confidence: number;
+          sequence: Json;
+          outcome: Json;
+          created_at: string;
+          completed_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["recovery_orchestration_runs"]["Row"]> & {
+          organization_id: string;
+          orchestration_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["recovery_orchestration_runs"]["Row"]>;
+        Relationships: [];
+      };
+      tenant_onboarding_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          onboarding_key: string;
+          status: OnboardingStepStatus;
+          current_step: string;
+          progress: number;
+          setup_payload: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["tenant_onboarding_runs"]["Row"]> & {
+          organization_id: string;
+          onboarding_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["tenant_onboarding_runs"]["Row"]>;
+        Relationships: [];
+      };
+      operational_extensions: {
+        Row: {
+          id: string;
+          organization_id: string;
+          extension_key: string;
+          extension_name: string;
+          extension_type: string;
+          status: OperationalExtensionStatus;
+          permission_scope: string[];
+          dependency_keys: string[];
+          observability: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_extensions"]["Row"]> & {
+          organization_id: string;
+          extension_key: string;
+          extension_name: string;
+          extension_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_extensions"]["Row"]>;
+        Relationships: [];
+      };
+      operational_api_keys: {
+        Row: {
+          id: string;
+          organization_id: string;
+          key_name: string;
+          key_prefix: string;
+          scopes: string[];
+          status: string;
+          last_used_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_api_keys"]["Row"]> & {
+          organization_id: string;
+          key_name: string;
+          key_prefix: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_api_keys"]["Row"]>;
+        Relationships: [];
+      };
+      operational_usage_meters: {
+        Row: {
+          id: string;
+          organization_id: string;
+          meter_key: string;
+          quantity: number;
+          quota: number | null;
+          billing_tier: string;
+          period_start: string;
+          period_end: string;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_usage_meters"]["Row"]> & {
+          organization_id: string;
+          meter_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_usage_meters"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1555,6 +1683,9 @@ export interface Database {
       runtime_action_risk: RuntimeActionRisk;
       operational_agent_status: OperationalAgentStatus;
       agent_message_priority: AgentMessagePriority;
+      runtime_fabric_event_status: RuntimeFabricEventStatus;
+      operational_extension_status: OperationalExtensionStatus;
+      onboarding_step_status: OnboardingStepStatus;
     };
     CompositeTypes: Record<string, never>;
   };

@@ -9,21 +9,24 @@ import { buildExecutiveReportSnapshot } from "@/lib/runtime/executive-reporting"
 import { getGovernanceState } from "@/lib/runtime/governance";
 import { getRuntimeIncidents } from "@/lib/runtime/incident-management";
 import { getRuntimeDigitalTwinState } from "@/lib/runtime/digital-twin";
+import { getRuntimeEventFabricState } from "@/lib/runtime/event-fabric";
 import { getExecutiveIntelligenceCloudState, getInfrastructureAwarenessState } from "@/lib/runtime/operational-cloud";
 import { getOperationalCognitionState } from "@/lib/runtime/operational-cognition";
 import { getOperationalMemoryState } from "@/lib/runtime/operational-memory";
 import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
+import { getProductizationState } from "@/lib/platform/productization";
 import { captureProviderHealthSnapshot, getProviderHealth } from "@/lib/runtime/provider-health";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
+import { getRecoveryOrchestratorState } from "@/lib/runtime/recovery-orchestrator";
 import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
 import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 import { planRetry } from "@/lib/runtime/self-healing";
 
 export async function GET(request: Request) {
   const runtime = await getRuntimeHealthState();
-  const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud] = await Promise.all([
+  const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization] = await Promise.all([
     generateOperationalInsights(),
     generateRemediationPlan(),
     reasonAcrossOperations(),
@@ -41,7 +44,10 @@ export async function GET(request: Request) {
     getOperationalCognitionState(),
     getRuntimeDigitalTwinState(),
     getInfrastructureAwarenessState(),
-    getExecutiveIntelligenceCloudState()
+    getExecutiveIntelligenceCloudState(),
+    getRuntimeEventFabricState(),
+    getRecoveryOrchestratorState(),
+    getProductizationState()
   ]);
   const graph = buildWorkflowGraphFromRuntime(runtime);
   const dependencyIssues = detectDependencyIssuesFromRuntime(runtime);
@@ -79,6 +85,9 @@ export async function GET(request: Request) {
     runtimeDigitalTwin: twin,
     infrastructureAwareness: awareness,
     executiveIntelligenceCloud: executiveCloud,
+    runtimeEventFabric: fabric,
+    recoveryOrchestrator: orchestrator,
+    productization,
     operationalAlerts: aliceInsights,
     aliceRemediation: remediationPlan,
     aliceOperations

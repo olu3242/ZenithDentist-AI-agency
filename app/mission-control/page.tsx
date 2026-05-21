@@ -7,13 +7,18 @@ import { DentalIntelligencePanel } from "@/components/mission-control/dental-int
 import { ExecutiveKPIGrid } from "@/components/mission-control/executive-kpi-grid";
 import { ExecutiveIntelligenceCloud } from "@/components/mission-control/executive-intelligence-cloud";
 import { ExecutiveReportCard } from "@/components/mission-control/executive-report-card";
+import { EnterpriseUsageDashboard } from "@/components/mission-control/enterprise-usage-dashboard";
 import { GovernanceCenter } from "@/components/mission-control/governance-center";
 import { IncidentTimeline } from "@/components/mission-control/incident-timeline";
 import { InfrastructureAwarenessPanel } from "@/components/mission-control/infrastructure-awareness-panel";
 import { OperationalAgentGrid } from "@/components/mission-control/operational-agent-grid";
+import { OperationalMarketplace } from "@/components/mission-control/operational-marketplace";
 import { OperationalGraph } from "@/components/mission-control/operational-graph";
 import { OperationalForecastPanel } from "@/components/mission-control/operational-forecast-panel";
 import { OperationalMemoryPanel } from "@/components/mission-control/operational-memory-panel";
+import { OperationalRecoveryOrchestrator } from "@/components/mission-control/operational-recovery-orchestrator";
+import { OperationalSDKExplorer } from "@/components/mission-control/operational-sdk-explorer";
+import { PlatformizationPanel } from "@/components/mission-control/platformization-panel";
 import { PredictiveAlertFeed } from "@/components/mission-control/predictive-alert-feed";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
 import { ReplayCenter } from "@/components/mission-control/replay-center";
@@ -22,6 +27,7 @@ import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-ba
 import { RuntimeHeatmap } from "@/components/mission-control/runtime-heatmap";
 import { RuntimeCognitionPanel } from "@/components/mission-control/runtime-cognition-panel";
 import { RuntimeDigitalTwin } from "@/components/mission-control/runtime-digital-twin";
+import { RuntimeEventFabric } from "@/components/mission-control/runtime-event-fabric";
 import { RuntimeSwarmViewer } from "@/components/mission-control/runtime-swarm-viewer";
 import { RuntimeTraceViewer } from "@/components/mission-control/runtime-trace-viewer";
 import { SimulationLab } from "@/components/mission-control/simulation-lab";
@@ -43,12 +49,15 @@ import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting"
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
 import { getProviderHealth } from "@/lib/runtime/provider-health";
+import { getProductizationState } from "@/lib/platform/productization";
+import { getRuntimeEventFabricState } from "@/lib/runtime/event-fabric";
+import { getRecoveryOrchestratorState } from "@/lib/runtime/recovery-orchestrator";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
 import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
 import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 
 export default async function MissionControlPage() {
-  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud] = await Promise.all([
+  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),
     getRuntimeIncidents(),
@@ -65,7 +74,10 @@ export default async function MissionControlPage() {
     getOperationalCognitionState(),
     getRuntimeDigitalTwinState(),
     getInfrastructureAwarenessState(),
-    getExecutiveIntelligenceCloudState()
+    getExecutiveIntelligenceCloudState(),
+    getRuntimeEventFabricState(),
+    getRecoveryOrchestratorState(),
+    getProductizationState()
   ]);
   const graph = buildWorkflowGraphFromRuntime(state);
   const dependencyIssues = detectDependencyIssuesFromRuntime(state);
@@ -77,7 +89,7 @@ export default async function MissionControlPage() {
         <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>
           <nav className="mt-5 grid gap-2 text-sm font-black text-muted">
-            {["Executive cloud", "Agent mesh", "Cognition", "Digital twin", "Runtime graph", "Governance", "Recovery", "Forecasting", "Simulation", "Audit history"].map(item => (
+            {["Event fabric", "Executive cloud", "Platform core", "Marketplace", "Agent mesh", "Cognition", "Digital twin", "Governance", "Recovery", "SDK"].map(item => (
               <span key={item} className="rounded bg-paper px-3 py-2">{item}</span>
             ))}
           </nav>
@@ -90,7 +102,16 @@ export default async function MissionControlPage() {
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
           <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />
+          <RuntimeEventFabric fabric={fabric} />
           <ExecutiveIntelligenceCloud cloud={executiveCloud} />
+          <div className="grid gap-6 xl:grid-cols-2">
+            <PlatformizationPanel state={productization} />
+            <OperationalSDKExplorer state={productization} />
+          </div>
+          <div className="grid gap-6 xl:grid-cols-2">
+            <OperationalMarketplace state={productization} />
+            <EnterpriseUsageDashboard state={productization} />
+          </div>
           <OperationalAgentGrid mesh={mesh} />
           <div className="grid gap-6 xl:grid-cols-2">
             <RuntimeCognitionPanel cognition={cognition} />
@@ -104,8 +125,9 @@ export default async function MissionControlPage() {
           <RuntimeDigitalTwin twin={twin} />
           <div className="grid gap-6 xl:grid-cols-2">
             <GovernanceCenter governance={governance} />
-            <AutonomousRecoveryCenter recovery={recovery} />
+            <OperationalRecoveryOrchestrator orchestrator={orchestrator} />
           </div>
+          <AutonomousRecoveryCenter recovery={recovery} />
           <div className="grid gap-6 xl:grid-cols-2">
             <OperationalForecastPanel forecasts={forecasts} />
             <SimulationLab simulations={simulations} />
