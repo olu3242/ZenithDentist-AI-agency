@@ -16,7 +16,7 @@ create table public.automation_traces (
   id uuid primary key default gen_random_uuid(),
   trace_id uuid not null unique default gen_random_uuid(),
   workflow_id text not null,
-  organization_id uuid not null,
+  organization_id text not null,
   domain text not null,
   event_name text not null,
   status automation_trace_status not null default 'running',

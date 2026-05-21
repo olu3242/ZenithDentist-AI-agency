@@ -5,6 +5,7 @@ import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-intelligence";
 import { buildWorkflowGraphFromRuntime } from "@/lib/runtime/operational-graph";
 import { generatePredictiveOperationalAlertsFromRuntime } from "@/lib/runtime/predictive-monitoring";
+import type { ProviderHealth } from "@/lib/runtime/provider-health";
 import { suggestRemediation } from "@/lib/runtime/self-healing";
 
 export async function summarizeAutomationHealth() {
@@ -164,4 +165,27 @@ export function buildOperationalInsights(runtime: RuntimeHealthState) {
   }
 
   return insights;
+}
+
+export function buildRuntimeAnalystBriefing(input: {
+  runtime: RuntimeHealthState;
+  providers: ProviderHealth[];
+}) {
+  const bottlenecks = detectOperationalBottlenecks(input.runtime);
+  const degradedProviders = input.providers.filter(provider => provider.status === "degraded" || provider.status === "down");
+  return {
+    observation: input.runtime.unhealthyWorkflows.length
+      ? `${input.runtime.unhealthyWorkflows.length} workflows are showing runtime instability.`
+      : "Runtime execution is stable across the current observation window.",
+    interpretation: degradedProviders.length
+      ? `Operational instability is concentrated around ${degradedProviders.map(provider => provider.providerKey).join(", ")} dependency pressure.`
+      : "No dependency cluster is currently dominating runtime risk.",
+    impact: `${input.runtime.deadLetters.length} dead-letter events and ${input.runtime.slaBreaches.length} SLA breaches are influencing recovery confidence.`,
+    recommendation: bottlenecks.length
+      ? `Prioritize ${bottlenecks[0].domain.replace(/_/g, " ")} because ${bottlenecks[0].issue} is the leading operational bottleneck.`
+      : "Maintain current monitoring posture and continue collecting trace depth before increasing execution volume.",
+    expectedOutcome: input.runtime.scores.operationalScore < 70
+      ? "Resolving the top retry and SLA pressure should improve runtime confidence within the next operating cycle."
+      : "Current controls should preserve SLA intelligence while operational volume scales."
+  };
 }

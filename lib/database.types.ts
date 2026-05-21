@@ -74,6 +74,8 @@ export type AutomationFailureCategory =
   | "dependency"
   | "partial_success"
   | "retry_exhausted";
+export type OperationalIncidentStatus = "open" | "mitigating" | "resolved" | "postmortem";
+export type OperationalIncidentSeverity = "low" | "moderate" | "high" | "critical";
 
 export interface Database {
   public: {
@@ -968,6 +970,109 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["automation_dead_letters"]["Row"]>;
         Relationships: [];
       };
+      operational_memory_entries: {
+        Row: {
+          id: string;
+          organization_id: string;
+          memory_type: string;
+          workflow_id: string | null;
+          title: string;
+          summary: string;
+          evidence: Json;
+          confidence: number;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_memory_entries"]["Row"]> & {
+          organization_id: string;
+          memory_type: string;
+          title: string;
+          summary: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_memory_entries"]["Row"]>;
+        Relationships: [];
+      };
+      operational_incidents: {
+        Row: {
+          id: string;
+          organization_id: string;
+          incident_key: string;
+          title: string;
+          severity: OperationalIncidentSeverity;
+          status: OperationalIncidentStatus;
+          root_cause: string | null;
+          mitigation: string | null;
+          sla_impact_ms: number | null;
+          correlation_id: string | null;
+          opened_at: string;
+          resolved_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_incidents"]["Row"]> & {
+          organization_id: string;
+          incident_key: string;
+          title: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_incidents"]["Row"]>;
+        Relationships: [];
+      };
+      operational_incident_events: {
+        Row: {
+          id: string;
+          incident_id: string;
+          event_type: string;
+          message: string;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_incident_events"]["Row"]> & {
+          incident_id: string;
+          event_type: string;
+          message: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_incident_events"]["Row"]>;
+        Relationships: [];
+      };
+      provider_health_snapshots: {
+        Row: {
+          id: string;
+          organization_id: string;
+          provider_key: string;
+          status: string;
+          uptime_score: number;
+          latency_ms: number | null;
+          retry_rate: number;
+          failure_rate: number;
+          dependency_impact: number;
+          confidence: number;
+          observed_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["provider_health_snapshots"]["Row"]> & {
+          organization_id: string;
+          provider_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["provider_health_snapshots"]["Row"]>;
+        Relationships: [];
+      };
+      executive_report_snapshots: {
+        Row: {
+          id: string;
+          organization_id: string;
+          report_type: string;
+          status: string;
+          title: string;
+          summary: string;
+          payload: Json;
+          export_metadata: Json;
+          generated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["executive_report_snapshots"]["Row"]> & {
+          organization_id: string;
+          report_type: string;
+          title: string;
+          summary: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["executive_report_snapshots"]["Row"]>;
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;
@@ -1232,6 +1337,8 @@ export interface Database {
       automation_trace_status: AutomationTraceStatus;
       automation_trace_stage_status: AutomationTraceStageStatus;
       automation_failure_category: AutomationFailureCategory;
+      operational_incident_status: OperationalIncidentStatus;
+      operational_incident_severity: OperationalIncidentSeverity;
     };
     CompositeTypes: Record<string, never>;
   };

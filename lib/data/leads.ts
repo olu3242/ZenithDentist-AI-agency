@@ -4,6 +4,7 @@ import { logger } from "@/lib/logger";
 import { buildAuditRecommendations, calculateRevenueProjection } from "@/lib/roi";
 import type { Database } from "@/lib/database.types";
 import type { FunnelSubmissionInput } from "@/lib/validation";
+import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib/runtime/instrumentation";
 
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type RoiCalculation = Database["public"]["Tables"]["roi_calculations"]["Row"];
@@ -22,6 +23,11 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
   if (!supabase) {
     throw new Error("Supabase server environment is not configured.");
   }
+  const trace = await startRuntimeTrace({
+    workflowId: "lead_created",
+    eventName: "lead_funnel_submission",
+    metadata: { source: input.source, practiceName: input.practiceName }
+  });
 
   const projection = calculateRevenueProjection(input);
   const { data: lead, error: leadError } = await supabase
@@ -45,6 +51,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
 
   if (leadError) {
     logger.error("lead_create_failed", { error: leadError.message });
+    await failRuntimeTrace(trace, leadError.message, { stage: "lead_create" });
     throw new Error("Unable to create lead.");
   }
 
@@ -68,6 +75,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
 
   if (roiError) {
     logger.error("roi_create_failed", { error: roiError.message, leadId: lead.id });
+    await failRuntimeTrace(trace, roiError.message, { stage: "roi_create", leadId: lead.id });
     throw new Error("Unable to persist ROI calculation.");
   }
 
@@ -88,6 +96,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
 
   if (auditError) {
     logger.error("audit_create_failed", { error: auditError.message, leadId: lead.id });
+    await failRuntimeTrace(trace, auditError.message, { stage: "audit_create", leadId: lead.id });
     throw new Error("Unable to generate audit.");
   }
 
@@ -97,6 +106,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
     metadata: { source: input.source, projection }
   });
 
+  await completeRuntimeTrace(trace);
   return { lead, roi, audit };
 }
 
@@ -131,6 +141,11 @@ export async function trackOutreachEvent(input: {
     logger.warn("event_not_persisted_supabase_missing", input);
     return;
   }
+  const trace = await startRuntimeTrace({
+    workflowId: "ai_followup_required",
+    eventName: String(input.eventType),
+    metadata: { leadId: input.leadId, ...(input.metadata ?? {}) }
+  });
 
   const { error } = await supabase.from("outreach_events").insert({
     lead_id: input.leadId ?? null,
@@ -138,20 +153,35 @@ export async function trackOutreachEvent(input: {
     event_metadata: (input.metadata ?? {}) as Json
   });
 
-  if (error) logger.error("event_track_failed", { error: error.message, input });
+  if (error) {
+    logger.error("event_track_failed", { error: error.message, input });
+    await failRuntimeTrace(trace, error.message, { leadId: input.leadId, eventType: input.eventType });
+    return;
+  }
+  await completeRuntimeTrace(trace);
 }
 
 export async function trackBookingClick(leadId?: string, metadata: Record<string, unknown> = {}) {
   const supabase = createServiceClient();
   if (!supabase) return;
+  const trace = await startRuntimeTrace({
+    workflowId: "lead_created",
+    eventName: "booking_click",
+    metadata: { leadId, ...metadata }
+  });
 
-  await supabase.from("bookings").insert({
+  const { error } = await supabase.from("bookings").insert({
     lead_id: leadId ?? null,
     booking_status: "clicked",
     notes: "Calendly booking link clicked"
   });
+  if (error) {
+    await failRuntimeTrace(trace, error.message, { leadId });
+    return;
+  }
 
   await trackOutreachEvent({ leadId, eventType: "booking_clicked", metadata });
+  await completeRuntimeTrace(trace);
 }
 
 function emptyAdminData() {
