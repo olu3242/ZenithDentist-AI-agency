@@ -24,6 +24,17 @@ export function useOperationalRealtime(onChange: () => void) {
       .on("postgres_changes", { event: "*", schema: "public", table: "benchmark_events" }, onChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "operational_risk_events" }, onChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "forecasting_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "queue_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "replay_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "intelligence_runs" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "orchestration_logs" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "operational_health_snapshots" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "recommendation_outcome_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "simulation_accuracy_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "intelligence_quality_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "resilience_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "confidence_events" }, onChange)
+      .on("postgres_changes", { event: "*", schema: "public", table: "orchestration_dependency_events" }, onChange)
       .subscribe();
 
     return () => {

@@ -45,6 +45,11 @@ export type AliceOperationalMode =
   | "autonomous_recommendation"
   | "operational_risk_analysis";
 export type GovernanceStatus = "draft" | "review_required" | "approved" | "rejected" | "active" | "rolled_back";
+export type QueueStatus = "pending" | "processing" | "completed" | "failed" | "dead_letter" | "replayed";
+export type PipelineKey = "ingestion" | "intelligence" | "recommendation" | "forecasting" | "orchestration" | "notification";
+export type ReplayStatus = "requested" | "running" | "completed" | "failed" | "cancelled";
+export type IntelligenceRunStatus = "queued" | "running" | "passed" | "warning" | "failed";
+export type ConfidenceGrade = "excellent" | "good" | "watch" | "poor";
 
 export interface Database {
   public: {
@@ -553,6 +558,249 @@ export interface Database {
       benchmark_events: EventTable<"benchmark">;
       operational_risk_events: EventTable<"operational_risk">;
       forecasting_events: EventTable<"forecasting">;
+      open_dental_sync_checkpoints: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          integration_id: string | null;
+          sync_scope: string;
+          checkpoint_cursor: string;
+          last_seen_remote_id: string | null;
+          last_synced_at: string;
+          reconciliation_hash: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["open_dental_sync_checkpoints"]["Row"]> & {
+          organization_id: string;
+          sync_scope: string;
+          checkpoint_cursor: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["open_dental_sync_checkpoints"]["Row"]>;
+        Relationships: [];
+      };
+      operational_event_ledger: {
+        Row: {
+          id: string;
+          organization_id: string;
+          location_id: string | null;
+          source_system: string;
+          source_event_id: string;
+          normalized_event_type: string;
+          event_version: number;
+          correlation_id: string;
+          idempotency_key: string;
+          lineage: Json;
+          payload: Json;
+          emitted_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_event_ledger"]["Row"]> & {
+          organization_id: string;
+          source_system: string;
+          source_event_id: string;
+          normalized_event_type: string;
+          idempotency_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_event_ledger"]["Row"]>;
+        Relationships: [];
+      };
+      queue_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          operational_event_id: string | null;
+          pipeline: PipelineKey;
+          status: QueueStatus;
+          correlation_id: string;
+          idempotency_key: string;
+          attempt_count: number;
+          max_attempts: number;
+          visible_at: string;
+          next_retry_at: string | null;
+          dead_letter_reason: string | null;
+          payload: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["queue_events"]["Row"]> & {
+          organization_id: string;
+          pipeline: PipelineKey;
+          correlation_id: string;
+          idempotency_key: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["queue_events"]["Row"]>;
+        Relationships: [];
+      };
+      replay_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          requested_by: string | null;
+          replay_scope: string;
+          target_pipeline: PipelineKey;
+          source_queue_event_id: string | null;
+          status: ReplayStatus;
+          replay_reason: string;
+          replay_payload: Json;
+          started_at: string | null;
+          completed_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["replay_events"]["Row"]> & {
+          organization_id: string;
+          replay_scope: string;
+          target_pipeline: PipelineKey;
+          replay_reason: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["replay_events"]["Row"]>;
+        Relationships: [];
+      };
+      intelligence_runs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          run_type: string;
+          status: IntelligenceRunStatus;
+          grounding_sources: Json;
+          input_fingerprint: string;
+          output_summary: string | null;
+          hallucination_score: number;
+          operational_relevance: number;
+          benchmark_correctness: number;
+          confidence: number;
+          evaluation: Json;
+          created_at: string;
+          completed_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["intelligence_runs"]["Row"]> & {
+          organization_id: string;
+          run_type: string;
+          input_fingerprint: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["intelligence_runs"]["Row"]>;
+        Relationships: [];
+      };
+      recommendation_lineage: {
+        Row: {
+          id: string;
+          organization_id: string;
+          recommendation_id: string | null;
+          source_event_ids: string[];
+          source_signals: Json;
+          operational_reasoning: string;
+          supporting_metrics: Json;
+          confidence_score: number;
+          historical_effectiveness: number;
+          expected_outcome: string;
+          accepted_at: string | null;
+          rejected_at: string | null;
+          outcome_payload: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["recommendation_lineage"]["Row"]> & {
+          organization_id: string;
+          operational_reasoning: string;
+          expected_outcome: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["recommendation_lineage"]["Row"]>;
+        Relationships: [];
+      };
+      forecast_accuracy: {
+        Row: {
+          id: string;
+          organization_id: string;
+          forecast_id: string | null;
+          forecast_type: string;
+          predicted_value: number;
+          actual_value: number | null;
+          drift_score: number;
+          quality_score: number;
+          evaluation_window: string;
+          measured_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["forecast_accuracy"]["Row"]> & {
+          organization_id: string;
+          forecast_type: string;
+          predicted_value: number;
+          evaluation_window: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["forecast_accuracy"]["Row"]>;
+        Relationships: [];
+      };
+      anomaly_validations: {
+        Row: {
+          id: string;
+          organization_id: string;
+          anomaly_event_id: string | null;
+          anomaly_type: string;
+          severity: EventSeverity;
+          precision_score: number;
+          false_positive: boolean;
+          escalation_quality: number;
+          operational_relevance: number;
+          validator_notes: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["anomaly_validations"]["Row"]> & {
+          organization_id: string;
+          anomaly_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["anomaly_validations"]["Row"]>;
+        Relationships: [];
+      };
+      orchestration_logs: {
+        Row: {
+          id: string;
+          organization_id: string;
+          correlation_id: string;
+          sequence_name: string;
+          step_name: string;
+          status: QueueStatus;
+          dependency_keys: Json;
+          trace_payload: Json;
+          started_at: string;
+          completed_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["orchestration_logs"]["Row"]> & {
+          organization_id: string;
+          correlation_id: string;
+          sequence_name: string;
+          step_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["orchestration_logs"]["Row"]>;
+        Relationships: [];
+      };
+      operational_health_snapshots: {
+        Row: {
+          id: string;
+          organization_id: string;
+          snapshot_at: string;
+          orchestration_health: number;
+          ai_reliability_score: number;
+          forecast_quality_score: number;
+          queue_stability_score: number;
+          operational_confidence_score: number;
+          resilience_score: number;
+          summary: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["operational_health_snapshots"]["Row"]> & {
+          organization_id: string;
+          orchestration_health: number;
+          ai_reliability_score: number;
+          forecast_quality_score: number;
+          queue_stability_score: number;
+          operational_confidence_score: number;
+          resilience_score: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["operational_health_snapshots"]["Row"]>;
+        Relationships: [];
+      };
+      recommendation_outcome_events: EventTable<"recommendation_outcome">;
+      simulation_accuracy_events: EventTable<"simulation_accuracy">;
+      intelligence_quality_events: EventTable<"intelligence_quality">;
+      resilience_events: EventTable<"resilience">;
+      confidence_events: EventTable<"confidence">;
+      orchestration_dependency_events: EventTable<"orchestration_dependency">;
       leads: {
         Row: {
           id: string;
@@ -807,6 +1055,11 @@ export interface Database {
       cloud_layer_key: CloudLayerKey;
       alice_operational_mode: AliceOperationalMode;
       governance_status: GovernanceStatus;
+      queue_status: QueueStatus;
+      pipeline_key: PipelineKey;
+      replay_status: ReplayStatus;
+      intelligence_run_status: IntelligenceRunStatus;
+      confidence_grade: ConfidenceGrade;
     };
     CompositeTypes: Record<string, never>;
   };

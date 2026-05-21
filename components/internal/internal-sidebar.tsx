@@ -1,7 +1,16 @@
 import Link from "next/link";
-import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck, CloudCog, DatabaseZap, PlugZap } from "lucide-react";
+import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck, CloudCog, DatabaseZap, PlugZap, RadioTower, History, Target, ShieldAlert, Network, TrendingUp } from "lucide-react";
 
 const nav = [
+  { href: "/internal/mission-control", label: "Mission Control", icon: RadioTower },
+  { href: "/internal/events", label: "Events", icon: Network },
+  { href: "/internal/grounding", label: "Grounding", icon: Target },
+  { href: "/internal/resilience", label: "Resilience", icon: ShieldAlert },
+  { href: "/internal/replays", label: "Replays", icon: History },
+  { href: "/internal/intelligence", label: "Intelligence", icon: Brain },
+  { href: "/internal/accuracy", label: "Accuracy", icon: TrendingUp },
+  { href: "/internal/confidence", label: "Confidence", icon: Gauge },
+  { href: "/internal/simulations", label: "Sim Accuracy", icon: Activity },
   { href: "/internal/cloud", label: "Cloud", icon: CloudCog },
   { href: "/internal/orchestration", label: "Orchestration", icon: DatabaseZap },
   { href: "/internal/integrations", label: "PMS", icon: PlugZap },

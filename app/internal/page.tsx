@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function InternalIndexPage() {
-  redirect("/internal/cloud");
+  redirect("/internal/mission-control");
 }

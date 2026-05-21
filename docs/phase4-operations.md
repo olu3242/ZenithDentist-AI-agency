@@ -105,6 +105,15 @@ New protected surfaces:
 - `/internal/orchestration`
 - `/internal/integrations`
 - `/internal/governance`
+- `/internal/mission-control`
+- `/internal/events`
+- `/internal/grounding`
+- `/internal/resilience`
+- `/internal/replays`
+- `/internal/intelligence`
+- `/internal/accuracy`
+- `/internal/confidence`
+- `/internal/simulations`
 
 Subscription architecture follows Stripe Billing best practices: use Billing APIs with Checkout Sessions in `subscription` mode and Stripe Customer Portal for self-service plan management. The current implementation stores plan metadata and optional `stripe_price_id` values without creating live Stripe objects yet.
 
@@ -177,5 +186,45 @@ Governance model:
 - Revenue orchestration proposes recovery priorities but remains approval-gated.
 - Governance records store approval chains, risk controls, rollback plans, and audit notes.
 - Realtime subscriptions now include enterprise events, intelligence events, benchmark events, operational risk events, and forecasting events.
+
+## Batch 1 and Batch 2 Operational Stabilization
+
+The stabilization layer turns Zenith into replay-safe operational intelligence infrastructure with Open Dental pilot ingestion, queue resilience, event lineage, AI grounding validation, confidence calibration, and executive trust monitoring.
+
+New APIs:
+
+- `/api/opendental/sync`
+- `/api/mission-control/state`
+- `/api/mission-control/replay`
+- `/api/mission-control/evaluate`
+
+New Supabase tables:
+
+- `open_dental_sync_checkpoints`
+- `operational_event_ledger`
+- `queue_events`
+- `replay_events`
+- `intelligence_runs`
+- `recommendation_lineage`
+- `forecast_accuracy`
+- `anomaly_validations`
+- `orchestration_logs`
+- `operational_health_snapshots`
+- `recommendation_outcome_events`
+- `simulation_accuracy_events`
+- `intelligence_quality_events`
+- `resilience_events`
+- `confidence_events`
+- `orchestration_dependency_events`
+
+Reliability model:
+
+- Open Dental records are normalized into operational, scheduling, retention, engagement, and forecast event categories.
+- Every ingested event carries an idempotency key, correlation ID, event version, and lineage history.
+- Queue events include retry counts, visibility timing, delayed retry support, and dead-letter state.
+- Replay requests are scoped by target pipeline and reason, with authorization-ready audit fields.
+- ALICE grounding is evaluated against operational metrics, benchmark history, recommendation history, scheduling patterns, retention outcomes, and operational memory.
+- Recommendation lineage stores source signals, reasoning, supporting metrics, expected outcomes, historical effectiveness, and confidence.
+- Forecast accuracy and anomaly validation tables track drift, quality, false positives, precision, and escalation quality.
 
 `npm audit --omit=dev` reports active advisories for Next.js 14 even at `14.2.35`. The requested stack was Next.js 14; npm recommends a breaking upgrade path to Next.js 16 for full advisory remediation. Treat that as the next security decision before production traffic.
