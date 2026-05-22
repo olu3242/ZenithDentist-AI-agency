@@ -21,6 +21,16 @@ export function ClientSuccessPanel({ state }: { state: BusinessGrowthState }) {
           <strong className="mt-2 block text-2xl font-black">{state.metrics.referralOpportunities}</strong>
         </div>
       </div>
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <div className="rounded border border-white/10 bg-white/8 p-4">
+          <p className="text-xs font-black uppercase tracking-wider text-white/55">At-risk accounts</p>
+          <strong className="mt-2 block text-2xl font-black">{state.retention.atRiskAccounts}</strong>
+        </div>
+        <div className="rounded border border-white/10 bg-white/8 p-4">
+          <p className="text-xs font-black uppercase tracking-wider text-white/55">Expansion ready</p>
+          <strong className="mt-2 block text-2xl font-black">{state.retention.expansionReadyAccounts}</strong>
+        </div>
+      </div>
       <div className="mt-5 grid gap-2">
         {state.retention.nextSuccessActions.map(action => (
           <div key={action} className="rounded border border-white/10 bg-white/8 p-3 text-sm font-semibold text-white/70">{action}</div>

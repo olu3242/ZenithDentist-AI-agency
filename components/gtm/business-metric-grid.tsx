@@ -14,6 +14,8 @@ export function BusinessMetricGrid({ state }: { state: BusinessGrowthState }) {
       <MetricCard label="Avg implementation" value={`$${state.metrics.avgImplementationValue.toLocaleString()}`} detail="Average opportunity size" tone="rust" />
       <MetricCard label="Client health" value={`${state.metrics.clientHealth}%`} detail="Operational success score" tone="green" />
       <MetricCard label="Referrals" value={state.metrics.referralOpportunities} detail="Advocacy opportunities" tone="blue" />
+      <MetricCard label="Case studies" value={state.metrics.caseStudyCandidates} detail="Proof assets in progress" tone="gold" />
+      <MetricCard label="Content assets" value={state.metrics.contentAssets} detail="Authority engine inventory" tone="teal" />
     </div>
   );
 }

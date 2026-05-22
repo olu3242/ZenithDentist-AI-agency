@@ -13,6 +13,7 @@ export function ProofEnginePanel({ state }: { state: BusinessGrowthState }) {
         <Proof label="Retention lift" value={`${state.proof.patientRetentionLift}%`} />
         <Proof label="Review lift" value={`${state.proof.reviewGenerationLift}%`} />
       </div>
+      <p className="mt-4 text-sm font-semibold text-muted">{state.proof.caseStudiesReady} case studies ready for publishing.</p>
       <div className="mt-5 grid gap-2">
         {state.proof.testimonialPrompts.map(prompt => (
           <div key={prompt} className="rounded border border-line bg-paper p-3 text-sm font-semibold text-muted">{prompt}</div>
