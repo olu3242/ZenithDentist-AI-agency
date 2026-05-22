@@ -9,7 +9,7 @@ export default async function LeadOperationsPage() {
       <RealtimeRefresh />
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith AI</p>
+          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith AI Automation Agency</p>
           <h1 className="mt-2 text-4xl font-black text-ink">Lead Operations</h1>
           <p className="mt-2 max-w-3xl text-base font-semibold text-muted">Dental client acquisition, prospect management, reply/book rates, campaign visibility, and revenue-focused personalization.</p>
         </header>

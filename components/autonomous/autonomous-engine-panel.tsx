@@ -6,7 +6,7 @@ export function AutonomousEnginePanel({ health, confidence }: { health: Practice
       <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith Autonomous Operations Engine</p>
       <h2 className="mt-2 text-3xl font-black">Continuous revenue optimization is active.</h2>
       <p className="mt-3 max-w-3xl text-muted">
-        Zenith is monitoring operational degradation, forecasting risk, and preparing approval-gated optimizations for the Patient Revenue Engine™.
+        Zenith is monitoring operational degradation, forecasting risk, and preparing approval-gated optimizations for the Patient Revenue Engine.
       </p>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         <Signal label="Practice health" value={`${health.overall}/100`} />

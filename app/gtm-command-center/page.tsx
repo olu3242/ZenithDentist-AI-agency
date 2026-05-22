@@ -18,7 +18,7 @@ export default async function GTMCommandCenterPage() {
           <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith Business Intelligence</p>
           <h1 className="mt-2 text-4xl font-black text-ink">GTM Command Center</h1>
           <p className="mt-2 max-w-4xl text-base font-semibold text-muted">
-            Client acquisition, delivery oversight, operational proof, customer success, recurring revenue, and referral growth for the Patient Revenue Engine™.
+            Client acquisition, delivery oversight, operational proof, customer success, recurring revenue, and referral growth for the Patient Revenue Engine.
           </p>
         </header>
         <BusinessMetricGrid state={state} />

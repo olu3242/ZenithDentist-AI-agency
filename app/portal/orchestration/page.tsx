@@ -7,7 +7,7 @@ export default async function PortalOrchestrationPage() {
   const [state, revenue] = await Promise.all([getEnterpriseCloudState(), getRevenueOrchestrationState()]);
   return (
     <div className="space-y-6">
-      <PortalHeader title="Revenue Orchestration" subtitle="Patient Revenue Engine™ prioritization, recovery opportunities, and approval-safe autonomous optimization." />
+      <PortalHeader title="Revenue Orchestration" subtitle="Patient Revenue Engine prioritization, recovery opportunities, and approval-safe autonomous optimization." />
       <RevenueOrchestrationPanel state={revenue} />
       <AutonomousOptimizationFeed state={state} />
     </div>

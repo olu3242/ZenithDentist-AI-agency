@@ -194,7 +194,7 @@ export async function getBusinessGrowthState() {
       "Desired outcomes"
     ],
     proposalFramework: {
-      title: "Patient Revenue Engine™ Proposal Framework",
+      title: "Patient Revenue Engine Proposal Framework",
       sections: [
         "Revenue opportunity",
         "Projected ROI",
@@ -420,7 +420,7 @@ function stageToNextAction(stage: GtmPipelineStage) {
     outreach_sent: "Send first follow-up with revenue leakage angle.",
     loom_audit_delivered: "Invite practice owner to discovery.",
     discovery_booked: "Prepare discovery brief.",
-    proposal_sent: "Follow up on Patient Revenue Engine™ proposal.",
+    proposal_sent: "Follow up on Patient Revenue Engine proposal.",
     closed_won: "Start operational onboarding.",
     onboarding: "Complete PMS and baseline setup.",
     live_optimization: "Review first operational results.",
