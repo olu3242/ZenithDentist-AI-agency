@@ -1,6 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { applySecurityHeaders, failedAuthResponse, rateLimit } from "@/lib/security-edge";
 
 export function middleware(request: NextRequest) {
+  const rate = rateLimit(request);
+  if (!rate.allowed) {
+    return applySecurityHeaders(NextResponse.json({ error: "Too many requests." }, { status: 429 }));
+  }
+
   if (
     !request.nextUrl.pathname.startsWith("/admin") &&
     !request.nextUrl.pathname.startsWith("/portal") &&
@@ -13,7 +19,7 @@ export function middleware(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/client-operations") &&
     !request.nextUrl.pathname.startsWith("/gtm-command-center")
   ) {
-    return NextResponse.next();
+    return applySecurityHeaders(NextResponse.next());
   }
 
   const isPortal = request.nextUrl.pathname.startsWith("/portal");
@@ -32,20 +38,17 @@ export function middleware(request: NextRequest) {
       ? process.env.PORTAL_ACCESS_TOKEN
       : process.env.ADMIN_ACCESS_TOKEN;
   if (!configuredToken) {
-    return NextResponse.next();
+    return applySecurityHeaders(NextResponse.next());
   }
 
   const token =
     request.cookies.get(isInternal ? "zenith_internal_token" : isPortal ? "zenith_portal_token" : "zenith_admin_token")?.value ||
     request.headers.get(isInternal ? "x-internal-token" : isPortal ? "x-portal-token" : "x-admin-token");
   if (token === configuredToken) {
-    return NextResponse.next();
+    return applySecurityHeaders(NextResponse.next());
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = "/";
-  url.searchParams.set("admin", "unauthorized");
-  return NextResponse.redirect(url);
+  return failedAuthResponse(request);
 }
 
 export const config = {

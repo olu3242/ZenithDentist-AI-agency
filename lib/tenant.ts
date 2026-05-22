@@ -1,25 +1,37 @@
-import { env } from "@/lib/env";
+import "server-only";
+
+import { createServiceClient } from "@/lib/supabase/server";
 
 export interface TenantContext {
-  organizationId?: string;
+  organizationId?: string | null;
   organizationSlug: string;
-  locationId?: string;
-  role?: string;
+  locationId?: string | null;
 }
 
 export function getDefaultTenantContext(): TenantContext {
   return {
-    organizationSlug: env.NEXT_PUBLIC_DEFAULT_ORG_SLUG
+    organizationSlug: process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "demo-dental-group"
   };
 }
 
-export function scopeByTenant<T extends { organization_id?: string | null; location_id?: string | null }>(
-  records: T[],
-  tenant: TenantContext
-) {
-  return records.filter(record => {
-    const orgMatch = tenant.organizationId ? record.organization_id === tenant.organizationId : true;
-    const locationMatch = tenant.locationId ? record.location_id === tenant.locationId : true;
-    return orgMatch && locationMatch;
-  });
+export async function current_org_id(slug = process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "demo-dental-group") {
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+  const { data } = await supabase.from("organizations").select("id").eq("slug", slug).maybeSingle();
+  return data?.id ?? null;
+}
+
+export function requireOrganizationId(organizationId: string | null | undefined) {
+  if (!organizationId) throw new Error("Organization scope is required.");
+  return organizationId;
+}
+
+export function scopedByOrganization<T extends { eq: (column: string, value: string) => T }>(query: T, organizationId: string) {
+  return query.eq("organization_id", requireOrganizationId(organizationId));
+}
+
+export function assertSameOrganization(expected: string | null | undefined, actual: string | null | undefined) {
+  if (!expected || !actual || expected !== actual) {
+    throw new Error("Organization scope mismatch.");
+  }
 }
