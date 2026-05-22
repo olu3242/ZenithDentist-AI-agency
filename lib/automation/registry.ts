@@ -18,7 +18,7 @@ export const automationRegistry: AutomationBlueprint[] = [
     retryEnabled: true,
     deadLetterRequired: true,
     slaMinutes: 5,
-    requiredEnv: ["SUPABASE_SERVICE_ROLE_KEY"],
+    requiredEnv: ["SUPABASE_SECRET_KEY"],
     observability: fullObservability
   },
   {
@@ -159,7 +159,7 @@ export const automationRegistry: AutomationBlueprint[] = [
     retryEnabled: true,
     deadLetterRequired: true,
     slaMinutes: 30,
-    requiredEnv: ["SUPABASE_SERVICE_ROLE_KEY"],
+    requiredEnv: ["SUPABASE_SECRET_KEY"],
     observability: fullObservability
   },
   {
