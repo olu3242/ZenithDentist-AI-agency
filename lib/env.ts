@@ -5,6 +5,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   RESEND_API_KEY: z.string().min(1).optional(),
+  STRIPE_API_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_GA_ID: z.string().min(1).optional(),
   NEXT_PUBLIC_META_PIXEL_ID: z.string().min(1).optional(),
   NEXT_PUBLIC_LINKEDIN_PARTNER_ID: z.string().min(1).optional(),
