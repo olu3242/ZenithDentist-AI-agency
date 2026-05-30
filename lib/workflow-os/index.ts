@@ -42,6 +42,10 @@ export type { RoutedWorkflowRequest, WorkflowTrigger } from "@/lib/workflow-os/w
 export { getWorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";
 export type { WorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";
 
+// Scheduler
+export { dispatchScheduledRun, getDefaultSchedulePlan } from "@/lib/workflow-os/workflow-scheduler";
+export type { ScheduledWorkflowRun, SchedulerDispatchResult } from "@/lib/workflow-os/workflow-scheduler";
+
 // Execution Fabric
 export { coordinateExecution } from "@/lib/workflow-os/execution/execution-engine";
 export type { CoordinatedExecutionRequest, CoordinatedExecutionResult } from "@/lib/workflow-os/execution/execution-engine";

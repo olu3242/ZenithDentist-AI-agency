@@ -10,6 +10,10 @@ import "server-only";
  *   Supabase → Runtime Kernel → Workflow OS → AI OS → Apps
  */
 
+// ALICE Grounding Layer
+export { aliceQuery, getAliceInsights, aliceReport, getAliceOperationalContext, aliceCoordinate, aliceRequestIntervention, aliceRecordFeedback, getAliceWorkflowRecommendations } from "@/lib/ai-os/alice";
+export type { AliceWorkflowRecommendation } from "@/lib/ai-os/alice";
+
 export { routeToAgent } from "@/lib/ai-os/agent-router";
 export { buildAliceContext, requestAliceAnswer, requestAgentIntervention } from "@/lib/ai-os/agent-runtime";
 export { getAgentMemory, recordAgentDecision } from "@/lib/ai-os/agent-memory";
