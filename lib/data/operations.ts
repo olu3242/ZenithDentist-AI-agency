@@ -17,17 +17,22 @@ export interface PortalData {
   notifications: Notification[];
 }
 
-export async function getPortalData(): Promise<PortalData> {
+export async function getPortalData(organizationId?: string): Promise<PortalData> {
   const supabase = createServiceClient();
   if (!supabase) return emptyPortalData();
 
+  // When organizationId is provided, scope all queries to that tenant.
+  // Internal/admin callers may omit it, but customer-facing callers must provide it.
+  const scope = <T extends { eq: (col: string, val: string) => T }>(q: T) =>
+    organizationId ? q.eq("organization_id", organizationId) : q;
+
   const [metrics, automationEvents, insights, recommendations, reports, notifications] = await Promise.all([
-    supabase.from("operational_metrics").select("*").order("metric_date", { ascending: false }).limit(90),
-    supabase.from("automation_events").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("insight_snapshots").select("*").order("created_at", { ascending: false }).limit(30),
-    supabase.from("recommendations").select("*").order("created_at", { ascending: false }).limit(30),
-    supabase.from("reports").select("*").order("generated_at", { ascending: false }).limit(24),
-    supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(50)
+    scope(supabase.from("operational_metrics").select("*").order("metric_date", { ascending: false })).limit(90),
+    scope(supabase.from("automation_events").select("*").order("created_at", { ascending: false })).limit(100),
+    scope(supabase.from("insight_snapshots").select("*").order("created_at", { ascending: false })).limit(30),
+    scope(supabase.from("recommendations").select("*").order("created_at", { ascending: false })).limit(30),
+    scope(supabase.from("reports").select("*").order("generated_at", { ascending: false })).limit(24),
+    scope(supabase.from("notifications").select("*").order("created_at", { ascending: false })).limit(50)
   ]);
 
   const data = {
