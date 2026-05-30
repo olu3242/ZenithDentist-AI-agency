@@ -16,6 +16,7 @@ import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import { getReplayCenterState } from "@/lib/runtime/replay-engine";
 import { getRuntimeEventFabricState } from "@/lib/runtime/event-fabric";
 import { coordinateAgents } from "@/lib/ai-os/agent-coordinator";
+import { getAcceptanceRate } from "@/lib/ai-os/agent-learning";
 import { getGovernanceState } from "@/lib/runtime/governance";
 import { getProviderHealth } from "@/lib/runtime/provider-health";
 
@@ -92,7 +93,7 @@ export async function getMissionControlState(
       topInsightsCount: agentCoordination.topInsights.length,
       recoveryPlansAvailable: agentCoordination.recoveryPlansAvailable,
       replayQueueDepth: agentCoordination.replayQueueDepth,
-      acceptanceRate: 0,
+      acceptanceRate: getAcceptanceRate("platform"),
     },
     recoveryHealth,
     replayHealth,

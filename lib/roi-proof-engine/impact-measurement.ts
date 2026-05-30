@@ -63,7 +63,7 @@ export async function measureImpact(
   const laborSavingsUsd = Math.round(laborHoursSavedDelta * LABOR_RATE);
 
   const totalRoiUsd = revenueRecoveredDelta + recallValueDelta + reviewValueDelta + laborSavingsUsd;
-  const platformCost = 897; // default growth plan — would come from subscription data in prod
+  const platformCost = 497; // starter plan baseline — matches PLATFORM_COST_MONTHLY in roi-engine.ts
   const roiMultiple =
     platformCost > 0 ? parseFloat((totalRoiUsd / platformCost).toFixed(1)) : 0;
 

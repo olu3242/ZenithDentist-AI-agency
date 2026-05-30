@@ -22,7 +22,7 @@ export interface PracticeHealthScore {
 export interface PracticeHealthSummary extends PracticeHealthScore {
   organizationId: string;
   metrics: {
-    totalRevenuRecovered: number;
+    totalRevenueRecovered: number;
     recallBookingRate: number;
     reviewConversionRate: number;
     avgChairUtilization: number | null;
@@ -105,7 +105,7 @@ export async function getPracticeHealthSummary(
     ...healthScore,
     organizationId,
     metrics: {
-      totalRevenuRecovered: revenue.totalRecovered,
+      totalRevenueRecovered: revenue.totalRecovered,
       recallBookingRate,
       reviewConversionRate,
       avgChairUtilization: chair.avgUtilization,
