@@ -19,7 +19,12 @@ export function applySecurityHeaders(response: NextResponse) {
 }
 
 export function rateLimit(request: NextRequest, limit = 120, windowMs = 60_000) {
-  const key = `${request.nextUrl.pathname}:${request.ip ?? request.headers.get("x-forwarded-for") ?? "local"}`;
+  const ip =
+  request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+  request.headers.get("x-real-ip") ??
+  "local";
+
+const key = `${request.nextUrl.pathname}:${ip}`;
   const now = Date.now();
   const bucket = memoryBuckets.get(key);
   if (!bucket || bucket.resetAt <= now) {
