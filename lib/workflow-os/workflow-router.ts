@@ -18,7 +18,10 @@ export type WorkflowTrigger =
   | "lead_created"
   | "stale_patient_detected"
   | "failed_payment_detected"
-  | "ai_followup_required";
+  | "ai_followup_required"
+  | "treatment_followup"
+  | "insurance_verification"
+  | "chair_utilization_alert";
 
 const TRIGGER_MAP: Record<WorkflowTrigger, { workflowId: string; actionName: string }> = {
   recall_due:                      { workflowId: "recall_due",                      actionName: "prioritize_outreach" },
@@ -31,6 +34,9 @@ const TRIGGER_MAP: Record<WorkflowTrigger, { workflowId: string; actionName: str
   stale_patient_detected:          { workflowId: "stale_patient_detected",          actionName: "queue_retention_path" },
   failed_payment_detected:         { workflowId: "failed_payment_detected",         actionName: "queue_payment_retry" },
   ai_followup_required:            { workflowId: "ai_followup_required",            actionName: "generate_remediation_plan" },
+  treatment_followup:              { workflowId: "treatment_followup",              actionName: "queue_treatment_followup" },
+  insurance_verification:          { workflowId: "insurance_verification",          actionName: "verify_eligibility" },
+  chair_utilization_alert:         { workflowId: "chair_utilization_alert",         actionName: "notify_scheduling_team" },
 };
 
 export interface RoutedWorkflowRequest {
