@@ -17,14 +17,15 @@ export interface PortalData {
   notifications: Notification[];
 }
 
-export async function getPortalData(organizationId?: string): Promise<PortalData> {
+export async function getPortalData(organizationId?: string | null): Promise<PortalData> {
   const supabase = createServiceClient();
   if (!supabase) return emptyPortalData();
 
   // When organizationId is provided, scope all queries to that tenant.
   // Internal/admin callers may omit it, but customer-facing callers must provide it.
+  const orgId = organizationId ?? null;
   const scope = <T extends { eq: (col: string, val: string) => T }>(q: T) =>
-    organizationId ? q.eq("organization_id", organizationId) : q;
+    orgId ? q.eq("organization_id", orgId) : q;
 
   const [metrics, automationEvents, insights, recommendations, reports, notifications] = await Promise.all([
     scope(supabase.from("operational_metrics").select("*").order("metric_date", { ascending: false })).limit(90),

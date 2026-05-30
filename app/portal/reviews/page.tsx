@@ -2,9 +2,11 @@ import { MetricCard } from "@/components/metric-card";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { RecommendationCard } from "@/components/portal/recommendation-card";
 import { getPortalData } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalReviewsPage() {
-  const data = await getPortalData();
+  const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const latest = data.metrics[0];
   const conversion = latest ? Math.round((latest.reviews_generated / Math.max(1, latest.review_requests_sent)) * 100) : 0;
   return (

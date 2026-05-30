@@ -1,5 +1,6 @@
 import { computeTenantRoi } from "@/lib/roi-os/roi-engine";
 import { getWorkflowAnalyticsSummary } from "@/lib/workflow-os/workflow-analytics";
+import { getTenantData } from "@/lib/data/tenants";
 
 export const metadata = { title: "Dental Dashboard | Zenith" };
 
@@ -37,8 +38,10 @@ function StatCard({ label, value, trend, trendLabel, accent = "indigo" }: StatCa
 }
 
 export default async function DentalDashboardPage() {
+  const tenantData = await getTenantData();
+  const orgId = tenantData.tenant.organizationId ?? tenantData.organization.id;
   const [roi, analytics] = await Promise.all([
-    computeTenantRoi("demo"),
+    computeTenantRoi(orgId),
     getWorkflowAnalyticsSummary(),
   ]);
 

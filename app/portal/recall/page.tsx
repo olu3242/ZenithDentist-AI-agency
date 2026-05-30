@@ -4,9 +4,11 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { RecommendationCard } from "@/components/portal/recommendation-card";
 import { WorkflowVisualizer } from "@/components/portal/workflow-visualizer";
 import { generateOperationalInsights, getPortalData } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalRecallPage() {
-  const data = await getPortalData();
+  const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const latest = data.metrics[0];
   return (
     <div className="space-y-6">

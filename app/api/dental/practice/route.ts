@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMissionControlState } from "@/lib/mission-control/index";
+import { getPracticeHealthSummary } from "@/lib/dental-revenue-os/practice-health";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +8,6 @@ export async function GET(req: NextRequest) {
   if (!organizationId) {
     return NextResponse.json({ ok: false, error: "organizationId is required" }, { status: 400 });
   }
-  const state = await getMissionControlState(organizationId);
-  return NextResponse.json(state);
+  const data = await getPracticeHealthSummary(organizationId);
+  return NextResponse.json({ ok: true, ...data });
 }

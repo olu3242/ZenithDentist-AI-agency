@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { EXTENSION_REGISTRY } from "@/lib/marketplace-core/extension-registry";
+import { installExtension } from "@/lib/marketplace-core/extension-loader";
 import { extensionTriggerWorkflow } from "@/lib/marketplace-core/extension-runtime";
 import type { WorkflowTrigger } from "@/lib/workflow-os/workflow-router";
 
@@ -45,6 +46,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Ensure installation record exists before triggering workflow.
+    // installExtension upserts an active record in operational_extensions so
+    // extensionTriggerWorkflow can verify the extension is installed.
+    await installExtension(extensionId, organizationId, {});
+
     const result = await extensionTriggerWorkflow({
       extensionId,
       organizationId,

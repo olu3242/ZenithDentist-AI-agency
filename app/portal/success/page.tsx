@@ -1,10 +1,9 @@
 import { getSuccessDashboardData } from "@/lib/client-success-os/success-dashboard";
-
-// TODO: replace "demo" with real org ID from auth session once auth layer is live
-const ORG_ID = "demo";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function SuccessPage() {
-  const data = await getSuccessDashboardData(ORG_ID);
+  const tenantData = await getTenantData();
+  const data = await getSuccessDashboardData(tenantData.tenant.organizationId ?? tenantData.organization.id);
 
   const healthColor =
     data.workflowHealth === "healthy"

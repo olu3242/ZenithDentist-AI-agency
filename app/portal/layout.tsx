@@ -6,8 +6,8 @@ import { TenantProvider } from "@/components/tenant/tenant-provider";
 import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
-  const data = await getPortalData();
   const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const summary = summarizePortal(data);
 
   return (
