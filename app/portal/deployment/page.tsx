@@ -59,7 +59,7 @@ export default async function DeploymentPage() {
                 isCurrent
                   ? "bg-indigo-600 border-indigo-600 text-white"
                   : isPast
-                  ? "bg-green-50 border-green-200 text-green-700"
+                  ? "bg-success-50 border-green-200 text-success-700"
                   : "bg-gray-50 border-gray-200 text-gray-400"
               }`}
             >

@@ -10,18 +10,18 @@ export function OperationalResilienceRadar({ state }: { state: MissionControlSta
     ["Resilience", state.health.resilience_score]
   ];
   return (
-    <section className="rounded border border-line bg-white p-5 shadow-sm">
+    <section className="rounded border border-card bg-white p-5 shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-muted">Operational Resilience Layer</p>
-      <h2 className="mt-1 text-2xl font-black text-ink">Degradation detection and recovery readiness</h2>
+      <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Degradation detection and recovery readiness</h2>
       <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {scores.map(([label, value]) => (
-          <div key={label} className="rounded border border-line bg-paper p-4">
+          <div key={label} className="rounded border border-card bg-background p-4">
             <div className="flex items-center justify-between">
-              <strong className="text-sm font-black text-ink">{label}</strong>
-              <span className="text-xl font-black text-teal">{value}%</span>
+              <strong className="text-sm font-black text-[#F8FAFC]">{label}</strong>
+              <span className="text-xl font-black text-accent">{value}%</span>
             </div>
             <div className="mt-3 h-2 rounded-full bg-line">
-              <div className="h-2 rounded-full bg-teal" style={{ width: `${value}%` }} />
+              <div className="h-2 rounded-full bg-accent" style={{ width: `${value}%` }} />
             </div>
           </div>
         ))}

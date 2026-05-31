@@ -84,14 +84,14 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
 
   return (
     <section id="roi" className="mx-auto grid max-w-7xl gap-6 px-5 py-16 lg:grid-cols-[1.1fr_.9fr]">
-      <form onSubmit={form.handleSubmit(submit)} className="rounded border border-line bg-white p-6 shadow-soft">
+      <form onSubmit={form.handleSubmit(submit)} className="rounded border border-card bg-white p-6 shadow-card">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-wider text-teal">Revenue intelligence</p>
+            <p className="text-xs font-black uppercase tracking-wider text-accent">Revenue intelligence</p>
             <h2 className="mt-3 text-3xl font-black">Calculate leakage and generate an audit.</h2>
             <p className="mt-2 text-muted">Validated inputs, server persistence, email notification, and admin CRM tracking.</p>
           </div>
-          <Calculator className="h-9 w-9 text-teal" />
+          <Calculator className="h-9 w-9 text-accent" />
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -139,14 +139,14 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
           </Field>
         </div>
 
-        <div className="mt-6 grid gap-3 rounded bg-paper p-4 md:grid-cols-3">
+        <div className="mt-6 grid gap-3 rounded bg-background p-4 md:grid-cols-3">
           <Stat label="Monthly leakage" value={formatCurrency(projection.monthlyRevenueLoss)} />
           <Stat label="Yearly leakage" value={formatCurrency(projection.yearlyRevenueLoss)} />
           <Stat label="Recoverable" value={formatCurrency(projection.recoverableRevenue)} />
         </div>
 
         {result ? (
-          <p className={`mt-4 rounded p-3 text-sm font-bold ${result.ok ? "bg-green/10 text-green" : "bg-rust/10 text-rust"}`}>
+          <p className={`mt-4 rounded p-3 text-sm font-bold ${result.ok ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}>
             {result.message}
           </p>
         ) : null}
@@ -181,7 +181,7 @@ function Field({
     <label className={className}>
       <span className="mb-1 block text-sm font-bold text-muted">{label}</span>
       {children}
-      {error ? <span className="mt-1 block text-xs font-bold text-rust">{error}</span> : null}
+      {error ? <span className="mt-1 block text-xs font-bold text-danger">{error}</span> : null}
     </label>
   );
 }
@@ -190,7 +190,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <span className="text-xs font-black uppercase tracking-wider text-muted">{label}</span>
-      <strong className="mt-1 block text-2xl font-black text-ink">{value}</strong>
+      <strong className="mt-1 block text-2xl font-black text-[#F8FAFC]">{value}</strong>
     </div>
   );
 }

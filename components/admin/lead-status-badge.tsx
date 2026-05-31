@@ -2,13 +2,13 @@ import type { LeadStatus } from "@/lib/database.types";
 import { cn } from "@/lib/utils";
 
 const tone: Record<LeadStatus, string> = {
-  new: "bg-blue/10 text-blue",
-  roi_completed: "bg-gold/10 text-gold",
-  audit_requested: "bg-teal/10 text-teal",
-  booked: "bg-green/10 text-green",
-  qualified: "bg-ink/10 text-ink",
-  won: "bg-green/10 text-green",
-  lost: "bg-rust/10 text-rust"
+  new: "bg-primary/10 text-primary",
+  roi_completed: "bg-warning/10 text-warning",
+  audit_requested: "bg-accent/10 text-accent",
+  booked: "bg-success/10 text-success",
+  qualified: "bg-surface/10 text-[#F8FAFC]",
+  won: "bg-success/10 text-success",
+  lost: "bg-danger/10 text-danger"
 };
 
 export function LeadStatusBadge({ status }: { status: LeadStatus }) {

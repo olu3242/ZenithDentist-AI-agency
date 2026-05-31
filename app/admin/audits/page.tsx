@@ -12,7 +12,7 @@ export default async function AdminAuditsPage() {
         columns={["Summary", "Projected recovery", "Generated"]}
         rows={audits.map(audit => [
           <span key="summary" className="max-w-2xl">{audit.audit_summary}</span>,
-          <strong key="recovery" className="text-green">{formatCurrency(Number(audit.projected_recovery))}</strong>,
+          <strong key="recovery" className="text-success">{formatCurrency(Number(audit.projected_recovery))}</strong>,
           new Date(audit.generated_at).toLocaleString()
         ])}
       />

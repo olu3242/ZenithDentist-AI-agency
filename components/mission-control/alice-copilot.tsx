@@ -2,8 +2,8 @@ import type { PredictiveOperationalAlert } from "@/lib/runtime/predictive-monito
 
 export function ALICECopilot({ insights, alerts }: { insights: Array<{ title: string; detail: string; severity: string }>; alerts: PredictiveOperationalAlert[] }) {
   return (
-    <aside className="rounded border border-line bg-ink p-5 text-white shadow-sm">
-      <p className="text-xs font-black uppercase tracking-wider text-teal">ALICE operational analyst</p>
+    <aside className="rounded border border-card bg-surface p-5 text-white shadow-sm">
+      <p className="text-xs font-black uppercase tracking-wider text-accent">ALICE operational analyst</p>
       <h2 className="mt-1 text-2xl font-black">Runtime reasoning center</h2>
       <div className="mt-5 grid gap-3">
         {[...insights.map(item => ({ title: item.title, detail: item.detail })), ...alerts.map(item => ({ title: item.title, detail: item.detail }))].slice(0, 7).map(item => (

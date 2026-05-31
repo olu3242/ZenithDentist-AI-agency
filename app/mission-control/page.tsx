@@ -85,21 +85,21 @@ export default async function MissionControlPage() {
   const predictiveAlerts = generatePredictiveOperationalAlertsFromRuntime(state);
   const replay = buildReplayCenterState(state);
   return (
-    <main className="min-h-screen bg-paper">
+    <main className="min-h-screen bg-background">
       <RealtimeRefresh />
       <div className="mx-auto grid max-w-[1600px] gap-5 p-5 lg:grid-cols-[230px_1fr_360px] lg:p-8">
-        <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>
+        <aside className="hidden rounded border border-card bg-white p-4 shadow-sm lg:block">
+          <p className="text-xs font-black uppercase tracking-wider text-accent">Intelligence sidebar</p>
           <nav className="mt-5 grid gap-2 text-sm font-black text-muted">
             {["Event fabric", "Executive cloud", "Platform core", "Marketplace", "Agent mesh", "Cognition", "Digital twin", "Governance", "Recovery", "SDK"].map(item => (
-              <span key={item} className="rounded bg-paper px-3 py-2">{item}</span>
+              <span key={item} className="rounded bg-background px-3 py-2">{item}</span>
             ))}
           </nav>
         </aside>
         <section className="min-w-0 space-y-6">
-          <header className="rounded border border-line bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith Automation Platform</p>
-            <h1 className="mt-2 text-4xl font-black text-ink">Mission Control</h1>
+          <header className="rounded border border-card bg-white p-5 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wider text-accent">Zenith Automation Platform</p>
+            <h1 className="mt-2 text-4xl font-black text-[#F8FAFC]">Mission Control</h1>
             <p className="mt-2 max-w-4xl text-base font-semibold text-muted">Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring.</p>
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />

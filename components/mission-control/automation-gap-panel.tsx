@@ -2,7 +2,7 @@ import type { AutomationAuditState } from "@/lib/automation-audit";
 
 export function AutomationGapPanel({ state }: { state: AutomationAuditState }) {
   return (
-    <section className="rounded border border-line bg-ink p-5 text-white shadow-sm">
+    <section className="rounded border border-card bg-surface p-5 text-white shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-white/55">Operational gap analysis</p>
       <h2 className="mt-1 text-2xl font-black">Critical gaps and hardening recommendations</h2>
       <div className="mt-5 grid gap-4 lg:grid-cols-2">

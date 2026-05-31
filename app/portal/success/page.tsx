@@ -7,7 +7,7 @@ export default async function SuccessPage() {
 
   const healthColor =
     data.workflowHealth === "healthy"
-      ? "text-green-600 bg-green-50 border-green-200"
+      ? "text-success-600 bg-success-50 border-green-200"
       : data.workflowHealth === "degraded"
       ? "text-yellow-600 bg-yellow-50 border-yellow-200"
       : "text-red-600 bg-red-50 border-red-200";
@@ -66,7 +66,7 @@ export default async function SuccessPage() {
         {/* Closed Tickets */}
         <div className="rounded-xl border border-gray-200 bg-white p-5 flex flex-col gap-2">
           <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Closed Tickets</span>
-          <span className="text-3xl font-bold text-green-600">{data.closedTickets}</span>
+          <span className="text-3xl font-bold text-success-600">{data.closedTickets}</span>
           <span className="text-xs text-gray-400">
             {data.openTickets + data.closedTickets > 0
               ? `${Math.round((data.closedTickets / (data.openTickets + data.closedTickets)) * 100)}% resolution rate`
@@ -99,7 +99,7 @@ export default async function SuccessPage() {
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                         wf.status === "healthy"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-success-100 text-success-700"
                           : "bg-red-100 text-red-700"
                       }`}
                     >
@@ -124,8 +124,8 @@ export default async function SuccessPage() {
 type AccentColor = "green" | "blue" | "purple" | "yellow";
 
 const accentMap: Record<AccentColor, string> = {
-  green: "border-green-200 bg-green-50 text-green-700",
-  blue: "border-blue-200 bg-blue-50 text-blue-700",
+  green: "border-green-200 bg-success-50 text-success-700",
+  blue: "border-blue-200 bg-primary-50 text-primary-700",
   purple: "border-purple-200 bg-purple-50 text-purple-700",
   yellow: "border-yellow-200 bg-yellow-50 text-yellow-700",
 };

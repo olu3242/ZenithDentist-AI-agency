@@ -34,7 +34,7 @@ export default async function DiscoveryPage() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-xs font-black uppercase tracking-wider text-teal-600">
+        <p className="text-xs font-black uppercase tracking-wider text-accent-600">
           Discovery OS
         </p>
         <h1 className="mt-2 text-4xl font-black">Practice Discovery</h1>
@@ -55,7 +55,7 @@ export default async function DiscoveryPage() {
       <div className="flex items-center gap-3">
         <a
           href="/admin/discovery/new"
-          className="inline-flex items-center rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700"
+          className="inline-flex items-center rounded-lg bg-accent-600 px-4 py-2 text-sm font-semibold text-white hover:bg-accent-700"
         >
           + New Discovery Session
         </a>

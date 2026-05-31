@@ -12,9 +12,9 @@ export default async function PortalLayout({ children }: { children: React.React
 
   return (
     <TenantProvider tenant={tenantData.tenant}>
-      <div className="min-h-screen bg-paper lg:grid lg:grid-cols-[270px_1fr]">
+      <div className="zenith-layout lg:grid-cols-[var(--sidebar-width)_1fr]">
         <PortalSidebar unread={summary.unreadNotifications} />
-        <main className="p-5 lg:p-8">
+        <main className="zenith-main">
           <RealtimeRefresh />
           <PortalUsageTracker />
           {children}

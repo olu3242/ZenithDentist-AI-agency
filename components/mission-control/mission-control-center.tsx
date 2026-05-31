@@ -6,11 +6,11 @@ export function MissionControlCenter({ state }: { state: MissionControlState }) 
   return (
     <section className="space-y-5">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <MetricCard label="Queue stability" value={`${queue.stability}%`} detail={`${queue.failed} failed, ${queue.retries} retries`} tone="teal" />
-        <MetricCard label="AI reliability" value={`${state.health.ai_reliability_score}%`} detail="Grounding validation" tone="green" />
-        <MetricCard label="Forecast quality" value={`${state.health.forecast_quality_score}%`} detail="Drift-adjusted score" tone="blue" />
-        <MetricCard label="Resilience" value={`${state.health.resilience_score}%`} detail="Recovery readiness" tone="gold" />
-        <MetricCard label="Open Dental" value={state.openDental.acceptedEvents} detail="Normalized pilot events" tone="rust" />
+        <MetricCard label="Queue stability" value={`${queue.stability}%`} detail={`${queue.failed} failed, ${queue.retries} retries`} tone="accent" />
+        <MetricCard label="AI reliability" value={`${state.health.ai_reliability_score}%`} detail="Grounding validation" tone="success" />
+        <MetricCard label="Forecast quality" value={`${state.health.forecast_quality_score}%`} detail="Drift-adjusted score" tone="primary" />
+        <MetricCard label="Resilience" value={`${state.health.resilience_score}%`} detail="Recovery readiness" tone="warning" />
+        <MetricCard label="Open Dental" value={state.openDental.acceptedEvents} detail="Normalized pilot events" tone="danger" />
       </div>
     </section>
   );

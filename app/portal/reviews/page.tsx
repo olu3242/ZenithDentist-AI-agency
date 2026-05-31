@@ -13,9 +13,9 @@ export default async function PortalReviewsPage() {
     <div className="space-y-6">
       <PortalHeader title="Review Generation" subtitle="Review request timing, conversion rate, and reputation growth signals." />
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Requests sent" value={latest?.review_requests_sent ?? 0} detail="Current reporting period" tone="teal" />
-        <MetricCard label="Reviews generated" value={latest?.reviews_generated ?? 0} detail="Published or pending" tone="green" />
-        <MetricCard label="Review conversion" value={`${conversion}%`} detail="Request to generated review" tone="gold" />
+        <MetricCard label="Requests sent" value={latest?.review_requests_sent ?? 0} detail="Current reporting period" tone="accent" />
+        <MetricCard label="Reviews generated" value={latest?.reviews_generated ?? 0} detail="Published or pending" tone="success" />
+        <MetricCard label="Review conversion" value={`${conversion}%`} detail="Request to generated review" tone="warning" />
       </div>
       <section className="grid gap-4 xl:grid-cols-2">
         {data.recommendations.filter(item => item.title.toLowerCase().includes("review") || item.recommendation.toLowerCase().includes("review")).map(item => (
