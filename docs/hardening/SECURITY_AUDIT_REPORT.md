@@ -20,7 +20,9 @@ The platform uses static pre-shared token authentication enforced at the Next.js
 | `PORTAL_ACCESS_TOKEN` | `zenith_portal_token` | `x-portal-token` | `/portal` |
 | `ADMIN_ACCESS_TOKEN` | `zenith_admin_token` | `x-admin-token` | `/admin` |
 
-**Bypass condition:** If the environment variable is not set (`!configuredToken`), middleware calls `NextResponse.next()` — granting access without a token (`middleware.ts:40-42`). In a misconfigured deployment with missing env vars, all protected paths are publicly accessible.
+**Bypass condition:** ~~If the environment variable is not set (`!configuredToken`), middleware calls `NextResponse.next()` — granting access without a token (`middleware.ts:40-42`).~~ **FIXED (commit 5ca4980):** Now calls `failedAuthResponse(request)` — unset env vars block access rather than allowing it.
+
+**Path coverage:** `/api/alice/*`, `/api/dental/*`, `/api/enterprise/*`, `/api/autonomous/*`, `/api/analytics/*`, `/api/marketplace/*`, `/api/reports/*` added to middleware matcher and `isInternal` block (commit 5ca4980). All platform API routes now receive token enforcement.
 
 **No Supabase Auth SSR:**
 - `@supabase/ssr` is not installed
@@ -84,8 +86,9 @@ All users of `zenith_internal_token` are indistinguishable. A compromised token 
 **Description:** These inbound webhooks have no HMAC signature validation or caller identity verification visible in the current route implementations. A malicious caller with the endpoint URL can POST arbitrary payloads.  
 **Impact:** `calendly/events` writes to `bookings` table without orgId scoping — records would be written with `lead_id: null` (caller-controlled) and no organization association.
 
-### Risk 4: Missing Env Var Bypass (HIGH)
-**Description:** `middleware.ts:40-42` — if any of the three token env vars is undefined, the corresponding path prefix is fully unprotected. In a broken deployment, this silently fails open.
+### Risk 4: Missing Env Var Bypass — FIXED (commit 5ca4980)
+~~**Description:** `middleware.ts:40-42` — if any of the three token env vars is undefined, the corresponding path prefix is fully unprotected. In a broken deployment, this silently fails open.~~
+**Remediation applied:** Changed to `return failedAuthResponse(request)` when `!configuredToken`. Unset env vars now block access rather than granting it.
 
 ---
 
@@ -145,8 +148,8 @@ Dental practice data processed by this platform meets the HIPAA definition of Pr
 |----|---------|-----|--------|
 | P0-1 | No per-user authentication; `auth.uid()` always null | Install `@supabase/ssr`; implement cookie-based JWT sessions | 3-5 days |
 | P0-2 | Static tokens are shared secrets with no identity binding | Migrate to Supabase Auth with per-user accounts | Part of P0-1 |
-| P0-3 | 21 unguarded routes — no tenant scoping | Wire `withTenantGuard()` into all non-exempt routes | 1-2 days |
-| P0-4 | Env var missing = fail open (`middleware.ts:40-42`) | Change to `return failedAuthResponse(request)` if token not configured | 1 hour |
+| ~~P0-3~~ | ~~21 unguarded routes — no tenant scoping~~ | **DONE** — all 33 non-exempt routes wired with `withTenantGuard()` (commit 080a50b) | ✓ |
+| ~~P0-4~~ | ~~Env var missing = fail open (`middleware.ts:40-42`)~~ | **DONE** — `failedAuthResponse(request)` (commit 5ca4980) | ✓ |
 
 ### P1 — High (Fix before multi-tenant production)
 
@@ -155,7 +158,7 @@ Dental practice data processed by this platform meets the HIPAA definition of Pr
 | P1-1 | 8 PARTIAL routes accept orgId without membership check | `withTenantGuard()` + session-bound membership validation | 1 day |
 | P1-2 | Webhook routes lack HMAC signature validation | Add `svix` or manual HMAC check to Calendly and OpenDental webhooks | 4 hours |
 | P1-3 | No RBAC — `membershipRole` always null | Query `organization_members` in `resolveTenantById()`; add capability assertions | 2 days |
-| P1-4 | `organization_members` table has no RLS | Add RLS policy: `user_id = auth.uid()` for member's own row | 1 hour |
+| ~~P1-4~~ | ~~`organization_members` table has no RLS~~ | **DONE** — Section 8 added to migration (commit 5ca4980): self-read, org-scoped read, self-insert, self-delete | ✓ |
 | P1-5 | Guard validates org exists but not caller membership | After implementing sessions, add `organization_members` lookup in `withTenantGuard()` | Part of P0-1 |
 
 ### P2 — Medium (Fix before SOC 2 or HIPAA audit)

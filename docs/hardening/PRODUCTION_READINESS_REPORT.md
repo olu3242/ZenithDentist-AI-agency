@@ -21,7 +21,34 @@
 | 9 | ALICE Security | PARTIAL | 5/10 |
 | 10 | Build Integrity | PASS | 10/10 |
 
-**Overall Score: 58/100**
+**Overall Score: 58/100** *(initial assessment; see Amendment below)*
+
+---
+
+## Amendment — commit 5ca4980 (2026-05-31)
+
+Three P0/P1 items fixed after initial report generation:
+
+| Fix | File | Prior State | Current State |
+|-----|------|-------------|---------------|
+| Middleware fail-closed | `middleware.ts:82-84` | `NextResponse.next()` when env var unset (fail-open) | `failedAuthResponse(request)` — blocked |
+| Full API coverage in matcher | `middleware.ts:config.matcher` | `/api/alice/*`, `/api/dental/*`, `/api/enterprise/*`, `/api/autonomous/*`, `/api/analytics/*`, `/api/marketplace/*`, `/api/reports/*` absent from matcher | All 7 prefixes added to matcher AND isInternal block |
+| `organization_members` RLS | `202605300002_rls_tenant_isolation.sql` (Section 8) | Table unprotected; member enumeration possible | 4 policies: member self-read, org-scoped read, self-insert, self-delete |
+
+**Revised scores after amendment:**
+
+| # | Criterion | Prior | Revised |
+|---|-----------|-------|---------|
+| 1 | Authentication Mechanism | 5/10 | 6/10 (+1: fail-closed removes bypass) |
+| 2 | Tenant Isolation (Route Layer) | 5/10 | 7/10 (+2: all API routes now in matcher) |
+| 4 | Row Level Security | 6/10 | 7/10 (+1: organization_members protected) |
+| 5 | withTenantGuard Coverage | 4/10 | 8/10 (+4: all 33 routes wired, per commit 080a50b) |
+
+**Revised Total: 70/100**
+
+P0 blockers resolved as of this branch: middleware coverage, fail-closed behavior, org_members RLS.  
+Remaining P0: No Supabase Auth SSR (`auth.uid()` still null; RLS policies not enforced in practice).  
+RBAC (criterion 3) remains 0/10 — `userId`/`membershipRole` still null in `resolveTenantById()`.
 
 ---
 
