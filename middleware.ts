@@ -57,6 +57,13 @@ export function middleware(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/mission-control") &&
     !request.nextUrl.pathname.startsWith("/api/mission-control") &&
     !request.nextUrl.pathname.startsWith("/api/gtm-command-center") &&
+    !request.nextUrl.pathname.startsWith("/api/alice") &&
+    !request.nextUrl.pathname.startsWith("/api/dental") &&
+    !request.nextUrl.pathname.startsWith("/api/enterprise") &&
+    !request.nextUrl.pathname.startsWith("/api/autonomous") &&
+    !request.nextUrl.pathname.startsWith("/api/analytics") &&
+    !request.nextUrl.pathname.startsWith("/api/marketplace") &&
+    !request.nextUrl.pathname.startsWith("/api/reports") &&
     !request.nextUrl.pathname.startsWith("/lead-operations") &&
     !request.nextUrl.pathname.startsWith("/client-operations") &&
     !request.nextUrl.pathname.startsWith("/gtm-command-center")
@@ -71,6 +78,13 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/mission-control") ||
     request.nextUrl.pathname.startsWith("/api/mission-control") ||
     request.nextUrl.pathname.startsWith("/api/gtm-command-center") ||
+    request.nextUrl.pathname.startsWith("/api/alice") ||
+    request.nextUrl.pathname.startsWith("/api/dental") ||
+    request.nextUrl.pathname.startsWith("/api/enterprise") ||
+    request.nextUrl.pathname.startsWith("/api/autonomous") ||
+    request.nextUrl.pathname.startsWith("/api/analytics") ||
+    request.nextUrl.pathname.startsWith("/api/marketplace") ||
+    request.nextUrl.pathname.startsWith("/api/reports") ||
     request.nextUrl.pathname.startsWith("/lead-operations") ||
     request.nextUrl.pathname.startsWith("/client-operations") ||
     request.nextUrl.pathname.startsWith("/gtm-command-center");
@@ -80,7 +94,9 @@ export function middleware(request: NextRequest) {
       ? process.env.PORTAL_ACCESS_TOKEN
       : process.env.ADMIN_ACCESS_TOKEN;
   if (!configuredToken) {
-    return applySecurityHeaders(NextResponse.next());
+    // Fail-closed: if the env var is not configured, block the request rather
+    // than allowing unauthenticated access to protected paths.
+    return failedAuthResponse(request);
   }
 
   const token =
@@ -94,5 +110,23 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/portal/:path*", "/internal/:path*", "/dashboard/:path*", "/mission-control/:path*", "/api/mission-control/:path*", "/api/gtm-command-center/:path*", "/lead-operations/:path*", "/client-operations/:path*", "/gtm-command-center/:path*"]
+  matcher: [
+    "/admin/:path*",
+    "/portal/:path*",
+    "/internal/:path*",
+    "/dashboard/:path*",
+    "/mission-control/:path*",
+    "/api/mission-control/:path*",
+    "/api/gtm-command-center/:path*",
+    "/api/alice/:path*",
+    "/api/dental/:path*",
+    "/api/enterprise/:path*",
+    "/api/autonomous/:path*",
+    "/api/analytics/:path*",
+    "/api/marketplace/:path*",
+    "/api/reports/:path*",
+    "/lead-operations/:path*",
+    "/client-operations/:path*",
+    "/gtm-command-center/:path*",
+  ],
 };

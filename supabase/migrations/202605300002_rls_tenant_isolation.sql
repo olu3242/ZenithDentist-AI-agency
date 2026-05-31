@@ -464,6 +464,46 @@ create policy "user_roles_public_read"
 
 
 -- =============================================================================
+-- SECTION 8: MEMBERSHIP TABLE
+-- organization_members must itself be protected so that users cannot enumerate
+-- other tenants' member lists.  Each user may only see rows for orgs they belong to,
+-- and may only see their own row (self-access) or all rows if they are a confirmed
+-- member of that organisation.
+-- =============================================================================
+
+-- organization_members: a user may read rows belonging to their own organisations.
+-- Self-insert is allowed so that the invitation flow can create the initial record.
+alter table public.organization_members enable row level security;
+
+drop policy if exists "organization_members_self_read" on public.organization_members;
+create policy "organization_members_self_read"
+  on public.organization_members
+  for select
+  using (
+    user_id = auth.uid()
+    or organization_id in (select auth.user_organization_ids())
+  );
+
+drop policy if exists "organization_members_self_insert" on public.organization_members;
+create policy "organization_members_self_insert"
+  on public.organization_members
+  for insert
+  with check (user_id = auth.uid());
+
+drop policy if exists "organization_members_self_update" on public.organization_members;
+create policy "organization_members_self_update"
+  on public.organization_members
+  for update
+  using (user_id = auth.uid());
+
+drop policy if exists "organization_members_self_delete" on public.organization_members;
+create policy "organization_members_self_delete"
+  on public.organization_members
+  for delete
+  using (user_id = auth.uid());
+
+
+-- =============================================================================
 -- END OF MIGRATION
 -- Note: The Supabase service_role key bypasses RLS automatically.
 -- No application code changes are required for server-side service clients.
