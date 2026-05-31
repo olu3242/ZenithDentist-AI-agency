@@ -28,7 +28,7 @@ export default async function DeploymentPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Deployment Blueprint</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Track your practice's implementation journey through all 9 stages.
+          Track your practice&apos;s implementation journey through all 9 stages.
         </p>
       </div>
 

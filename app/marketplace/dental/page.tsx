@@ -1,8 +1,11 @@
 import { EXTENSION_REGISTRY } from "@/lib/marketplace-core/extension-registry";
+import { getTenantData } from "@/lib/data/tenants";
 
 export const metadata = { title: "Dental Marketplace Blueprints | Zenith" };
 
 export default async function DentalMarketplacePage() {
+  const tenantData = await getTenantData();
+  const organizationId = tenantData.tenant.organizationId;
   const blueprints = EXTENSION_REGISTRY.filter(e => e.category === "automation_pack");
 
   return (
@@ -69,7 +72,7 @@ export default async function DentalMarketplacePage() {
               className="mt-6"
             >
               <input type="hidden" name="extensionId" value={bp.id} />
-              <input type="hidden" name="organizationId" value="demo" />
+              <input type="hidden" name="organizationId" value={organizationId ?? ""} />
               <button
                 type="submit"
                 className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"

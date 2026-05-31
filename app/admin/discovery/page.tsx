@@ -1,26 +1,33 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function DiscoveryPage() {
   const supabase = createServiceClient();
+  const tenantData = await getTenantData();
+  const organizationId = tenantData.tenant.organizationId;
 
   let sessions: Record<string, unknown>[] = [];
   let totalOpportunities = 0;
 
   if (supabase) {
-    const { data: sessionRows } = await supabase
+    let sessionQuery = supabase
       .from("discovery_sessions")
       .select("id, organization_id, practice_name, created_at, no_show_rate, monthly_revenue, recall_rate")
       .order("created_at", { ascending: false })
       .limit(50);
+    if (organizationId) sessionQuery = sessionQuery.eq("organization_id", organizationId);
 
+    const { data: sessionRows } = await sessionQuery;
     if (sessionRows) {
       sessions = sessionRows as Record<string, unknown>[];
     }
 
-    const { count } = await supabase
+    let oppQuery = supabase
       .from("opportunity_scores")
       .select("id", { count: "exact", head: true });
+    if (organizationId) oppQuery = oppQuery.eq("organization_id", organizationId);
 
+    const { count } = await oppQuery;
     totalOpportunities = count ?? 0;
   }
 
