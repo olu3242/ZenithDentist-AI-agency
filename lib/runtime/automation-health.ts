@@ -44,12 +44,14 @@ export async function getRuntimeHealthState(): Promise<RuntimeHealthState> {
 
   const [traces, deadLetters] = await Promise.all([
     supabase.from("automation_traces").select("*").eq("organization_id", organizationId).order("started_at", { ascending: false }).limit(200),
-    supabase.from("automation_dead_letters").select("*").order("created_at", { ascending: false }).limit(100)
+    // org-scoped when organization_id column is present (migration 202605310002); fallback: trace_id join
+    (supabase as any).from("automation_dead_letters").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(100)
   ]);
 
   const orgTraces = traces.data ?? [];
   const traceIds = new Set(orgTraces.map(trace => trace.trace_id));
-  const orgDeadLetters = (deadLetters.data ?? []).filter(letter => traceIds.has(letter.trace_id));
+  // secondary guard: only dead letters whose trace belongs to this org
+  const orgDeadLetters = (deadLetters.data ?? []).filter((letter: { trace_id: string }) => traceIds.has(letter.trace_id));
   return calculateRuntimeHealth(organizationId, orgTraces, orgDeadLetters);
 }
 

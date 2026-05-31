@@ -145,7 +145,7 @@ export async function getDentalRevenueCenterState(
 
   const [roi, analytics, chairUtilizationRate, reviewGrowthMtd] = await Promise.all([
     computeTenantRoi(organizationId),
-    getWorkflowAnalyticsSummary(),
+    getWorkflowAnalyticsSummary(organizationId),
     queryChairUtilization(organizationId, supabase),
     queryReviewGrowthMtd(organizationId, supabase),
   ]);

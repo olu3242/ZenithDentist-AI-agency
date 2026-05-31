@@ -65,7 +65,7 @@ export async function getMissionControlState(
   ] = await Promise.all([
     getRuntimeHealthState(),
     getWorkflowRuntimeHealth(),
-    getWorkflowAnalyticsSummary(),
+    getWorkflowAnalyticsSummary(organizationId),
     coordinateAgents(organizationId),
     getAutonomousRecoveryState(),
     getReplayCenterState(),

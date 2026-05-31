@@ -24,7 +24,7 @@ export async function getRoiIntelligenceCenterState(
 ): Promise<RoiIntelligenceCenterState> {
   const [roi, analytics] = await Promise.all([
     computeTenantRoi(organizationId),
-    getWorkflowAnalyticsSummary(),
+    getWorkflowAnalyticsSummary(organizationId),
   ]);
 
   const reviewGrowthValue = roi.reviewsGenerated * 150;
