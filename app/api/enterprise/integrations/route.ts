@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { withTenantGuard, extractOrgId } from "@/lib/tenant/tenant-guards";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
 import { getEnterpriseCloudState } from "@/lib/enterprise-cloud";
 import { normalizePMSPayload } from "@/lib/pms";
 import type { PMSProviderKey } from "@/lib/database.types";
 
 export async function GET(req: NextRequest) {
   const orgId = extractOrgId(req);
-  const ctx = await withTenantGuard(orgId).catch(() =>
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
     NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
   );
   if (ctx instanceof NextResponse) return ctx;
@@ -20,7 +21,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const orgId = extractOrgId(req);
-  const ctx = await withTenantGuard(orgId).catch(() =>
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
     NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
   );
   if (ctx instanceof NextResponse) return ctx;
