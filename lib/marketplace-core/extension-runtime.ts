@@ -29,6 +29,9 @@ export async function extensionTriggerWorkflow(req: ExtensionWorkflowRequest) {
   if (!ext) {
     throw new Error(`Extension "${req.extensionId}" is not active for organization ${req.organizationId}.`);
   }
+  if (ext.organizationId !== req.organizationId) {
+    throw new Error("Cross-tenant extension access denied");
+  }
 
   // Publish marketplace event for observability
   await publishEvent({

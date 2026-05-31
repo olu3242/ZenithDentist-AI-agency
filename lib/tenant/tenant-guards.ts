@@ -7,7 +7,7 @@ import "server-only";
  */
 
 import { assertOrganizationScope, requireOrganizationId } from "@/lib/tenant/tenant-enforcement";
-import { resolveTenant } from "@/lib/tenant/tenant-resolver";
+import { resolveTenant, resolveTenantById } from "@/lib/tenant/tenant-resolver";
 
 export interface TenantGuardContext {
   organizationId: string;
@@ -17,11 +17,27 @@ export interface TenantGuardContext {
 }
 
 /**
+ * Extract organizationId from a Request (query param → header → null).
+ */
+export function extractOrgId(request: Request): string | null {
+  try {
+    const url = new URL(request.url);
+    const fromQuery = url.searchParams.get("organizationId");
+    if (fromQuery) return fromQuery;
+  } catch { /* ignore */ }
+  const fromHeader = request.headers?.get("x-organization-id");
+  return fromHeader ?? null;
+}
+
+/**
  * Standard tenant guard — resolves tenant and returns a typed context.
+ * When organizationId is provided, resolves by ID; otherwise falls back to env-based resolution.
  * Throws on any resolution or enforcement failure.
  */
-export async function withTenantGuard(): Promise<TenantGuardContext> {
-  const tenant = await resolveTenant();
+export async function withTenantGuard(organizationId?: string | null): Promise<TenantGuardContext> {
+  const tenant = organizationId
+    ? await resolveTenantById(organizationId)
+    : await resolveTenant();
   requireOrganizationId(tenant.organizationId, "tenant-guard");
 
   return {
@@ -37,9 +53,10 @@ export async function withTenantGuard(): Promise<TenantGuardContext> {
  * Use when an API route operates on a specific resource.
  */
 export async function withResourceGuard(
-  resourceOrgId: string | null | undefined
+  resourceOrgId: string | null | undefined,
+  organizationId?: string | null
 ): Promise<TenantGuardContext> {
-  const ctx = await withTenantGuard();
+  const ctx = await withTenantGuard(organizationId);
   assertOrganizationScope(resourceOrgId, ctx.organizationId);
   return ctx;
 }

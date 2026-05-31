@@ -1,10 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId } from "@/lib/tenant/tenant-guards";
 import { getPortalData } from "@/lib/data/operations";
 import { buildPredictiveInsights } from "@/lib/health";
-import { getTenantData } from "@/lib/data/tenants";
 
-export async function GET() {
-  const tenantData = await getTenantData();
-  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const ctx = await withTenantGuard(orgId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const data = await getPortalData(ctx.organizationId);
   return NextResponse.json({ ok: true, forecasts: buildPredictiveInsights(data.metrics) });
 }
