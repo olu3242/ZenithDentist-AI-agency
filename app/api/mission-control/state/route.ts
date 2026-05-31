@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId } from "@/lib/tenant/tenant-guards";
 import { getMissionControlState } from "@/lib/mission-control/index";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const organizationId = new URL(req.url).searchParams.get("organizationId") ?? "";
-  if (!organizationId) {
-    return NextResponse.json({ ok: false, error: "organizationId is required" }, { status: 400 });
-  }
-  const state = await getMissionControlState(organizationId);
+  const orgId = extractOrgId(req);
+  const ctx = await withTenantGuard(orgId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const state = await getMissionControlState(ctx.organizationId);
   return NextResponse.json(state);
 }

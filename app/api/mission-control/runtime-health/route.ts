@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId } from "@/lib/tenant/tenant-guards";
 import { generateOperationalInsights, generateRemediationPlan, reasonAcrossOperations } from "@/lib/alice/operational-intelligence";
 import { getOperationalMeshState } from "@/lib/runtime/agent-mesh";
 import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
@@ -24,7 +25,13 @@ import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
 import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 import { planRetry } from "@/lib/runtime/self-healing";
 
-export async function GET(request: Request) {
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const ctx = await withTenantGuard(orgId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
   const runtime = await getRuntimeHealthState();
   const [aliceInsights, remediationPlan, aliceOperations, providerHealth, incidents, memory, executiveReport, dentalPredictions, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization] = await Promise.all([
     generateOperationalInsights(),
@@ -53,7 +60,7 @@ export async function GET(request: Request) {
   const dependencyIssues = detectDependencyIssuesFromRuntime(runtime);
   const predictiveAlerts = generatePredictiveOperationalAlertsFromRuntime(runtime);
   const replayCenter = buildReplayCenterState(runtime);
-  const shouldSnapshot = new URL(request.url).searchParams.get("snapshot") === "true";
+  const shouldSnapshot = new URL(req.url).searchParams.get("snapshot") === "true";
   const providerSnapshot = shouldSnapshot ? await captureProviderHealthSnapshot() : null;
   return NextResponse.json({
     liveTraces: runtime.traces,

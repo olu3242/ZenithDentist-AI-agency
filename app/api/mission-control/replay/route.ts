@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId } from "@/lib/tenant/tenant-guards";
 import { executeReplay } from "@/lib/runtime/replay-engine";
 import { createReplayRequest } from "@/lib/stability";
 
-export async function POST(request: Request) {
-  const body = await request.json().catch(() => ({}));
+export async function POST(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const ctx = await withTenantGuard(orgId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const body = await req.json().catch(() => ({}));
   if (typeof body.traceId === "string") {
     const replay = await executeReplay({
       traceId: body.traceId,
