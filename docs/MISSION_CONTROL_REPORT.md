@@ -1,8 +1,124 @@
-# Mission Control — Technical Report
+# Mission Control Report — PROS Sprint
+**Generated:** 2026-06-01 (supersedes 2026-05-30 report)
+**Canonical Source:** `lib/mission-control/index.ts`, `components/mission-control/`, `app/mission-control/`
 
-**Report Date:** 2026-05-30
-**Location:** `lib/mission-control/`
-**Files:** `index.ts`, `dental-revenue-center.ts`, `sales-intelligence-center.ts`, `roi-intelligence-center.ts`
+---
+
+## Architecture Overview
+
+Mission Control is the operational control plane. It aggregates live data from Runtime Kernel, Workflow OS, AI OS, Recovery, Replay, and Tenant Context into a unified control surface. Every panel consumes live runtime data — no static metrics.
+
+---
+
+## Panel Components (64 total)
+
+**Directory:** `components/mission-control/` (64 `.tsx` files)
+
+### Revenue Center Panels
+- `dental-intelligence-panel.tsx` — dental revenue intelligence
+- `open-dental-pilot-panel.tsx` — Open Dental sync status
+- `executive-kpi-grid.tsx` — key performance indicators
+- `executive-report-card.tsx` — period revenue report
+- `enterprise-usage-dashboard.tsx` — usage by org/tier
+
+### Workflow Center Panels
+- `automation-blueprint-table.tsx` — all registered workflows
+- `automation-domain-matrix.tsx` — domain health grid
+- `automation-gap-panel.tsx` — missing automation coverage
+- `automation-audit-center.tsx` — workflow audit log
+- `orchestration-timeline.tsx` — execution timeline
+- `queue-health-panel.tsx`, `queue-pressure-monitor.tsx`, `queue-topology-map.tsx`
+- `sla-breach-panel.tsx` — SLA breach history
+
+### Runtime Center Panels
+- `runtime-health-dashboard.tsx`, `runtime-health-bar.tsx`
+- `runtime-trace-viewer.tsx`, `runtime-heatmap.tsx`, `runtime-event-fabric.tsx`
+- `runtime-digital-twin.tsx`, `runtime-cognition-panel.tsx`, `runtime-swarm-viewer.tsx`
+
+### Recovery Center Panels
+- `autonomous-recovery-center.tsx`, `replay-center.tsx`, `replay-console.tsx`
+- `dead-letter-explorer.tsx`, `operational-recovery-orchestrator.tsx`
+- `incident-timeline.tsx`, `dependency-issue-panel.tsx`
+
+### ALICE / AI Panels
+- `alice-copilot.tsx`, `alice-runtime-recommendations.tsx`
+- `ai-confidence-matrix.tsx`, `ai-confidence-timeline.tsx`
+- `intelligence-run-viewer.tsx`, `operational-agent-grid.tsx`
+- `recommendation-audit-panel.tsx`, `recommendation-effectiveness-matrix.tsx`, `recommendation-explainability-panel.tsx`
+
+### Observability / Governance Panels
+- `provider-health-panel.tsx`, `predictive-alert-feed.tsx`
+- `governance-center.tsx`, `executive-trust-dashboard.tsx`
+- `operational-forecast-panel.tsx`, `forecast-drift-radar.tsx`
+- `simulation-lab.tsx`, `audit-timeline.tsx`, `event-lineage-viewer.tsx`
+- `tenant-intelligence-grid.tsx`, `client-maturity-card.tsx`
+
+---
+
+## 21 Concurrent Data Sources on Page Load
+
+**File:** `lib/mission-control/index.ts::getMissionControlState()`
+
+All sources loaded via `Promise.all()`:
+
+1. `getRuntimeHealthState()` — traces, dead letters, SLA breaches, scores
+2. `getWorkflowRuntimeHealth()` — workflow execution health
+3. `getWorkflowAnalyticsSummary()` — analytics
+4. `coordinateAgents()` — AI OS agent coordination
+5. `getAutonomousRecoveryState()` — recovery plans
+6. `getReplayCenterState()` — replay queue
+7. `getRuntimeEventFabricState()` — event fabric state
+8. `getAcceptanceRate()` — AI recommendation acceptance
+9. `getGovernanceState()` — trust score
+10. `getProviderHealth()` — external provider health
+11–21: Sub-aggregators from dental-revenue-center.ts, roi-intelligence-center.ts, sales-intelligence-center.ts
+
+---
+
+## Dental Revenue Center
+
+**File:** `lib/mission-control/dental-revenue-center.ts`
+- `getDentalRevenueCenterState()` — no-show metrics, recall recovery, chair utilization, review growth
+
+**File:** `lib/mission-control/roi-intelligence-center.ts`
+- ROI computation per automation type, attribution to revenue buckets
+
+---
+
+## API Routes (app/api/dental/)
+
+| Route | Purpose |
+|-------|---------|
+| `GET /api/dental/attribution` | Revenue attribution by workflow |
+| `GET /api/dental/revenue-summary` | Org-level 30-day summary |
+| `GET /api/dental/metrics` | Practice analytics |
+| `GET /api/dental/recall` | Recall recovery events |
+| `GET /api/dental/chairs` | Chair utilization |
+| `GET /api/dental/reviews` | Review growth |
+| `GET /api/dental/revenue` | Revenue recovery events |
+| `GET /api/dental/practice` | Practice profile |
+
+---
+
+## Readiness Score: 80/100
+
+| Dimension | Score | Evidence |
+|-----------|-------|---------|
+| Panel count | 95 | 64 components present |
+| Data aggregation | 85 | 21 parallel sources |
+| Revenue center | 80 | dental-revenue-center.ts implemented |
+| Workflow center | 85 | Blueprint table, domain matrix, SLA panel |
+| Runtime center | 85 | 8 runtime panels |
+| Recovery center | 80 | Replay center, dead-letter explorer |
+| ALICE integration | 75 | alice-copilot + recommendations panels |
+| Live vs push | 65 | Request-scoped only, no WebSocket/SSE layer |
+
+**Gap:** No WebSocket or SSE for push-based panel updates. Panels refresh on navigation, not continuously.
+
+---
+
+*Previous content preserved below:*
+---
 
 ---
 
