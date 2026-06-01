@@ -10,13 +10,13 @@ export function CRMTable({
   empty?: string;
 }) {
   return (
-    <div className="overflow-hidden rounded border border-line bg-white shadow-sm">
+    <div className="overflow-hidden rounded border border-card bg-white shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] border-collapse">
           <thead>
             <tr>
               {columns.map(column => (
-                <th key={column} className="border-b border-line px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-muted">
+                <th key={column} className="border-b border-card px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-muted">
                   {column}
                 </th>
               ))}
@@ -24,7 +24,7 @@ export function CRMTable({
           </thead>
           <tbody>
             {rows.length ? rows.map((row, index) => (
-              <tr key={index} className="border-b border-line last:border-0">
+              <tr key={index} className="border-b border-card last:border-0">
                 {row.map((cell, cellIndex) => (
                   <td key={cellIndex} className="px-4 py-4 align-top text-sm">
                     {cell}

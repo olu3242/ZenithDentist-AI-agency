@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
 import {
   createGtmProspect,
   createOperationalRevenueAudit,
@@ -7,13 +8,27 @@ import {
   gtmStageKeys
 } from "@/lib/gtm/business-growth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
   const state = await getBusinessGrowthState();
   return NextResponse.json(state);
 }
 
-export async function POST(request: Request) {
-  const body = await request.json().catch(() => null);
+export async function POST(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }

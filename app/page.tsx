@@ -22,7 +22,7 @@ export default function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
       <main>
-        <section className="relative isolate overflow-hidden bg-ink text-white">
+        <section className="relative isolate overflow-hidden bg-surface text-white">
           <Image
             src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1800&q=80"
             alt="Modern dental operatory prepared for patient care"
@@ -33,7 +33,7 @@ export default function HomePage() {
           />
           <div className="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl content-center gap-10 px-5 py-20 lg:grid-cols-[1.05fr_.95fr]">
             <div>
-              <p className="text-sm font-black uppercase tracking-wider text-teal">Production revenue operations for dental practices</p>
+              <p className="text-sm font-black uppercase tracking-wider text-accent">Production revenue operations for dental practices</p>
               <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[1.02] md:text-7xl">
                 Recover missed revenue before empty chairs become normal.
               </h1>
@@ -46,9 +46,9 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid gap-4 self-end">
-              <MetricCard label="Target no-show reduction" value="40%" detail="Reminder and recovery stack" tone="teal" />
-              <MetricCard label="CRM-ready funnel" value="6" detail="Persisted operational tables" tone="gold" />
-              <MetricCard label="Deployment target" value="90+" detail="Lighthouse performance architecture" tone="green" />
+              <MetricCard label="Target no-show reduction" value="40%" detail="Reminder and recovery stack" tone="accent" />
+              <MetricCard label="CRM-ready funnel" value="6" detail="Persisted operational tables" tone="warning" />
+              <MetricCard label="Deployment target" value="90+" detail="Lighthouse performance architecture" tone="success" />
             </div>
           </div>
         </section>
@@ -59,8 +59,8 @@ export default function HomePage() {
             { icon: Workflow, title: "Operational CRM", body: "Admin routes expose leads, audits, bookings, funnel events, and source attribution." },
             { icon: ShieldCheck, title: "Production Scaffold", body: "Typed env validation, Supabase service access, RLS policies, structured logs, and error boundaries." }
           ].map(item => (
-            <article key={item.title} className="rounded border border-line bg-white p-6">
-              <item.icon className="h-8 w-8 text-teal" />
+            <article key={item.title} className="rounded border border-card bg-white p-6">
+              <item.icon className="h-8 w-8 text-accent" />
               <h2 className="mt-5 text-xl font-black">{item.title}</h2>
               <p className="mt-3 text-muted">{item.body}</p>
             </article>

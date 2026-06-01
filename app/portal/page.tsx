@@ -18,8 +18,8 @@ import { getTenantData } from "@/lib/data/tenants";
 import { calculatePracticeHealth } from "@/lib/health";
 
 export default async function PortalPage() {
-  const data = await getPortalData();
   const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const insights = data.insights.length ? data.insights : generateOperationalInsights(data.metrics, data.automationEvents);
   const health = calculatePracticeHealth(data.metrics, data.automationEvents, tenantData.benchmarks[0]);
   const activePlan = tenantData.plans.find(plan => plan.plan_key === tenantData.organization.active_plan);

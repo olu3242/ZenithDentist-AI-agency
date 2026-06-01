@@ -33,7 +33,11 @@ const config: Config = {
         warning: "#F59E0B"
       },
       borderRadius: {
-        DEFAULT: "8px"
+        DEFAULT: "8px",
+        sm: "6px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
       },
       boxShadow: {
         soft: "0 18px 45px rgba(15, 23, 42, 0.10)"

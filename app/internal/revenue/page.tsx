@@ -12,9 +12,9 @@ export default async function InternalRevenuePage() {
     <div className="space-y-6">
       <InternalHeader title="Revenue Operations" subtitle="MRR, subscription plan readiness, usage expansion, and upgrade paths." />
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="MRR" value={formatCurrency(mrr)} detail="Current active subscription value" tone="green" />
-        <MetricCard label="Funnel performance" value={`${funnelPerformance}%`} detail="Lead to audit conversion" tone="teal" />
-        <MetricCard label="Upgrade path" value="Growth" detail="Stripe Billing + Checkout ready" tone="gold" />
+        <MetricCard label="MRR" value={formatCurrency(mrr)} detail="Current active subscription value" tone="success" />
+        <MetricCard label="Funnel performance" value={`${funnelPerformance}%`} detail="Lead to audit conversion" tone="accent" />
+        <MetricCard label="Upgrade path" value="Growth" detail="Stripe Billing + Checkout ready" tone="warning" />
       </div>
       <UsageMeter usage={tenantData.usage[0]} plan={activePlan} />
       <PlanComparison plans={tenantData.plans} activePlan={tenantData.organization.active_plan} />

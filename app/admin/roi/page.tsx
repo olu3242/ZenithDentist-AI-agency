@@ -16,7 +16,7 @@ export default async function AdminRoiPage() {
           roi.monthly_appointments,
           `${roi.no_show_rate}%`,
           formatCurrency(Number(roi.monthly_revenue_loss)),
-          <strong key="recoverable" className="text-green">{formatCurrency(Number(roi.recoverable_revenue))}</strong>
+          <strong key="recoverable" className="text-success">{formatCurrency(Number(roi.recoverable_revenue))}</strong>
         ])}
       />
     </div>

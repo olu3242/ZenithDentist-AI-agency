@@ -11,13 +11,13 @@ export function RevenueTrendChart({ metrics }: { metrics: OperationalMetric[] })
   }).join(" ");
 
   return (
-    <section className="rounded border border-line bg-white p-5 shadow-sm">
+    <section className="rounded border border-card bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-black">Recovered Revenue Trend</h2>
           <p className="text-sm text-muted">Weekly revenue recovered by operational automations.</p>
         </div>
-        <strong className="text-2xl text-green">{formatCurrency(Number(data.at(-1)?.recovered_revenue ?? 0))}</strong>
+        <strong className="text-2xl text-success">{formatCurrency(Number(data.at(-1)?.recovered_revenue ?? 0))}</strong>
       </div>
       <svg className="mt-6 h-56 w-full overflow-visible" viewBox="0 0 400 220" role="img" aria-label="Recovered revenue trend chart">
         <defs>

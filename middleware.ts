@@ -6,7 +6,9 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const rate = rateLimit(request);
   if (!rate.allowed) {
-    return applySecurityHeaders(NextResponse.json({ error: "Too many requests." }, { status: 429 }));
+    return applySecurityHeaders(
+      NextResponse.json({ error: "Too many requests." }, { status: 429 })
+    );
   }
 
   if (!isProtectedPath(pathname) && !pathname.startsWith("/api/mission-control") && !pathname.startsWith("/api/gtm-command-center")) {

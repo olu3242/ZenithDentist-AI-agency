@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
 import { getPortalData, buildExecutiveReport } from "@/lib/data/operations";
 import { reportToHtml } from "@/lib/reports";
 import { trackOutreachEvent } from "@/lib/data/leads";

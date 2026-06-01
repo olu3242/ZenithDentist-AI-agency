@@ -23,8 +23,17 @@ export {
   withTenantGuard,
   withResourceGuard,
   assertTenantScope,
+  extractOrgId,
+  extractUserId,
+  extractUserEmail,
+  extractUserRole,
 } from "@/lib/tenant/tenant-guards";
 export type { TenantGuardContext } from "@/lib/tenant/tenant-guards";
+
+export { requireRole, requirePermission, requireSelfOrOwner } from "@/lib/rbac/rbac-guard";
+export type { ZenithRole, Permission, RbacContext } from "@/lib/rbac/rbac-guard";
+export { roleAtLeast, parseRole, ZENITH_ROLES, ROLE_HIERARCHY, ROLE_LABELS } from "@/lib/rbac/roles";
+export { hasPermission, PERMISSION_REQUIREMENTS } from "@/lib/rbac/permissions";
 
 export {
   generateTenantSecurityReport,

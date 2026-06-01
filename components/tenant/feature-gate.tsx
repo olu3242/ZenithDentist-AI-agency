@@ -16,7 +16,7 @@ export function FeatureGate({
   return (
     <>
       {fallback ?? (
-        <div className="rounded border border-gold/30 bg-gold/10 p-4 text-sm font-bold text-ink">
+        <div className="rounded border border-gold/30 bg-warning/10 p-4 text-sm font-bold text-[#F8FAFC]">
           Upgrade required for {feature.replace(/_/g, " ")}.
         </div>
       )}

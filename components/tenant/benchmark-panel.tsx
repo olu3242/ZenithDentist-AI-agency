@@ -3,7 +3,7 @@ import type { BenchmarkSnapshot } from "@/lib/data/tenants";
 export function BenchmarkPanel({ benchmark }: { benchmark?: BenchmarkSnapshot }) {
   const ranks = (benchmark?.percentile_rankings as Record<string, number> | undefined) ?? { noShow: 72, recall: 81, reviews: 54, efficiency: 76 };
   return (
-    <section className="rounded border border-line bg-white p-5 shadow-sm">
+    <section className="rounded border border-card bg-white p-5 shadow-sm">
       <h2 className="text-lg font-black">Benchmark Intelligence</h2>
       <p className="text-sm text-muted">Cross-practice comparison against the {benchmark?.cohort ?? "multi-location dental"} cohort.</p>
       <div className="mt-5 grid gap-3 md:grid-cols-2">
@@ -18,10 +18,10 @@ export function BenchmarkPanel({ benchmark }: { benchmark?: BenchmarkSnapshot })
 
 function Benchmark({ label, value, text }: { label: string; value: number; text: string }) {
   return (
-    <div className="rounded bg-paper p-4">
+    <div className="rounded bg-background p-4">
       <div className="flex items-center justify-between">
         <span className="font-bold">{label}</span>
-        <strong className="text-teal">{value}%</strong>
+        <strong className="text-accent">{value}%</strong>
       </div>
       <p className="mt-2 text-sm text-muted">{text}</p>
     </div>

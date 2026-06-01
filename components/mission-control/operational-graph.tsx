@@ -6,14 +6,14 @@ import { Maximize2, Minus, Plus } from "lucide-react";
 import type { WorkflowGraph, OperationalGraphNode } from "@/lib/runtime/operational-graph";
 
 const nodeStyles: Record<OperationalGraphNode["type"], string> = {
-  workflow: "border-teal/40 bg-teal/10 text-teal",
-  event: "border-blue/40 bg-blue/10 text-blue",
-  queue_handler: "border-gold/50 bg-gold/10 text-ink",
-  provider: "border-rust/40 bg-rust/10 text-rust",
-  persistence: "border-green/40 bg-green/10 text-green",
-  ui_visibility: "border-line bg-white text-ink",
+  workflow: "border-teal/40 bg-accent/10 text-accent",
+  event: "border-blue/40 bg-primary/10 text-primary",
+  queue_handler: "border-gold/50 bg-warning/10 text-[#F8FAFC]",
+  provider: "border-rust/40 bg-danger/10 text-danger",
+  persistence: "border-green/40 bg-success/10 text-success",
+  ui_visibility: "border-card bg-white text-[#F8FAFC]",
   alice_grounding: "border-purple-300 bg-purple-50 text-purple-700",
-  sla: "border-ink/20 bg-ink text-white"
+  sla: "border-ink/20 bg-surface text-white"
 };
 
 export function OperationalGraph({ graph }: { graph: WorkflowGraph }) {
@@ -21,10 +21,10 @@ export function OperationalGraph({ graph }: { graph: WorkflowGraph }) {
   const nodes = useMemo(() => graph.nodes.slice(0, 42), [graph.nodes]);
 
   return (
-    <section className="overflow-hidden rounded border border-line bg-ink text-white shadow-sm">
+    <section className="overflow-hidden rounded border border-card bg-surface text-white shadow-sm">
       <div className="flex flex-col gap-3 border-b border-white/10 p-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Operational Runtime Graph</p>
+          <p className="text-xs font-black uppercase tracking-wider text-accent">Operational Runtime Graph</p>
           <h2 className="mt-1 text-2xl font-black">Connected execution topology</h2>
           <p className="mt-2 max-w-3xl text-sm font-semibold text-white/60">
             Workflows, events, queues, providers, persistence, UI visibility, ALICE grounding, SLA states, replay paths, and dead-letter systems.
@@ -71,7 +71,7 @@ export function OperationalGraph({ graph }: { graph: WorkflowGraph }) {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate text-xs font-black uppercase">{node.type.replace(/_/g, " ")}</span>
-                  <span className={node.riskScore > 70 ? "size-2 rounded-full bg-rust shadow-[0_0_18px_rgba(207,93,65,0.8)]" : "size-2 rounded-full bg-teal shadow-[0_0_18px_rgba(43,151,142,0.8)]"} />
+                  <span className={node.riskScore > 70 ? "size-2 rounded-full bg-danger shadow-[0_0_18px_rgba(207,93,65,0.8)]" : "size-2 rounded-full bg-accent shadow-[0_0_18px_rgba(43,151,142,0.8)]"} />
                 </div>
                 <strong className="mt-2 block truncate text-sm font-black">{node.label}</strong>
                 <p className="mt-1 truncate text-xs font-bold opacity-70">{node.domain?.replace(/_/g, " ")} · risk {node.riskScore}/100</p>

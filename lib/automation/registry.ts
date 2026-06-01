@@ -178,6 +178,58 @@ export const automationRegistry: AutomationBlueprint[] = [
     deadLetterRequired: true,
     slaMinutes: 20,
     observability: fullObservability
+  },
+  {
+    id: "treatment_followup",
+    domain: "treatment",
+    name: "Treatment Follow-Up",
+    description: "Monitors accepted treatment plans and routes follow-up actions to maximize case completion and patient satisfaction.",
+    triggers: ["treatment plan accepted", "treatment completed", "post-op window reached"],
+    emittedEvents: ["operational_events", "recommendation_events", "notification_events", "intelligence_events"],
+    queueHandlers: ["ingestion.treatment_followup", "recommendation.treatment_recovery", "notification.treatment_alert"],
+    actions: ["verify treatment completion", "queue follow-up outreach", "notify provider", "measure outcome"],
+    intelligenceOutputs: ["treatment completion rate", "follow-up conversion", "case acceptance trend"],
+    aliceGroundingSurfaces: ["treatment history", "case acceptance", "follow-up outcomes", "provider performance"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 60,
+    observability: fullObservability
+  },
+  {
+    id: "insurance_verification",
+    domain: "billing",
+    name: "Insurance Verification",
+    description: "Automates pre-appointment insurance eligibility checks and routes coverage exceptions for billing resolution.",
+    triggers: ["appointment scheduled", "insurance on file expired", "verification window reached"],
+    emittedEvents: ["operational_events", "recommendation_events", "notification_events", "intelligence_events"],
+    queueHandlers: ["ingestion.insurance_verification", "recommendation.coverage_resolution", "notification.billing_alert"],
+    actions: ["verify eligibility", "resolve coverage exceptions", "notify billing team", "update patient record"],
+    intelligenceOutputs: ["verification success rate", "coverage gap rate", "billing error reduction"],
+    aliceGroundingSurfaces: ["insurance history", "eligibility outcomes", "billing error patterns", "payer behavior"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 30,
+    dependencies: ["billing_sync"],
+    observability: fullObservability
+  },
+  {
+    id: "chair_utilization_alert",
+    domain: "scheduling",
+    name: "Chair Utilization Alert",
+    description: "Detects underutilized chair capacity and triggers scheduling recovery to maximize daily production.",
+    triggers: ["chair utilization below threshold", "same-day opening detected", "schedule gap identified"],
+    emittedEvents: ["operational_events", "anomaly_events", "recommendation_events", "intelligence_events"],
+    queueHandlers: ["ingestion.chair_utilization", "recommendation.schedule_fill", "notification.scheduling_alert"],
+    actions: ["identify open slots", "rank fill candidates", "notify scheduling team", "measure fill rate"],
+    intelligenceOutputs: ["chair fill rate", "revenue per chair", "scheduling efficiency"],
+    aliceGroundingSurfaces: ["schedule history", "fill rate trend", "revenue per chair", "patient availability"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 15,
+    observability: fullObservability
   }
 ];
 

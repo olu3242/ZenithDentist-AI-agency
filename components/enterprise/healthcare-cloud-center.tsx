@@ -5,10 +5,10 @@ export function HealthcareCloudCenter({ state }: { state: EnterpriseCloudState }
   return (
     <section className="space-y-5">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Enterprise health" value={`${state.enterpriseScore}/100`} detail="Cloud-wide operating posture" tone="teal" />
-        <MetricCard label="Recovery priority" value={`$${state.revenueOpportunity.toLocaleString()}`} detail="Revenue recovery queued" tone="green" />
-        <MetricCard label="Risk probability" value={`${state.riskProbability}%`} detail="Highest active forecast" tone="rust" />
-        <MetricCard label="Cloud layers" value={state.layers.length} detail="Coordinated intelligence layers" tone="blue" />
+        <MetricCard label="Enterprise health" value={`${state.enterpriseScore}/100`} detail="Cloud-wide operating posture" tone="accent" />
+        <MetricCard label="Recovery priority" value={`$${state.revenueOpportunity.toLocaleString()}`} detail="Revenue recovery queued" tone="success" />
+        <MetricCard label="Risk probability" value={`${state.riskProbability}%`} detail="Highest active forecast" tone="danger" />
+        <MetricCard label="Cloud layers" value={state.layers.length} detail="Coordinated intelligence layers" tone="primary" />
       </div>
       <div className="rounded border border-line bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

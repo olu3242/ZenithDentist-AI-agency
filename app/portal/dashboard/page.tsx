@@ -12,8 +12,8 @@ import { getTenantData } from "@/lib/data/tenants";
 import { buildPredictiveInsights, calculatePracticeHealth } from "@/lib/health";
 
 export default async function PortalDashboardPage() {
-  const data = await getPortalData();
   const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const health = calculatePracticeHealth(data.metrics, data.automationEvents, tenantData.benchmarks[0]);
   return (
     <div className="space-y-6">

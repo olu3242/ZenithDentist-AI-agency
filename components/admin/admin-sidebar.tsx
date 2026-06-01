@@ -1,14 +1,14 @@
-import Link from "next/link";
+"use client";
 import { BarChart3, CalendarCheck, ClipboardList, Gauge, LayoutDashboard, Users } from "lucide-react";
 import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
 
-const items = [
-  { href: "/admin", label: "Command", icon: LayoutDashboard },
-  { href: "/admin/leads", label: "Leads", icon: Users },
-  { href: "/admin/audits", label: "Audits", icon: ClipboardList },
-  { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
-  { href: "/admin/roi", label: "ROI", icon: Gauge },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 }
+const nav: NavItem[] = [
+  { href: "/admin",           label: "Command",   icon: LayoutDashboard },
+  { href: "/admin/leads",     label: "Leads",     icon: Users },
+  { href: "/admin/audits",    label: "Audits",    icon: ClipboardList },
+  { href: "/admin/bookings",  label: "Bookings",  icon: CalendarCheck },
+  { href: "/admin/roi",       label: "ROI",       icon: Gauge },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export function AdminSidebar() {

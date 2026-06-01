@@ -20,8 +20,8 @@ export default async function PortalAlicePage() {
       </div>
       <section className="grid gap-4 xl:grid-cols-3">
         {insights.map(insight => (
-          <article key={insight.title} className="rounded border border-line bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-wider text-teal">{Math.round(insight.confidence * 100)}% confidence</p>
+          <article key={insight.title} className="rounded border border-card bg-white p-5 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wider text-accent">{Math.round(insight.confidence * 100)}% confidence</p>
             <h3 className="mt-2 text-lg font-black">{insight.title}</h3>
             <p className="mt-2 text-sm text-muted">{"summary" in insight ? insight.summary : insight.prediction}</p>
           </article>

@@ -26,9 +26,9 @@ export function FAQ() {
 
   return (
     <section id="faq" className="mx-auto max-w-5xl px-5 py-20">
-      <p className="text-sm font-black uppercase tracking-wider text-teal">FAQ</p>
+      <p className="text-sm font-black uppercase tracking-wider text-accent">FAQ</p>
       <h2 className="mt-3 text-4xl font-black">Operational questions, answered plainly.</h2>
-      <div className="mt-8 divide-y divide-line rounded border border-line bg-white">
+      <div className="mt-8 divide-y divide-line rounded border border-card bg-white">
         {faqs.map((faq, index) => (
           <button
             key={faq.question}

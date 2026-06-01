@@ -10,9 +10,9 @@ export default async function InternalOrganizationsPage() {
     <div className="space-y-6">
       <InternalHeader title="Organizations" subtitle="Tenant inventory, organization growth, plans, onboarding state, and isolation readiness." />
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Active organizations" value={activeOrganizations} detail={`${orgGrowth}% month-over-month growth`} tone="teal" />
-        <MetricCard label="Locations" value={tenantData.locations.length} detail="Across active tenants" tone="gold" />
-        <MetricCard label="Onboarding status" value={tenantData.organization.onboarding_status.replace("_", " ")} detail="Current demo tenant" tone="blue" />
+        <MetricCard label="Active organizations" value={activeOrganizations} detail={`${orgGrowth}% month-over-month growth`} tone="accent" />
+        <MetricCard label="Locations" value={tenantData.locations.length} detail="Across active tenants" tone="warning" />
+        <MetricCard label="Onboarding status" value={tenantData.organization.onboarding_status.replace("_", " ")} detail="Current demo tenant" tone="primary" />
       </div>
       <CRMTable
         columns={["Organization", "Type", "Plan", "Locations", "Status"]}

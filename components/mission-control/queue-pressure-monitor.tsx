@@ -9,14 +9,14 @@ export function QueuePressureMonitor({ state }: { state: MissionControlState }) 
     { label: "Retries", value: health.retries }
   ];
   return (
-    <section className="rounded border border-line bg-white p-5 shadow-sm">
+    <section className="rounded border border-card bg-white p-5 shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-muted">Queue pressure monitor</p>
-      <h2 className="mt-1 text-2xl font-black text-ink">Backlog and recovery pressure</h2>
+      <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Backlog and recovery pressure</h2>
       <div className="mt-5 grid gap-3 sm:grid-cols-4">
         {rows.map(row => (
-          <div key={row.label} className="rounded border border-line bg-paper p-4">
+          <div key={row.label} className="rounded border border-card bg-background p-4">
             <p className="text-xs font-black uppercase text-muted">{row.label}</p>
-            <p className="mt-2 text-3xl font-black text-teal">{row.value}</p>
+            <p className="mt-2 text-3xl font-black text-accent">{row.value}</p>
           </div>
         ))}
       </div>

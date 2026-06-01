@@ -12,7 +12,8 @@ export type ExtensionCategory =
   | "ai_extension"
   | "analytics_extension"
   | "workflow_pack"
-  | "industry_pack";
+  | "industry_pack"
+  | "automation_pack";
 
 export type ExtensionStatus = "available" | "beta" | "deprecated" | "coming_soon";
 
@@ -130,6 +131,97 @@ export const EXTENSION_REGISTRY: Extension[] = [
     workflowIds: ["lead_created"],
     configSchema: {
       api_token: { type: "string", required: true, description: "Calendly API token" },
+    },
+  },
+  // ── Dental Blueprint Automation Packs ──────────────────────────────────────
+  {
+    id: "recall_recovery_pack",
+    name: "Recall Recovery Pack",
+    description: "Automated recall outreach sequences that re-engage overdue patients and fill hygiene chairs.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["recall_automation"],
+    workflowIds: ["recall_due"],
+    configSchema: {
+      recall_window_days: { type: "number", required: false, description: "Days past due to trigger recall sequence" },
+      message_channel:    { type: "string", required: false, description: "Preferred outreach channel: sms | email | both" },
+    },
+  },
+  {
+    id: "patient_reactivation_pack",
+    name: "Patient Reactivation Pack",
+    description: "Re-engages lapsed patients with personalised AI messaging to recover lost production.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["treatment_reactivation"],
+    workflowIds: ["reactivation_candidate_detected"],
+    configSchema: {
+      lapse_threshold_days: { type: "number", required: false, description: "Days inactive before patient is a reactivation candidate" },
+      offer_incentive:      { type: "boolean", required: false, description: "Include a reactivation offer in outreach" },
+    },
+  },
+  {
+    id: "review_growth_pack",
+    name: "Review Growth Pack",
+    description: "Automated post-visit review requests that grow Google star-rating and new patient flow.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["review_automation"],
+    workflowIds: ["review_request_due"],
+    configSchema: {
+      request_delay_hours: { type: "number", required: false, description: "Hours after appointment to send review request" },
+      google_location_id:  { type: "string", required: false, description: "Google Business location ID for review link" },
+    },
+  },
+  {
+    id: "insurance_verification_pack",
+    name: "Insurance Verification Pack",
+    description: "Automated pre-appointment insurance eligibility verification to reduce claim denials.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["insurance_verification"],
+    workflowIds: ["insurance_verification"],
+    configSchema: {
+      verification_lead_days: { type: "number", required: false, description: "Days before appointment to verify insurance" },
+      payer_portal_url:       { type: "string", required: false, description: "Insurance payer portal URL" },
+    },
+  },
+  {
+    id: "treatment_followup_pack",
+    name: "Treatment Follow-Up Pack",
+    description: "Post-treatment follow-up sequences to improve acceptance, compliance, and patient satisfaction.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["treatment_followup"],
+    workflowIds: ["treatment_followup"],
+    configSchema: {
+      followup_delay_hours: { type: "number", required: false, description: "Hours after treatment to send follow-up" },
+      include_care_tips:    { type: "boolean", required: false, description: "Include post-treatment care tips in message" },
+    },
+  },
+  {
+    id: "missed_appointment_recovery_pack",
+    name: "Missed Appointment Recovery Pack",
+    description: "Instant no-show detection and same-day rebooking sequences to protect chair revenue.",
+    version: "1.0.0",
+    category: "automation_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["missed_call_recovery"],
+    workflowIds: ["appointment_no_show"],
+    configSchema: {
+      rebook_window_hours: { type: "number", required: false, description: "Hours after no-show to attempt rebooking" },
+      escalate_to_staff:   { type: "boolean", required: false, description: "Notify front-desk if automated rebook fails" },
     },
   },
 ];

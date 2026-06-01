@@ -82,7 +82,8 @@ export async function generateAliceReport(period: "daily" | "weekly" | "monthly"
 
 export async function coordinateEnterpriseIntelligence(
   prompt: string,
-  mode: AliceOperationalMode = "enterprise_coordination"
+  mode: AliceOperationalMode = "enterprise_coordination",
+  organizationId?: string
 ): Promise<AliceFrameworkResponse & { mode: AliceOperationalMode; grounding: string[] }> {
   const [cloud, projection] = await Promise.all([getEnterpriseCloudState(), analyticsProjector()]);
   const context = buildAliceEnterpriseContext(mode);

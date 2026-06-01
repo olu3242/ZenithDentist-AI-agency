@@ -6,8 +6,8 @@ import { getPortalData } from "@/lib/data/operations";
 import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalLocationsPage() {
-  const data = await getPortalData();
   const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
 
   return (
     <div className="space-y-6">

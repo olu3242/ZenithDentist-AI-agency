@@ -7,10 +7,10 @@ import { formatCurrency } from "@/lib/utils";
 export function ExecutiveReport({ report }: { report: Report }) {
   const metrics = report.metrics as Record<string, number>;
   return (
-    <section className="rounded border border-line bg-white p-6 shadow-soft">
+    <section className="rounded border border-card bg-white p-6 shadow-card">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
-          <p className="text-xs font-black uppercase tracking-wider text-teal">{report.period} executive report</p>
+          <p className="text-xs font-black uppercase tracking-wider text-accent">{report.period} executive report</p>
           <h2 className="mt-2 text-3xl font-black">{report.title}</h2>
           <p className="mt-3 max-w-3xl text-muted">{report.summary}</p>
         </div>
@@ -33,9 +33,9 @@ export function ExecutiveReport({ report }: { report: Report }) {
 
 function ReportStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded bg-paper p-4">
+    <div className="rounded bg-background p-4">
       <span className="text-xs font-black uppercase tracking-wider text-muted">{label}</span>
-      <strong className="mt-2 block text-2xl font-black text-ink">{value}</strong>
+      <strong className="mt-2 block text-2xl font-black text-[#F8FAFC]">{value}</strong>
     </div>
   );
 }

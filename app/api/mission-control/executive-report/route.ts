@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
 import { buildExecutiveReportSnapshot, persistExecutiveReportSnapshot, renderExecutiveReportHtml } from "@/lib/runtime/executive-reporting";
 
-export async function GET(request: Request) {
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
   const report = await buildExecutiveReportSnapshot();
-  const url = new URL(request.url);
+  const url = new URL(req.url);
   const persist = url.searchParams.get("persist") === "true";
   const format = url.searchParams.get("format");
   const snapshot = persist ? await persistExecutiveReportSnapshot(report) : null;

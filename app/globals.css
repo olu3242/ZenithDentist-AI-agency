@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Zenith AI Design System — CSS Custom Properties ─────────────────────── */
 :root {
   color-scheme: light;
   --primary: #2563EB;
@@ -40,6 +41,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   letter-spacing: 0;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
@@ -47,8 +50,9 @@ body {
   color: white;
 }
 
+/* ── Global utility classes ───────────────────────────────────────────────── */
 .focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
 }
 
 .field {

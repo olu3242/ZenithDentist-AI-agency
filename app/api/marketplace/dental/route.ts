@@ -1,0 +1,88 @@
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
+import { EXTENSION_REGISTRY } from "@/lib/marketplace-core/extension-registry";
+import { installExtension } from "@/lib/marketplace-core/extension-loader";
+import { extensionTriggerWorkflow } from "@/lib/marketplace-core/extension-runtime";
+import type { WorkflowTrigger } from "@/lib/workflow-os/workflow-router";
+
+export const dynamic = "force-dynamic";
+
+/** GET /api/marketplace/dental — returns all automation_pack blueprints */
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const dental = EXTENSION_REGISTRY.filter(e => e.category === "automation_pack");
+  return NextResponse.json({ ok: true, count: dental.length, extensions: dental });
+}
+
+/** POST /api/marketplace/dental — deploy a dental blueprint for an organization */
+export async function POST(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  let body: { extensionId?: string; organizationId?: string };
+  try {
+    body = await req.json() as { extensionId?: string; organizationId?: string };
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const { extensionId } = body;
+  const organizationId = ctx.organizationId;
+  if (!extensionId) {
+    return NextResponse.json(
+      { ok: false, error: "extensionId is required" },
+      { status: 400 },
+    );
+  }
+
+  const extension = EXTENSION_REGISTRY.find(e => e.id === extensionId && e.category === "automation_pack");
+  if (!extension) {
+    return NextResponse.json(
+      { ok: false, error: `Dental blueprint "${extensionId}" not found` },
+      { status: 404 },
+    );
+  }
+
+  const trigger = extension.workflowIds[0] as WorkflowTrigger;
+  if (!trigger) {
+    return NextResponse.json(
+      { ok: false, error: `Blueprint "${extensionId}" has no workflow configured` },
+      { status: 422 },
+    );
+  }
+
+  try {
+    // Ensure installation record exists before triggering workflow.
+    // installExtension upserts an active record in operational_extensions so
+    // extensionTriggerWorkflow can verify the extension is installed.
+    await installExtension(extensionId, organizationId, {});
+
+    const result = await extensionTriggerWorkflow({
+      extensionId,
+      organizationId,
+      trigger,
+      payload: { source: "marketplace_deploy", blueprintId: extensionId },
+    });
+
+    return NextResponse.json({
+      ok: true,
+      extensionId,
+      organizationId,
+      trigger,
+      result,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
+}

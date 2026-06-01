@@ -32,7 +32,7 @@ export default async function AdminPage() {
 export function Header({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <header>
-      <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith operations</p>
+      <p className="text-xs font-black uppercase tracking-wider text-accent">Zenith operations</p>
       <h1 className="mt-2 text-4xl font-black">{title}</h1>
       <p className="mt-2 max-w-3xl text-muted">{subtitle}</p>
     </header>

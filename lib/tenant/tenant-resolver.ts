@@ -7,13 +7,15 @@ import "server-only";
 
 import { createServiceClient } from "@/lib/supabase/server";
 import { getTenantData } from "@/lib/data/tenants";
+import { parseRole, type ZenithRole } from "@/lib/rbac/roles";
 
 export interface ResolvedTenant {
   organizationId: string;
   organizationSlug: string;
   locationId: string | null;
   userId: string | null;
-  membershipRole: string | null;
+  userEmail: string | null;
+  membershipRole: ZenithRole;
   planTier: string;
 }
 
@@ -28,14 +30,20 @@ export async function resolveTenant(): Promise<ResolvedTenant> {
     organizationSlug: data.organization.slug ?? "unknown",
     locationId: data.tenant.locationId ?? null,
     userId: null,
-    membershipRole: null,
+    userEmail: null,
+    membershipRole: "read_only",
     planTier: "starter",
   };
 }
 
-/** Resolve tenant from an explicit organization ID. */
+/**
+ * Resolve tenant from an explicit organization ID.
+ * When userId is provided, looks up organization_members to populate
+ * membershipRole and validates membership exists.
+ */
 export async function resolveTenantById(
-  organizationId: string
+  organizationId: string,
+  userId?: string | null
 ): Promise<ResolvedTenant> {
   const supabase = createServiceClient();
   if (!supabase) throw new Error("Supabase service client not available.");
@@ -50,18 +58,35 @@ export async function resolveTenantById(
     throw new Error(`Organization not found: ${organizationId}`);
   }
 
+  let membershipRole: ZenithRole = "read_only";
+  if (userId) {
+    const { data: member } = await supabase
+      .from("organization_members")
+      .select("role")
+      .eq("organization_id", organizationId)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (member?.role) {
+      membershipRole = parseRole(member.role as string);
+    }
+  }
+
   return {
     organizationId: org.id,
     organizationSlug: org.slug ?? "unknown",
     locationId: null,
-    userId: null,
-    membershipRole: null,
+    userId: userId ?? null,
+    userEmail: null,
+    membershipRole,
     planTier: "starter",
   };
 }
 
 /** Resolve tenant from slug. */
-export async function resolveTenantBySlug(slug: string): Promise<ResolvedTenant> {
+export async function resolveTenantBySlug(
+  slug: string,
+  userId?: string | null
+): Promise<ResolvedTenant> {
   const supabase = createServiceClient();
   if (!supabase) throw new Error("Supabase service client not available.");
 
@@ -73,12 +98,26 @@ export async function resolveTenantBySlug(slug: string): Promise<ResolvedTenant>
 
   if (error || !org) throw new Error(`Organization not found for slug: ${slug}`);
 
+  let membershipRole: ZenithRole = "read_only";
+  if (userId) {
+    const { data: member } = await supabase
+      .from("organization_members")
+      .select("role")
+      .eq("organization_id", org.id)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (member?.role) {
+      membershipRole = parseRole(member.role as string);
+    }
+  }
+
   return {
     organizationId: org.id,
     organizationSlug: org.slug ?? slug,
     locationId: null,
-    userId: null,
-    membershipRole: null,
+    userId: userId ?? null,
+    userEmail: null,
+    membershipRole,
     planTier: "starter",
   };
 }

@@ -2,9 +2,11 @@ import { PerformanceHeatmap } from "@/components/portal/performance-heatmap";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { RecommendationCard } from "@/components/portal/recommendation-card";
 import { getPortalData } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalPatientsPage() {
-  const data = await getPortalData();
+  const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   return (
     <div className="space-y-6">
       <PortalHeader title="Patient Engagement" subtitle="Patient response patterns, schedule risk, and high-value recovery segments." />

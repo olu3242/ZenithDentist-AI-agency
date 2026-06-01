@@ -19,10 +19,10 @@ export function RevenueDashboard({
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <MetricCard label="New leads" value={leads.length} detail="Captured in CRM" tone="teal" />
-      <MetricCard label="Projected recovery" value={formatCurrency(recovery)} detail="Across ROI records" tone="green" />
-      <MetricCard label="Audit requests" value={audits.length} detail={`${conversion}% lead to audit`} tone="gold" />
-      <MetricCard label="Booked calls" value={booked} detail="Calendly handoffs" tone="blue" />
+      <MetricCard label="New leads" value={leads.length} detail="Captured in CRM" tone="accent" />
+      <MetricCard label="Projected recovery" value={formatCurrency(recovery)} detail="Across ROI records" tone="success" />
+      <MetricCard label="Audit requests" value={audits.length} detail={`${conversion}% lead to audit`} tone="warning" />
+      <MetricCard label="Booked calls" value={booked} detail="Calendly handoffs" tone="primary" />
     </div>
   );
 }

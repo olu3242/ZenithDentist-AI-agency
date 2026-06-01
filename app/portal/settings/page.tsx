@@ -23,7 +23,7 @@ export default async function PortalSettingsPage() {
       <PlanComparison plans={tenantData.plans} activePlan={tenantData.organization.active_plan} />
       <section className="grid gap-4">
         {settings.map(([label, value]) => (
-          <article key={label} className="rounded border border-line bg-white p-5 shadow-sm">
+          <article key={label} className="rounded border border-card bg-white p-5 shadow-sm">
             <p className="text-xs font-black uppercase tracking-wider text-muted">{label}</p>
             <strong className="mt-2 block text-lg">{value}</strong>
           </article>
