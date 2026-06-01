@@ -60,8 +60,7 @@ export function buildTenantContext(opts: {
  * The slug is configurable via NEXT_PUBLIC_DEFAULT_ORG_SLUG.
  */
 export function getDefaultTenantContext(): Pick<TenantContext, "organizationSlug"> {
-  const slug = process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG;
-  if (!slug) throw new Error("NEXT_PUBLIC_DEFAULT_ORG_SLUG is not configured.");
+  const slug = process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG ?? "demo-dental-group";
   return { organizationSlug: slug };
 }
 
