@@ -19,3 +19,20 @@ export const brandConfig = {
   gradients: ZenithTokens.gradients,
   tokens: ZenithTokens
 } as const;
+
+// BRAND alias — used by brand-sidebar and brand-logo components
+export const BRAND = {
+  name: brandConfig.name,
+  tagline: brandConfig.tagline,
+  logo: {
+    mark: brandConfig.logoMark,
+    wordmark: brandConfig.shortName,
+    submarks: {
+      portal: "ZENITH PORTAL",
+      admin: "ZENITH OPS",
+      missionControl: "MISSION CONTROL",
+      internal: "ZENITH INTERNAL",
+    },
+  },
+  colors: brandConfig.colors,
+} as const;

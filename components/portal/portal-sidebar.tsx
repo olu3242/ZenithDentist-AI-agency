@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck, Brain, ShieldCheck, SlidersHorizontal, CloudCog, Network, Radar, DatabaseZap } from "lucide-react";
 import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import type { NavItem } from "@/components/brand/brand-sidebar";
 
 const nav: NavItem[] = [
   { href: "/portal",               label: "Overview",      icon: Gauge },

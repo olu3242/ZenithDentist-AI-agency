@@ -26,10 +26,10 @@ export default async function WorkflowOSPage() {
           </p>
         </header>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Registered workflows" value={automationOS.registry.length} detail={`${automationOS.counts.active} active in registry`} tone="teal" />
-          <MetricCard label="Operational score" value={`${runtime.operationalScore}%`} detail="Runtime health signal" tone="green" />
-          <MetricCard label="Replay queue" value={runtime.replayQueue} detail="Recovery candidates" tone="gold" />
-          <MetricCard label="SLA breaches" value={runtime.slaBreachCount} detail="Workflow pressure" tone="rust" />
+          <MetricCard label="Registered workflows" value={automationOS.registry.length} detail={`${automationOS.counts.active} active in registry`} tone="accent" />
+          <MetricCard label="Operational score" value={`${runtime.operationalScore}%`} detail="Runtime health signal" tone="success" />
+          <MetricCard label="Replay queue" value={runtime.replayQueue} detail="Recovery candidates" tone="warning" />
+          <MetricCard label="SLA breaches" value={runtime.slaBreachCount} detail="Workflow pressure" tone="danger" />
         </div>
         <section className="rounded border border-line bg-white shadow-sm">
           <div className="border-b border-line p-5">
