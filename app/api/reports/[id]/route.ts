@@ -1,17 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
+import { NextResponse } from "next/server";
 import { getPortalData, buildExecutiveReport } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 import { reportToHtml } from "@/lib/reports";
 import { trackOutreachEvent } from "@/lib/data/leads";
 
-export async function GET(
-  _: Request,
-  context: { params: Promise<{ id: string }> }
-) {
-  const { id } = await context.params;
-
-  const data = await getPortalData();
-  const report = data.reports.find(item => item.id === id) ?? buildExecutiveReport(data);
+export async function GET(_: Request, { params }: { params: { id: string } }) {
+  const { tenant } = await getTenantData();
+  const data = await getPortalData(tenant.organizationId);
+  const report = data.reports.find(item => item.id === params.id) ?? buildExecutiveReport(data);
   const html = reportToHtml(report);
   await trackOutreachEvent({
     eventType: "cta_clicked",

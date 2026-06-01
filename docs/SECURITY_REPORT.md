@@ -1,258 +1,172 @@
-# Security Report — Current State, Gaps, and Remediation Plan
+# Zenith AI — Security Report
 
-**Report Date:** 2026-05-30
-**Classification:** Internal — Engineering and Leadership
-
----
-
-## 1. Executive Summary
-
-The platform has meaningful security infrastructure at the edge and HTTP layer (rate limiting, CSP headers, webhook verification, token-based route protection), and the Supabase migration defines RLS policies on all 13 new tables. However, three critical security gaps prevent this from being customer-safe: no real authentication layer, RLS that is bypassed by the service client used everywhere, and tenant guard functions that are defined but not called at API routes. A cross-tenant data leak was identified and patched in `getPortalData()`. The current state is adequate for internal demos with a single organization but not for multi-tenant production.
+**Date:** 2026-06-01  
+**Prepared by:** Security & Auth Engineer  
+**Scope:** Authentication architecture, tenant scoping, PHI exposure, and remediation
 
 ---
 
-## 2. Current Security Controls
-
-### 2.1 Edge Rate Limiting (`middleware.ts`, `lib/security-edge.ts`)
-
-**What it does:** Counts requests per IP-derived key in a sliding window. Returns HTTP 429 when the limit is exceeded.
-
-**Implementation:** `rateLimit(request)` in `lib/security-edge.ts` is called at the top of `middleware()`. All requests to protected routes pass through this check.
-
-**Effectiveness:** The rate limiter is in-process (not Redis-backed), meaning it resets on server restart and does not coordinate across multiple instances. It provides protection against naive brute-force but not distributed rate-limit bypass.
-
-### 2.2 Token-Based Route Protection (`middleware.ts`)
-
-**Protected routes:**
-- `/admin/*` — requires `zenith_admin_token`
-- `/portal/*` — requires `zenith_portal_token`
-- `/internal/*`, `/dashboard/*`, `/mission-control/*`, `/api/mission-control/*`, `/api/gtm-command-center/*`, `/lead-operations/*`, `/client-operations/*`, `/gtm-command-center/*` — requires `zenith_internal_token`
-
-**Token delivery:** Via cookie (`zenith_internal_token`, `zenith_portal_token`, `zenith_admin_token`) or HTTP header (`x-internal-token`, `x-portal-token`, `x-admin-token`).
-
-**Critical gap:** If the environment variable for a given token is not set (`configuredToken` is undefined), the middleware **falls through and allows the request**:
-```typescript
-if (!configuredToken) {
-  return applySecurityHeaders(NextResponse.next());  // passes without auth check
-}
-```
-In a development or misconfigured deployment where these env vars are not set, all protected routes are open.
-
-### 2.3 Security Headers (`lib/security.ts`)
-
-Applied via `applySecurityHeaders(response)`:
-
-```
-x-content-type-options: nosniff
-x-frame-options: DENY
-referrer-policy: strict-origin-when-cross-origin
-permissions-policy: camera=(), microphone=(), geolocation=()
-content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' ...
-frame-ancestors: 'none'
-```
-
-**Note:** CSP includes `'unsafe-inline'` for `script-src`, which weakens protection against XSS. This is common in Next.js applications due to inline script requirements but should be addressed with nonces.
-
-### 2.4 Webhook Signature Verification (`lib/security.ts`)
-
-```typescript
-verifyWebhookSignature(payload, signature, secret)
-```
-
-Uses HMAC-SHA256 with `timingSafeEqual` comparison to prevent timing attacks. Verifies `sha256=` prefix on the incoming signature. Returns `{ verified, reason }`.
-
-**Stripe status:** Partial (webhook only) — the webhook signature verification function exists but must be explicitly called in each webhook handler. Not verified that all handlers call it.
-
-### 2.5 Operational Secret Masking (`lib/security.ts`)
-
-`maskOperationalSecrets(input)` redacts fields matching `/(key|token|secret|password|authorization)/i` to `"abcd...wxyz"` format. Used in `logFailedAuth()`.
-
-### 2.6 RLS Policies in Migration
-
-All 13 tables in `202605300001_dental_revenue_os.sql` have:
-```sql
-ALTER TABLE public.<table> ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "org members read <table>"
-  ON public.<table> FOR SELECT
-  USING (organization_id = (
-    SELECT organization_id FROM public.organization_members
-    WHERE user_id = auth.uid() LIMIT 1
-  ));
-```
-
-**Status:** Defined but ineffective. See Section 3.2.
-
----
-
-## 3. Security Gaps
-
-### 3.1 No Authentication Layer
-
-**Severity: Critical**
-
-There is no user authentication system in the application. The middleware enforces token-based access to protected routes, but:
-
-1. The tokens are static environment variables — any holder of the token can access any tenant's data
-2. There is no session management, no JWT validation, no user identity
-3. `auth.uid()` (used in RLS policies) will always be null because there is no Supabase Auth integration
-4. The portal token (`PORTAL_ACCESS_TOKEN`) is a single shared secret — all customers would use the same token if the portal were multi-tenant
-
-**Evidence:** `middleware.ts` line 36–43 shows that `configuredToken` comes from env vars, compared as a string. There is no user session, no JWT, no OAuth.
-
-**Impact:** Any user who obtains the portal token can access any organization's data through the portal.
-
----
-
-### 3.2 RLS Defined but Bypassed Everywhere
-
-**Severity: Critical**
-
-All data access in the application uses `createServiceClient()` which instantiates the Supabase client with the service role key:
-
-```typescript
-// lib/supabase/server.ts (inferred from usage patterns)
-createServiceClient() → supabase.createClient(url, SERVICE_ROLE_KEY)
-```
-
-The service role key bypasses all RLS policies. Therefore, despite 13 tables having RLS enabled with `organization_id` SELECT policies, those policies never run during any actual query in the system.
-
-**Evidence:**
-- Every module (`patient-recovery.ts`, `recall-recovery.ts`, `chair-utilization.ts`, etc.) calls `createServiceClient()`
-- The comment in `practice-health.ts` line 117: `// Suppress unused import warning — createServiceClient may be used by callers`
-- The RLS policies reference `auth.uid()` which is always null without Supabase Auth
-
-**Impact:** If a bug allows the wrong `organization_id` to be passed to any query, all rows from all organizations are accessible. This is the exact vulnerability class of the patched `getPortalData()` leak.
-
----
-
-### 3.3 Tenant Guards Defined But Not Wired
-
-**Severity: High**
-
-`lib/tenant/tenant-enforcement.ts` defines three guard functions:
-- `assertOrganizationScope(resourceOrgId, claimedOrgId)` — verifies a resource belongs to the claimed org
-- `assertOrganizationMembership(userId, organizationId)` — verifies user is a member of the org
-- `scopeToOrganization(query, organizationId)` — scopes a query to an org
-
-These functions exist and are correct. However, they are not imported or called at any API route boundary observed in the codebase. The `scopedByOrganization()` function in `lib/tenant.ts` (older) performs a similar function.
-
-**Evidence:** `grep -r "assertOrganizationScope\|assertOrganizationMembership"` returns no results in route handlers or API files. The tenant enforcement module is defined but has no callers.
-
-**Impact:** There is no runtime enforcement preventing a caller from passing an arbitrary `organizationId` to any data function. The application relies entirely on callers passing the correct organization ID, with no verification.
-
----
-
-### 3.4 Cross-Tenant Leak — Patched
-
-**Severity: Critical (patched)**
-
-**Original vulnerability:** `getPortalData(organizationId?: string)` in `lib/data/operations.ts` made `organizationId` optional. Callers that omitted it (e.g., `getPortalData()` with no arguments) would receive unscoped queries returning data from all organizations across all six tables:
-- `operational_metrics`
-- `automation_events`
-- `insight_snapshots`
-- `recommendations`
-- `reports`
-- `notifications`
-
-**Evidence of callers without org ID (pre-patch):**
-```typescript
-// lib/client-operations.ts line 9 — before patch
-getPortalData()  // no organizationId argument
-// lib/alice.ts, lib/autonomous.ts, lib/data/internal.ts — same pattern
-```
-
-**Patch applied:** The `scope` function in `operations.ts` is now:
-```typescript
-const scope = <T extends { eq: (col: string, val: string) => T }>(q: T) =>
-  organizationId ? q.eq("organization_id", organizationId) : q;
-```
-
-When `organizationId` is provided, all six queries are scoped. When omitted (internal/admin callers), queries are intentionally unscoped.
-
-**Residual risk:** The callers in `lib/client-operations.ts`, `lib/alice.ts`, and `lib/autonomous.ts` still call `getPortalData()` without an `organizationId`. These paths now return unscoped data, which is only acceptable if those callers are internal-only. The portal path (`/portal/*`) must always provide an `organizationId`. Verification that portal routes pass an `organizationId` was not completed.
-
----
-
-### 3.5 No Row-Level Security on Older Tables
-
-The `202605300001` migration enables RLS on the 13 new tables. Earlier tables (`operational_metrics`, `automation_events`, `insight_snapshots`, `recommendations`, `reports`, `notifications`, `organizations`, `organization_members`) have unknown RLS status. These are the tables powering `getPortalData()` — the patched cross-tenant vector.
-
----
-
-### 3.6 Middleware Fallthrough on Missing Env Vars
-
-**Severity: High**
-
-```typescript
-if (!configuredToken) {
-  return applySecurityHeaders(NextResponse.next());
-}
-```
-
-If `INTERNAL_ACCESS_TOKEN`, `PORTAL_ACCESS_TOKEN`, or `ADMIN_ACCESS_TOKEN` are not set, the middleware grants access to all protected routes without any authentication check.
-
-**Impact:** A misconfigured deployment (common in staging/preview environments) is fully open.
-
----
-
-## 4. Remediation Plan
-
-### Priority 1 — Immediate (before first paying customer)
-
-**P1.1: Wire tenant guards at all API route boundaries**
-- Import `requireOrganizationId` and `assertOrganizationScope` into every API route handler
-- All portal routes must extract `organizationId` from the authenticated session and pass it to every data function
-- Estimated effort: 2–3 days
-
-**P1.2: Fix middleware fallthrough on missing env vars**
-```typescript
-// Replace:
-if (!configuredToken) { return NextResponse.next(); }
-// With:
-if (!configuredToken) { return failedAuthResponse(request); }
-```
-- Estimated effort: 1 hour
-
-**P1.3: Verify all portal routes pass organizationId to getPortalData()**
-- Audit every call site of `getPortalData()`, `getPatientRecoveryMetrics()`, `getRecallRecoveryMetrics()`, etc.
-- Estimated effort: 1 day
-
-### Priority 2 — Before Multi-Tenant Scale (within 30 days)
-
-**P2.1: Implement Supabase Auth**
-- Add `@supabase/auth-helpers-nextjs` or `@supabase/ssr`
-- Replace static token middleware with session-based auth
-- Create user-scoped client (using anon key, not service key) for portal routes
-- This is the only way to make RLS policies effective for portal data
-
-**P2.2: Switch portal queries from service client to user client**
-- All portal-facing data reads should use a client created with the user's JWT
-- Service client should remain for server-side admin operations only
-- This makes RLS effective without changing the policies
-
-**P2.3: Enable RLS on older tables**
-- Audit `operational_metrics`, `automation_events`, `insight_snapshots`, `recommendations`, `reports`, `notifications`
-- Add `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` and org-scoped policies
-
-### Priority 3 — Before Enterprise
-
-**P3.1: Replace `'unsafe-inline'` in CSP with nonce-based approach**
-**P3.2: Replace in-process rate limiter with Redis-backed distributed rate limiter**
-**P3.3: Implement audit log for all data mutations (writes to `automation_audit` table)**
-**P3.4: Add per-organization subscription validation to prevent access to features above plan tier**
-
----
-
-## 5. Risk Summary Table
-
-| Gap | Severity | Exploitable Now | Fixed By |
+## 1. Authentication Architecture
+
+### Primary: Supabase Auth SSR
+Zenith AI uses `@supabase/ssr` for session-based authentication. The middleware validates
+Supabase Auth JWTs server-side via `getUser()` on every request to a protected path.
+On success, verified identity is injected as `x-user-id`, `x-user-email`, and `x-user-role`
+headers for downstream route handlers.
+
+### Fallback: Static Pre-Shared Tokens
+When Supabase environment variables are absent or the session is not present, the system
+falls back to three static tokens:
+
+| Token env var | Cookie | Header | Scope |
 |---|---|---|---|
-| No auth layer | Critical | Yes (single-token) | P2.1 |
-| RLS bypassed by service client | Critical | Yes | P2.2 |
-| Tenant guards not wired | High | Yes | P1.1 |
-| Middleware fallthrough | High | Yes (staging/preview) | P1.2 |
-| getPortalData() cross-tenant | Critical | Patched (residual) | P1.3 |
-| No RLS on older tables | High | Yes | P2.3 |
-| `unsafe-inline` in CSP | Medium | No (requires XSS first) | P3.1 |
-| In-process rate limiter | Medium | No | P3.2 |
-| Platform cost hardcoded in ROI | Low (security) | No | Separate |
+| `INTERNAL_ACCESS_TOKEN` | `zenith_internal_token` | `x-internal-token` | Internal/admin paths |
+| `PORTAL_ACCESS_TOKEN` | `zenith_portal_token` | `x-portal-token` | `/portal` |
+| `ADMIN_ACCESS_TOKEN` | `zenith_admin_token` | `x-admin-token` | `/admin` |
+
+**Risk:** Static tokens are a temporary migration aid. If the environment variable is absent,
+requests are blocked (fail-closed), not passed through.
+
+### Auth API Routes
+- `POST /api/auth/login` — Supabase `signInWithPassword`, sets session cookie
+- `POST /api/auth/logout` — Clears Supabase session
+- `POST /api/auth/register` — Signs up via Supabase Auth, provisions organization
+
+---
+
+## 2. Fixes Made in This Task
+
+### GAP-003: Unscoped Leads Queries in sales-os
+
+**Problem:** `getSalesDashboard()` and `getProposalStatuses()` queried the `leads` table
+without an `organization_id` filter, exposing all tenants' lead data.
+
+**Fix:** Created `lib/sales-os/index.ts` and `lib/sales-os/pipeline-stages.ts` with:
+- `getSalesDashboard(organizationId: string)` — required parameter, all queries use `.eq("organization_id", organizationId)`
+- `getProposalStatuses(organizationId: string)` — same pattern
+- `getPipelineBreakdown(organizationId: string)` — query always scoped
+- `getLeadScores(organizationId: string)` — query always scoped
+
+All functions return empty data if `organizationId` is falsy (fail-closed).
+
+### GAP-004: Optional Org Scoping in lib/data/
+
+**Problem:** `getPortalData()` had no `organizationId` parameter and queried all tenant
+data unscoped. `getAdminDashboardData()` also had no scoping.
+
+**Fix:**
+- `getPortalData(organizationId?: string | null)` — returns `emptyPortalData()` immediately if `organizationId` is missing. All six queries now use `.eq("organization_id", organizationId)`.
+- `getAdminDashboardData(organizationId?: string | null)` — returns empty immediately if `organizationId` is missing. All five queries now scoped.
+- All portal page callers updated to fetch `tenantData` first and pass `tenantData.tenant.organizationId`.
+- Callers in `lib/alice.ts`, `lib/autonomous.ts`, `lib/enterprise-cloud.ts`, `lib/client-operations.ts`, `lib/data/internal.ts`, and API routes updated to pass organization ID.
+
+**Pattern eliminated:**
+```typescript
+// DANGEROUS — was present in operations.ts and leads.ts
+const scope = <T>(q: T) => organizationId ? q.eq("organization_id", organizationId) : q;
+```
+
+### Login / Signup UI Pages
+
+- `app/login/page.tsx` — Email/password form, calls `POST /api/auth/login`, redirects to `/portal` on success
+- `app/signup/page.tsx` — Practice name, email, password, confirm password; calls `POST /api/auth/register`
+- `app/api/auth/register/route.ts` — Zod validation, Supabase `signUp`, organization provisioning via `provisionOrganization()`
+- `lib/tenant/organization-provisioning.ts` — Provisions organization record, settings, trial subscription, usage metrics
+
+Both auth pages are public (not in middleware matcher).
+
+---
+
+## 3. RBAC Model
+
+Zenith AI implements a 6-tier role hierarchy with 39 permissions.
+
+| Tier | Role | Scope |
+|---|---|---|
+| 1 | `platform_admin` | Full platform access, cross-tenant |
+| 2 | `org_admin` | Full organization access |
+| 3 | `location_admin` | Single location management |
+| 4 | `clinician` | Clinical data read + own appointment write |
+| 5 | `staff` | Appointment and patient data read |
+| 6 | `viewer` | Read-only portal access |
+
+Roles are stored in `user_app_metadata.role` (set server-side by admin). The middleware
+injects `x-user-role` from the verified Supabase JWT `app_metadata`.
+
+---
+
+## 4. RLS Policies
+
+Row-Level Security is enforced at the database layer via Supabase RLS policies defined in
+`supabase/migrations/202605300002_rls_tenant_isolation.sql`.
+
+Key policy pattern:
+```sql
+CREATE POLICY "org_scoped_select" ON <table>
+  FOR SELECT USING (organization_id = auth.jwt() ->> 'organization_id');
+```
+
+Tables covered: `leads`, `roi_calculations`, `audits`, `bookings`, `outreach_events`,
+`operational_metrics`, `automation_events`, `insight_snapshots`, `recommendations`,
+`reports`, `notifications`, `usage_metrics`.
+
+Service-role client (used server-side in API routes) bypasses RLS — all server-side
+queries must enforce tenant scoping in application code (now enforced after GAP-003/GAP-004 fixes).
+
+---
+
+## 5. Remaining Risks
+
+### Static Token Migration Pending
+The static pre-shared token fallback (`INTERNAL_ACCESS_TOKEN`, `PORTAL_ACCESS_TOKEN`,
+`ADMIN_ACCESS_TOKEN`) remains active. These tokens do not expire and cannot be invalidated
+per-user. **Priority:** Remove this fallback after full Supabase Auth rollout.
+
+**Mitigation steps:**
+1. Ensure all users have Supabase Auth accounts
+2. Verify SSR session flow works end-to-end in production
+3. Remove static token env vars and the fallback block in `middleware.ts`
+
+### Admin Dashboard Organization Scoping
+`getAdminDashboardData()` now returns empty data when called without an `organizationId`.
+Admin pages currently do not pass an org id, resulting in an empty admin dashboard.
+**Recommended fix:** Admin pages should extract org id from the authenticated user's session
+or accept an org id query parameter.
+
+### alice.ts coordinateEnterpriseIntelligence
+The `coordinateEnterpriseIntelligence` function now calls `getTenantData()` separately
+from `getEnterpriseCloudState()` (which also calls `getTenantData()` internally), resulting
+in a duplicate call. This is safe but inefficient. Refactor when the alice module is next touched.
+
+---
+
+## 6. PHI Exposure Assessment
+
+Zenith AI processes the following data categories that may constitute PHI under HIPAA:
+
+| Data Type | Table | Sensitivity | Status |
+|---|---|---|---|
+| Patient appointment data | `bookings` | High | Scoped by org after GAP-003/004 |
+| Lead contact info (email, phone) | `leads` | Medium | Scoped by org after GAP-003/004 |
+| Operational metrics | `operational_metrics` | Low | Scoped after GAP-004 |
+| ROI calculations | `roi_calculations` | Low | Scoped by org |
+| Outreach events | `outreach_events` | Medium | Scoped by lead_id (not directly by org) |
+
+**Note:** `outreach_events` are joined via `lead_id` which is owned by a single org.
+Direct org scoping on this table is recommended as a defense-in-depth measure.
+
+---
+
+## 7. Recommendations
+
+1. **[Critical] Complete static token migration** — remove fallback tokens from middleware once Supabase Auth is verified in production for all user types.
+
+2. **[High] Scope outreach_events by organization_id** — add `organization_id` column and filter to `outreach_events` table to close indirect PHI exposure.
+
+3. **[High] Admin dashboard org context** — update admin pages to pass organization id from authenticated session, restoring admin dashboard functionality.
+
+4. **[Medium] Audit service-role usage** — inventory all calls to `createServiceClient()` (service role bypasses RLS) and verify each has explicit application-layer scoping.
+
+5. **[Medium] Add refresh token rotation** — configure Supabase Auth to rotate refresh tokens on use to limit session hijacking exposure.
+
+6. **[Low] Centralize tenant context** — create a `getCurrentOrganizationId()` server utility that reads org id from the session, eliminating the `getTenantData()` call chain at every page boundary.

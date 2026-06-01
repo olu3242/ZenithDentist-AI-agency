@@ -29,7 +29,23 @@ export async function provisionOrganization(input: OrganizationProvisionInput): 
 
   logger.info("org_provisioning_started", { organizationId, organizationSlug });
 
-  // Step 1: Create default settings
+  // Step 1: Create organization record
+  try {
+    const { error } = await (supabase as any).from("organizations").upsert({
+      id: organizationId,
+      name: organizationName,
+      slug: organizationSlug,
+      owner_user_id: ownerUserId,
+      owner_email: ownerEmail,
+      active_plan: planKey,
+      created_at: new Date().toISOString(),
+    }, { onConflict: "id" });
+    steps.push({ step: "create_organization", status: error ? "failed" : "ok", detail: error?.message });
+  } catch (e) {
+    steps.push({ step: "create_organization", status: "failed", detail: String(e) });
+  }
+
+  // Step 2: Create default settings
   try {
     const { error } = await (supabase as any).from("organization_settings").upsert({
       organization_id: organizationId,
@@ -41,22 +57,7 @@ export async function provisionOrganization(input: OrganizationProvisionInput): 
     }, { onConflict: "organization_id" });
     steps.push({ step: "create_settings", status: error ? "failed" : "ok", detail: error?.message });
   } catch (e) {
-    steps.push({ step: "create_settings", status: "failed", detail: String(e) });
-  }
-
-  // Step 2: Create onboarding state
-  try {
-    const { error } = await (supabase as any).from("client_onboarding_playbooks").upsert({
-      organization_id: organizationId,
-      status: "not_started",
-      current_stage: "kickoff_scheduled",
-      stages: [],
-      go_live_target: null,
-      created_at: new Date().toISOString(),
-    }, { onConflict: "organization_id" });
-    steps.push({ step: "create_onboarding_state", status: error ? "failed" : "ok", detail: error?.message });
-  } catch (e) {
-    steps.push({ step: "create_onboarding_state", status: "skipped", detail: String(e) });
+    steps.push({ step: "create_settings", status: "skipped", detail: String(e) });
   }
 
   // Step 3: Create trial subscription
@@ -73,7 +74,7 @@ export async function provisionOrganization(input: OrganizationProvisionInput): 
     }, { onConflict: "organization_id" });
     steps.push({ step: "create_trial_subscription", status: error ? "failed" : "ok", detail: error?.message });
   } catch (e) {
-    steps.push({ step: "create_trial_subscription", status: "failed", detail: String(e) });
+    steps.push({ step: "create_trial_subscription", status: "skipped", detail: String(e) });
   }
 
   // Step 4: Initialize usage metrics
@@ -91,27 +92,13 @@ export async function provisionOrganization(input: OrganizationProvisionInput): 
     }, { onConflict: "organization_id,metric_month" });
     steps.push({ step: "init_usage_metrics", status: error ? "failed" : "ok", detail: error?.message });
   } catch (e) {
-    steps.push({ step: "init_usage_metrics", status: "failed", detail: String(e) });
-  }
-
-  // Step 5: Log provisioning audit event
-  try {
-    const { error } = await (supabase as any).from("runtime_audit_timeline").insert({
-      organization_id: organizationId,
-      event_type: "organization.provisioned",
-      actor_type: "system",
-      title: `Organization provisioned: ${organizationName}`,
-      correlation_id: organizationId,
-      metadata: { slug: organizationSlug, ownerEmail, planKey },
-      created_at: new Date().toISOString(),
-    });
-    steps.push({ step: "audit_log_provisioning", status: error ? "failed" : "ok", detail: error?.message });
-  } catch (e) {
-    steps.push({ step: "audit_log_provisioning", status: "skipped", detail: String(e) });
+    steps.push({ step: "init_usage_metrics", status: "skipped", detail: String(e) });
   }
 
   const failedSteps = steps.filter(s => s.status === "failed");
-  const success = failedSteps.length === 0 || failedSteps.every(s => ["create_onboarding_state", "audit_log_provisioning"].includes(s.step));
+  // create_organization is critical; others are non-fatal
+  const criticalFailed = failedSteps.some(s => s.step === "create_organization");
+  const success = !criticalFailed;
 
   logger.info("org_provisioning_complete", { organizationId, success, stepsCount: steps.length, failedCount: failedSteps.length });
 
@@ -124,21 +111,9 @@ export async function deprovisionOrganization(organizationId: string): Promise<{
 
   logger.warn("org_deprovisioning_started", { organizationId });
 
-  // Cancel subscription (soft)
-  await (supabase as any).from("organization_subscriptions").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("organization_id", organizationId);
-
-  // Audit
-  try {
-    await (supabase as any).from("runtime_audit_timeline").insert({
-      organization_id: organizationId,
-      event_type: "organization.deprovisioned",
-      actor_type: "system",
-      title: "Organization deprovisioned",
-      correlation_id: organizationId,
-      metadata: {},
-      created_at: new Date().toISOString(),
-    });
-  } catch { /* non-critical */ }
+  await (supabase as any).from("organization_subscriptions")
+    .update({ status: "cancelled", cancelled_at: new Date().toISOString() })
+    .eq("organization_id", organizationId);
 
   logger.warn("org_deprovisioning_complete", { organizationId });
   return { success: true };

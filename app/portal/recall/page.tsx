@@ -8,7 +8,7 @@ import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalRecallPage() {
   const tenantData = await getTenantData();
-  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
+  const data = await getPortalData(tenantData.tenant.organizationId);
   const latest = data.metrics[0];
   return (
     <div className="space-y-6">
