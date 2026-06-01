@@ -4,16 +4,14 @@ import { getPortalData, buildExecutiveReport } from "@/lib/data/operations";
 import { reportToHtml } from "@/lib/reports";
 import { trackOutreachEvent } from "@/lib/data/leads";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const orgId = extractOrgId(req);
-  const userId = extractUserId(req);
-  const ctx = await withTenantGuard(orgId, userId).catch(() =>
-    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
-  );
-  if (ctx instanceof NextResponse) return ctx;
+export async function GET(
+  _: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
 
-  const data = await getPortalData(ctx.organizationId);
-  const report = data.reports.find(item => item.id === params.id) ?? buildExecutiveReport(data);
+  const data = await getPortalData();
+  const report = data.reports.find(item => item.id === id) ?? buildExecutiveReport(data);
   const html = reportToHtml(report);
   await trackOutreachEvent({
     eventType: "cta_clicked",

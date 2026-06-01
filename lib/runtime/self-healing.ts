@@ -1,5 +1,4 @@
 import "server-only";
-
 import type { AutomationDeadLetter, AutomationTrace, FailureCategory } from "@/lib/runtime/trace-engine";
 import { getAutomationBlueprint } from "@/lib/automation/registry";
 

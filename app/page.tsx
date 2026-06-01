@@ -42,7 +42,7 @@ export default function HomePage() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild size="lg"><a href="#roi">Run Revenue Audit <ArrowRight className="h-4 w-4" /></a></Button>
-                <Button asChild variant="secondary" size="lg"><a href="/admin">Open Admin CRM</a></Button>
+                <Button asChild variant="secondary" size="lg"><a href="/signup">Start Onboarding</a></Button>
               </div>
             </div>
             <div className="grid gap-4 self-end">

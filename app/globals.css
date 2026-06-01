@@ -4,26 +4,32 @@
 
 /* ── Zenith AI Design System — CSS Custom Properties ─────────────────────── */
 :root {
-  color-scheme: dark;
-
-  --brand-primary:    #2563EB;
-  --brand-secondary:  #06B6D4;
-  --brand-accent:     #14B8A6;
-
-  --brand-success:    #22C55E;
-  --brand-warning:    #F59E0B;
-  --brand-danger:     #EF4444;
-
-  --brand-background: #0F172A;
-  --brand-surface:    #111827;
-  --brand-card:       #1E293B;
-  --brand-border:     #1E293B;
-
-  --brand-text:       #F8FAFC;
-  --brand-muted:      #94A3B8;
-
-  --sidebar-width:    270px;
-  --header-height:    64px;
+  color-scheme: light;
+  --primary: #2563EB;
+  --secondary: #06B6D4;
+  --accent: #14B8A6;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --background: #F8FAFC;
+  --surface: #F1F5F9;
+  --card: #FFFFFF;
+  --foreground: #0F172A;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --brand-primary: #2563EB;
+  --brand-secondary: #06B6D4;
+  --brand-accent: #14B8A6;
+  --brand-success: #22C55E;
+  --brand-warning: #F59E0B;
+  --brand-danger: #EF4444;
+  --brand-background: #F8FAFC;
+  --brand-surface: #F1F5F9;
+  --brand-card: #FFFFFF;
+  --brand-text: #0F172A;
+  --brand-muted: #64748B;
+  --brand-border: #E2E8F0;
+  --brand-sidebar: #0B1020;
 }
 
 html {
@@ -32,15 +38,15 @@ html {
 
 body {
   min-height: 100vh;
-  background: var(--brand-background);
-  color: var(--brand-text);
+  background: var(--background);
+  color: var(--foreground);
   letter-spacing: 0;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--brand-primary);
+  background: var(--brand-accent);
   color: white;
 }
 
@@ -50,45 +56,49 @@ body {
 }
 
 .field {
-  @apply focus-ring w-full rounded-md border border-card bg-surface px-3 py-2.5 text-[#F8FAFC] shadow-sm placeholder:text-[#94A3B8];
+  @apply focus-ring w-full rounded border border-border bg-card px-3 py-2.5 text-foreground shadow-sm;
 }
 
-/* ── Zenith sidebar layout ────────────────────────────────────────────────── */
-.zenith-layout {
-  @apply min-h-screen bg-background lg:grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
+.bg-background {
+  background-color: var(--background) !important;
 }
 
-.zenith-sidebar {
-  @apply border-r border-card bg-surface p-5 text-[#F8FAFC] lg:min-h-screen;
+.bg-paper {
+  background-color: var(--surface) !important;
 }
 
-.zenith-main {
-  @apply min-h-screen p-5 lg:p-8;
+.bg-white {
+  background-color: var(--card) !important;
 }
 
-/* ── Card surface ─────────────────────────────────────────────────────────── */
-.zenith-card {
-  @apply rounded-lg border border-card bg-card p-5 shadow-card;
+.bg-ink {
+  background-color: var(--brand-sidebar) !important;
 }
 
-/* ── Loading pulse on dark ────────────────────────────────────────────────── */
-.zenith-skeleton {
-  @apply animate-pulse rounded-md bg-card;
+.bg-card {
+  background-color: var(--card) !important;
 }
 
-/* ── Scrollbar styling ────────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.bg-surface {
+  background-color: var(--surface) !important;
 }
-::-webkit-scrollbar-track {
-  background: var(--brand-surface);
+
+.text-ink {
+  color: var(--foreground) !important;
 }
-::-webkit-scrollbar-thumb {
-  background: var(--brand-card);
-  border-radius: 3px;
+
+.text-foreground {
+  color: var(--foreground) !important;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-muted);
+
+.text-muted {
+  color: var(--muted) !important;
+}
+
+.border-line {
+  border-color: var(--border) !important;
+}
+
+.border-border {
+  border-color: var(--border) !important;
 }

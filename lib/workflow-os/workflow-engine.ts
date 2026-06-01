@@ -12,7 +12,7 @@ import "server-only";
 
 import { randomUUID } from "crypto";
 import { emitAutomationEvent } from "@/lib/automation/runtime";
-import { publishRuntimeFabricEvent } from "@/lib/runtime/event-fabric";
+import { publishEvent } from "@/lib/event-fabric";
 import { assertWorkflowExists } from "@/lib/workflow-os/workflow-registry";
 import { assertLegalTransition } from "@/lib/workflow-os/workflow-state-machine";
 import { resolveEffectiveSla } from "@/lib/workflow-os/workflow-versioning";
@@ -120,12 +120,12 @@ export async function executeWorkflow(
  * Mission Control to emit workflow-level events.
  */
 export async function publishWorkflowEvent(input: WorkflowEventInput): Promise<void> {
-  await publishRuntimeFabricEvent({
-    eventKey: `${input.workflowId}:${input.eventType}:${input.correlationId}`,
-    eventType: "trace",
-    sourceSystem: "workflow_os",
-    targetChannel: "mission_control",
-    summary: `[WorkflowOS] ${input.eventType} — ${input.workflowId}`,
+  await publishEvent({
+    event_type: input.eventType,
+    event_source: "workflow_os",
+    correlation_id: input.correlationId,
+    tenant_id: input.organizationId,
+    workflow_id: input.workflowId,
     priority: "moderate",
     payload: {
       workflowId: input.workflowId,

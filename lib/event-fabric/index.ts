@@ -10,6 +10,8 @@ import "server-only";
 
 import { randomUUID } from "crypto";
 import { publishRuntimeFabricEvent } from "@/lib/runtime/event-fabric";
+import { getErrorDiagnostics } from "@/lib/external-diagnostics";
+import { logger } from "@/lib/logger";
 
 // ─── Canonical Event Sources ───────────────────────────────────────────────
 
@@ -62,23 +64,31 @@ export async function publishEvent<TPayload = Record<string, unknown>>(
 ): Promise<ZenithEvent<TPayload>> {
   const event = createEvent(opts);
 
-  await publishRuntimeFabricEvent({
-    eventKey: `${opts.event_source}:${opts.event_type}:${event.event_id}`,
-    eventType: mapSourceToFabricType(opts.event_source),
-    sourceSystem: opts.event_source,
-    targetChannel: resolveFabricChannel(opts.event_source, opts.event_type),
-    summary: `[${opts.event_source}] ${opts.event_type} — ${opts.workflow_id}`,
-    priority: opts.priority,
-    payload: {
-      ...((event.payload as Record<string, unknown>) ?? {}),
-      event_id: event.event_id,
-      correlation_id: event.correlation_id,
-      tenant_id: event.tenant_id,
-      event_type: event.event_type,
-      event_source: event.event_source,
-      timestamp: event.timestamp,
-    },
-  });
+  try {
+    await publishRuntimeFabricEvent({
+      eventKey: `${opts.event_source}:${opts.event_type}:${event.event_id}`,
+      eventType: mapSourceToFabricType(opts.event_source),
+      sourceSystem: opts.event_source,
+      targetChannel: resolveFabricChannel(opts.event_source, opts.event_type),
+      summary: `[${opts.event_source}] ${opts.event_type} - ${opts.workflow_id}`,
+      priority: opts.priority,
+      payload: {
+        ...((event.payload as Record<string, unknown>) ?? {}),
+        event_id: event.event_id,
+        correlation_id: event.correlation_id,
+        tenant_id: event.tenant_id,
+        event_type: event.event_type,
+        event_source: event.event_source,
+        timestamp: event.timestamp,
+      },
+    });
+  } catch (error) {
+    logger.warn("event_fabric_publish_failed_non_blocking", {
+      eventType: opts.event_type,
+      source: opts.event_source,
+      error: getErrorDiagnostics(error)
+    });
+  }
 
   return event;
 }
