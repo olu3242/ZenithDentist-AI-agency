@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <section className="rounded border border-line bg-white p-6">
+      <section className="rounded border border-card bg-white p-6">
         <h2 className="text-xl font-black">{this.props.fallbackTitle ?? "This panel failed to load."}</h2>
         <p className="mt-2 text-muted">Refresh the panel or retry after checking the operational logs.</p>
         <Button className="mt-4" onClick={() => this.setState({ hasError: false })}>Retry</Button>

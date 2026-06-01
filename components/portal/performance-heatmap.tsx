@@ -4,7 +4,7 @@ export function PerformanceHeatmap({ metrics }: { metrics: OperationalMetric[] }
   const rows = ["Mon", "Tue", "Wed", "Thu", "Fri"];
   const slots = ["AM", "Midday", "PM", "Late"];
   return (
-    <section className="rounded border border-line bg-white p-5 shadow-sm">
+    <section className="rounded border border-card bg-white p-5 shadow-sm">
       <h2 className="text-lg font-black">Performance Heatmap</h2>
       <p className="text-sm text-muted">Cancellation risk and engagement intensity by daypart.</p>
       <div className="mt-5 grid gap-2">

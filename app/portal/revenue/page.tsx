@@ -3,9 +3,11 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { RevenueTrendChart } from "@/components/portal/revenue-trend-chart";
 import { OperationalScorecard } from "@/components/portal/operational-scorecard";
 import { buildExecutiveReport, getPortalData } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalRevenuePage() {
-  const data = await getPortalData();
+  const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const report = data.reports[0] ?? buildExecutiveReport(data);
   return (
     <div className="space-y-6">

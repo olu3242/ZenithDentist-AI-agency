@@ -4,17 +4,19 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { RecommendationCard } from "@/components/portal/recommendation-card";
 import { WorkflowVisualizer } from "@/components/portal/workflow-visualizer";
 import { generateOperationalInsights, getPortalData } from "@/lib/data/operations";
+import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalRecallPage() {
-  const data = await getPortalData();
+  const tenantData = await getTenantData();
+  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
   const latest = data.metrics[0];
   return (
     <div className="space-y-6">
       <PortalHeader title="Recall Recovery" subtitle="Recall conversion, lapsed patient recovery, and sequence optimization." />
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard label="Recovered recalls" value={latest?.recall_recovery_count ?? 0} detail="Patients booked" tone="green" />
-        <MetricCard label="Engagement" value={`${latest?.patient_engagement_rate ?? 0}%`} detail="Across recall touches" tone="teal" />
-        <MetricCard label="Admin time saved" value={`${latest?.admin_hours_saved ?? 0}h`} detail="From automation" tone="blue" />
+        <MetricCard label="Recovered recalls" value={latest?.recall_recovery_count ?? 0} detail="Patients booked" tone="success" />
+        <MetricCard label="Engagement" value={`${latest?.patient_engagement_rate ?? 0}%`} detail="Across recall touches" tone="accent" />
+        <MetricCard label="Admin time saved" value={`${latest?.admin_hours_saved ?? 0}h`} detail="From automation" tone="primary" />
       </div>
       <AIInsightsPanel insights={(data.insights.length ? data.insights : generateOperationalInsights(data.metrics, data.automationEvents)).filter(item => item.category === "recall" || item.category === "scheduling")} />
       <WorkflowVisualizer events={data.automationEvents.filter(item => item.workflow === "recall" || item.workflow === "reminders")} />

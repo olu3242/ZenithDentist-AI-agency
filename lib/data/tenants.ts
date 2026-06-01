@@ -1,6 +1,6 @@
 import type { Json } from "@/lib/database.types";
 import { createServiceClient } from "@/lib/supabase/server";
-import { getDefaultTenantContext, type TenantContext } from "@/lib/tenant";
+import { type TenantContext } from "@/lib/tenant";
 
 export interface Organization {
   id: string;
@@ -80,22 +80,29 @@ export interface TenantData {
   benchmarks: BenchmarkSnapshot[];
 }
 
-export async function getTenantData(slug = getDefaultTenantContext().organizationSlug): Promise<TenantData> {
+export async function getTenantData(slug?: string): Promise<TenantData> {
+  const resolvedSlug = slug ?? process.env.NEXT_PUBLIC_DEFAULT_ORG_SLUG;
+  if (!resolvedSlug) return emptyTenantData();
+  return _getTenantDataBySlug(resolvedSlug);
+}
+
+async function _getTenantDataBySlug(slug: string): Promise<TenantData> {
   const supabase = createServiceClient();
   if (!supabase) return emptyTenantData(slug);
 
   const { data: org } = await supabase.from("organizations").select("*").eq("slug", slug).maybeSingle();
   if (!org) return emptyTenantData(slug);
 
+
   const [locations, plans, usage, benchmarks] = await Promise.all([
     supabase.from("locations").select("*").eq("organization_id", org.id).order("is_primary", { ascending: false }),
     supabase.from("subscription_plans").select("*").eq("is_active", true).order("price_monthly", { ascending: true }),
     supabase.from("usage_metrics").select("*").eq("organization_id", org.id).order("metric_month", { ascending: false }).limit(12),
-    supabase.from("benchmark_snapshots").select("*").or(`organization_id.eq.${org.id},organization_id.is.null`).order("benchmark_date", { ascending: false }).limit(20)
+    supabase.from("benchmark_snapshots").select("*").in("organization_id", [org.id, null as unknown as string]).order("benchmark_date", { ascending: false }).limit(20)
   ]);
 
   return {
-    tenant: { organizationId: org.id, organizationSlug: org.slug },
+    tenant: { organizationId: org.id, organizationSlug: org.slug, userId: null, userEmail: null, membershipRole: "read_only" as const, permissions: [] },
     organization: org,
     locations: locations.data ?? [],
     plans: plans.data ?? [],
@@ -104,11 +111,11 @@ export async function getTenantData(slug = getDefaultTenantContext().organizatio
   };
 }
 
-export function emptyTenantData(slug = "unconfigured-tenant"): TenantData {
+export function emptyTenantData(slug = "not-found"): TenantData {
   const organization: Organization = {
-    id: "org-unconfigured",
+    id: "",
     created_at: new Date().toISOString(),
-    name: "Unconfigured tenant",
+    name: "Organization not found",
     slug,
     organization_type: "single_practice",
     practice_size: 0,
@@ -119,5 +126,5 @@ export function emptyTenantData(slug = "unconfigured-tenant"): TenantData {
     timezone: "America/Chicago",
     primary_location_id: null
   };
-  return { tenant: { organizationId: organization.id, organizationSlug: slug }, organization, locations: [], plans: [], usage: [], benchmarks: [] };
+  return { tenant: { organizationId: organization.id, organizationSlug: slug, userId: null, userEmail: null, membershipRole: "read_only" as const, permissions: [] }, organization, locations: [], plans: [], usage: [], benchmarks: [] };
 }

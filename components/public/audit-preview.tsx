@@ -11,16 +11,16 @@ export function AuditPreview({
   leadId?: string;
 }) {
   return (
-    <section id="audit" className="rounded border border-line bg-white p-6 shadow-soft">
-      <p className="text-xs font-black uppercase tracking-wider text-teal">Audit preview</p>
+    <section id="audit" className="rounded border border-card bg-white p-6 shadow-card">
+      <p className="text-xs font-black uppercase tracking-wider text-accent">Audit preview</p>
       <h3 className="mt-3 text-3xl font-black">Operational revenue recovery plan</h3>
       <p className="mt-3 text-muted">
         Once the calculator is submitted, Zenith generates a structured audit with projected recovery, operational drag,
         recall gaps, and reminder priorities.
       </p>
-      <div className="mt-5 rounded bg-paper p-5">
+      <div className="mt-5 rounded bg-background p-5">
         <span className="text-sm font-bold text-muted">Projected monthly recovery</span>
-        <strong className="mt-2 block text-4xl font-black text-green">
+        <strong className="mt-2 block text-4xl font-black text-success">
           {projectedRecovery ? formatCurrency(projectedRecovery) : "Pending calculation"}
         </strong>
       </div>

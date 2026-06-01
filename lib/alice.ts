@@ -14,8 +14,8 @@ export interface AliceFrameworkResponse {
   confidence: number;
 }
 
-export async function answerOperationalQuery(question: string): Promise<AliceFrameworkResponse> {
-  const [portalData, tenantData] = await Promise.all([getPortalData(), getTenantData()]);
+export async function answerOperationalQuery(question: string, organizationId?: string): Promise<AliceFrameworkResponse> {
+  const [portalData, tenantData] = await Promise.all([getPortalData(organizationId), getTenantData()]);
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
   const latest = portalData.metrics[0];
   const provider = getIntelligenceProvider();
@@ -44,8 +44,8 @@ export async function answerOperationalQuery(question: string): Promise<AliceFra
   };
 }
 
-export async function generateAliceInsights() {
-  const [portalData, tenantData] = await Promise.all([getPortalData(), getTenantData()]);
+export async function generateAliceInsights(organizationId?: string) {
+  const [portalData, tenantData] = await Promise.all([getPortalData(organizationId), getTenantData()]);
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
   return [
     {
@@ -57,8 +57,8 @@ export async function generateAliceInsights() {
   ];
 }
 
-export async function generateAliceReport(period: "daily" | "weekly" | "monthly" = "weekly") {
-  const [portalData, tenantData] = await Promise.all([getPortalData(), getTenantData()]);
+export async function generateAliceReport(period: "daily" | "weekly" | "monthly" = "weekly", organizationId?: string) {
+  const [portalData, tenantData] = await Promise.all([getPortalData(organizationId), getTenantData()]);
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
   return {
     title: `${period[0].toUpperCase()}${period.slice(1)} Executive Operational Briefing`,
@@ -71,9 +71,10 @@ export async function generateAliceReport(period: "daily" | "weekly" | "monthly"
 
 export async function coordinateEnterpriseIntelligence(
   prompt: string,
-  mode: AliceOperationalMode = "enterprise_coordination"
+  mode: AliceOperationalMode = "enterprise_coordination",
+  organizationId?: string
 ): Promise<AliceFrameworkResponse & { mode: AliceOperationalMode; grounding: string[] }> {
-  const [cloud, portalData] = await Promise.all([getEnterpriseCloudState(), getPortalData()]);
+  const [cloud, portalData] = await Promise.all([getEnterpriseCloudState(), getPortalData(organizationId)]);
   const latest = portalData.metrics[0];
   const context = buildAliceEnterpriseContext(mode);
   const provider = getIntelligenceProvider();

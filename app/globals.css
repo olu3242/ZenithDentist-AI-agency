@@ -2,8 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Zenith AI Design System — CSS Custom Properties ─────────────────────── */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
+
+  --brand-primary:    #2563EB;
+  --brand-secondary:  #06B6D4;
+  --brand-accent:     #14B8A6;
+
+  --brand-success:    #22C55E;
+  --brand-warning:    #F59E0B;
+  --brand-danger:     #EF4444;
+
+  --brand-background: #0F172A;
+  --brand-surface:    #111827;
+  --brand-card:       #1E293B;
+  --brand-border:     #1E293B;
+
+  --brand-text:       #F8FAFC;
+  --brand-muted:      #94A3B8;
+
+  --sidebar-width:    270px;
+  --header-height:    64px;
 }
 
 html {
@@ -12,20 +32,63 @@ html {
 
 body {
   min-height: 100vh;
-  background: #f7f5ef;
-  color: #18212f;
+  background: var(--brand-background);
+  color: var(--brand-text);
   letter-spacing: 0;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #177f75;
+  background: var(--brand-primary);
   color: white;
 }
 
+/* ── Global utility classes ───────────────────────────────────────────────── */
 .focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
 }
 
 .field {
-  @apply focus-ring w-full rounded border border-line bg-white px-3 py-2.5 text-ink shadow-sm;
+  @apply focus-ring w-full rounded-md border border-card bg-surface px-3 py-2.5 text-[#F8FAFC] shadow-sm placeholder:text-[#94A3B8];
+}
+
+/* ── Zenith sidebar layout ────────────────────────────────────────────────── */
+.zenith-layout {
+  @apply min-h-screen bg-background lg:grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+}
+
+.zenith-sidebar {
+  @apply border-r border-card bg-surface p-5 text-[#F8FAFC] lg:min-h-screen;
+}
+
+.zenith-main {
+  @apply min-h-screen p-5 lg:p-8;
+}
+
+/* ── Card surface ─────────────────────────────────────────────────────────── */
+.zenith-card {
+  @apply rounded-lg border border-card bg-card p-5 shadow-card;
+}
+
+/* ── Loading pulse on dark ────────────────────────────────────────────────── */
+.zenith-skeleton {
+  @apply animate-pulse rounded-md bg-card;
+}
+
+/* ── Scrollbar styling ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--brand-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-card);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-muted);
 }

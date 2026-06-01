@@ -7,6 +7,7 @@ import "server-only";
 
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { getAllWorkflows } from "@/lib/workflow-os/workflow-registry";
+import { getTenantData } from "@/lib/data/tenants";
 
 export interface WorkflowKpis {
   workflowId: string;
@@ -44,7 +45,11 @@ export interface TenantWorkflowAnalytics {
   topWorkflows: string[];
 }
 
-export async function getWorkflowAnalyticsSummary(): Promise<WorkflowAnalyticsSummary> {
+export async function getWorkflowAnalyticsSummary(organizationId?: string): Promise<WorkflowAnalyticsSummary> {
+  if (!organizationId) {
+    const tenant = await getTenantData();
+    organizationId = tenant.tenant.organizationId || tenant.organization.id;
+  }
   const runtime = await getRuntimeHealthState();
   const workflows = getAllWorkflows();
 
@@ -104,7 +109,7 @@ export async function getWorkflowAnalyticsSummary(): Promise<WorkflowAnalyticsSu
 export async function getTenantWorkflowAnalytics(
   organizationId: string
 ): Promise<TenantWorkflowAnalytics> {
-  const runtime = await getRuntimeHealthState();
+  const runtime = await getRuntimeHealthState(); // org resolved internally via getTenantData
   const traces = runtime.traces;
   const total = traces.length;
   const succeeded = traces.filter(t => t.status === "completed").length;

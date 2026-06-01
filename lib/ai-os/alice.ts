@@ -40,7 +40,7 @@ export { answerOperationalQuery as aliceQuery };
 
 export async function getAliceInsights(organizationId: string) {
   const [rawInsights, analytics, health] = await Promise.all([
-    generateAliceInsights(),
+    generateAliceInsights(organizationId),
     getWorkflowAnalyticsSummary(),
     getWorkflowRuntimeHealth(),
   ]);

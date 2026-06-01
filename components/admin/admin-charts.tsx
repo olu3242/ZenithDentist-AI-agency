@@ -20,17 +20,17 @@ export function AdminCharts({
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
-      <section className="rounded border border-line bg-white p-5">
+      <section className="rounded border border-card bg-white p-5">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-black">Lead Growth</h2>
             <p className="text-sm text-muted">Daily captured leads from the production funnel.</p>
           </div>
-          <strong className="text-xl text-teal">{leads.length}</strong>
+          <strong className="text-xl text-accent">{leads.length}</strong>
         </div>
-        <div className="mt-6 grid h-64 grid-cols-7 items-end gap-3 border-b border-line">
+        <div className="mt-6 grid h-64 grid-cols-7 items-end gap-3 border-b border-card">
           {leadGrowth.map(item => (
-            <div key={item.day} className="relative rounded-t bg-teal" style={{ height: `${Math.max(8, (item.count / maxLeadCount) * 220)}px` }}>
+            <div key={item.day} className="relative rounded-t bg-accent" style={{ height: `${Math.max(8, (item.count / maxLeadCount) * 220)}px` }}>
               <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-muted">{item.count}</span>
               <small className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 text-xs text-muted">{item.day}</small>
             </div>
@@ -38,7 +38,7 @@ export function AdminCharts({
         </div>
       </section>
 
-      <section className="rounded border border-line bg-white p-5">
+      <section className="rounded border border-card bg-white p-5">
         <h2 className="text-lg font-black">Funnel Signals</h2>
         <p className="text-sm text-muted">Conversion events and revenue intelligence.</p>
         <div className="mt-5 grid gap-3">
@@ -54,7 +54,7 @@ export function AdminCharts({
 
 function Signal({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between rounded bg-paper px-4 py-3">
+    <div className="flex items-center justify-between rounded bg-background px-4 py-3">
       <span className="text-sm font-bold text-muted">{label}</span>
       <strong>{value}</strong>
     </div>

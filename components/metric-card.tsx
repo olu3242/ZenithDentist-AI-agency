@@ -4,26 +4,35 @@ export function MetricCard({
   label,
   value,
   detail,
-  tone = "teal"
+  tone = "primary"
 }: {
   label: string;
   value: string | number;
   detail: string;
-  tone?: "teal" | "rust" | "gold" | "green" | "blue";
+  tone?: "primary" | "secondary" | "accent" | "success" | "warning" | "danger";
 }) {
-  const toneClass = {
-    teal: "text-teal",
-    rust: "text-rust",
-    gold: "text-gold",
-    green: "text-green",
-    blue: "text-blue"
-  }[tone];
+  const toneClass: Record<string, string> = {
+    primary:   "text-primary",
+    secondary: "text-secondary",
+    accent:    "text-accent",
+    success:   "text-success",
+    warning:   "text-warning",
+    danger:    "text-danger",
+    // legacy aliases
+    teal:  "text-accent",
+    rust:  "text-danger",
+    gold:  "text-warning",
+    green: "text-success",
+    blue:  "text-primary",
+  };
 
   return (
-    <article className="rounded border border-line bg-white p-5 shadow-sm">
-      <p className="text-xs font-black uppercase tracking-wider text-muted">{label}</p>
-      <strong className={cn("mt-3 block text-3xl font-black", toneClass)}>{value}</strong>
-      <span className="mt-2 block text-sm font-semibold text-muted">{detail}</span>
+    <article className="zenith-card">
+      <p className="text-xs font-black uppercase tracking-wider text-[#94A3B8]">{label}</p>
+      <strong className={cn("mt-3 block text-3xl font-black", toneClass[tone] ?? "text-primary")}>
+        {value}
+      </strong>
+      <span className="mt-2 block text-sm font-semibold text-[#94A3B8]">{detail}</span>
     </article>
   );
 }

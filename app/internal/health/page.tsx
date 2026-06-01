@@ -10,7 +10,7 @@ export default async function InternalHealthPage() {
     <div className="space-y-6">
       <InternalHeader title="Practice Health Engine" subtitle="Cross-tenant operational scoring, churn-risk indicators, and predictive operating signals." />
       <HealthScoreCard score={health} />
-      <div className="rounded border border-line bg-white p-5 font-bold">Churn risk indicator: <span className="text-teal">{churnRisk}</span></div>
+      <div className="rounded border border-card bg-white p-5 font-bold">Churn risk indicator: <span className="text-accent">{churnRisk}</span></div>
       <section className="grid gap-4 xl:grid-cols-3">
         {buildPredictiveInsights(portalData.metrics).map(insight => <PredictiveInsightCard key={insight.title} insight={insight} />)}
       </section>

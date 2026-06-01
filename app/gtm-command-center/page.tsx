@@ -11,12 +11,12 @@ import { getBusinessGrowthState } from "@/lib/gtm/business-growth";
 export default async function GTMCommandCenterPage() {
   const state = await getBusinessGrowthState();
   return (
-    <main className="min-h-screen bg-paper p-5 lg:p-8">
+    <main className="min-h-screen bg-background p-5 lg:p-8">
       <RealtimeRefresh />
       <div className="mx-auto max-w-7xl space-y-6">
-        <header className="rounded border border-line bg-white p-5 shadow-sm">
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith Business Intelligence</p>
-          <h1 className="mt-2 text-4xl font-black text-ink">GTM Command Center</h1>
+        <header className="rounded border border-card bg-white p-5 shadow-sm">
+          <p className="text-xs font-black uppercase tracking-wider text-accent">Zenith Business Intelligence</p>
+          <h1 className="mt-2 text-4xl font-black text-[#F8FAFC]">GTM Command Center</h1>
           <p className="mt-2 max-w-4xl text-base font-semibold text-muted">
             Client acquisition, delivery oversight, operational proof, customer success, recurring revenue, and referral growth for the Patient Revenue Engine.
           </p>
@@ -32,47 +32,47 @@ export default async function GTMCommandCenterPage() {
           <ProofEnginePanel state={state} />
         </div>
         <div className="grid gap-6 xl:grid-cols-2">
-          <section className="rounded border border-line bg-white p-5 shadow-sm">
+          <section className="rounded border border-card bg-white p-5 shadow-sm">
             <p className="text-xs font-black uppercase tracking-wider text-muted">Operational Revenue Audit</p>
-            <h2 className="mt-1 text-2xl font-black text-ink">Loom audit engine</h2>
+            <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Loom audit engine</h2>
             <div className="mt-5 grid gap-3 md:grid-cols-3">
-              <div className="rounded border border-line bg-paper p-4">
+              <div className="rounded border border-card bg-background p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">Delivered</p>
-                <strong className="mt-2 block text-2xl font-black text-teal">{state.audits.delivered}</strong>
+                <strong className="mt-2 block text-2xl font-black text-accent">{state.audits.delivered}</strong>
               </div>
-              <div className="rounded border border-line bg-paper p-4">
+              <div className="rounded border border-card bg-background p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">Loom links</p>
-                <strong className="mt-2 block text-2xl font-black text-teal">{state.audits.loomAudits}</strong>
+                <strong className="mt-2 block text-2xl font-black text-accent">{state.audits.loomAudits}</strong>
               </div>
-              <div className="rounded border border-line bg-paper p-4">
+              <div className="rounded border border-card bg-background p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">Leakage found</p>
-                <strong className="mt-2 block text-2xl font-black text-teal">${state.audits.totalRevenueLeakage.toLocaleString()}</strong>
+                <strong className="mt-2 block text-2xl font-black text-accent">${state.audits.totalRevenueLeakage.toLocaleString()}</strong>
               </div>
             </div>
           </section>
-          <section className="rounded border border-line bg-white p-5 shadow-sm">
+          <section className="rounded border border-card bg-white p-5 shadow-sm">
             <p className="text-xs font-black uppercase tracking-wider text-muted">Dental Referral Engine</p>
-            <h2 className="mt-1 text-2xl font-black text-ink">Dental Growth Flywheel</h2>
+            <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Dental Growth Flywheel</h2>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
-              <div className="rounded border border-line bg-paper p-4">
+              <div className="rounded border border-card bg-background p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">Tracked referrals</p>
-                <strong className="mt-2 block text-2xl font-black text-teal">{state.referrals.total}</strong>
+                <strong className="mt-2 block text-2xl font-black text-accent">{state.referrals.total}</strong>
               </div>
-              <div className="rounded border border-line bg-paper p-4">
+              <div className="rounded border border-card bg-background p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">Pending rewards</p>
-                <strong className="mt-2 block text-2xl font-black text-teal">{state.referrals.pendingRewards}</strong>
+                <strong className="mt-2 block text-2xl font-black text-accent">{state.referrals.pendingRewards}</strong>
               </div>
             </div>
           </section>
         </div>
         <ServicePackagePanel packages={state.packages} />
-        <section className="rounded border border-line bg-white p-5 shadow-sm">
+        <section className="rounded border border-card bg-white p-5 shadow-sm">
           <p className="text-xs font-black uppercase tracking-wider text-muted">Authority system</p>
-          <h2 className="mt-1 text-2xl font-black text-ink">Operational thought leadership</h2>
+          <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Operational thought leadership</h2>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
             {state.contentIdeas.length ? state.contentIdeas.map(item => (
-              <div key={item} className="rounded border border-line bg-paper p-4 text-sm font-semibold text-muted">{item}</div>
-            )) : <div className="rounded border border-line bg-paper p-4 text-sm font-semibold text-muted">No authority assets are published yet.</div>}
+              <div key={item} className="rounded border border-card bg-background p-4 text-sm font-semibold text-muted">{item}</div>
+            )) : <div className="rounded border border-card bg-background p-4 text-sm font-semibold text-muted">No authority assets are published yet.</div>}
           </div>
         </section>
       </div>

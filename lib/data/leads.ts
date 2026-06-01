@@ -110,16 +110,23 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
   return { lead, roi, audit };
 }
 
-export async function getAdminDashboardData() {
+/**
+ * Admin-only: returns data scoped to the given organization, or all organizations
+ * when organizationId is not provided (requires platform_admin role at the call site).
+ */
+export async function getAdminDashboardData(organizationId?: string | null) {
   const supabase = createServiceClient();
   if (!supabase) return emptyAdminData();
 
+  const scope = <T extends { eq: (col: string, val: string) => T }>(q: T) =>
+    organizationId ? q.eq("organization_id", organizationId) : q;
+
   const [leads, roi, audits, bookings, events] = await Promise.all([
-    supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("roi_calculations").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("audits").select("*").order("generated_at", { ascending: false }).limit(100),
-    supabase.from("bookings").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("outreach_events").select("*").order("created_at", { ascending: false }).limit(200)
+    scope(supabase.from("leads").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("roi_calculations").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("audits").select("*")).order("generated_at", { ascending: false }).limit(100),
+    scope(supabase.from("bookings").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("outreach_events").select("*")).order("created_at", { ascending: false }).limit(200)
   ]);
 
   return {

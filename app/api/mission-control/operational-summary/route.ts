@@ -1,13 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withTenantGuard, extractOrgId, extractUserId } from "@/lib/tenant/tenant-guards";
 import { getAutomationQueueMetrics } from "@/lib/automation/runtime";
 import { checkAIProviderHealth } from "@/lib/ai/runtime";
 import { getRuntimeDiagnostics, validateRuntimeConfig } from "@/lib/runtime-config";
 import { getBillingStatus } from "@/lib/stripe/operations";
 import { getAnalyticsDestinations } from "@/lib/telemetry/gtm";
-import { current_org_id } from "@/lib/tenant";
 
-export async function GET() {
-  const organizationId = await current_org_id();
+export async function GET(req: NextRequest) {
+  const orgId = extractOrgId(req);
+  const userId = extractUserId(req);
+  const ctx = await withTenantGuard(orgId, userId).catch(() =>
+    NextResponse.json({ ok: false, error: "Tenant resolution failed" }, { status: 403 })
+  );
+  if (ctx instanceof NextResponse) return ctx;
+
+  const organizationId = ctx.organizationId;
   const [queue, aiProviderHealth, billing] = await Promise.all([
     getAutomationQueueMetrics(organizationId ?? undefined),
     checkAIProviderHealth(),
