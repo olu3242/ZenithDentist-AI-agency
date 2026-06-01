@@ -40,11 +40,36 @@ class OpenAIProvider extends LocalProvider {
 class AnthropicProvider extends LocalProvider {
   async complete(request: IntelligenceRequest): Promise<IntelligenceResponse> {
     if (!env.ANTHROPIC_API_KEY) return super.complete(request);
-    return {
-      provider: "anthropic",
-      model: "provider-ready",
-      content: `${request.system}\n\n${request.prompt}`
-    };
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1024,
+          system: request.system,
+          messages: [{ role: "user", content: request.prompt }]
+        })
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        console.error("[AnthropicProvider] API error:", response.status, err);
+        return super.complete(request);
+      }
+      const data = await response.json() as { content: Array<{ text: string }> };
+      return {
+        provider: "anthropic",
+        model: "claude-haiku-4-5-20251001",
+        content: data.content[0]?.text ?? ""
+      };
+    } catch (error) {
+      console.error("[AnthropicProvider] fetch error:", error);
+      return super.complete(request);
+    }
   }
 }
 
