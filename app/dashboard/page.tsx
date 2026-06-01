@@ -27,15 +27,15 @@ export default async function DashboardPage() {
           <p className="mt-2 max-w-3xl text-base font-semibold text-muted">Agency visibility, operational KPIs, automation ROI, client health, pipeline value, revenue visibility, and SLA summary.</p>
         </header>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Pipeline value" value={`$${Math.round(pipelineValue).toLocaleString()}`} detail="Recoverable revenue modeled" tone="green" />
-          <MetricCard label="Leads" value={admin.leads.length} detail="Current prospect records" tone="teal" />
-          <MetricCard label="Booked calls" value={booked} detail="Booking flow activity" tone="blue" />
-          <MetricCard label="Automations" value={automationOS.counts.active} detail={`${automationOS.counts.totalExecutions} live executions`} tone="blue" />
+          <MetricCard label="Pipeline value" value={`$${Math.round(pipelineValue).toLocaleString()}`} detail="Recoverable revenue modeled" tone="success" />
+          <MetricCard label="Leads" value={admin.leads.length} detail="Current prospect records" tone="accent" />
+          <MetricCard label="Booked calls" value={booked} detail="Booking flow activity" tone="primary" />
+          <MetricCard label="Automations" value={automationOS.counts.active} detail={`${automationOS.counts.totalExecutions} live executions`} tone="primary" />
         </div>
         <div className="grid gap-4 md:grid-cols-3">
-          <MetricCard label="Organizations" value={tenantData.organization.id.startsWith("org-") ? 0 : 1} detail={tenantData.organization.name} tone="teal" />
-          <MetricCard label="Locations" value={tenantData.locations.length} detail="Scoped by organization" tone="green" />
-          <MetricCard label="SLA breaches" value={runtime.slaBreaches.length} detail="Live runtime window" tone="rust" />
+          <MetricCard label="Organizations" value={tenantData.organization.id.startsWith("org-") ? 0 : 1} detail={tenantData.organization.name} tone="accent" />
+          <MetricCard label="Locations" value={tenantData.locations.length} detail="Scoped by organization" tone="success" />
+          <MetricCard label="SLA breaches" value={runtime.slaBreaches.length} detail="Live runtime window" tone="danger" />
         </div>
         <RuntimeHealthDashboard state={runtime} />
       </div>

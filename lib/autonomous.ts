@@ -33,7 +33,8 @@ export function getAutonomousPlaybooks(): OperationalPlaybook[] {
 }
 
 export async function runOperationalSimulation(input: SimulationInput) {
-  const portalData = await getPortalData();
+  const { tenant } = await getTenantData();
+  const portalData = await getPortalData(tenant.organizationId);
   const latest = portalData.metrics[0];
   const timingLift = (input.reminderTimingDelta ?? 0) * 0.8;
   const recallLift = (input.recallCadenceDelta ?? 0) * 1.1;
@@ -51,7 +52,8 @@ export async function runOperationalSimulation(input: SimulationInput) {
 }
 
 export async function getAutonomousEngineState() {
-  const [portalData, tenantData] = await Promise.all([getPortalData(), getTenantData()]);
+  const tenantData = await getTenantData();
+  const portalData = await getPortalData(tenantData.tenant.organizationId);
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
   const playbooks = getAutonomousPlaybooks();
   return {

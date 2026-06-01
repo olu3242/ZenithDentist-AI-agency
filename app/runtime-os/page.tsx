@@ -24,10 +24,10 @@ export default async function RuntimeOSPage() {
           </p>
         </header>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Operational score" value={`${runtime.scores.operationalScore}%`} detail="Runtime score" tone="green" />
-          <MetricCard label="Healing score" value={`${runtime.scores.healingScore}%`} detail="Self-healing posture" tone="teal" />
-          <MetricCard label="Traces" value={runtime.traces.length} detail="Execution records" tone="blue" />
-          <MetricCard label="Dead letters" value={runtime.deadLetters.length} detail="Manual review queue" tone="rust" />
+          <MetricCard label="Operational score" value={`${runtime.scores.operationalScore}%`} detail="Runtime score" tone="success" />
+          <MetricCard label="Healing score" value={`${runtime.scores.healingScore}%`} detail="Self-healing posture" tone="accent" />
+          <MetricCard label="Traces" value={runtime.traces.length} detail="Execution records" tone="primary" />
+          <MetricCard label="Dead letters" value={runtime.deadLetters.length} detail="Manual review queue" tone="danger" />
         </div>
         <RuntimeHealthDashboard state={runtime} />
         <RuntimeTraceViewer state={runtime} />

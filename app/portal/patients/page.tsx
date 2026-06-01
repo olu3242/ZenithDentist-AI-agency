@@ -6,7 +6,7 @@ import { getTenantData } from "@/lib/data/tenants";
 
 export default async function PortalPatientsPage() {
   const tenantData = await getTenantData();
-  const data = await getPortalData(tenantData.tenant.organizationId ?? undefined);
+  const data = await getPortalData(tenantData.tenant.organizationId);
   return (
     <div className="space-y-6">
       <PortalHeader title="Patient Engagement" subtitle="Patient response patterns, schedule risk, and high-value recovery segments." />

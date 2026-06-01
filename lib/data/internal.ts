@@ -3,7 +3,8 @@ import { getTenantData } from "@/lib/data/tenants";
 import { calculatePracticeHealth } from "@/lib/health";
 
 export async function getInternalPlatformData() {
-  const [tenantData, portalData] = await Promise.all([getTenantData(), getPortalData()]);
+  const tenantData = await getTenantData();
+  const portalData = await getPortalData(tenantData.tenant.organizationId);
   const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
   const activeOrganizations = 1;
   const activePlan = tenantData.plans.find(plan => plan.plan_key === tenantData.organization.active_plan);

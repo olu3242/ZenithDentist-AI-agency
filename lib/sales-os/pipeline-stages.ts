@@ -67,19 +67,21 @@ export function scoreDeal(stage: PipelineStage, value: number): number {
   return Math.min(100, config.probability + valueScore);
 }
 
-export async function getPipelineBreakdown(organizationId?: string): Promise<PipelineStageSummary[]> {
+/**
+ * Returns pipeline breakdown scoped to the given organization.
+ * organizationId is required — returns empty array if missing (GAP-003 fix).
+ */
+export async function getPipelineBreakdown(organizationId: string): Promise<PipelineStageSummary[]> {
+  if (!organizationId) return [];
   const supabase = createServiceClient();
   if (!supabase) return [];
 
-  const query = supabase
+  const { data } = await supabase
     .from("leads")
-    .select("id, status, practice_name, created_at");
+    .select("id, status, practice_name, created_at")
+    .eq("organization_id", organizationId)
+    .limit(500);
 
-  if (organizationId) {
-    query.eq("organization_id", organizationId);
-  }
-
-  const { data } = await query.limit(500);
   if (!data) return [];
 
   const byStage: Record<string, PipelineDeal[]> = {};
@@ -89,7 +91,7 @@ export async function getPipelineBreakdown(organizationId?: string): Promise<Pip
     if (!byStage[stage]) byStage[stage] = [];
     byStage[stage].push({
       id: lead.id,
-      organizationId: organizationId ?? null,
+      organizationId,
       practiceName: lead.practice_name ?? "",
       stage,
       value: AVG_DEAL_VALUE,
@@ -116,18 +118,22 @@ export async function getPipelineBreakdown(organizationId?: string): Promise<Pip
     });
 }
 
-export async function getLeadScores(organizationId?: string): Promise<Array<{ id: string; name: string; score: number; stage: PipelineStage }>> {
+/**
+ * Returns lead scores scoped to the given organization.
+ * organizationId is required — returns empty array if missing (GAP-003 fix).
+ */
+export async function getLeadScores(organizationId: string): Promise<Array<{ id: string; name: string; score: number; stage: PipelineStage }>> {
+  if (!organizationId) return [];
   const supabase = createServiceClient();
   if (!supabase) return [];
 
-  const query = supabase
+  const { data } = await supabase
     .from("leads")
     .select("id, practice_name, dentist_name, status, created_at")
-    .not("status", "in", '("won","lost")');
-
-  if (organizationId) query.eq("organization_id", organizationId);
-
-  const { data } = await query.order("created_at", { ascending: false }).limit(100);
+    .eq("organization_id", organizationId)
+    .not("status", "in", '("won","lost")')
+    .order("created_at", { ascending: false })
+    .limit(100);
 
   return (data ?? []).map(lead => {
     const stage = STATUS_TO_STAGE[lead.status] ?? "lead_captured";

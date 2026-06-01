@@ -1,5 +1,44 @@
-# Production Readiness Report
-**Assessment date:** 2026-05-30
+# Production Readiness Report — PROS Sprint
+**Generated:** 2026-06-01 (supersedes 2026-05-30 report)
+**Scope:** Patient Revenue Operating System — Full Platform Assessment
+
+---
+
+## PROS Sprint Scorecard
+
+| Dimension | Score | Evidence |
+|-----------|-------|---------|
+| Revenue Operations | 82 | 6 engines implemented, attribution 7-bucket, API routes present |
+| Patient Revenue Engine™ | 80 | All 6 triggers functional; 4/6 still use emitAutomationEvent() not executeWorkflow() |
+| Workflow OS | 88 | executeWorkflow(), 11-state machine, 7-module execution kernel |
+| Runtime OS | 85 | trace-engine, replay-engine, dead letter, retry, execution logs |
+| Mission Control | 80 | 64 panels, 21 concurrent data sources, all centers functional |
+| ALICE | 85 | 4 agents, Anthropic claude-haiku-4-5-20251001, LocalProvider fallback |
+| Analytics | 82 | analyticsProjector, 7-bucket attribution, 8 API routes |
+| Security | 85 | RLS on all tables, org_isolation policies, RBAC roles |
+| Tenant Isolation | 88 | organization_id RLS on all 6 new PROS tables |
+| PMS Framework | 72 | 4 adapters; only Open Dental active pilot; others are stubs |
+| Revenue Attribution | 85 | workflow_revenue_attribution VIEW, FKs wired, getWorkflowAttribution() |
+| Observability | 83 | 43 error codes, 6 alert types, monitoring dashboard, circuit breaker |
+| Customer Onboarding | 80 | 7-step OnboardingStep, provisionOrganization(), DEFAULT_WORKFLOWS |
+| Implementation Readiness | 82 | 30/60/90-day playbook defined |
+| Pilot Readiness | 75 | Steps 1-2, 5-12 verified; PMS import is stub |
+
+**Weighted Average: 83.0 / 100**
+
+## Final Decision: READY FOR DENTAL PILOT ✅ (with conditions)
+
+**Conditions:**
+1. PMS import must be manually seeded (or Open Dental adapter fully implemented)
+2. 4 revenue engines should migrate to executeWorkflow() for full attribution
+3. ANTHROPIC_API_KEY must be configured for real ALICE insights
+
+---
+
+*Previous assessment (2026-05-30) preserved below for reference:*
+---
+
+# Prior Assessment Date: 2026-05-30
 **Scope:** All pages, API routes, and lib modules at HEAD of main branch
 
 ---

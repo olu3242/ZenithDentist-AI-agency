@@ -31,7 +31,7 @@ export async function coordinateAgents(
     title: insight.title ?? "ALICE insight",
     summary: "summary" in insight
       ? String(insight.summary ?? "")
-      : ("prediction" in insight ? String(insight.prediction ?? "") : ""),
+      :  "",
     confidence: typeof insight.confidence === "number" ? insight.confidence : 0.8,
   }));
 

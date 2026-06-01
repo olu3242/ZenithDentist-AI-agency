@@ -30,10 +30,10 @@ export default async function AutomationCenterPage({ searchParams }: { searchPar
         </header>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Active" value={active.length} detail="Enabled automations" tone="green" />
-          <MetricCard label="Failed" value={failed.length} detail="Needs recovery" tone="rust" />
-          <MetricCard label="Queued" value={queued.length} detail="Installed, waiting enablement" tone="gold" />
-          <MetricCard label="Executions" value={state.counts.totalExecutions} detail="Runtime trace-backed" tone="blue" />
+          <MetricCard label="Active" value={active.length} detail="Enabled automations" tone="success" />
+          <MetricCard label="Failed" value={failed.length} detail="Needs recovery" tone="danger" />
+          <MetricCard label="Queued" value={queued.length} detail="Installed, waiting enablement" tone="warning" />
+          <MetricCard label="Executions" value={state.counts.totalExecutions} detail="Runtime trace-backed" tone="primary" />
         </div>
 
         <section className="overflow-hidden rounded border border-border bg-card shadow-sm">

@@ -14,9 +14,8 @@ export default function Error({
     console.error("Operational Fallback:", error);
   }, [error]);
 
-  const categoryLabel = getCategoryLabel(error.category);
-  const errorCode = error.code ?? (error.digest ? `DIGEST-${error.digest}` : "UNK_001");
-  const suggestion = error.recoverySuggestion ?? "Try refreshing the page. If this persists, contact support.";
+  const errorCode = (error as unknown as Record<string, string>).code ?? (error.digest ? `DIGEST-${error.digest}` : "UNK_001");
+  const suggestion = (error as unknown as Record<string, string>).recoverySuggestion ?? "Try refreshing the page. If this persists, contact support.";
 
   return (
     <main className="grid min-h-screen place-items-center bg-paper px-6">

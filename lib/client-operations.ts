@@ -6,7 +6,8 @@ import { summarizeClientHealth } from "@/lib/alice/operational-intelligence";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 
 export async function getClientOperationsState() {
-  const [tenant, portal, runtime] = await Promise.all([getTenantData(), getPortalData(), getRuntimeHealthState()]);
+  const [tenant, runtime] = await Promise.all([getTenantData(), getRuntimeHealthState()]);
+  const portal = await getPortalData(tenant.tenant.organizationId);
   const summary = summarizePortal(portal);
   const clientHealth = runtime.domainHealth.map(domain => ({
     domain: domain.domain,

@@ -26,10 +26,10 @@ export default async function AutomationMarketplacePage({ searchParams }: { sear
         </header>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="Catalog automations" value={state.registry.length} detail="Registry-backed packs" tone="blue" />
-          <MetricCard label="Categories" value={state.categories.length} detail="Dental automation library" tone="teal" />
-          <MetricCard label="Installed/active" value={state.counts.active + state.registry.filter(item => item.status === "installed").length} detail="Deployable automations" tone="green" />
-          <MetricCard label="Available" value={state.counts.available} detail="Ready to install" tone="gold" />
+          <MetricCard label="Catalog automations" value={state.registry.length} detail="Registry-backed packs" tone="primary" />
+          <MetricCard label="Categories" value={state.categories.length} detail="Dental automation library" tone="accent" />
+          <MetricCard label="Installed/active" value={state.counts.active + state.registry.filter(item => item.status === "installed").length} detail="Deployable automations" tone="success" />
+          <MetricCard label="Available" value={state.counts.available} detail="Ready to install" tone="warning" />
         </div>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

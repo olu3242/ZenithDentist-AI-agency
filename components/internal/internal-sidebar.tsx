@@ -1,6 +1,8 @@
 "use client";
+import Link from "next/link";
 import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck, CloudCog, DatabaseZap, PlugZap, RadioTower, History, Target, ShieldAlert, Network, TrendingUp, ListChecks } from "lucide-react";
 import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import type { NavItem } from "@/components/brand/brand-sidebar";
 
 const nav: NavItem[] = [
   { href: "/internal/mission-control",  label: "Mission Control",  icon: RadioTower },
