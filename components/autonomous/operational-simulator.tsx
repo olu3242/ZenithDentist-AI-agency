@@ -20,6 +20,7 @@ export function OperationalSimulator() {
   const [reminderTimingDelta, setReminderTimingDelta] = useState(2);
   const [recallCadenceDelta, setRecallCadenceDelta] = useState(3);
   const [staffingDelta, setStaffingDelta] = useState(1);
+  const [queued, setQueued] = useState(false);
   const simulation = useMemo<Simulation>(() => ({
     ...baseline,
     projectedRevenueImpact: baseline.projectedRevenueImpact + recallCadenceDelta * 310,
@@ -43,7 +44,19 @@ export function OperationalSimulator() {
         <Result label="No-show reduction" value={`${simulation.projectedNoShowReduction.toFixed(1)}%`} />
         <Result label="Efficiency" value={`${simulation.projectedEfficiency.toFixed(1)}%`} />
       </div>
-      <Button className="mt-5" type="button">Queue for Review</Button>
+      {queued ? (
+        <p className="mt-5 rounded border border-green/30 bg-green/10 p-3 text-sm font-bold text-green" role="status">
+          Simulation queued for operator review.
+        </p>
+      ) : null}
+      <Button
+        className="mt-5"
+        type="button"
+        disabled={queued}
+        onClick={() => setQueued(true)}
+      >
+        {queued ? "Queued" : "Queue for Review"}
+      </Button>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createLeadFunnel, trackBookingClick, trackOutreachEvent } from "@/lib/data/leads";
 import { sendAuditEmails } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import { getErrorDiagnostics } from "@/lib/external-diagnostics";
 import { funnelSubmissionSchema } from "@/lib/validation";
 
 export type FunnelActionState = {
@@ -27,7 +28,12 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
 
   try {
     const result = await createLeadFunnel(parsed.data);
-    await sendAuditEmails(result);
+    void sendAuditEmails(result).catch(error => {
+      logger.warn("audit_email_failed_non_blocking", {
+        leadId: result.lead.id,
+        error: getErrorDiagnostics(error)
+      });
+    });
     revalidatePath("/admin");
     return {
       ok: true,
@@ -38,7 +44,7 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
     };
   } catch (error) {
     logger.error("funnel_submit_failed", {
-      error: error instanceof Error ? error.message : "unknown"
+      error: getErrorDiagnostics(error)
     });
     return {
       ok: false,

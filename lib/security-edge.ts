@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getUnauthorizedRedirectPath } from "@/lib/auth-routing";
 
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
 
@@ -37,7 +38,9 @@ const key = `${request.nextUrl.pathname}:${ip}`;
 
 export function failedAuthResponse(request: NextRequest) {
   const url = request.nextUrl.clone();
-  url.pathname = "/";
-  url.searchParams.set("admin", "unauthorized");
+  url.pathname = getUnauthorizedRedirectPath(request);
+  url.search = "";
+  url.searchParams.set("from", request.nextUrl.pathname);
+  url.searchParams.set("reason", "auth-required");
   return applySecurityHeaders(NextResponse.redirect(url));
 }

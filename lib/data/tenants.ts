@@ -1,6 +1,7 @@
 import type { Json } from "@/lib/database.types";
 import { createServiceClient } from "@/lib/supabase/server";
 import { getDefaultTenantContext, type TenantContext } from "@/lib/tenant";
+import { cookies } from "next/headers";
 
 export interface Organization {
   id: string;
@@ -80,12 +81,20 @@ export interface TenantData {
   benchmarks: BenchmarkSnapshot[];
 }
 
-export async function getTenantData(slug = getDefaultTenantContext().organizationSlug): Promise<TenantData> {
+export async function getTenantData(slug?: string): Promise<TenantData> {
+  const requestedSlug = slug ?? getDefaultTenantContext().organizationSlug;
   const supabase = createServiceClient();
-  if (!supabase) return emptyTenantData(slug);
+  if (!supabase) return emptyTenantData(requestedSlug);
 
-  const { data: org } = await supabase.from("organizations").select("*").eq("slug", slug).maybeSingle();
-  if (!org) return emptyTenantData(slug);
+  const cookieStore = await cookies();
+  const cookieOrganizationId = cookieStore.get("zenith_organization_id")?.value;
+
+  const organizationQuery = supabase.from("organizations").select("*");
+  const { data: org } = cookieOrganizationId && !slug
+    ? await organizationQuery.eq("id", cookieOrganizationId).maybeSingle()
+    : await organizationQuery.eq("slug", requestedSlug).maybeSingle();
+
+  if (!org) return emptyTenantData(requestedSlug);
 
   const [locations, plans, usage, benchmarks] = await Promise.all([
     supabase.from("locations").select("*").eq("organization_id", org.id).order("is_primary", { ascending: false }),

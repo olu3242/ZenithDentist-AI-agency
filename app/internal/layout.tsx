@@ -1,10 +1,16 @@
-import { InternalSidebar } from "@/components/internal/internal-sidebar";
+import { AppShell } from "@/components/app/app-shell";
+import { getTenantData } from "@/lib/data/tenants";
+import { getCurrentZenithRole } from "@/lib/server-auth";
 
-export default function InternalLayout({ children }: { children: React.ReactNode }) {
+export default async function InternalLayout({ children }: { children: React.ReactNode }) {
+  const [tenantData, role] = await Promise.all([
+    getTenantData(),
+    getCurrentZenithRole("super_admin")
+  ]);
+
   return (
-    <div className="min-h-screen bg-paper lg:grid lg:grid-cols-[280px_1fr]">
-      <InternalSidebar />
-      <main className="p-5 lg:p-8">{children}</main>
-    </div>
+    <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
+      {children}
+    </AppShell>
   );
 }

@@ -6,7 +6,7 @@ import "server-only";
  */
 
 import { logger } from "@/lib/logger";
-import { publishRuntimeFabricEvent } from "@/lib/runtime/event-fabric";
+import { publishEvent } from "@/lib/event-fabric";
 
 export interface AgentInterventionLog {
   interventionId: string;
@@ -25,12 +25,12 @@ export interface AgentInterventionLog {
 export async function logAgentIntervention(entry: AgentInterventionLog): Promise<void> {
   logger.info("agent_intervention", entry as unknown as Record<string, unknown>);
 
-  await publishRuntimeFabricEvent({
-    eventKey: `agent_intervention:${entry.interventionId}`,
-    eventType: "agent",
-    sourceSystem: "ai_os",
-    targetChannel: "mission_control",
-    summary: `[AI OS] ${entry.agentId} → ${entry.interventionType} on ${entry.workflowId} (${entry.decision})`,
+  await publishEvent({
+    event_type: "agent.intervention",
+    event_source: "ai_os",
+    correlation_id: entry.correlationId,
+    tenant_id: entry.organizationId,
+    workflow_id: entry.workflowId,
     priority: entry.decision === "blocked" ? "high" : "moderate",
     payload: entry as unknown as Record<string, unknown>,
   });

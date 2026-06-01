@@ -24,6 +24,7 @@ import "server-only";
  */
 
 import { answerOperationalQuery, generateAliceInsights, generateAliceReport } from "@/lib/alice";
+import { analyticsProjector } from "@/lib/analytics-projector";
 import { buildAliceContext, requestAgentIntervention } from "@/lib/ai-os/agent-runtime";
 import { coordinateAgents } from "@/lib/ai-os/agent-coordinator";
 import { getWorkflowAnalyticsSummary } from "@/lib/workflow-os/workflow-analytics";
@@ -39,19 +40,19 @@ export { answerOperationalQuery as aliceQuery };
 // ─── ALICE Insights ─────────────────────────────────────────────────────────
 
 export async function getAliceInsights(organizationId: string) {
-  const [rawInsights, analytics, health] = await Promise.all([
+  const [rawInsights, projection] = await Promise.all([
     generateAliceInsights(),
-    getWorkflowAnalyticsSummary(),
-    getWorkflowRuntimeHealth(),
+    analyticsProjector(),
   ]);
 
   const groundedInsights = rawInsights.map(insight => ({
     ...insight,
     groundedIn: {
-      operationalScore: health.operationalScore,
-      successRate: analytics.overallSuccessRate,
-      failureRate: analytics.overallFailureRate,
-      recoveryScore: health.recoveryScore,
+      platformHealth: projection.scores.platformHealth,
+      successRate: projection.workflow.successRate,
+      failureRate: projection.workflow.failureRate,
+      recoveryScore: projection.workflow.recoveryRate,
+      eventFabricSignals: projection.eventFabric.liveSignalCount,
     },
   }));
 

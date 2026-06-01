@@ -10,7 +10,7 @@ import "server-only";
  */
 
 export { getRuntimeHealthState } from "@/lib/runtime/automation-health";
-export { publishRuntimeFabricEvent, getRuntimeEventFabricState } from "@/lib/runtime/event-fabric";
+export { getRuntimeEventFabricState } from "@/lib/runtime/event-fabric";
 export { executeReplay, getReplayCenterState, buildReplayCenterState } from "@/lib/runtime/replay-engine";
 export { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 export { logOperationalEvent, propagateCorrelation, aggregateRuntimeEvents, instrumentSla, auditSafeTraceLog } from "@/lib/runtime/observability";
