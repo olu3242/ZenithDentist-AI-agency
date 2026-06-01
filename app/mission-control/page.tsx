@@ -1,3 +1,4 @@
+import { AppShell } from "@/components/app/app-shell";
 import { ALICECopilot } from "@/components/mission-control/alice-copilot";
 import { AgentCommunicationBus } from "@/components/mission-control/agent-communication-bus";
 import { AuditTimeline } from "@/components/mission-control/audit-timeline";
@@ -35,6 +36,7 @@ import { SimulationLab } from "@/components/mission-control/simulation-lab";
 import { TenantIntelligenceGrid } from "@/components/mission-control/tenant-intelligence-grid";
 import { generateOperationalInsights } from "@/lib/alice/operational-intelligence";
 import { getOperationalMeshState } from "@/lib/runtime/agent-mesh";
+import { getTenantData } from "@/lib/data/tenants";
 import { getAutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 import { detectDependencyIssuesFromRuntime } from "@/lib/runtime/dependency-intelligence";
@@ -56,9 +58,10 @@ import { getRecoveryOrchestratorState } from "@/lib/runtime/recovery-orchestrato
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
 import { buildSimulationCenterState } from "@/lib/runtime/simulation-engine";
 import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
+import { getCurrentZenithRole } from "@/lib/server-auth";
 
 export default async function MissionControlPage() {
-  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization] = await Promise.all([
+  const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization, tenantData, role] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),
     getRuntimeIncidents(),
@@ -78,16 +81,18 @@ export default async function MissionControlPage() {
     getExecutiveIntelligenceCloudState(),
     getRuntimeEventFabricState(),
     getRecoveryOrchestratorState(),
-    getProductizationState()
+    getProductizationState(),
+    getTenantData(),
+    getCurrentZenithRole("super_admin")
   ]);
   const graph = buildWorkflowGraphFromRuntime(state);
   const dependencyIssues = detectDependencyIssuesFromRuntime(state);
   const predictiveAlerts = generatePredictiveOperationalAlertsFromRuntime(state);
   const replay = buildReplayCenterState(state);
   return (
-    <main className="min-h-screen bg-paper">
+    <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
       <RealtimeRefresh />
-      <div className="mx-auto grid max-w-[1600px] gap-5 p-5 lg:grid-cols-[230px_1fr_360px] lg:p-8">
+      <div className="mx-auto grid max-w-[1600px] gap-5 lg:grid-cols-[230px_1fr_360px]">
         <aside className="hidden rounded border border-line bg-white p-4 shadow-sm lg:block">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Intelligence sidebar</p>
           <nav className="mt-5 grid gap-2 text-sm font-black text-muted">
@@ -158,6 +163,6 @@ export default async function MissionControlPage() {
           <ExecutiveReportCard report={report} />
         </aside>
       </div>
-    </main>
+    </AppShell>
   );
 }

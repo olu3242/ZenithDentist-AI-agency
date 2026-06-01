@@ -28,8 +28,10 @@ export async function coordinateAgents(
   ]);
 
   const topInsights = context.insights.slice(0, 5).map(insight => ({
-    title: insight.title,
-    summary: "summary" in insight ? insight.summary : ("prediction" in insight ? insight.prediction : ""),
+    title: insight.title ?? "ALICE insight",
+    summary: "summary" in insight
+      ? String(insight.summary ?? "")
+      : ("prediction" in insight ? String(insight.prediction ?? "") : ""),
     confidence: typeof insight.confidence === "number" ? insight.confidence : 0.8,
   }));
 

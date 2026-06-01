@@ -52,6 +52,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.2
     },
     {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/workflow-os`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/runtime-os`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.2
+    },
+    {
+      url: `${env.NEXT_PUBLIC_SITE_URL}/settings`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.2
+    },
+    {
       url: `${env.NEXT_PUBLIC_SITE_URL}/lead-operations`,
       lastModified: new Date(),
       changeFrequency: "weekly",

@@ -5,6 +5,8 @@ import { buildAuditRecommendations, calculateRevenueProjection } from "@/lib/roi
 import type { Database } from "@/lib/database.types";
 import type { FunnelSubmissionInput } from "@/lib/validation";
 import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib/runtime/instrumentation";
+import { getErrorDiagnostics, supabaseErrorContext } from "@/lib/external-diagnostics";
+import { executeRegisteredAutomation } from "@/lib/automation-os/registry";
 
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type RoiCalculation = Database["public"]["Tables"]["roi_calculations"]["Row"];
@@ -23,82 +25,121 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
   if (!supabase) {
     throw new Error("Supabase server environment is not configured.");
   }
-  const trace = await startRuntimeTrace({
-    workflowId: "lead_created",
-    eventName: "lead_funnel_submission",
-    metadata: { source: input.source, practiceName: input.practiceName }
-  });
 
   const projection = calculateRevenueProjection(input);
-  const { data: lead, error: leadError } = await supabase
-    .from("leads")
-    .insert({
-      dentist_name: input.dentistName,
-      practice_name: input.practiceName,
-      email: input.email,
-      phone: input.phone,
-      locations: input.locations,
-      staff_size: input.staffSize,
-      pms_software: input.pmsSoftware,
-      no_show_rate: input.noShowRate,
-      operational_pain: input.operationalPain,
-      status: "audit_requested",
-      source: input.source,
-      attribution: input.attribution as Json
-    })
-    .select()
-    .single();
+  const leadPayload = {
+    dentist_name: input.dentistName,
+    practice_name: input.practiceName,
+    email: input.email,
+    phone: input.phone,
+    locations: input.locations,
+    staff_size: input.staffSize,
+    pms_software: input.pmsSoftware,
+    no_show_rate: input.noShowRate,
+    operational_pain: input.operationalPain,
+    status: "audit_requested" as const,
+    source: input.source,
+    attribution: input.attribution as Json
+  };
 
-  if (leadError) {
-    logger.error("lead_create_failed", { error: leadError.message });
-    await failRuntimeTrace(trace, leadError.message, { stage: "lead_create" });
+  const { data: lead, error: leadError } = await safeSupabaseWrite<Lead>(
+    "leads",
+    "insert",
+    leadPayload,
+    () => supabase.from("leads").insert(leadPayload).select().single()
+  );
+
+  if (leadError || !lead) {
+    logger.error("lead_create_failed", supabaseErrorContext({
+      table: "leads",
+      operation: "insert",
+      payload: leadPayload,
+      error: leadError ?? new Error("Supabase did not return a lead row.")
+    }));
     throw new Error("Unable to create lead.");
   }
 
-  const { data: roi, error: roiError } = await supabase
-    .from("roi_calculations")
-    .insert({
-      organization_id: null,
-      lead_id: lead.id,
-      chairs: input.chairs,
-      monthly_appointments: input.monthlyAppointments,
-      avg_appointment_value: input.avgAppointmentValue,
-      no_show_rate: input.noShowRate,
-      recall_patients_lost: input.recallPatientsLost,
-      admin_hours_per_day: input.adminHoursPerDay,
-      monthly_revenue_loss: projection.monthlyRevenueLoss,
-      yearly_revenue_loss: projection.yearlyRevenueLoss,
-      recoverable_revenue: projection.recoverableRevenue
-    })
-    .select()
-    .single();
+  const roiPayload = {
+    organization_id: null,
+    lead_id: lead.id,
+    chairs: input.chairs,
+    monthly_appointments: input.monthlyAppointments,
+    avg_appointment_value: input.avgAppointmentValue,
+    no_show_rate: input.noShowRate,
+    recall_patients_lost: input.recallPatientsLost,
+    admin_hours_per_day: input.adminHoursPerDay,
+    monthly_revenue_loss: projection.monthlyRevenueLoss,
+    yearly_revenue_loss: projection.yearlyRevenueLoss,
+    recoverable_revenue: projection.recoverableRevenue
+  };
 
-  if (roiError) {
-    logger.error("roi_create_failed", { error: roiError.message, leadId: lead.id });
-    await failRuntimeTrace(trace, roiError.message, { stage: "roi_create", leadId: lead.id });
+  const { data: roi, error: roiError } = await safeSupabaseWrite<RoiCalculation>(
+    "roi_calculations",
+    "insert",
+    roiPayload,
+    () => supabase.from("roi_calculations").insert(roiPayload).select().single()
+  );
+
+  if (roiError || !roi) {
+    logger.error("roi_create_failed", supabaseErrorContext({
+      table: "roi_calculations",
+      operation: "insert",
+      payload: roiPayload,
+      error: roiError ?? new Error("Supabase did not return an ROI row.")
+    }));
     throw new Error("Unable to persist ROI calculation.");
   }
 
   const recommendations = buildAuditRecommendations(input, projection);
-  const { data: audit, error: auditError } = await supabase
-    .from("audits")
-    .insert({
-      organization_id: null,
-      lead_id: lead.id,
-      audit_summary: `${input.practiceName} is leaking an estimated $${Math.round(
-        projection.monthlyRevenueLoss
-      ).toLocaleString()} per month across no-shows, recall gaps, and administrative drag.`,
-      recommendations,
-      projected_recovery: projection.recoverableRevenue
-    })
-    .select()
-    .single();
+  const auditPayload = {
+    organization_id: null,
+    lead_id: lead.id,
+    audit_summary: `${input.practiceName} is leaking an estimated $${Math.round(
+      projection.monthlyRevenueLoss
+    ).toLocaleString()} per month across no-shows, recall gaps, and administrative drag.`,
+    recommendations,
+    projected_recovery: projection.recoverableRevenue
+  };
+  const { data: audit, error: auditError } = await safeSupabaseWrite<Audit>(
+    "audits",
+    "insert",
+    auditPayload,
+    () => supabase.from("audits").insert(auditPayload).select().single()
+  );
 
-  if (auditError) {
-    logger.error("audit_create_failed", { error: auditError.message, leadId: lead.id });
-    await failRuntimeTrace(trace, auditError.message, { stage: "audit_create", leadId: lead.id });
+  if (auditError || !audit) {
+    logger.error("audit_create_failed", supabaseErrorContext({
+      table: "audits",
+      operation: "insert",
+      payload: auditPayload,
+      error: auditError ?? new Error("Supabase did not return an audit row.")
+    }));
     throw new Error("Unable to generate audit.");
   }
+
+  void runLeadFunnelSideEffects({
+    lead,
+    input,
+    projection
+  });
+
+  return { lead, roi, audit };
+}
+
+async function runLeadFunnelSideEffects({
+  lead,
+  input,
+  projection
+}: {
+  lead: Lead;
+  input: FunnelSubmissionInput;
+  projection: ReturnType<typeof calculateRevenueProjection>;
+}) {
+  const trace = await startRuntimeTrace({
+    workflowId: "lead_created",
+    eventName: "lead_funnel_submission",
+    metadata: { source: input.source, practiceName: input.practiceName, leadId: lead.id }
+  });
 
   await trackOutreachEvent({
     leadId: lead.id,
@@ -106,8 +147,16 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
     metadata: { source: input.source, projection }
   });
 
+  try {
+    await executeRegisteredAutomation("lead_created");
+  } catch (error) {
+    logger.warn("lead_created_automation_non_blocking_failed", {
+      leadId: lead.id,
+      error: getErrorDiagnostics(error)
+    });
+  }
+
   await completeRuntimeTrace(trace);
-  return { lead, roi, audit };
 }
 
 export async function getAdminDashboardData() {
@@ -141,47 +190,76 @@ export async function trackOutreachEvent(input: {
     logger.warn("event_not_persisted_supabase_missing", input);
     return;
   }
-  const trace = await startRuntimeTrace({
-    workflowId: "ai_followup_required",
-    eventName: String(input.eventType),
-    metadata: { leadId: input.leadId, ...(input.metadata ?? {}) }
-  });
+  try {
+    const trace = await startRuntimeTrace({
+      workflowId: "ai_followup_required",
+      eventName: String(input.eventType),
+      metadata: { leadId: input.leadId, ...(input.metadata ?? {}) }
+    });
 
-  const { error } = await supabase.from("outreach_events").insert({
-    lead_id: input.leadId ?? null,
-    event_type: input.eventType,
-    event_metadata: (input.metadata ?? {}) as Json
-  });
+    const payload = {
+      lead_id: input.leadId ?? null,
+      event_type: input.eventType,
+      event_metadata: (input.metadata ?? {}) as Json
+    };
+    const { error } = await supabase.from("outreach_events").insert(payload);
 
-  if (error) {
-    logger.error("event_track_failed", { error: error.message, input });
-    await failRuntimeTrace(trace, error.message, { leadId: input.leadId, eventType: input.eventType });
-    return;
+    if (error) {
+      logger.warn("event_track_failed_non_blocking", supabaseErrorContext({
+        table: "outreach_events",
+        operation: "insert",
+        payload,
+        error
+      }));
+      await failRuntimeTrace(trace, error.message, { leadId: input.leadId, eventType: input.eventType });
+      return;
+    }
+
+    await completeRuntimeTrace(trace);
+  } catch (error) {
+    logger.warn("event_track_exception_non_blocking", {
+      input,
+      error: getErrorDiagnostics(error)
+    });
   }
-  await completeRuntimeTrace(trace);
 }
 
 export async function trackBookingClick(leadId?: string, metadata: Record<string, unknown> = {}) {
   const supabase = createServiceClient();
   if (!supabase) return;
-  const trace = await startRuntimeTrace({
-    workflowId: "lead_created",
-    eventName: "booking_click",
-    metadata: { leadId, ...metadata }
-  });
+  try {
+    const trace = await startRuntimeTrace({
+      workflowId: "lead_created",
+      eventName: "booking_click",
+      metadata: { leadId, ...metadata }
+    });
 
-  const { error } = await supabase.from("bookings").insert({
-    lead_id: leadId ?? null,
-    booking_status: "clicked",
-    notes: "Calendly booking link clicked"
-  });
-  if (error) {
-    await failRuntimeTrace(trace, error.message, { leadId });
-    return;
+    const payload = {
+      lead_id: leadId ?? null,
+      booking_status: "clicked" as const,
+      notes: "Calendly booking link clicked"
+    };
+    const { error } = await supabase.from("bookings").insert(payload);
+    if (error) {
+      logger.warn("booking_click_failed_non_blocking", supabaseErrorContext({
+        table: "bookings",
+        operation: "insert",
+        payload,
+        error
+      }));
+      await failRuntimeTrace(trace, error.message, { leadId });
+      return;
+    }
+
+    await trackOutreachEvent({ leadId, eventType: "booking_clicked", metadata });
+    await completeRuntimeTrace(trace);
+  } catch (error) {
+    logger.warn("booking_click_exception_non_blocking", {
+      leadId,
+      metadata,
+      error: getErrorDiagnostics(error)
+    });
   }
-
-  await trackOutreachEvent({ leadId, eventType: "booking_clicked", metadata });
-  await completeRuntimeTrace(trace);
 }
 
 function emptyAdminData() {
@@ -192,4 +270,23 @@ function emptyAdminData() {
     bookings: [] as Booking[],
     events: [] as OutreachEvent[]
   };
+}
+
+async function safeSupabaseWrite<T>(
+  table: string,
+  operation: string,
+  payload: Record<string, unknown>,
+  write: () => PromiseLike<{ data: T | null; error: unknown }>
+): Promise<{ data: T | null; error: unknown }> {
+  try {
+    return await write();
+  } catch (error) {
+    logger.error(`${table}_${operation}_exception`, supabaseErrorContext({
+      table,
+      operation,
+      payload,
+      error
+    }));
+    return { data: null, error };
+  }
 }

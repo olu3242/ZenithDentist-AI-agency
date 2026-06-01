@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getUnauthorizedRedirectPath } from "@/lib/auth-routing";
 
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
 
@@ -19,7 +20,12 @@ export function applySecurityHeaders(response: NextResponse) {
 }
 
 export function rateLimit(request: NextRequest, limit = 120, windowMs = 60_000) {
-  const key = `${request.nextUrl.pathname}:${request.ip ?? request.headers.get("x-forwarded-for") ?? "local"}`;
+  const ip =
+  request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+  request.headers.get("x-real-ip") ??
+  "local";
+
+const key = `${request.nextUrl.pathname}:${ip}`;
   const now = Date.now();
   const bucket = memoryBuckets.get(key);
   if (!bucket || bucket.resetAt <= now) {
@@ -32,7 +38,9 @@ export function rateLimit(request: NextRequest, limit = 120, windowMs = 60_000) 
 
 export function failedAuthResponse(request: NextRequest) {
   const url = request.nextUrl.clone();
-  url.pathname = "/";
-  url.searchParams.set("admin", "unauthorized");
+  url.pathname = getUnauthorizedRedirectPath(request);
+  url.search = "";
+  url.searchParams.set("from", request.nextUrl.pathname);
+  url.searchParams.set("reason", "auth-required");
   return applySecurityHeaders(NextResponse.redirect(url));
 }

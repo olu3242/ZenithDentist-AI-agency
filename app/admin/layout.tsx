@@ -1,10 +1,16 @@
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AppShell } from "@/components/app/app-shell";
+import { getTenantData } from "@/lib/data/tenants";
+import { getCurrentZenithRole } from "@/lib/server-auth";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const [tenantData, role] = await Promise.all([
+    getTenantData(),
+    getCurrentZenithRole("agency_admin")
+  ]);
+
   return (
-    <div className="min-h-screen bg-paper lg:grid lg:grid-cols-[260px_1fr]">
-      <AdminSidebar />
-      <main className="p-5 lg:p-8">{children}</main>
-    </div>
+    <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
+      {children}
+    </AppShell>
   );
 }

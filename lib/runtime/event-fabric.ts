@@ -8,6 +8,8 @@ import { generateRuntimeForecasts } from "@/lib/runtime/operational-forecasting"
 import { getProviderHealth } from "@/lib/runtime/provider-health";
 import { buildReplayCenterState } from "@/lib/runtime/replay-engine";
 import { createServiceClient } from "@/lib/supabase/server";
+import { getErrorDiagnostics, supabaseErrorContext } from "@/lib/external-diagnostics";
+import { logger } from "@/lib/logger";
 
 export interface RuntimeFabricEvent {
   eventKey: string;
@@ -105,23 +107,39 @@ export async function getRuntimeEventFabricState(): Promise<RuntimeEventFabricSt
 }
 
 export async function publishRuntimeFabricEvent(input: Omit<RuntimeFabricEvent, "status"> & { payload?: Record<string, unknown> }) {
-  const tenant = await getTenantData();
-  const organizationId = tenant.tenant.organizationId ?? tenant.organization.id;
-  const supabase = createServiceClient();
-  if (!supabase) return null;
-  const { data, error } = await supabase
-    .from("runtime_event_fabric_events")
-    .insert({
+  try {
+    const tenant = await getTenantData();
+    const organizationId = tenant.tenant.organizationId ?? tenant.organization.id;
+    const supabase = createServiceClient();
+    if (!supabase) {
+      logger.warn("runtime_event_fabric_skipped_supabase_missing", { eventKey: input.eventKey });
+      return null;
+    }
+    const payload = {
       organization_id: organizationId,
       event_key: input.eventKey,
       event_type: input.eventType,
       source_system: input.sourceSystem,
       target_channel: input.targetChannel,
-      status: "published",
+      status: "published" as const,
       payload: (input.payload ?? { summary: input.summary, priority: input.priority }) as Json
-    })
-    .select()
-    .single();
-  if (error) throw new Error(`Unable to publish runtime fabric event: ${error.message}`);
-  return data;
+    };
+    const { data, error } = await supabase.from("runtime_event_fabric_events").insert(payload).select().single();
+    if (error) {
+      logger.warn("runtime_event_fabric_publish_failed_non_blocking", supabaseErrorContext({
+        table: "runtime_event_fabric_events",
+        operation: "insert",
+        payload,
+        error
+      }));
+      return null;
+    }
+    return data;
+  } catch (error) {
+    logger.warn("runtime_event_fabric_publish_exception_non_blocking", {
+      eventKey: input.eventKey,
+      error: getErrorDiagnostics(error)
+    });
+    return null;
+  }
 }

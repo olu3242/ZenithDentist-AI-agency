@@ -1,8 +1,7 @@
 import { getAutonomousEngineState, runOperationalSimulation } from "@/lib/autonomous";
-import { getPortalData } from "@/lib/data/operations";
+import { analyticsProjector } from "@/lib/analytics-projector";
 import { getTenantData } from "@/lib/data/tenants";
 import type { Database, PMSProviderKey, AliceOperationalMode, Json } from "@/lib/database.types";
-import { calculatePracticeHealth } from "@/lib/health";
 import { getSupportedPMSProviders } from "@/lib/pms";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -36,7 +35,7 @@ export interface EnterpriseCloudState extends EnterpriseCloudData {
 }
 
 export async function getEnterpriseCloudState(): Promise<EnterpriseCloudState> {
-  const [tenantData, portalData] = await Promise.all([getTenantData(), getPortalData()]);
+  const [tenantData, projection] = await Promise.all([getTenantData(), analyticsProjector()]);
   const supabase = createServiceClient();
   const orgId = tenantData.tenant.organizationId ?? tenantData.organization.id;
 
@@ -68,8 +67,7 @@ export async function getEnterpriseCloudState(): Promise<EnterpriseCloudState> {
     governance: governance.data ?? []
   };
 
-  const health = calculatePracticeHealth(portalData.metrics, portalData.automationEvents, tenantData.benchmarks[0]);
-  return assembleEnterpriseState(data, health.overall);
+  return assembleEnterpriseState(data, projection.scores.platformHealth);
 }
 
 export async function getRevenueOrchestrationState() {

@@ -17,6 +17,7 @@ export type NotificationSeverity = "info" | "success" | "warning" | "critical";
 export type ReportPeriod = "weekly" | "monthly";
 export type RecommendationPriority = "low" | "medium" | "high" | "critical";
 export type OrganizationRole = "owner" | "admin" | "practice_manager" | "front_desk" | "analyst" | "executive_readonly";
+export type ProfileRole = "practice_owner" | "staff" | "agency_admin" | "super_admin";
 export type OrganizationType = "single_practice" | "multi_location" | "dso" | "enterprise";
 export type OnboardingStatus = "not_started" | "baseline" | "workflows" | "review" | "live";
 export type SubscriptionPlanKey = "starter" | "growth" | "enterprise";
@@ -64,6 +65,7 @@ export type AutomationDomainKey =
 export type AutomationCoverageStatus = "complete" | "partial" | "missing" | "risk";
 export type AutomationTraceStatus = "running" | "completed" | "failed" | "replayed";
 export type AutomationTraceStageStatus = "started" | "completed" | "failed" | "skipped";
+export type AutomationRegistryStatus = "available" | "installed" | "active" | "paused" | "disabled" | "failed" | "retired";
 export type AutomationFailureCategory =
   | "infra"
   | "auth"
@@ -99,6 +101,27 @@ export type ClientSuccessStatus = "healthy" | "watch" | "at_risk" | "expansion_r
 export interface Database {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          created_at: string;
+          updated_at: string;
+          email: string;
+          full_name: string;
+          role: ProfileRole;
+          default_organization_id: string | null;
+          email_verified_at: string | null;
+          onboarding_completed_at: string | null;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {
+          id: string;
+          email: string;
+          full_name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
+      };
       organizations: {
         Row: {
           id: string;
@@ -949,6 +972,35 @@ export interface Database {
           event_name: string;
         };
         Update: Partial<Database["public"]["Tables"]["automation_traces"]["Row"]>;
+        Relationships: [];
+      };
+      automation_registry: {
+        Row: {
+          id: string;
+          organization_id: string;
+          name: string;
+          category: string;
+          description: string;
+          trigger: string;
+          workflow_id: string;
+          runtime_id: string;
+          owner: string;
+          status: AutomationRegistryStatus;
+          version: string;
+          configuration: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["automation_registry"]["Row"]> & {
+          organization_id: string;
+          name: string;
+          category: string;
+          description: string;
+          trigger: string;
+          workflow_id: string;
+          runtime_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["automation_registry"]["Row"]>;
         Relationships: [];
       };
       automation_trace_events: {
