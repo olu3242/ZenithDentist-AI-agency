@@ -40,6 +40,19 @@ export async function triggerTreatmentFollowUp(
     },
   });
 
+  // Record execution in workflow_executions for revenue attribution
+  try {
+    const supabase = createServiceClient();
+    if (supabase) {
+      await (supabase as any).from("workflow_executions").insert({
+        organization_id: payload.organizationId,
+        workflow_id: result.correlationId ? "revenue_engine" : "revenue_engine",
+        trigger_name: "revenue_engine_trigger",
+        status: "completed",
+        execution_context: { source: "revenue_engine", correlationId: result.correlationId },
+      });
+    }
+  } catch { /* non-blocking */ }
   return { eventId: result.eventId, correlationId: result.correlationId };
 }
 
