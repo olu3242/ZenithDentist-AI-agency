@@ -9,7 +9,6 @@ Current branch:
 Branch observations:
 
 - `main` tracks `origin/main`.
-- `audit/zenith-runtime-review` tracks `origin/audit/zenith-runtime-review`.
 - `release/platform-convergence` tracks `origin/release/platform-convergence`.
 - Local `audit/zenith-runtime-review` was merged into `release/platform-convergence` and deleted.
 - `origin/claude/determined-ramanujan-BsncJ` is present remotely and already merged into `origin/main`.
