@@ -5,8 +5,10 @@ import "./globals.css";
 import { env } from "@/lib/env";
 import { AnalyticsProvider } from "@/components/providers/analytics-provider";
 import { DatabaseProvider } from "@/components/providers/database-provider";
-import { GlobalBrandProvider } from "@/providers/global-brand-provider";
+import { BrandProvider } from "@/providers/brand-provider";
 import { GlobalThemeProvider } from "@/providers/global-theme-provider";
+import { brandConfig } from "@/lib/brand";
+import { LizChatWidget } from "@/components/public/liz-chat-widget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,24 +19,24 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: "Zenith AI Automation Agency | Automate. Scale. Dominate.",
-    template: "%s | Zenith AI Automation Agency"
+    default: `${brandConfig.name} | ${brandConfig.trademark}`,
+    template: `%s | ${brandConfig.name}`
   },
   description:
     "Recover missed revenue, reduce no-shows, automate recall, and turn dental operations into a measurable revenue engine.",
   openGraph: {
-    title: "Zenith AI Automation Agency",
+    title: brandConfig.name,
     description:
       "A production-grade operational revenue intelligence platform for dental practices.",
     url: env.NEXT_PUBLIC_SITE_URL,
-    siteName: "Zenith AI Automation Agency",
+    siteName: brandConfig.name,
     images: [{ url: "/og", width: 1200, height: 630 }],
     locale: "en_US",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zenith AI Automation Agency",
+    title: brandConfig.name,
     description: "Recover missed revenue and automate dental patient operations."
   },
   alternates: {
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B1020",
+  themeColor: "#0A0F1C",
   width: "device-width",
   initialScale: 1
 };
@@ -53,12 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="font-sans antialiased">
         <DatabaseProvider>
-          <GlobalBrandProvider>
+          <BrandProvider>
             <GlobalThemeProvider>
               <AnalyticsProvider />
               {children}
+              <LizChatWidget />
             </GlobalThemeProvider>
-          </GlobalBrandProvider>
+          </BrandProvider>
         </DatabaseProvider>
         {env.NEXT_PUBLIC_GA_ID ? (
           <>

@@ -1,30 +1,38 @@
 # Production Readiness Report
 
-## Passed
+Date: 2026-06-01
 
-- TypeScript
-- ESLint
-- Production build
-- Static smoke test
-- Onboarding route and role handoff
-- Core auth form feedback
-- Core lead funnel resilience
+## Commands Run
 
-## Remaining Production Gates
+| Command | Status |
+| --- | --- |
+| `npm install` | Passed |
+| `npm run migration:validate` | Passed |
+| `npm run typecheck` | Passed |
+| `npm run lint` | Passed |
+| `npm run build` | Passed after clearing stale `.next` output |
 
-- Live Supabase E2E signup/login/onboarding test with deployed credentials.
-- API route authorization hardening across every non-public API.
-- Durable rate limiting.
-- Full replacement of generated/fallback dashboard data with live-only datasets where required.
+Remote Supabase validation could not run because this workspace is not linked to a Supabase project.
 
-## Scores
+## Fixes Implemented
 
-- Platform Activation Score: 78/100
-- Frontend-Backend Connectivity Score: 82/100
-- Workflow OS Readiness Score: 74/100
-- Runtime OS Readiness Score: 80/100
-- ALICE Readiness Score: 76/100
-- Mission Control Readiness Score: 84/100
-- Production Readiness Score: 81/100
+- Added core tenancy repair migration.
+- Updated migration manifest.
+- Updated generated database types.
+- Added onboarding schema-cache recovery guidance.
+- Fixed tenant-scoped dashboard data loading.
+- Fixed runtime dead-letter tenant filtering.
+- Confirmed Next.js 15 dynamic API route compatibility.
+- Kept CTA assessment funnel aligned.
 
-Recommendation: GO for onboarding recovery and core platform activation; NO-GO for the stricter “no mocks anywhere” enterprise bar until the remaining mutation APIs and live-only dashboards are completed.
+## Deployment Requirements
+
+1. Link this workspace to the Supabase project.
+2. Apply `20260616000000_core_tenancy_repair.sql`.
+3. Refresh Supabase/PostgREST schema cache.
+4. Redeploy the Next.js app.
+5. Run signup/onboarding smoke test.
+
+## Final Status
+
+Application build is deployable. Database deployment is blocked until the Supabase project is linked and the repair migration is applied.

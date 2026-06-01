@@ -3,8 +3,10 @@ import { Bell, ChevronDown, LogOut, UserCircle } from "lucide-react";
 import { getDefaultPortalForRole, roleLabel, type ZenithRole } from "@/lib/auth-routing";
 import { navForRole } from "@/lib/navigation";
 import type { Organization, Location } from "@/lib/data/tenants";
-import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
 import { brandConfig } from "@/lib/brand";
+import { logoutAction } from "@/app/auth-actions";
+import { OfflineState } from "@/components/ui/canonical";
 
 export function AppShell({
   role,
@@ -25,7 +27,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-paper lg:grid lg:grid-cols-[280px_1fr]">
       <aside className="border-r border-white/10 bg-ink p-5 text-white lg:min-h-screen">
-        <GlobalBrandLogo href={defaultPortal} subtitle={roleLabel(role)} mutedClassName="text-white/55" />
+        <ZenithLogo href={defaultPortal} subtitle={roleLabel(role)} mutedClassName="text-white/55" textClassName="text-white" />
 
         <div className="mt-6 rounded border border-white/10 bg-white/8 p-3">
           <p className="text-xs font-black uppercase tracking-wider text-white/45">Organization</p>
@@ -47,6 +49,7 @@ export function AppShell({
       </aside>
 
       <div className="min-w-0">
+        <OfflineState />
         <header className="sticky top-0 z-30 border-b border-line bg-white/95 px-5 py-3 backdrop-blur lg:px-8">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -73,10 +76,12 @@ export function AppShell({
                   <Link href="/settings" className="mt-3 flex items-center gap-2 rounded bg-paper px-3 py-2 text-sm font-bold text-ink">
                     Settings
                   </Link>
-                  <Link href="/?logout=manual" className="mt-2 flex items-center gap-2 rounded bg-paper px-3 py-2 text-sm font-bold text-muted">
-                    <LogOut className="h-4 w-4" />
-                    Sign out
-                  </Link>
+                  <form action={logoutAction}>
+                    <button type="submit" className="mt-2 flex w-full items-center gap-2 rounded bg-paper px-3 py-2 text-left text-sm font-bold text-muted">
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
+                  </form>
                 </div>
               </details>
             </div>

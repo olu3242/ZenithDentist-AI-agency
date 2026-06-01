@@ -1,4 +1,4 @@
-import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
 
 export function AuthCard({
   title,
@@ -14,7 +14,7 @@ export function AuthCard({
   return (
     <main className="min-h-screen bg-paper px-5 py-16">
       <div className="mx-auto max-w-lg rounded border border-line bg-white p-6 shadow-sm">
-        <GlobalBrandLogo />
+        <ZenithLogo />
         <div className="mt-8">
           <p className="text-xs font-black uppercase tracking-wider text-teal">Secure access</p>
           <h1 className="mt-2 text-3xl font-black text-ink">{title}</h1>

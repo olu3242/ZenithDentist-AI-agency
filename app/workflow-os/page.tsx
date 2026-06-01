@@ -19,7 +19,7 @@ export default async function WorkflowOSPage() {
     <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
       <div className="space-y-6">
         <header>
-          <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith Workflow OS</p>
+          <p className="brand-kicker">Zenith PROS Workflow OS</p>
           <h1 className="mt-2 text-4xl font-black text-ink">Workflow OS</h1>
           <p className="mt-2 max-w-3xl text-base font-semibold text-muted">
             Registered dental automations, execution analytics, replay posture, SLA pressure, and workflow health.

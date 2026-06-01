@@ -4,13 +4,14 @@ import { RevenueDashboard } from "@/components/admin/revenue-dashboard";
 import { CRMTable } from "@/components/admin/crm-table";
 import { LeadStatusBadge } from "@/components/admin/lead-status-badge";
 import { AdminShellNote } from "@/components/admin/admin-shell-note";
+import { AdminHeader } from "@/components/admin/admin-header";
 import { getAdminDashboardData } from "@/lib/data/leads";
 
 export default async function AdminPage() {
   const data = await getAdminDashboardData();
   return (
     <div className="space-y-6">
-      <Header title="Revenue Command Center" subtitle="Operational CRM, funnel analytics, and revenue intelligence in one view." />
+      <AdminHeader title="Revenue Command Center" subtitle="Operational CRM, funnel analytics, and revenue intelligence in one view." />
       <AdminShellNote />
       <RevenueDashboard {...data} />
       <LeadPipeline leads={data.leads} bookings={data.bookings} />
@@ -26,15 +27,5 @@ export default async function AdminPage() {
         ])}
       />
     </div>
-  );
-}
-
-export function Header({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <header>
-      <p className="text-xs font-black uppercase tracking-wider text-teal">Zenith operations</p>
-      <h1 className="mt-2 text-4xl font-black">{title}</h1>
-      <p className="mt-2 max-w-3xl text-muted">{subtitle}</p>
-    </header>
   );
 }

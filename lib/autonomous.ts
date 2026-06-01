@@ -89,5 +89,6 @@ function playbook(
 }
 
 export function toJson(value: unknown): Json {
-  return JSON.parse(JSON.stringify(value)) as Json;
+  const serialized = JSON.stringify(value);
+  return JSON.parse(serialized) as Json;
 }

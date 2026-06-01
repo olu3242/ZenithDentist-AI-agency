@@ -1,0 +1,25 @@
+-- Patient Revenue Operating System (PROS)
+-- Canonical migration governance baseline.
+--
+-- Purpose:
+--   This migration marks the governance transition from legacy mixed migration
+--   numbering to the required timestamp-only sequence:
+--
+--     YYYYMMDDHHMMSS_description.sql
+--
+-- Policy:
+--   - Historical migrations before this file are frozen legacy history.
+--   - This baseline must never be edited after release.
+--   - Future schema changes must be additive forward migrations with a newer
+--     timestamp and a matching entry in supabase/MIGRATION_MANIFEST.md.
+--   - This file intentionally does not create product tables, alter runtime
+--     behavior, or introduce a new platform layer.
+--
+-- Replay:
+--   A production replay must apply the frozen historical migrations, this
+--   baseline marker, and then all newer forward migrations in timestamp order.
+--
+-- Rollback:
+--   No rollback is required for this no-op baseline marker.
+
+select '20260615000000_canonical_baseline' as migration_governance_baseline;

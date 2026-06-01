@@ -14,14 +14,21 @@ export type AutomationRegistryRecord = Database["public"]["Tables"]["automation_
 export const dentalAutomationLibrary = [
   { workflowId: "recall_due", category: "Patient Recall", pack: "Recall Automation" },
   { workflowId: "review_request_due", category: "Review Generation", pack: "Review Automation" },
+  { workflowId: "referral_growth", category: "Referral Growth", pack: "Referral Growth Automation" },
   { workflowId: "appointment_no_show", category: "Missed Appointment Recovery", pack: "Missed Appointment Automation" },
   { workflowId: "reactivation_candidate_detected", category: "Reactivate Dormant Patients", pack: "Patient Reactivation" },
+  { workflowId: "treatment_recovery", category: "Treatment Recovery", pack: "Treatment Recovery Automation" },
   { workflowId: "stale_patient_detected", category: "Treatment Plan Follow-Up", pack: "Treatment Follow-Up" },
+  { workflowId: "schedule_gap_fill", category: "Schedule Optimization", pack: "Schedule Gap Fill Automation" },
+  { workflowId: "recall_capacity_optimization", category: "Capacity Balancing", pack: "Recall Capacity Optimization" },
   { workflowId: "lead_created", category: "Lead Follow-Up", pack: "Lead Follow-Up" },
   { workflowId: "missed_call_detected", category: "Staff Notifications", pack: "Staff Notifications" },
   { workflowId: "unpaid_invoice_detected", category: "Insurance Verification", pack: "Insurance Follow-Up" },
   { workflowId: "failed_payment_detected", category: "Internal Operations", pack: "Membership Plan Nurture" },
-  { workflowId: "ai_followup_required", category: "Internal Operations", pack: "Post Treatment Check-In" }
+  { workflowId: "ai_followup_required", category: "Internal Operations", pack: "Post Treatment Check-In" },
+  { workflowId: "alice_revenue_opportunity_agent", category: "AI", pack: "Revenue Opportunity Agent" },
+  { workflowId: "alice_practice_health_agent", category: "AI", pack: "Practice Health Agent" },
+  { workflowId: "alice_growth_agent", category: "AI", pack: "Growth Agent" }
 ] as const;
 
 export interface AutomationPerformance {

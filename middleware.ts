@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
     return applySecurityHeaders(NextResponse.json({ error: "Too many requests." }, { status: 429 }));
   }
 
-  if (!isProtectedPath(pathname) && !pathname.startsWith("/api/mission-control") && !pathname.startsWith("/api/gtm-command-center")) {
+  if (!isProtectedPath(pathname) && !isProtectedApiPath(pathname)) {
     return applySecurityHeaders(NextResponse.next());
   }
 
@@ -68,6 +68,18 @@ export function middleware(request: NextRequest) {
   return failedAuthResponse(request);
 }
 
+function isProtectedApiPath(pathname: string) {
+  return [
+    "/api/alice",
+    "/api/autonomous",
+    "/api/enterprise",
+    "/api/gtm-command-center",
+    "/api/mission-control",
+    "/api/opendental",
+    "/api/reports"
+  ].some(prefix => pathname.startsWith(prefix));
+}
+
 function logAuthDecision(
   request: NextRequest,
   details: { userId: string | null; profileRole: string | null; organizationId: string | null; redirectTarget: string | null }
@@ -96,6 +108,11 @@ export const config = {
     "/onboarding/:path*",
     "/api/mission-control/:path*",
     "/api/gtm-command-center/:path*",
+    "/api/alice/:path*",
+    "/api/autonomous/:path*",
+    "/api/enterprise/:path*",
+    "/api/opendental/:path*",
+    "/api/reports/:path*",
     "/lead-operations/:path*",
     "/client-operations/:path*",
     "/gtm-command-center/:path*"

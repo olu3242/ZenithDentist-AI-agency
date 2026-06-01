@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { brandConfig } from "@/lib/brand";
-import { cn } from "@/lib/utils";
-import { GlobalBrandIcon } from "@/components/branding/GlobalBrandIcon";
-import { GlobalBrandWordmark } from "@/components/branding/GlobalBrandWordmark";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
 
 export function GlobalBrandLogo({
   href = "/",
@@ -21,22 +18,15 @@ export function GlobalBrandLogo({
   mutedClassName?: string;
   iconOnly?: boolean;
 }) {
-  const content = (
-    <>
-      <GlobalBrandIcon className={markClassName} />
-      {iconOnly ? null : (
-        <GlobalBrandWordmark
-          subtitle={subtitle}
-          textClassName={textClassName}
-          mutedClassName={mutedClassName}
-        />
-      )}
-    </>
-  );
-
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-3", className)} aria-label={`${brandConfig.name} home`}>
-      {content}
-    </Link>
+    <ZenithLogo
+      href={href}
+      subtitle={subtitle}
+      className={className}
+      markClassName={markClassName}
+      textClassName={textClassName}
+      mutedClassName={mutedClassName}
+      iconOnly={iconOnly}
+    />
   );
 }

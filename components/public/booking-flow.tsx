@@ -23,7 +23,7 @@ export function BookingFlow({
     >
       <a href={calendlyUrl} target="_blank" rel="noreferrer">
         <CalendarCheck className="h-4 w-4" />
-        Book Recovery Audit
+        Schedule Strategy Session
       </a>
     </Button>
   );

@@ -1,5 +1,5 @@
 import { CRMTable } from "@/components/admin/crm-table";
-import { Header } from "@/app/admin/page";
+import { AdminHeader } from "@/components/admin/admin-header";
 import { getAdminDashboardData } from "@/lib/data/leads";
 import { formatCurrency } from "@/lib/utils";
 
@@ -7,7 +7,7 @@ export default async function AdminRoiPage() {
   const { roiCalculations } = await getAdminDashboardData();
   return (
     <div className="space-y-6">
-      <Header title="ROI Intelligence" subtitle="Persisted revenue projections from the public audit funnel." />
+      <AdminHeader title="ROI Intelligence" subtitle="Persisted revenue projections from the public audit funnel." />
       <CRMTable
         columns={["Lead", "Chairs", "Monthly appts", "No-show", "Monthly loss", "Recoverable"]}
         rows={roiCalculations.map(roi => [

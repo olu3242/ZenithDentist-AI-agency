@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Activity, Building2, Gauge, LineChart, Wallet, Brain, ClipboardList, GitBranch, ShieldCheck, CloudCog, DatabaseZap, PlugZap, RadioTower, History, Target, ShieldAlert, Network, TrendingUp, ListChecks } from "lucide-react";
-import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
 
 const nav = [
   { href: "/internal/mission-control", label: "Mission Control", icon: RadioTower },
@@ -33,7 +33,7 @@ const nav = [
 export function InternalSidebar() {
   return (
     <aside className="border-r border-white/10 bg-ink p-5 text-white lg:min-h-screen">
-      <GlobalBrandLogo href="/internal/organizations" subtitle="Platform operations" mutedClassName="text-white/55" />
+      <ZenithLogo href="/internal/organizations" subtitle="Internal Tools" mutedClassName="text-white/55" textClassName="text-white" />
       <nav className="mt-8 grid gap-2">
         {nav.map(item => (
           <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded px-3 py-2 text-sm font-bold text-white/72 hover:bg-white/10 hover:text-white">

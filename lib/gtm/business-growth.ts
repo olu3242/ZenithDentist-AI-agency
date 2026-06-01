@@ -180,7 +180,7 @@ export async function getBusinessGrowthState() {
           status: lead.status
         }),
         angle: Number(lead.no_show_rate ?? 0) > 10 ? "Lead with reduce no-shows and recover revenue." : "Lead with patient retention and operational efficiency.",
-        nextAction: lead.status === "booked" ? "Prepare discovery call brief." : "Send operational revenue audit."
+        nextAction: lead.status === "booked" ? "Prepare discovery call brief." : "Send FREE Revenue Opportunity Assessment."
       };
     }),
     discoveryFramework: [
@@ -258,7 +258,7 @@ export async function createGtmProspect(input: {
     lead_score: leadScore,
     estimated_monthly_opportunity: input.estimatedMonthlyOpportunity ?? 0,
     personalization_notes: input.personalizationNotes ?? null,
-    next_action: "Send operational revenue audit."
+    next_action: "Send FREE Revenue Opportunity Assessment."
   }).select().single();
 
   if (error) {
@@ -320,7 +320,7 @@ export async function createOperationalRevenueAudit(input: {
 
   if (error) {
     await failRuntimeTrace(trace, error.message, { stage: "gtm_audit_insert" });
-    throw new Error("Unable to create operational revenue audit.");
+    throw new Error("Unable to create FREE Revenue Opportunity Assessment.");
   }
   await updateGtmProspectStage({ prospectId: input.prospectId, stage: "loom_audit_delivered" });
   await completeRuntimeTrace(trace);
@@ -416,7 +416,7 @@ function buildAuditState(audits: GtmAudit[]) {
 
 function stageToNextAction(stage: GtmPipelineStage) {
   const actions: Record<GtmPipelineStage, string> = {
-    prospect_identified: "Prepare operational revenue audit.",
+    prospect_identified: "Prepare FREE Revenue Opportunity Assessment.",
     outreach_sent: "Send first follow-up with revenue leakage angle.",
     loom_audit_delivered: "Invite practice owner to discovery.",
     discovery_booked: "Prepare discovery brief.",

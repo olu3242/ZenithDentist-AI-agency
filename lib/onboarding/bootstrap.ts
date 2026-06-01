@@ -3,11 +3,13 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createServerAuthClient, createServiceClient } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
+import { getSupabaseRestUrl } from "@/lib/external-diagnostics";
 import { getDefaultPortalForRole, type ZenithRole } from "@/lib/auth-routing";
 import type { Database, Json, OrganizationRole } from "@/lib/database.types";
 import { logger } from "@/lib/logger";
 
 type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
 export interface BootstrapInput {
   email: string;
@@ -24,6 +26,15 @@ export interface BootstrapResult {
   role?: ZenithRole;
   userId?: string;
   organizationId?: string;
+}
+
+interface AuthRecoveryAudit {
+  authUserExists: boolean;
+  profileExists: boolean;
+  organizationExists: boolean;
+  membershipExists: boolean;
+  onboardingCompleted: boolean;
+  selfHealed: string[];
 }
 
 export interface OnboardingContext {
@@ -70,7 +81,7 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
   if (!supabase) {
     return {
       ok: false,
-      message: "Supabase service credentials are required before account bootstrap can run."
+      message: "A Supabase service_role key is required before account bootstrap can run."
     };
   }
 
@@ -81,12 +92,69 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
 
   const { data: existingProfile } = await supabase
     .from("profiles")
-    .select("id, default_organization_id")
+    .select("id, email, full_name, role, default_organization_id, onboarding_completed_at")
     .eq("email", input.email)
     .maybeSingle();
 
-  let userId = existingProfile?.id;
+  const existingAuthUser = await findAuthUserByEmail(input.email);
+  let userId = existingProfile?.id ?? existingAuthUser?.id;
+
+  if (userId) {
+    const signIn = await signInExistingEmail(input.email, input.password);
+    userId = signIn.userId ?? userId;
+    const recovered = await recoverAuthAccount({
+      userId,
+      email: input.email,
+      fullName: input.fullName,
+      role,
+      organizationName,
+      organizationSlug,
+      allowSession: Boolean(signIn.ok)
+    });
+    if (!recovered.ok) return recovered;
+
+    logger.info("auth_existing_email_recovered", {
+      email: input.email,
+      userId,
+      signedIn: signIn.ok,
+      audit: recovered.audit
+    });
+
+    if (!signIn.ok) {
+      return {
+        ok: true,
+        message: "This email is already registered. Log in or reset your password to continue.",
+        redirectTo: `/login?reason=existing-email&email=${encodeURIComponent(input.email)}`
+      };
+    }
+
+    return {
+      ok: true,
+      message: recovered.audit.onboardingCompleted ? "Existing account resolved." : "Existing account recovered. Resume onboarding.",
+      redirectTo: recovered.redirectTo,
+      role: recovered.role,
+      userId: recovered.userId,
+      organizationId: recovered.organizationId
+    };
+  }
+
   if (!userId) {
+    logger.info("platform_admin_create_user_request", {
+      provider: "supabase",
+      function: "bootstrapUser",
+      url: `${getSupabaseRestUrl().replace("/rest/v1/", "")}/auth/v1/admin/users`,
+      method: "POST",
+      headers: {
+        apikeyLoaded: true,
+        authorizationLoaded: true
+      },
+      payload: {
+        email: input.email,
+        passwordLength: input.password.length,
+        email_confirm: true,
+        role
+      }
+    });
     const created = await supabase.auth.admin.createUser({
       email: input.email,
       password: input.password,
@@ -97,6 +165,45 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
       }
     });
     if (created.error || !created.data.user) {
+      if (isDuplicateEmailError(created.error?.message)) {
+        const duplicateAuthUser = await findAuthUserByEmail(input.email);
+        if (duplicateAuthUser?.id) {
+          const recovered = await recoverAuthAccount({
+            userId: duplicateAuthUser.id,
+            email: input.email,
+            fullName: input.fullName,
+            role,
+            organizationName,
+            organizationSlug,
+            allowSession: false
+          });
+          if (!recovered.ok) return recovered;
+          logger.info("auth_duplicate_email_self_healed", {
+            email: input.email,
+            userId: duplicateAuthUser.id,
+            audit: recovered.audit
+          });
+          return {
+            ok: true,
+            message: "This email is already registered. Log in or reset your password to continue.",
+            redirectTo: `/login?reason=existing-email&email=${encodeURIComponent(input.email)}`
+          };
+        }
+      }
+      logger.warn("platform_admin_create_user_failed", {
+        provider: "supabase",
+        function: "bootstrapUser",
+        url: `${getSupabaseRestUrl().replace("/rest/v1/", "")}/auth/v1/admin/users`,
+        method: "POST",
+        status: created.error?.status,
+        responseBody: created.error?.message ?? "missing_user",
+        requestPayload: {
+          email: input.email,
+          passwordLength: input.password.length,
+          email_confirm: true,
+          role
+        }
+      });
       return {
         ok: false,
         message: created.error?.message ?? "Unable to create Supabase auth user."
@@ -173,7 +280,7 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
 export async function loginBootstrapUser(email: string, password: string): Promise<BootstrapResult> {
   const supabase = createServiceClient();
   if (!supabase) {
-    return { ok: false, message: "Supabase service credentials are required before login can resolve a profile." };
+    return { ok: false, message: "A Supabase service_role key is required before login can resolve a profile." };
   }
 
   const authClient = createServerAuthClient();
@@ -190,29 +297,222 @@ export async function loginBootstrapUser(email: string, password: string): Promi
     return { ok: false, message: "Authentication failed. Check your email and password." };
   }
 
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("id, role, default_organization_id, onboarding_completed_at")
-    .eq("id", auth.data.user.id)
-    .maybeSingle();
+  return resolveAuthenticatedBootstrapUser(auth.data.user.id);
+}
 
-  if (error || !profile) {
-    return { ok: false, message: "No Zenith profile exists for that email yet. Create an account first." };
+export async function resolveAuthenticatedBootstrapUser(userId: string): Promise<BootstrapResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { ok: false, message: "A Supabase service_role key is required before login can resolve a profile." };
   }
 
-  await setBootstrapCookies({
-    role: profile.role,
-    userId: profile.id,
-    organizationId: profile.default_organization_id ?? ""
+  const authUser = await supabase.auth.admin.getUserById(userId);
+  const email = authUser.data.user?.email?.toLowerCase();
+  const fullName = getAuthFullName(authUser.data.user?.user_metadata);
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("id, email, full_name, role, default_organization_id, onboarding_completed_at")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error) {
+    return { ok: false, message: `Unable to resolve profile: ${error.message}` };
+  }
+  if (!email && !profile?.email) {
+    return { ok: false, message: "Unable to resolve the account email. Contact support or try signing in again." };
+  }
+
+  const role = profile?.role ?? "practice_owner";
+  const organizationName = profile?.default_organization_id
+    ? "Recovered Zenith Organization"
+    : "Recovered Zenith Organization";
+  const recovered = await recoverAuthAccount({
+    userId,
+    email: profile?.email ?? email!,
+    fullName: profile?.full_name ?? fullName ?? "Zenith User",
+    role,
+    organizationName,
+    organizationSlug: `recovered-${userId.slice(0, 8)}`,
+    allowSession: true,
+    existingProfile: profile
+  });
+
+  if (!recovered.ok) return recovered;
+
+  logger.info("auth_login_recovery_audit", {
+    userId,
+    audit: recovered.audit
   });
 
   return {
     ok: true,
     message: "Login scaffold resolved your Zenith profile.",
-    redirectTo: profile.onboarding_completed_at ? getDefaultPortalForRole(profile.role) : "/onboarding",
-    role: profile.role,
-    userId: profile.id,
-    organizationId: profile.default_organization_id ?? undefined
+    redirectTo: recovered.redirectTo,
+    role: recovered.role,
+    userId: recovered.userId,
+    organizationId: recovered.organizationId
+  };
+}
+
+async function recoverAuthAccount(input: {
+  userId: string;
+  email: string;
+  fullName: string;
+  role: ZenithRole;
+  organizationName: string;
+  organizationSlug: string;
+  allowSession: boolean;
+  existingProfile?: Pick<ProfileRow, "id" | "email" | "full_name" | "role" | "default_organization_id" | "onboarding_completed_at"> | null;
+}): Promise<BootstrapResult & { audit: AuthRecoveryAudit }> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return {
+      ok: false,
+      message: "Supabase service client unavailable.",
+      audit: emptyRecoveryAudit(false)
+    };
+  }
+
+  const selfHealed: string[] = [];
+  const profile = input.existingProfile ?? (await supabase
+    .from("profiles")
+    .select("id, email, full_name, role, default_organization_id, onboarding_completed_at")
+    .eq("id", input.userId)
+    .maybeSingle()).data;
+
+  let organizationId = profile?.default_organization_id ?? null;
+  let organizationExists = false;
+  if (organizationId) {
+    const { data: existingOrg } = await supabase.from("organizations").select("id").eq("id", organizationId).maybeSingle();
+    organizationExists = Boolean(existingOrg?.id);
+  }
+
+  if (!organizationExists) {
+    const organization = await ensureOrganization(input.organizationName, input.organizationSlug, false);
+    if (!organization.ok) {
+      return {
+        ...organization,
+        audit: {
+          authUserExists: true,
+          profileExists: Boolean(profile),
+          organizationExists: false,
+          membershipExists: false,
+          onboardingCompleted: Boolean(profile?.onboarding_completed_at),
+          selfHealed
+        }
+      };
+    }
+    organizationId = organization.organizationId;
+    organizationExists = true;
+    selfHealed.push("organization");
+  }
+
+  const recoveredRole: ZenithRole = profile?.role ?? input.role;
+  const profilePayload: ProfileInsert = {
+    id: input.userId,
+    email: input.email,
+    full_name: input.fullName || profile?.full_name || "Zenith User",
+    role: recoveredRole,
+    default_organization_id: organizationId,
+    email_verified_at: new Date().toISOString(),
+    metadata: {
+      recovered_from_existing_auth_user: true,
+      recovered_at: new Date().toISOString()
+    } as Json
+  };
+
+  const { error: profileError } = await supabase.from("profiles").upsert(profilePayload);
+  if (profileError) {
+    return {
+      ok: false,
+      message: `Unable to self-heal profile: ${profileError.message}`,
+      audit: {
+        authUserExists: true,
+        profileExists: Boolean(profile),
+        organizationExists,
+        membershipExists: false,
+        onboardingCompleted: Boolean(profile?.onboarding_completed_at),
+        selfHealed
+      }
+    };
+  }
+  if (!profile) selfHealed.push("profile");
+  if (profile && !profile.default_organization_id) selfHealed.push("profile.default_organization_id");
+
+  const { data: existingMember } = await supabase
+    .from("organization_members")
+    .select("id")
+    .eq("organization_id", organizationId!)
+    .eq("user_id", input.userId)
+    .maybeSingle();
+
+  const memberPayload = {
+    organization_id: organizationId!,
+    user_id: input.userId,
+    role: organizationRoleForProfile(recoveredRole),
+    permissions: { platform_role: recoveredRole, recovered: true } as Json,
+    accepted_at: new Date().toISOString()
+  };
+
+  const { error: memberError } = existingMember?.id
+    ? await supabase.from("organization_members").update(memberPayload).eq("id", existingMember.id)
+    : await supabase.from("organization_members").insert(memberPayload);
+  if (memberError) {
+    return {
+      ok: false,
+      message: `Unable to self-heal organization membership: ${memberError.message}`,
+      audit: {
+        authUserExists: true,
+        profileExists: true,
+        organizationExists,
+        membershipExists: Boolean(existingMember?.id),
+        onboardingCompleted: Boolean(profile?.onboarding_completed_at),
+        selfHealed
+      }
+    };
+  }
+  if (!existingMember?.id) selfHealed.push("organization_members");
+
+  const onboardingCompleted = Boolean(profile?.onboarding_completed_at);
+  if (!onboardingCompleted) {
+    await ensureOnboardingRun({
+      organizationId: organizationId!,
+      userId: input.userId,
+      role: recoveredRole,
+      status: "in_progress",
+      currentStep: "auth_recovery",
+      progress: 40,
+      event: "auth_recovery_completed"
+    });
+    selfHealed.push("tenant_onboarding_runs");
+  }
+
+  if (input.allowSession) {
+    await setBootstrapCookies({
+      role: recoveredRole,
+      userId: input.userId,
+      organizationId: organizationId!
+    });
+  }
+
+  const redirectTo = onboardingCompleted ? getDefaultPortalForRole(recoveredRole) : "/onboarding";
+
+  return {
+    ok: true,
+    message: onboardingCompleted ? "Existing account recovered." : "Existing account recovered. Resume onboarding.",
+    redirectTo,
+    role: recoveredRole,
+    userId: input.userId,
+    organizationId: organizationId!,
+    audit: {
+      authUserExists: true,
+      profileExists: true,
+      organizationExists,
+      membershipExists: true,
+      onboardingCompleted,
+      selfHealed
+    }
   };
 }
 
@@ -281,7 +581,7 @@ export async function completeOnboarding(): Promise<BootstrapResult> {
 
   const supabase = createServiceClient();
   if (!supabase) {
-    return { ok: false, message: "Supabase service credentials are required to complete onboarding." };
+    return { ok: false, message: "A Supabase service_role key is required to complete onboarding." };
   }
 
   const completedAt = new Date().toISOString();
@@ -365,7 +665,11 @@ async function ensureOrganization(name: string, slug: string, defaultOrganizatio
     .single();
 
   if (error || !data) {
-    return { ok: false, message: `Unable to create organization: ${error?.message ?? "unknown"}`, organizationId: "" };
+    const schemaCacheRecovery = error?.message?.includes("schema cache") || error?.code === "PGRST205";
+    const recoveryHint = schemaCacheRecovery
+      ? " Apply migration 20260616000000_core_tenancy_repair.sql, then refresh the Supabase schema cache."
+      : "";
+    return { ok: false, message: `Unable to create organization: ${error?.message ?? "unknown"}.${recoveryHint}`, organizationId: "" };
   }
 
   return { ok: true, message: "Organization created.", organizationId: data.id };
@@ -422,7 +726,7 @@ function organizationRoleForProfile(role: ZenithRole): OrganizationRole {
   return "admin";
 }
 
-async function setBootstrapCookies(input: { role: ZenithRole; userId: string; organizationId: string }) {
+export async function setBootstrapCookies(input: { role: ZenithRole; userId: string; organizationId: string }) {
   const cookieStore = await cookies();
   cookieStore.set("zenith_role", input.role, { path: "/", sameSite: "lax", httpOnly: true });
   cookieStore.set("zenith_user_id", input.userId, { path: "/", sameSite: "lax", httpOnly: true });
@@ -440,6 +744,82 @@ async function setBootstrapCookies(input: { role: ZenithRole; userId: string; or
       : "zenith_portal_token";
 
   if (token) cookieStore.set(cookieName, token, { path: "/", sameSite: "lax", httpOnly: true });
+}
+
+export async function clearBootstrapCookies() {
+  const cookieStore = await cookies();
+  [
+    "zenith_role",
+    "zenith_user_id",
+    "zenith_organization_id",
+    "zenith_internal_token",
+    "zenith_admin_token",
+    "zenith_portal_token"
+  ].forEach(name => {
+    cookieStore.set(name, "", { path: "/", maxAge: 0, sameSite: "lax", httpOnly: true });
+  });
+}
+
+async function signInExistingEmail(email: string, password: string) {
+  const authClient = createServerAuthClient();
+  if (!authClient || !password) return { ok: false, userId: undefined };
+
+  const result = await authClient.auth.signInWithPassword({ email, password });
+  if (result.error || !result.data.user) {
+    return { ok: false, userId: undefined };
+  }
+
+  return { ok: true, userId: result.data.user.id };
+}
+
+async function findAuthUserByEmail(email: string) {
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+
+  const normalized = email.trim().toLowerCase();
+  let page = 1;
+  const perPage = 100;
+
+  while (page <= 10) {
+    const result = await supabase.auth.admin.listUsers({ page, perPage });
+    if (result.error) {
+      logger.warn("auth_user_lookup_failed", {
+        email: normalized,
+        page,
+        error: result.error.message
+      });
+      return null;
+    }
+
+    const match = result.data.users.find(user => user.email?.toLowerCase() === normalized);
+    if (match) return match;
+    if (result.data.users.length < perPage) return null;
+    page += 1;
+  }
+
+  logger.warn("auth_user_lookup_page_limit_reached", { email: normalized });
+  return null;
+}
+
+function isDuplicateEmailError(message: string | undefined) {
+  return Boolean(message?.toLowerCase().includes("already") && message.toLowerCase().includes("registered"));
+}
+
+function getAuthFullName(metadata: unknown) {
+  if (!metadata || typeof metadata !== "object") return null;
+  const value = (metadata as Record<string, unknown>).full_name ?? (metadata as Record<string, unknown>).name;
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function emptyRecoveryAudit(authUserExists: boolean): AuthRecoveryAudit {
+  return {
+    authUserExists,
+    profileExists: false,
+    organizationExists: false,
+    membershipExists: false,
+    onboardingCompleted: false,
+    selfHealed: []
+  };
 }
 
 function slugify(value: string) {

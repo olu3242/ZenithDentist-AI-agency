@@ -42,13 +42,22 @@ export async function getRuntimeHealthState(): Promise<RuntimeHealthState> {
   const supabase = createServiceClient();
   if (!supabase) return emptyRuntimeHealthState(organizationId);
 
-  const [traces, deadLetters] = await Promise.all([
-    supabase.from("automation_traces").select("*").eq("organization_id", organizationId).order("started_at", { ascending: false }).limit(200),
-    supabase.from("automation_dead_letters").select("*").order("created_at", { ascending: false }).limit(100)
-  ]);
-
+  const traces = await supabase
+    .from("automation_traces")
+    .select("*")
+    .eq("organization_id", organizationId)
+    .order("started_at", { ascending: false })
+    .limit(200);
   const orgTraces = traces.data ?? [];
   const traceIds = new Set(orgTraces.map(trace => trace.trace_id));
+  const deadLetters = traceIds.size
+    ? await supabase
+        .from("automation_dead_letters")
+        .select("*")
+        .in("trace_id", [...traceIds])
+        .order("created_at", { ascending: false })
+        .limit(100)
+    : { data: [] };
   const orgDeadLetters = (deadLetters.data ?? []).filter(letter => traceIds.has(letter.trace_id));
   return calculateRuntimeHealth(organizationId, orgTraces, orgDeadLetters);
 }

@@ -4,6 +4,7 @@ import { getUnauthorizedRedirectPath } from "@/lib/auth-routing";
 const memoryBuckets = new Map<string, { count: number; resetAt: number }>();
 
 export function applySecurityHeaders(response: NextResponse) {
+  response.headers.set("x-zenith-app-response", "true");
   response.headers.set("x-content-type-options", "nosniff");
   response.headers.set("x-frame-options", "DENY");
   response.headers.set("referrer-policy", "strict-origin-when-cross-origin");

@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { getTenantData } from "@/lib/data/tenants";
 import type { Database } from "@/lib/database.types";
 
 export type AutomationEvent = Database["public"]["Tables"]["automation_events"]["Row"];
@@ -20,14 +21,16 @@ export interface PortalData {
 export async function getPortalData(): Promise<PortalData> {
   const supabase = createServiceClient();
   if (!supabase) return emptyPortalData();
+  const tenantData = await getTenantData();
+  const organizationId = tenantData.tenant.organizationId ?? tenantData.organization.id;
 
   const [metrics, automationEvents, insights, recommendations, reports, notifications] = await Promise.all([
-    supabase.from("operational_metrics").select("*").order("metric_date", { ascending: false }).limit(90),
-    supabase.from("automation_events").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("insight_snapshots").select("*").order("created_at", { ascending: false }).limit(30),
-    supabase.from("recommendations").select("*").order("created_at", { ascending: false }).limit(30),
-    supabase.from("reports").select("*").order("generated_at", { ascending: false }).limit(24),
-    supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(50)
+    supabase.from("operational_metrics").select("*").eq("organization_id", organizationId).order("metric_date", { ascending: false }).limit(90),
+    supabase.from("automation_events").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(100),
+    supabase.from("insight_snapshots").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(30),
+    supabase.from("recommendations").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(30),
+    supabase.from("reports").select("*").eq("organization_id", organizationId).order("generated_at", { ascending: false }).limit(24),
+    supabase.from("notifications").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(50)
   ]);
 
   const data = {

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { CheckCircle2, Circle, ShieldCheck } from "lucide-react";
 import { AuthError } from "@/components/auth/auth-card";
-import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
 import { OnboardingCompletionForm } from "@/components/onboarding/onboarding-completion-form";
 import { getOnboardingContext } from "@/lib/onboarding/bootstrap";
 
@@ -23,11 +23,11 @@ export default async function OnboardingPage({ searchParams }: { searchParams?: 
   return (
     <main className="min-h-screen bg-background px-5 py-10">
       <div className="mx-auto max-w-5xl">
-        <GlobalBrandLogo />
+        <ZenithLogo />
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded border border-border bg-card p-6 shadow-soft">
-            <p className="text-xs font-black uppercase tracking-wider text-primary">Onboarding workspace</p>
-            <h1 className="mt-3 text-4xl font-black text-foreground">Finish activating Zenith</h1>
+            <p className="text-xs font-black uppercase tracking-wider text-primary">PROS installation workflow</p>
+            <h1 className="mt-3 text-4xl font-black text-foreground">Finish activating Zenith PROS</h1>
             <p className="mt-3 text-base font-semibold leading-7 text-muted">
               Confirm the records created during signup, synchronize onboarding state, and hand off to the correct role-based portal.
             </p>

@@ -29,6 +29,7 @@ import {
   Store
 } from "lucide-react";
 import type { ZenithRole } from "@/lib/auth-routing";
+import { getPersonaNavigationForRole, type MissionDomain } from "@/lib/personas";
 
 export interface NavItem {
   href: string;
@@ -40,6 +41,11 @@ export interface NavItem {
 
 export const appNavItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", description: "Staff KPI and executive operations dashboard", roles: ["staff", "agency_admin", "super_admin"], icon: BarChart3 },
+  { href: "/dashboard/front-desk", label: "Front Desk", description: "Front desk patient and appointment operations", roles: ["staff", "agency_admin", "super_admin"], icon: CalendarCheck },
+  { href: "/dashboard/provider", label: "Provider", description: "Provider revenue and treatment operations", roles: ["staff", "agency_admin", "super_admin"], icon: HeartPulse },
+  { href: "/dashboard/office-manager", label: "Office Manager", description: "Office manager workflow and PMS operations", roles: ["staff", "agency_admin", "super_admin"], icon: ClipboardCheck },
+  { href: "/dashboard/practice-owner", label: "Practice Owner", description: "Practice owner executive revenue dashboard", roles: ["practice_owner", "agency_admin", "super_admin"], icon: TrendingUp },
+  { href: "/dashboard/pms", label: "PMS Ops", description: "Canonical PMS Operations Center", roles: ["staff", "agency_admin", "super_admin"], icon: PlugZap },
   { href: "/onboarding", label: "Onboarding", description: "First-user setup, organization activation, and portal handoff", roles: ["practice_owner", "staff", "agency_admin", "super_admin"], icon: ClipboardCheck },
   { href: "/portal", label: "Client Portal", description: "Practice owner revenue intelligence portal", roles: ["practice_owner", "super_admin"], icon: Gauge },
   { href: "/portal/onboarding", label: "Onboarding", description: "Practice launch and PMS readiness", roles: ["practice_owner", "staff", "super_admin"], icon: ClipboardCheck },
@@ -112,9 +118,26 @@ export const internalNavItems: NavItem[] = [
 
 export function navForRole(role: ZenithRole) {
   return {
-    primary: appNavItems.filter(item => item.roles.includes(role)),
+    primary: getPersonaNavigationForRole(role).map(item => ({
+      href: item.href,
+      label: item.label,
+      description: item.description,
+      roles: [role],
+      icon: iconForDomain(item.domain)
+    })),
     admin: adminNavItems.filter(item => item.roles.includes(role)),
     portal: portalNavItems.filter(item => item.roles.includes(role)),
     internal: internalNavItems.filter(item => item.roles.includes(role))
   };
+}
+
+function iconForDomain(domain: MissionDomain) {
+  return {
+    automation: Workflow,
+    enterprise: Building2,
+    operations: ClipboardCheck,
+    patients: HeartPulse,
+    platform: ShieldCheck,
+    revenue: TrendingUp
+  }[domain];
 }

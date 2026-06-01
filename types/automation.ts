@@ -9,7 +9,8 @@ export type AutomationDomain =
   | "analytics"
   | "compliance"
   | "mission_control"
-  | "lead_operations";
+  | "lead_operations"
+  | "ai";
 
 export type AutomationCoverageClassification =
   | "COMPLETE"

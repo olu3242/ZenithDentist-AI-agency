@@ -1,4 +1,5 @@
 import "server-only";
+import { PATIENT_REVENUE_ENGINE_PRODUCT } from "@/lib/patient-revenue-engine";
 
 /**
  * Extension Registry — canonical catalog of all available marketplace extensions.
@@ -30,6 +31,21 @@ export interface Extension {
 }
 
 export const EXTENSION_REGISTRY: Extension[] = [
+  {
+    id: PATIENT_REVENUE_ENGINE_PRODUCT.id,
+    name: PATIENT_REVENUE_ENGINE_PRODUCT.name,
+    description: PATIENT_REVENUE_ENGINE_PRODUCT.description,
+    version: PATIENT_REVENUE_ENGINE_PRODUCT.version,
+    category: "workflow_pack",
+    status: "available",
+    vendor: "Zenith",
+    requiredCapabilities: ["lead_nurture", "recall_automation", "review_automation", "treatment_reactivation", "revenue_recovery"],
+    workflowIds: [...PATIENT_REVENUE_ENGINE_PRODUCT.workflows],
+    configSchema: {
+      practice_id: { type: "string", required: false, description: "Optional practice/location identifier for deployment scoping" },
+      deployment_mode: { type: "string", required: false, description: "pilot, production, or demo" }
+    },
+  },
   {
     id: "open_dental",
     name: "OpenDental Integration",

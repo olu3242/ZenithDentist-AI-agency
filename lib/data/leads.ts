@@ -1,7 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/database.types";
 import { logger } from "@/lib/logger";
-import { buildAuditRecommendations, calculateRevenueProjection } from "@/lib/roi";
+import { buildAliceRevenueOpportunityReport, buildAuditRecommendations, calculateRevenueProjection } from "@/lib/roi";
 import type { Database } from "@/lib/database.types";
 import type { FunnelSubmissionInput } from "@/lib/validation";
 import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib/runtime/instrumentation";
@@ -14,19 +14,58 @@ export type Audit = Database["public"]["Tables"]["audits"]["Row"];
 export type Booking = Database["public"]["Tables"]["bookings"]["Row"];
 export type OutreachEvent = Database["public"]["Tables"]["outreach_events"]["Row"];
 
+export interface AdminDashboardData {
+  leads: Lead[];
+  roiCalculations: RoiCalculation[];
+  audits: Audit[];
+  bookings: Booking[];
+  events: OutreachEvent[];
+}
+
 export interface FunnelResult {
   lead: Lead;
   roi: RoiCalculation;
   audit: Audit;
 }
 
+export class RevenueAuditError extends Error {
+  constructor(
+    public readonly code: string,
+    message: string,
+    public readonly details: Record<string, unknown> = {}
+  ) {
+    super(message);
+    this.name = "RevenueAuditError";
+  }
+}
+
 export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<FunnelResult> {
+  logger.info("[AUDIT] Request Received", {
+    source: input.source,
+    practiceName: input.practiceName,
+    email: maskEmail(input.email)
+  });
+
   const supabase = createServiceClient();
   if (!supabase) {
-    throw new Error("Supabase server environment is not configured.");
+    logger.error("[AUDIT] Database Insert", {
+      status: "blocked",
+      table: "leads",
+      reason: "supabase_service_client_unavailable",
+      expectedCredential: "SUPABASE_SERVICE_ROLE_KEY (jwt) or SUPABASE_SECRET_KEY (sb_secret_)"
+    });
+    throw new RevenueAuditError(
+      "SUPABASE_SERVICE_CLIENT_UNAVAILABLE",
+      "Revenue audit cannot persist because the Supabase service client is unavailable.",
+      {
+        requiredEnv: "SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SECRET_KEY",
+        note: "Expected a service credential (JWT service_role or sb_secret_ modern secret)"
+      }
+    );
   }
 
   const projection = calculateRevenueProjection(input);
+  const aliceReport = buildAliceRevenueOpportunityReport(input, projection);
   const leadPayload = {
     dentist_name: input.dentistName,
     practice_name: input.practiceName,
@@ -39,8 +78,25 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
     operational_pain: input.operationalPain,
     status: "audit_requested" as const,
     source: input.source,
-    attribution: input.attribution as Json
+    attribution: {
+      ...input.attribution,
+      assessment_type: "free_revenue_opportunity_assessment",
+      consulting_value: 1500,
+      mission_control_status: "assessment_requested",
+      alice_practice_health_score: aliceReport.practiceHealthScore,
+      providers: input.providers ?? input.chairs,
+      treatment_acceptance_rate: input.treatmentAcceptanceRate ?? null,
+      recall_rate: input.recallRate ?? null
+    } as Json,
+    notes: "FREE Revenue Opportunity Assessment - Mission Control lead record created"
   };
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "started",
+    table: "leads",
+    operation: "insert",
+    payload: scrubLeadPayload(leadPayload)
+  });
 
   const { data: lead, error: leadError } = await safeSupabaseWrite<Lead>(
     "leads",
@@ -56,8 +112,18 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
       payload: leadPayload,
       error: leadError ?? new Error("Supabase did not return a lead row.")
     }));
-    throw new Error("Unable to create lead.");
+    throw new RevenueAuditError("LEAD_INSERT_FAILED", "Unable to create lead.", {
+      table: "leads",
+      operation: "insert"
+    });
   }
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "success",
+    table: "leads",
+    operation: "insert",
+    leadId: lead.id
+  });
 
   const roiPayload = {
     organization_id: null,
@@ -70,8 +136,20 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
     admin_hours_per_day: input.adminHoursPerDay,
     monthly_revenue_loss: projection.monthlyRevenueLoss,
     yearly_revenue_loss: projection.yearlyRevenueLoss,
-    recoverable_revenue: projection.recoverableRevenue
+    recoverable_revenue: projection.recoverableRevenue,
+    revenue_recovery_opportunity: projection.revenueRecoveryOpportunity,
+    recall_opportunity: projection.recallOpportunity,
+    treatment_opportunity: projection.treatmentOpportunity,
+    chair_fill_opportunity: projection.chairFillOpportunity,
+    practice_health_score: projection.practiceHealthScore
   };
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "started",
+    table: "roi_calculations",
+    operation: "insert",
+    leadId: lead.id
+  });
 
   const { data: roi, error: roiError } = await safeSupabaseWrite<RoiCalculation>(
     "roi_calculations",
@@ -87,19 +165,75 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
       payload: roiPayload,
       error: roiError ?? new Error("Supabase did not return an ROI row.")
     }));
-    throw new Error("Unable to persist ROI calculation.");
+    throw new RevenueAuditError("ROI_INSERT_FAILED", "Unable to persist ROI calculation.", {
+      table: "roi_calculations",
+      operation: "insert",
+      leadId: lead.id
+    });
   }
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "success",
+    table: "roi_calculations",
+    operation: "insert",
+    leadId: lead.id,
+    roiId: roi.id
+  });
+
+  const assessmentPayload = {
+    lead_id: lead.id,
+    practice_name: input.practiceName,
+    contact_name: input.dentistName,
+    email: input.email,
+    phone: input.phone,
+    pms_software: input.pmsSoftware,
+    locations: input.locations,
+    monthly_appointments: input.monthlyAppointments,
+    average_production_per_visit: input.avgAppointmentValue,
+    no_show_rate: input.noShowRate,
+    treatment_acceptance_rate: input.treatmentAcceptanceRate ?? null,
+    recall_rate: input.recallRate ?? null,
+    providers: input.providers ?? input.chairs,
+    revenue_recovery_opportunity: projection.revenueRecoveryOpportunity,
+    recall_opportunity: projection.recallOpportunity,
+    treatment_opportunity: projection.treatmentOpportunity,
+    chair_fill_opportunity: projection.chairFillOpportunity,
+    review_opportunity: projection.reviewOpportunity,
+    referral_opportunity: projection.referralOpportunity,
+    practice_health_score: projection.practiceHealthScore,
+    alice_recommendation: aliceReport.executiveSummary,
+    alice_report: aliceReport as Json
+  };
+
+  await safeSupabaseWrite(
+    "roi_assessments",
+    "insert",
+    assessmentPayload,
+    () => (supabase as any).from("roi_assessments").insert(assessmentPayload)
+  );
 
   const recommendations = buildAuditRecommendations(input, projection);
   const auditPayload = {
     organization_id: null,
     lead_id: lead.id,
-    audit_summary: `${input.practiceName} is leaking an estimated $${Math.round(
+    audit_summary: `${input.practiceName} completed the FREE Revenue Opportunity Assessment. ALICE estimates $${Math.round(
+      projection.revenueRecoveryOpportunity
+    ).toLocaleString()} in monthly revenue recovery opportunity and a ${projection.practiceHealthScore}/100 Practice Health Score. Current leakage is estimated at $${Math.round(
       projection.monthlyRevenueLoss
     ).toLocaleString()} per month across no-shows, recall gaps, and administrative drag.`,
     recommendations,
-    projected_recovery: projection.recoverableRevenue
+    projected_recovery: projection.revenueRecoveryOpportunity,
+    alice_report: aliceReport as Json,
+    ninety_day_snapshot: aliceReport.ninetyDayOpportunitySnapshot as Json
   };
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "started",
+    table: "audits",
+    operation: "insert",
+    leadId: lead.id
+  });
+
   const { data: audit, error: auditError } = await safeSupabaseWrite<Audit>(
     "audits",
     "insert",
@@ -114,8 +248,20 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
       payload: auditPayload,
       error: auditError ?? new Error("Supabase did not return an audit row.")
     }));
-    throw new Error("Unable to generate audit.");
+    throw new RevenueAuditError("AUDIT_INSERT_FAILED", "Unable to generate audit.", {
+      table: "audits",
+      operation: "insert",
+      leadId: lead.id
+    });
   }
+
+  logger.info("[AUDIT] Database Insert", {
+    status: "success",
+    table: "audits",
+    operation: "insert",
+    leadId: lead.id,
+    auditId: audit.id
+  });
 
   void runLeadFunnelSideEffects({
     lead,
@@ -135,40 +281,56 @@ async function runLeadFunnelSideEffects({
   input: FunnelSubmissionInput;
   projection: ReturnType<typeof calculateRevenueProjection>;
 }) {
-  const trace = await startRuntimeTrace({
-    workflowId: "lead_created",
-    eventName: "lead_funnel_submission",
-    metadata: { source: input.source, practiceName: input.practiceName, leadId: lead.id }
-  });
-
-  await trackOutreachEvent({
-    leadId: lead.id,
-    eventType: "audit_requested",
-    metadata: { source: input.source, projection }
-  });
+  let trace: Awaited<ReturnType<typeof startRuntimeTrace>> | null = null;
 
   try {
+    trace = await startRuntimeTrace({
+      workflowId: "lead_created",
+      eventName: "lead_funnel_submission",
+      metadata: { source: input.source, practiceName: input.practiceName, leadId: lead.id }
+    });
+
+    await trackOutreachEvent({
+      leadId: lead.id,
+      eventType: "audit_requested",
+      metadata: {
+        source: input.source,
+        projection,
+        assessmentType: "free_revenue_opportunity_assessment",
+        missionControlStatus: "assessment_requested"
+      }
+    });
+
     await executeRegisteredAutomation("lead_created");
+    await completeRuntimeTrace(trace);
   } catch (error) {
-    logger.warn("lead_created_automation_non_blocking_failed", {
+    logger.warn("lead_funnel_side_effects_non_blocking_failed", {
       leadId: lead.id,
       error: getErrorDiagnostics(error)
     });
+    if (trace) {
+      await failRuntimeTrace(trace, error instanceof Error ? error.message : "Lead funnel side effects failed.", {
+        leadId: lead.id,
+        source: input.source
+      });
+    }
   }
-
-  await completeRuntimeTrace(trace);
 }
 
-export async function getAdminDashboardData() {
+export async function getAdminDashboardData(organizationId?: string): Promise<AdminDashboardData> {
   const supabase = createServiceClient();
   if (!supabase) return emptyAdminData();
 
+  const scope = <T extends { eq: (column: string, value: string) => T }>(query: T) => {
+    return organizationId ? query.eq("organization_id", organizationId) : query;
+  };
+
   const [leads, roi, audits, bookings, events] = await Promise.all([
-    supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("roi_calculations").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("audits").select("*").order("generated_at", { ascending: false }).limit(100),
-    supabase.from("bookings").select("*").order("created_at", { ascending: false }).limit(100),
-    supabase.from("outreach_events").select("*").order("created_at", { ascending: false }).limit(200)
+    scope(supabase.from("leads").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("roi_calculations").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("audits").select("*")).order("generated_at", { ascending: false }).limit(100),
+    scope(supabase.from("bookings").select("*")).order("created_at", { ascending: false }).limit(100),
+    scope(supabase.from("outreach_events").select("*")).order("created_at", { ascending: false }).limit(200)
   ]);
 
   return {
@@ -262,7 +424,7 @@ export async function trackBookingClick(leadId?: string, metadata: Record<string
   }
 }
 
-function emptyAdminData() {
+function emptyAdminData(): AdminDashboardData {
   return {
     leads: [] as Lead[],
     roiCalculations: [] as RoiCalculation[],
@@ -289,4 +451,18 @@ async function safeSupabaseWrite<T>(
     }));
     return { data: null, error };
   }
+}
+
+function scrubLeadPayload(payload: Record<string, unknown>) {
+  return {
+    ...payload,
+    email: typeof payload.email === "string" ? maskEmail(payload.email) : payload.email,
+    phone: payload.phone ? "[redacted]" : payload.phone
+  };
+}
+
+function maskEmail(value: string) {
+  const [name, domain] = value.split("@");
+  if (!domain) return "[redacted]";
+  return `${name.slice(0, 2)}***@${domain}`;
 }
