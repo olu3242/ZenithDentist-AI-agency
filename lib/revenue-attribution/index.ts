@@ -142,5 +142,26 @@ export async function getOrganizationRevenueSummary(
   organizationId: string,
   period: { start: Date; end: Date }
 ): Promise<RevenueAttribution> {
-  return getWorkflowAttribution("*", organizationId, period);
+  const summary = await getWorkflowAttribution("*", organizationId, period);
+
+  // Non-blocking monthly org-level attribution snapshot
+  (async () => {
+    try {
+      const supabase = createServiceClient();
+      if (!supabase) return;
+      const periodStart = period.start.toISOString().slice(0, 10);
+      const periodEnd = period.end.toISOString().slice(0, 10);
+      await (supabase as any).from("revenue_attribution_records").insert({
+        organization_id: organizationId,
+        workflow_execution_id: null,
+        attribution_type: "other",
+        attributed_revenue: summary.totalAttributedRevenue,
+        confidence_score: 0.9,
+        period_start: periodStart,
+        period_end: periodEnd,
+      });
+    } catch {}
+  })();
+
+  return summary;
 }

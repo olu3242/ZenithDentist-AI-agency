@@ -115,7 +115,7 @@ export async function getEnterpriseOperationsState(): Promise<EnterpriseOperatio
     "clients",
     "prospects",
     "opportunities",
-    "revenue_attributions",
+    "revenue_attribution_records",
     "campaign_attributions",
     "workflow_attributions",
     "appointment_attributions",
@@ -156,7 +156,7 @@ async function countRows(client: any, table: string, organizationId: string) {
 }
 
 async function getRevenueTotals(client: any, organizationId: string) {
-  const revenueTables = ["revenue_attributions", "campaign_attributions", "workflow_attributions", "appointment_attributions", "treatment_attributions", "membership_attributions", "video_attributions"];
+  const revenueTables = ["revenue_attribution_records", "campaign_attributions", "workflow_attributions", "appointment_attributions", "treatment_attributions", "membership_attributions", "video_attributions"];
   const entries = await Promise.all(revenueTables.map(async table => {
     const { data } = await client.from(table).select("revenue_amount").eq("organization_id", organizationId).limit(1000);
     return [table, (data ?? []).reduce((sum: number, row: any) => sum + Number(row.revenue_amount ?? 0), 0)] as const;
