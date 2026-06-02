@@ -102,6 +102,7 @@ export const internalNavItems: NavItem[] = [
   { href: "/internal/integrations", label: "PMS", description: "PMS integrations", roles: ["super_admin"], icon: PlugZap },
   { href: "/internal/governance", label: "Governance", description: "Governance controls", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/platform", label: "Platform", description: "Platform readiness", roles: ["super_admin"], icon: ShieldCheck },
+  { href: "/internal/production-certification", label: "Certification", description: "Production evidence, claim governance, connector proof, and role workspace certification", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/ai", label: "ALICE", description: "AI operations", roles: ["super_admin"], icon: Brain },
   { href: "/internal/playbooks", label: "Playbooks", description: "Operational playbooks", roles: ["super_admin"], icon: GitBranch },
   { href: "/internal/operations", label: "Operations", description: "Operations center", roles: ["super_admin"], icon: Activity },

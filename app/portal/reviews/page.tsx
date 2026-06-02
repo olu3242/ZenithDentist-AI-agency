@@ -1,4 +1,5 @@
 import { MetricCard } from "@/components/metric-card";
+import { DashboardContainer, InsightGrid, KpiGrid } from "@/components/portal/dashboard-grid";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { RecommendationCard } from "@/components/portal/recommendation-card";
 import { CommandCenterV2 } from "@/components/workflow/command-center-v2";
@@ -20,7 +21,7 @@ export default async function PortalReviewsPage() {
   const latest = data.metrics[0];
   const conversion = latest ? Math.round((latest.reviews_generated / Math.max(1, latest.review_requests_sent)) * 100) : 0;
   return (
-    <div className="space-y-6">
+    <DashboardContainer>
       <CommandCenterV2
         title="Growth Command Center"
         subtitle="Review score, referral performance, lead funnel, and conversion metrics with campaign launch actions."
@@ -38,16 +39,16 @@ export default async function PortalReviewsPage() {
         returnTo="/portal/reviews"
       />
       <PortalHeader title="Review Generation Drilldown" subtitle="Review request timing, conversion rate, and reputation growth signals." />
-      <div className="grid gap-4 md:grid-cols-3">
+      <KpiGrid className="xl:grid-cols-3">
         <MetricCard label="Requests sent" value={latest?.review_requests_sent ?? 0} detail="Current reporting period" tone="teal" />
         <MetricCard label="Reviews generated" value={latest?.reviews_generated ?? 0} detail="Published or pending" tone="green" />
         <MetricCard label="Review conversion" value={`${conversion}%`} detail="Request to generated review" tone="gold" />
-      </div>
-      <section className="grid gap-4 xl:grid-cols-2">
+      </KpiGrid>
+      <InsightGrid className="xl:grid-cols-2">
         {data.recommendations.filter(item => item.title.toLowerCase().includes("review") || item.recommendation.toLowerCase().includes("review")).map(item => (
           <RecommendationCard key={item.id} recommendation={item} />
         ))}
-      </section>
-    </div>
+      </InsightGrid>
+    </DashboardContainer>
   );
 }

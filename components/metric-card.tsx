@@ -20,7 +20,7 @@ export function MetricCard({
   }[tone];
 
   return (
-    <article className="rounded border border-line bg-white p-5 shadow-sm">
+    <article className="min-h-40 rounded border border-line bg-white p-5 shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-muted">{label}</p>
       <strong className={cn("mt-3 block text-3xl font-black", toneClass)}>{value}</strong>
       <span className="mt-2 block text-sm font-semibold text-muted">{detail}</span>

@@ -173,6 +173,7 @@ export async function executeRegisteredAutomation(workflowId: string) {
   const tenantData = await getTenantData();
   const organizationId = tenantData.tenant.organizationId ?? tenantData.organization.id;
   const correlationId = randomUUID();
+  const startedAt = new Date();
   const trace = await startRuntimeTrace({
     workflowId,
     eventName: "automation_center_execute",
@@ -193,13 +194,62 @@ export async function executeRegisteredAutomation(workflowId: string) {
     });
     await completeRuntimeTrace(trace);
     await updateAutomationStatus(workflowId, "active");
+    await recordWorkflowExecutionEvidence({
+      workflowId,
+      organizationId,
+      executionId: result.executionId,
+      startedAt,
+      status: "completed",
+      triggerSource: "automation_center_manual_execute",
+      outcomeSummary: `Workflow ${workflowId} executed through Workflow OS with correlation ${result.correlationId}.`,
+      traceId: trace?.trace_id ?? null
+    });
     return result;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Automation execution failed";
     await failRuntimeTrace(trace, message, { workflowId, organizationId, correlationId });
     await updateAutomationStatus(workflowId, "failed");
+    await recordWorkflowExecutionEvidence({
+      workflowId,
+      organizationId,
+      startedAt,
+      status: "failed",
+      triggerSource: "automation_center_manual_execute",
+      outcomeSummary: message,
+      traceId: trace?.trace_id ?? null
+    });
     throw error;
   }
+}
+
+async function recordWorkflowExecutionEvidence(input: {
+  workflowId: string;
+  organizationId: string;
+  executionId?: string;
+  startedAt: Date;
+  status: "completed" | "failed";
+  triggerSource: string;
+  outcomeSummary: string;
+  traceId?: string | null;
+}) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+  const completedAt = new Date();
+  const payload = {
+    workflow_id: input.workflowId,
+    organization_id: input.organizationId,
+    execution_id: input.executionId ?? null,
+    started_at: input.startedAt.toISOString(),
+    completed_at: completedAt.toISOString(),
+    status: input.status,
+    duration_ms: completedAt.getTime() - input.startedAt.getTime(),
+    trigger_source: input.triggerSource,
+    affected_entities: [],
+    outcome_summary: input.outcomeSummary,
+    trace_id: input.traceId ?? null
+  };
+  const { error } = await (supabase as any).from("workflow_execution_evidence").insert(payload);
+  if (error) logger.warn("workflow_execution_evidence_write_failed", { workflowId: input.workflowId, error: error.message });
 }
 
 function emptyAutomationOSState(organizationId: string, configured: boolean): AutomationOSState {

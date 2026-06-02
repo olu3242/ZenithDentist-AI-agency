@@ -30,16 +30,30 @@ export function PMSIntegrationManager({ state }: { state: EnterpriseCloudState }
         <div className="rounded border border-line p-4">
           <h3 className="font-black text-ink">Provider abstraction coverage</h3>
           <div className="mt-3 grid gap-2">
-            {state.providerCoverage.map(provider => (
+          {state.providerCoverage.map(provider => (
               <div key={provider.provider} className="flex items-center justify-between rounded bg-paper px-3 py-2">
                 <span className="text-sm font-bold text-ink">{provider.displayName}</span>
                 <span className={provider.configured ? "text-xs font-black uppercase text-green" : "text-xs font-black uppercase text-muted"}>
-                  {provider.configured ? "active" : "ready"}
+                  {provider.configured ? "certification ready" : "pending certification"}
                 </span>
+              </div>
+            ))}
+            {["Curve"].map(provider => (
+              <div key={provider} className="flex items-center justify-between rounded bg-paper px-3 py-2">
+                <span className="text-sm font-bold text-ink">{provider}</span>
+                <span className="text-xs font-black uppercase text-muted">pending certification</span>
               </div>
             ))}
           </div>
         </div>
+      </div>
+      <div className="mt-5 grid gap-3 md:grid-cols-5">
+        {["Connected", "Validated", "Read Verified", "Write Verified", "Certified"].map(label => (
+          <div key={label} className="rounded border border-line bg-paper p-3">
+            <span className="block text-xs font-black uppercase tracking-wider text-muted">{label}</span>
+            <strong className="mt-1 block text-sm font-black text-ink">{state.integrations.length ? "Evidence required" : "Pending"}</strong>
+          </div>
+        ))}
       </div>
     </section>
   );

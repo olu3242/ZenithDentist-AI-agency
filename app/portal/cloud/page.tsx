@@ -1,6 +1,7 @@
 import { EnterpriseCommandCenter } from "@/components/enterprise/enterprise-command-center";
 import { EnterpriseHealthRadar } from "@/components/enterprise/enterprise-health-radar";
 import { EnterpriseTimeline } from "@/components/enterprise/enterprise-timeline";
+import { DashboardContainer } from "@/components/portal/dashboard-grid";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { CommandCenterV2 } from "@/components/workflow/command-center-v2";
 import { getAutomationOSState } from "@/lib/automation-os/registry";
@@ -20,7 +21,7 @@ export default async function PortalCloudPage() {
   ]);
   const admin = await getAdminDashboardData(tenantData.tenant.organizationId ?? undefined);
   return (
-    <div className="space-y-6">
+    <DashboardContainer>
       <CommandCenterV2
         title="Operations Command Center"
         subtitle="Schedule utilization, provider capacity, recall load, and workflow health with operational launch actions."
@@ -41,6 +42,6 @@ export default async function PortalCloudPage() {
       <EnterpriseCommandCenter state={state} revenue={revenue} />
       <EnterpriseHealthRadar state={state} />
       <EnterpriseTimeline state={state} />
-    </div>
+    </DashboardContainer>
   );
 }
