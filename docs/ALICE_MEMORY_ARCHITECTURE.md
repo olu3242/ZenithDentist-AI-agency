@@ -8,167 +8,161 @@ This document describes how ALICE reads, uses, and writes memory across its thre
 
 ---
 
-## Three Memory Layers
+## The Three Memory Layers
 
 ### Layer 1 — Immediate Memory (Current Session Context)
 
-Immediate memory holds the in-flight context for a single `generatePatientDecision()` call. It is constructed fresh on each invocation and discarded after the decision is written.
+Immediate memory is the context assembled at the moment a decision is generated. It includes:
 
-Contents:
-- Incoming `opts` payload (organizationId, patientExternalId, procedureType, context)
-- Retrieved influence scores for the patient
-- Top 10 most recent memory records for the patient
-- Latest `practice_intelligence_snapshots` row
+- The specific patient's current influence scores (all 7 dimensions)
+- The patient's active journey assignment status
+- Any context string passed by the calling system (e.g., "Patient declined treatment 60 days ago")
+- The current practice intelligence snapshot (top growth opportunity, channel preference distribution)
 
-This layer is held in working memory (TypeScript objects) and never persisted as-is.
+Immediate memory is **not persisted** — it exists only for the duration of the `generatePatientDecision()` call.
 
 ### Layer 2 — Working Memory (Active Patient Decisions)
 
-Working memory is the `alice_patient_decisions` table — the set of decisions that have been generated but not yet acted upon or dismissed.
+Working memory is the set of `alice_patient_decisions` records with `status = 'pending'` for the organization. These represent decisions ALICE has made that have not yet been acted upon or dismissed by practice staff.
 
-ALICE reads working memory to avoid redundant recommendations:
-- If a `pending` decision already exists for a patient with the same `decision_type`, ALICE will update rather than duplicate
-- `getPendingPatientDecisions(orgId)` surfaces this layer for human review in Mission Control
-
-Working memory records remain active until staff marks them `acted` or `dismissed`.
+- Queried via `getPendingPatientDecisions(orgId)`
+- Displayed in the ALICE Command Center in Mission Control
+- A patient may only have one pending decision at a time (subsequent decisions for the same patient update the existing pending record)
+- Working memory is cleared when a decision is `acted` or `dismissed`
 
 ### Layer 3 — Long-Term Memory (Practice Memory Graph)
 
-Long-term memory is the `practice_memory_records` table — the complete behavioral history of every patient, provider, campaign, and channel in the practice. This is the permanent store that accumulates over the full patient lifetime.
+Long-term memory is the `practice_memory_records` table — the persistent, immutable record of every meaningful patient and practice event. ALICE reads this to understand:
 
-Long-term memory is the source of truth for:
-- What has been communicated to this patient
-- What treatments have been accepted or declined
-- Which channels have yielded responses
-- Which scripts have driven engagement
-- What outcomes followed past recommendations
+- How individual patients have responded to past communications
+- Which channels and scripts have driven conversions historically
+- What treatments a patient has accepted or declined
+- Whether a patient is a known referral source or membership holder
+
+Long-term memory is never deleted — only appended. This makes ALICE's learning cumulative.
 
 ---
 
 ## How ALICE Reads the Practice Memory Graph
 
-ALICE reads `practice_memory_records` filtered to the relevant entity before building the AI prompt.
+When building the AI prompt for a patient decision, ALICE calls:
 
 ```
 getEntityEffectiveness(orgId, 'patient', patientExternalId)
-→ Returns all records WHERE entity_type = 'patient' AND entity_external_id = patientExternalId
-→ Ordered by record_date DESC, limited to top 10 most recent relevant records
 ```
 
-Memory record types ALICE prioritizes (in order of relevance to decision generation):
+This returns the top 10 most recent `practice_memory_records` for the patient, ordered by `record_date DESC`. The records are grouped by `record_type` and summarized:
 
-| Priority | Record Type | Why ALICE Reads It |
-|----------|-------------|-------------------|
-| 1 | `communication_sent` | What channels have been tried; recency of last contact |
-| 2 | `treatment_outcome` | Which treatments were accepted or declined |
-| 3 | `alice_recommendation` | What ALICE previously recommended; was it acted on |
-| 4 | `appointment_booked` | Booking patterns (day of week, time, channel that triggered booking) |
-| 5 | `review_generated` | Patient satisfaction signal |
-| 6 | `referral_made` | High-relationship indicator |
-| 7 | `video_watched` | Engagement signal by content type |
-| 8 | `membership_enrolled` | Financial relationship indicator |
-| 9 | `recall_recovered` | Reactivation history |
-| 10 | `no_show_prevented` | Reliability risk signal |
+```
+Patient P-123 context from Practice Memory Graph:
+- Watched 3 implant education videos (avg engagement: 0.8)
+- Responded to 2 SMS outreach attempts (channel_score: 0.9)
+- Ignored 5 email campaigns (channel_score: 0.2)
+- Books appointments on Friday evenings (pattern from appointment_booked records)
+- Accepted financing for crown placement in March (conversion history)
+- Made 2 referrals in the past 12 months (referral_made records)
+```
 
-**Context window management:** ALICE retrieves a maximum of 10 records per patient per decision call to avoid exceeding the AI model's context window and to keep latency low. Records are selected by recency and record_type priority.
+This context is injected directly into the Claude prompt as a structured summary.
+
+### Context Window Management
+
+To prevent prompt bloat, ALICE limits memory context to:
+- **Top 10** most recent memory records per patient
+- Records from the **last 24 months** only
+- No duplicate `record_type` aggregated more than once per summary
 
 ---
 
 ## How ALICE Reads Practice Intelligence Snapshots
 
-Before generating a patient decision, ALICE reads the latest daily `practice_intelligence_snapshots` for the organization. This provides practice-level context:
+Before generating a patient decision, ALICE reads the latest `daily` snapshot from `practice_intelligence_snapshots` for the organization. It extracts:
 
-- What is the top growth opportunity for this practice today?
-- What channels are performing best for this practice population?
-- What is the practice's current treatment acceptance trend?
+- `practiceIntelligence.topGrowthOpportunity` — the practice's highest-priority growth action
+- `patientIntelligence.channelPreferenceBreakdown` — population-level channel preferences
+- `practiceIntelligence.recallRecoveryRate` — whether recall is currently a priority
 
-This prevents ALICE from making patient recommendations that are misaligned with the practice's current priorities. For example, if the practice's recall recovery rate is critically low, ALICE will weight recall outreach more heavily in its recommendations even for patients who also have treatment opportunities.
+This practice-level context allows ALICE to align individual patient recommendations with practice-level needs. If the practice's top opportunity is `recall_recovery`, ALICE will weight recall outreach recommendations more heavily for eligible patients.
 
 ---
 
 ## How ALICE Reads Patient Influence Scores
 
-Patient influence scores from `patient_influence_scores` provide the quantitative foundation for every ALICE decision. ALICE reads all 7 dimensions:
+`patient_influence_scores` contains 7 scored dimensions per patient:
 
-| Dimension | How ALICE Uses It |
-|-----------|------------------|
-| `overall_influence_score` | Gates whether to intervene at all |
-| `treatment_intent` | Determines decision_type (treatment_push vs. general_engagement) |
-| `communication_responsiveness` | Informs channel recommendation confidence |
-| `financial_readiness` | Adjusts expected_revenue and CTA recommendation |
-| `loyalty_index` | Influences referral_ask and review_request suitability |
-| `referral_probability` | Triggers referral_ask decision type |
-| `membership_conversion` | Triggers membership_offer decision type |
+| Dimension | What ALICE uses it for |
+|-----------|------------------------|
+| `treatment_intent` | Prioritize treatment push decisions |
+| `referral_probability` | Flag for referral ask sequence |
+| `membership_conversion` | Flag for membership offer sequence |
+| `recall_responsiveness` | Prioritize recall outreach targeting |
+| `review_likelihood` | Trigger review request after positive visit |
+| `communication_engagement` | Select channel and timing |
+| `lifetime_value_potential` | Weight urgency of intervention |
 
-Score thresholds used by ALICE rule-based fallback:
-
-| Score | Action |
-|-------|--------|
-| overall > 70 | `intervention` — proactive immediate outreach |
-| overall 50–70 | `journey_update` — adjust current journey step |
-| overall < 50 | `hold` — monitor, no action |
+ALICE reads `patient_influence_scores` where `organization_id = $orgId AND patient_external_id = $patientExternalId` and uses the scores to seed the AI prompt with quantified patient propensity.
 
 ---
 
 ## Decision Enrichment Flow
 
-The full enrichment pipeline for `generatePatientDecision()`:
-
 ```
-1. Receive opts (orgId, patientExternalId, procedureType, context)
-        ↓
-2. Read patient_influence_scores
-   → All 7 dimension scores
-        ↓
-3. Read practice_memory_records (top 10, patient entity)
-   → Communication history, outcomes, prior recommendations
-        ↓
-4. Read practice_intelligence_snapshots (latest daily)
-   → Practice-level context and top opportunity
-        ↓
-5. Build AI prompt
-   → System: ALICE role instructions
-   → User: patient context block (influence scores + memory records + practice snapshot)
-        ↓
-6. Call AnthropicProvider (claude-haiku-4-5-20251001)
-   → Receive JSON decision response
-        ↓
-7. Parse and validate response
-   → Fall back to rule-based if AI fails or confidence < 0.5
-        ↓
-8. Insert to alice_patient_decisions
-        ↓
-9. Call recordMemory() → write alice_recommendation to practice_memory_records
-        ↓
-10. Emit alice.recommendation.created event via Event Fabric
+generatePatientDecision(orgId, patientExternalId, procedureType, context)
+  │
+  ├── 1. Read patient_influence_scores  (influence dimensions)
+  ├── 2. Read practice_memory_records   (top 10 historical records for patient)
+  ├── 3. Read practice_intelligence_snapshots (latest daily snapshot)
+  ├── 4. Read conversion_profiles       (treatment acceptance probability)
+  │
+  ├── 5. Build AI prompt with all context
+  │
+  ├── 6a. [AI path] → AnthropicProvider (claude-haiku-4-5-20251001)
+  │         → returns: decisionType, who, what, when, why, how, confidenceScore, expectedRevenue
+  │
+  └── 6b. [Fallback path] → rule-based thresholds (if AI unavailable or confidence < 0.5)
+  
+  └── 7. Insert to alice_patient_decisions
+  └── 8. Emit event: alice.recommendation.created.<patientExternalId>
+  └── 9. recordMemory(orgId, 'patient', patientExternalId, 'alice_recommendation', decisionData)
 ```
 
 ---
 
 ## Memory Write-Back
 
-After every ALICE decision, `recordMemory()` is called to write the recommendation into the Practice Memory Graph. This is a critical step in the learning loop — without write-back, ALICE cannot know what it has already recommended.
+After every ALICE recommendation, regardless of path (AI or fallback), `recordMemory()` is called:
 
-Write-back record structure:
-```json
-{
-  "organization_id": "uuid",
-  "entity_type": "patient",
-  "entity_external_id": "OD-12345",
-  "record_type": "alice_recommendation",
-  "record_date": "2025-03-15",
-  "data": {
-    "decision_type": "treatment_push",
-    "recommended_action": "Send implant education video",
-    "recommended_channel": "video",
-    "confidence_score": 0.87,
-    "reasoning": "High treatment intent, 14 days since last contact"
-  },
-  "effectiveness_score": null
-}
+```typescript
+recordMemory({
+  organizationId: orgId,
+  entityType: 'patient',
+  entityExternalId: patientExternalId,
+  recordType: 'alice_recommendation',
+  recordDate: new Date(),
+  data: {
+    decisionType,
+    confidenceScore,
+    recommendedChannel,
+    recommendedAction,
+    procedureType
+  }
+})
 ```
 
-The `effectiveness_score` is initially `null`. It is updated when the recommended action produces an observable outcome (appointment booked, treatment accepted, etc.), creating the feedback loop for ALICE learning.
+This write-back ensures that future decisions for the same patient are informed by what ALICE previously recommended — preventing repeated identical recommendations and enabling ALICE to observe whether its recommendations resulted in action.
+
+---
+
+## Memory Types ALICE Uses
+
+| Record Type | What It Captures | How ALICE Uses It |
+|-------------|------------------|-------------------|
+| `treatment_outcome` | Whether patient accepted/declined treatment | Seed treatment acceptance probability |
+| `communication_sent` | Channel, message, effectiveness | Channel selection for next outreach |
+| `review_generated` | Patient submitted a review | Avoid re-requesting review; flag as advocate |
+| `referral_made` | Patient referred someone | Reinforce referral ask; identify ambassadors |
+| `appointment_booked` | Booking patterns and timing | Timing optimization for outreach |
+| `alice_recommendation` | Previous ALICE decisions | Avoid repeated recommendations; observe outcomes |
 
 ---
 
@@ -176,88 +170,49 @@ The `effectiveness_score` is initially `null`. It is updated when the recommende
 
 ```
 Decision made
-      ↓
-alice_recommendation written to practice_memory_records (effectiveness_score = null)
-      ↓
-Workflow OS executes recommended action (send video, send SMS, etc.)
-      ↓
-Patient responds (or does not respond)
-      ↓
-Outcome observed (appointment_booked / treatment_outcome / no response)
-      ↓
-practice_memory_records updated: effectiveness_score = 0.0–1.0
-      ↓
-Next generatePatientDecision() reads updated memory → AI prompt includes outcome context
-      ↓
-ALICE improves channel, timing, and script recommendations for this patient
+    │
+    ↓
+Outcome observed (appointment booked / treatment accepted / review submitted)
+    │
+    ↓
+Memory updated (practice_memory_records via recordMemory())
+    │
+    ↓
+Next decision for same patient reads updated memory
+    │
+    ↓
+Improved decision (informed by actual patient response history)
 ```
 
-Over time, the Practice Memory Graph accumulates enough effectiveness signals that ALICE can identify patient-specific patterns: which channel this patient responds to, which script themes drive them to book, which timing is most effective.
-
----
-
-## Memory Types ALICE Uses
-
-| Record Type | Written By | ALICE Reads For |
-|-------------|------------|-----------------|
-| `treatment_outcome` | PMS sync / Workflow OS | Treatment history, acceptance/decline pattern |
-| `communication_sent` | Notification Engine | Channel history, recency, frequency cap |
-| `review_generated` | Reputation Engine | Satisfaction signal |
-| `referral_made` | Referral Engine | Relationship strength |
-| `appointment_booked` | PMS sync / Journey Engine | Booking pattern |
-| `alice_recommendation` | ALICE write-back | Prior recommendations, effectiveness |
-| `membership_enrolled` | Membership Engine | Financial relationship |
-| `recall_recovered` | Recall Engine | Reactivation history |
-| `no_show_prevented` | No-Show Prevention Engine | Reliability signal |
-| `video_watched` | Video Intelligence Engine | Content engagement |
+This cycle compounds over time. A practice with 12 months of ALICE decisions will have significantly richer memory context than one with 30 days, resulting in measurably higher recommendation accuracy.
 
 ---
 
 ## alice_patient_decisions Table
 
-Patient-scoped decisions distinct from the practice-level `alice_decisions` table.
+Patient-scoped ALICE decisions. See `ALICE_DECISION_ENGINE.md` for full schema.
+
+Key fields relevant to memory architecture:
 
 | Column | Type | Notes |
 |--------|------|-------|
-| `id` | uuid PK | |
-| `organization_id` | uuid FK | Tenant isolation |
-| `patient_external_id` | text | Opaque PMS reference |
-| `decision_type` | text | `treatment_push`, `recall_outreach`, `review_request`, `membership_offer`, `referral_ask`, `general_engagement` |
-| `who` | text | Patient context summary |
-| `what` | text | Specific recommended action |
-| `when_to_act` | text | `within_24h` / `within_48h` / `within_7d` |
-| `why` | text | Evidence-based rationale |
-| `how` | text | Channel and delivery method |
-| `confidence_score` | numeric | 0–1; < 0.5 indicates fallback was used |
-| `expected_revenue` | numeric | Projected revenue if action succeeds |
-| `expected_conversion_rate` | numeric | Probability action leads to conversion |
-| `expected_followup` | text | Next step if no response |
+| `confidence_score` | numeric 0–1 | AI-generated confidence; fallback = 0.5 |
 | `status` | text | `pending` / `acted` / `dismissed` |
-| `acted_at` | timestamptz | Timestamp when staff executes the decision |
-| `is_fallback` | boolean | True if rule-based fallback was used |
-| `created_at` | timestamptz | |
+| `acted_at` | timestamptz | Set when staff acts; triggers memory write-back |
+
+When `acted_at` is set, the system should record a `communication_sent` or appropriate memory event to close the feedback loop.
 
 ---
 
 ## Tenant Isolation
 
-All memory reads and writes in ALICE are scoped to `organization_id`. There is no cross-tenant memory sharing. Every query to `practice_memory_records`, `patient_influence_scores`, `practice_intelligence_snapshots`, and `alice_patient_decisions` requires an explicit `organization_id` filter.
-
-This ensures that ALICE's learning in Practice A has no influence on decisions for Practice B, even if patients have similar profiles.
+All memory reads are scoped to `organization_id`. ALICE never reads memory across tenants. Every call to `getEntityEffectiveness()`, `getPracticeMemorySummary()`, and `getLatestPracticeIntelligenceSnapshot()` requires `organizationId` as the first parameter and enforces it as the first `WHERE` predicate.
 
 ---
 
-## Context Window Budget
+## Related Documents
 
-To maintain decision latency under 3 seconds, ALICE enforces a strict context budget:
-
-| Context Component | Max Tokens (approx) |
-|-------------------|-------------------|
-| System prompt (ALICE role) | 500 |
-| Patient influence scores | 300 |
-| Memory records (top 10) | 1,500 |
-| Practice intelligence snapshot | 400 |
-| Incoming context string | 200 |
-| **Total** | **~2,900** |
-
-`claude-haiku-4-5-20251001` is selected specifically for its speed and cost profile at this context size. The 10-record memory limit is calibrated to keep the budget within these bounds while providing sufficient behavioral context for high-quality decisions.
+- `PRACTICE_MEMORY_GRAPH.md` — Full schema and query patterns for `practice_memory_records`
+- `ALICE_DECISION_ENGINE.md` — Decision generation, AI prompt structure, fallback logic
+- `PRACTICE_INTELLIGENCE_OS.md` — Snapshot generation and practice-level intelligence aggregation
+- `PATIENT_INFLUENCE_ENGINE_PRD.md` — Influence score dimensions and computation
