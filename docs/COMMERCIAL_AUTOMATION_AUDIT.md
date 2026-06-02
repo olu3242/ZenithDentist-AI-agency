@@ -88,6 +88,45 @@ Revenue Engine trigger
 
 ---
 
+---
+
+## Phase 4 — Commercial Lockdown Framework (Migration 20260623000000)
+
+New tables provisioned in `supabase/migrations/20260623000000_commercial_lockdown.sql`:
+
+| Table | Purpose |
+|---|---|
+| `commercial_packages` | Package definitions with pricing, SLA, deliverables, Stripe product keys |
+| `commercial_payment_gates` | Milestone-based payment gates with trigger events and billing flags |
+| `client_commercial_controls` | Per-client contract state: go-live, scope, payment, risk, renewal |
+| `client_payment_milestones` | Individual payment milestone tracking with invoice linkage |
+| `change_requests` | Scope change requests with approval workflow and quoted amounts |
+| `expansion_quotes` | Expansion opportunity quotes for upsell tracking |
+| `client_offboarding_checklists` | Structured offboarding with data export and balance confirmation |
+
+All tables have RLS enabled. Status: **IMPLEMENTED** (schema level — application-layer write paths are post-pilot backlog).
+
+---
+
+## Phase 5 — Legal Entity Governance (Migration 20260624000000)
+
+`supabase/migrations/20260624000000_legal_entity_governance.sql` codifies the legal entity structure referenced by `lib/legal-entity.ts`.
+
+---
+
+## Phase 6 — Client Access Lockdown (Migration 20260625000000)
+
+`supabase/migrations/20260625000000_client_access_lockdown.sql` provisions the canonical `client_accounts` table with all 5 approval gate columns:
+- `contract_signed`
+- `setup_fee_paid`
+- `implementation_started`
+- `approved_for_access`
+- `subscription_active`
+
+This migration is the authoritative source-of-truth schema for the access control gate sequence enforced by `middleware.ts`.
+
+---
+
 ## Summary
 
 | Phase | Status |
@@ -95,7 +134,10 @@ Revenue Engine trigger
 | OAuth / Access Control | IMPLEMENTED — manual gate toggles remain |
 | Stripe Webhook | IMPLEMENTED — needs live credential test |
 | Auto-Activation | IMPLEMENTED — authorized_domains linkage manual |
-| Revenue Attribution Insert | IMPLEMENTED this sprint |
+| Revenue Attribution Insert | IMPLEMENTED |
+| Commercial Lockdown Tables | IMPLEMENTED (schema) — app write paths post-pilot |
+| Legal Entity Governance | IMPLEMENTED |
+| Client Access Lockdown Schema | IMPLEMENTED |
 | E-Signature Integration | NOT IMPLEMENTED (post-pilot) |
 | Stripe Customer Portal | NOT IMPLEMENTED (post-pilot) |
 | Dentrix/EagleSoft/Denticon PMS Adapters | STUB ONLY (post-pilot) |
