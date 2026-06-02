@@ -3,8 +3,9 @@ import "server-only";
 import { workflowCatalog } from "@/lib/action-engine";
 import { automationRegistry } from "@/lib/automation/registry";
 import { PRODUCT_CATALOG } from "@/lib/platform-core/product-catalog";
+import { videoJourneys } from "@/lib/video-engagement-os";
 
-export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "roi_framework" | "faq_library";
+export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "video_engagement_os" | "roi_framework" | "faq_library";
 
 export interface LizKnowledgeRecord {
   id: string;
@@ -82,6 +83,20 @@ export function buildLizKnowledgeBase(): LizKnowledgeRecord[] {
       body: `${automation.description} Triggers: ${automation.triggers.join(", ")}. Actions: ${automation.actions.join(", ")}. Intelligence outputs: ${automation.intelligenceOutputs.join(", ")}.`,
       tags: [automation.domain, automation.id, automation.name, ...automation.triggers, ...automation.actions]
     })),
+    ...videoJourneys.map(journey => ({
+      id: `video-journey-${journey.key}`,
+      source: "video_engagement_os" as const,
+      title: `${journey.name} Video Journey`,
+      body: `${journey.objective} Trigger: ${journey.trigger}. Workflow: ${journey.workflowId}. Evidence targets: ${journey.proofTargets.join(", ")}.`,
+      tags: ["video", "patient journey", "attention score", "relationship health", journey.key, journey.workflowId]
+    })),
+    {
+      id: "video-engagement-os",
+      source: "video_engagement_os",
+      title: "Video Engagement OS",
+      body: "Zenith maps videos to patient journeys rather than directly to treatments. Treatment type only selects the right journey. Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing. n8n owns outbound SMS, email, WhatsApp, provider integrations, and callbacks.",
+      tags: ["video", "patient influence", "video engagement os", "smart video journey", "alice", "n8n", "attribution"]
+    },
     {
       id: "roi-framework",
       source: "roi_framework",

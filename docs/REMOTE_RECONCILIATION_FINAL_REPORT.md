@@ -2,7 +2,7 @@
 
 Date: 2026-06-01
 
-Company: Zenith AI Automation Agency
+Company: FinClarity Bookkeeping and Services LLC, DBA Zenith AI Automation Agency
 
 Product: Patient Revenue Operating System (PROS)
 

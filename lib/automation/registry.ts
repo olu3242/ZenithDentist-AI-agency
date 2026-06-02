@@ -300,7 +300,55 @@ export const automationRegistry: AutomationBlueprint[] = [
     deadLetterRequired: true,
     slaMinutes: 45,
     observability: fullObservability
-  }
+  },
+  {
+    id: "welcome_patient",
+    domain: "patient_influence",
+    name: "Welcome Patient Video Journey",
+    description: "Launches welcome video journeys for new patient readiness and first-visit attendance.",
+    triggers: ["new patient appointment scheduled", "lead converted to patient"],
+    emittedEvents: ["video.generated", "video.sent", "video.opened", "video.viewed", "video.completed", "video.cta_clicked"],
+    queueHandlers: ["video.welcome_patient", "n8n.video_delivery", "intelligence.attention_score"],
+    actions: ["classify journey", "select video", "deliver video", "write evidence", "attribute outcome"],
+    intelligenceOutputs: ["attention score", "attendance probability", "best channel"],
+    aliceGroundingSurfaces: ["appointment event", "video engagement", "patient score", "mission control outcome"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 30,
+    dependencies: ["pms_sync", "n8n_delivery"],
+    observability: fullObservability
+  },
+  ...[
+    ["video_confirmation", "Confirmation Video Journey", "appointment requires confirmation"],
+    ["video_reminder", "Reminder Video Journey", "appointment reminder window reached"],
+    ["video_recall", "Recall Video Journey", "recall due"],
+    ["video_reactivation", "Reactivation Video Journey", "inactive patient over 12 months"],
+    ["video_no_show_recovery", "No Show Recovery Video Journey", "appointment marked no-show"],
+    ["video_post_visit", "Post Visit Recovery Video Journey", "procedure completed"],
+    ["video_review_request", "Review Growth Video Journey", "satisfied patient detected"],
+    ["video_referral_request", "Referral Growth Video Journey", "promoter patient detected"],
+    ["video_membership", "Membership Enrollment Video Journey", "membership eligible patient detected"],
+    ["video_treatment_acceptance", "Treatment Acceptance Video Journey", "treatment plan created"],
+    ["video_vip_loyalty", "VIP Loyalty Video Journey", "high value patient loyalty moment"]
+  ].map(([id, name, trigger]) => ({
+    id,
+    domain: "patient_influence" as const,
+    name,
+    description: `${name} selects the right patient journey video, tracks engagement, writes evidence, and attributes outcomes.`,
+    triggers: [trigger],
+    emittedEvents: ["video.generated", "video.sent", "video.opened", "video.viewed", "video.completed", "video.cta_clicked"],
+    queueHandlers: [`video.${id}`, "n8n.video_delivery", "intelligence.video_recommendation"],
+    actions: ["classify patient journey", "select video", "deliver video", "track engagement", "write attribution"],
+    intelligenceOutputs: ["best send time", "best channel", "best journey", "expected revenue impact", "confidence score"],
+    aliceGroundingSurfaces: ["patient journey", "delivery record", "engagement record", "revenue attribution", "mission control outcome"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 60,
+    dependencies: ["pms_sync", "n8n_delivery"],
+    observability: fullObservability
+  }))
 ];
 
 export function getAutomationBlueprint(id: string) {

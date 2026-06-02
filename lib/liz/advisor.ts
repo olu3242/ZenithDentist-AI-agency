@@ -116,7 +116,7 @@ function detectIntent(message: string): LizIntent {
   if (/\b(book|call|demo|meeting|strategy session|speak|talk)\b/.test(text)) return "booking_interest";
   if (/\b(assessment|audit|score|roi|revenue opportunity|practice health)\b/.test(text)) return "assessment_interest";
   if (/\b(price|pricing|cost|plan|subscription)\b/.test(text)) return "pricing_question";
-  if (/\b(product|workflow|automation|recall|review|referral|no-show|treatment|pms|alice|mission control)\b/.test(text)) return "product_question";
+  if (/\b(product|workflow|automation|recall|review|referral|no-show|treatment|membership|video|journey|attention score|patient influence|pms|alice|mission control)\b/.test(text)) return "product_question";
   return "unknown";
 }
 
@@ -190,11 +190,18 @@ function workflowActionsFor(message: string, intent: LizIntent): LizAction[] {
   const text = message.toLowerCase();
   const actions: LizAction[] = [];
   if (/\b(recall|hygiene|overdue)\b/.test(text)) actions.push(workflowAction("recall-recovery", "Launch Recall Recovery", "recall_due", "/dashboard/recall", "Recover overdue recall patients."));
+  if (/\b(video|journey|attention score|patient influence|analytics)\b/.test(text)) actions.push(workflowAction("video-analytics", "View Video Analytics", "video_confirmation", "/portal/video", "Open Video Intelligence Center."));
+  if (/\b(video campaign|launch video)\b/.test(text)) actions.push(workflowAction("video-campaign", "Launch Video Campaign", "video_confirmation", "/portal/video", "Launch a patient journey video campaign."));
+  if (/\b(recall journey|recall video)\b/.test(text)) actions.push(workflowAction("video-recall", "Launch Recall Journey", "video_recall", "/portal/video", "Launch the recall patient journey."));
+  if (/\b(membership|membership journey)\b/.test(text)) actions.push(workflowAction("video-membership", "Launch Membership Journey", "video_membership", "/portal/video", "Launch the membership enrollment journey."));
   if (/\b(review|reputation|google)\b/.test(text)) actions.push(workflowAction("review-campaign", "Launch Review Campaign", "review_request_due", "/dashboard/reviews", "Start review generation workflow."));
+  if (/\b(review campaign|review video)\b/.test(text)) actions.push(workflowAction("video-review", "Launch Review Campaign", "video_review_request", "/portal/video", "Launch review growth video journey."));
   if (/\b(treatment|case acceptance|unscheduled)\b/.test(text)) actions.push(workflowAction("treatment-recovery", "Launch Treatment Recovery", "treatment_recovery", "/dashboard/revenue", "Recover unscheduled treatment opportunity."));
+  if (/\b(treatment video|treatment acceptance|root canal|implant)\b/.test(text)) actions.push(workflowAction("video-treatment", "Recommend Next Best Journey", "video_treatment_acceptance", "/portal/video", "Recommend the right treatment acceptance journey."));
   if (/\b(reactivation|inactive|dormant)\b/.test(text)) actions.push(workflowAction("reactivation", "Launch Reactivation Campaign", "reactivation_candidate_detected", "/dashboard/recall", "Reactivate dormant patients."));
   if (/\b(lead|nurture|prospect)\b/.test(text)) actions.push(workflowAction("lead-nurture", "Launch Lead Nurture", "lead_created", "/dashboard/workflows", "Nurture inbound leads and assessment requests."));
   if (/\b(referral|promoter)\b/.test(text)) actions.push(workflowAction("referral-campaign", "Launch Referral Campaign", "referral_growth", "/dashboard/reviews", "Turn promoters into referral sources."));
+  if (/\b(referral campaign|referral video)\b/.test(text)) actions.push(workflowAction("video-referral", "Launch Referral Campaign", "video_referral_request", "/portal/video", "Launch referral growth video journey."));
   if (/\b(no-show|no show|missed appointment|chair fill)\b/.test(text)) actions.push(workflowAction("no-show-recovery", "Launch No Show Recovery", "appointment_no_show", "/dashboard/revenue", "Recover missed appointments and protect chair time."));
   if (!actions.length && intent === "product_question") actions.push(workflowAction("revenue-opportunity", "Open Revenue Recovery", "alice_revenue_opportunity_agent", "/dashboard/revenue", "Let ALICE prioritize the highest revenue opportunity."));
   return actions;
@@ -236,6 +243,8 @@ function defaultSuggestedQuestions(intent: LizIntent) {
   return [
     "How much revenue am I losing?",
     "How does Recall Recovery work?",
+    "How do video journeys improve attendance?",
+    "Which patient journey should I launch?",
     "Can Zenith integrate with OpenDental?",
     "How does ALICE help my practice?",
     "How much does Zenith cost?"

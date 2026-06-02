@@ -23,6 +23,7 @@ import {
   Workflow,
   Zap
 } from "lucide-react";
+import { LEGAL_ENTITY } from "@/lib/legal-entity";
 import type { LucideIcon } from "lucide-react";
 import { ZenithLogo } from "@/components/branding/ZenithLogo";
 import { OfflineState } from "@/components/ui/canonical";
@@ -773,6 +774,12 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-white/10 bg-[color:var(--brand-sidebar)] px-5 py-8 text-center text-sm font-semibold text-white/58">
+        <p className="font-black text-white">Zenith AI Automation Agency™</p>
+        <p className="mt-2">A product and service of {LEGAL_ENTITY.legalName}.</p>
+        <p className="mt-2">© {LEGAL_ENTITY.currentYear} {LEGAL_ENTITY.legalName}. All Rights Reserved.</p>
+      </footer>
     </main>
   );
 }

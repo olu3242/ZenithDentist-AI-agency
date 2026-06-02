@@ -2,6 +2,20 @@
 
 Date: 2026-06-01
 
+## Product Positioning
+
+Zenith is the Dental Growth Operating System. PROS remains the canonical product architecture underneath that market position: it unifies Patient OS, Relationship OS, Growth OS, Intelligence OS, Operations OS, and Commerce OS into one dental revenue and operations platform.
+
+Every feature, workflow, dashboard, recommendation, and automation must tie to at least one measurable outcome:
+
+- Recover lost revenue
+- Fill empty chairs
+- Increase treatment acceptance
+- Generate more reviews
+- Improve retention
+- Reduce front desk workload
+- Gain operational visibility
+
 ## Official Target Architecture
 
 Patient Revenue Operating System
@@ -42,6 +56,17 @@ Patient Revenue Operating System
 
 └── Migration Governance
 
+## Six Operating Domains
+
+| Domain | Canonical Responsibility | Existing Local Evidence | Current Certification |
+| --- | --- | --- | --- |
+| Patient OS | Patient lifecycle engagement, video engagement, patient journeys, attention score, engagement attribution | `lib/video-engagement-os.ts`, `/portal/video`, `20260619000000_video_engagement_os.sql` | Partial |
+| Relationship OS | Family, sentiment, retention, lifetime value, membership, advocacy, relationship health | Relationship concepts documented; no dedicated local module/table family found in this checkout | Missing/Partial |
+| Growth OS | Recall recovery, no-show prevention, treatment acceptance, chair fill, reviews, referrals | `lib/patient-revenue-engine.ts`, automation registry, revenue dashboards | Partial |
+| Intelligence OS | ALICE, forecasting, benchmarking, digital twin, practice intelligence | ALICE APIs/routes and intelligence docs exist; evidence trace tables not locally present | Partial |
+| Operations OS | Workflow OS, Runtime OS, Event Fabric, Mission Control, Automation Center | Workflow/runtime/mission-control routes and modules exist | Partial |
+| Commerce OS | Plans, billing, entitlements, usage metering, marketplace | `subscription_plans`, `billing_events`, marketplace modules | Partial |
+
 ## Canonical Ownership
 
 - Patient Revenue Engine: business outcomes and patient revenue recovery.
@@ -68,7 +93,16 @@ Patient Revenue Operating System
 - Mission Control must consume analytics, runtime health, workflow health, attribution, and ALICE.
 - PMS Portal must become a real operations portal, not only an integration page.
 - Migration governance must remain mandatory.
+- Evidence maturity is mandatory before production GO: workflow execution, evidence, attribution, ALICE traces, and mission control outcomes must be populated, not only declared.
+- n8n owns outbound delivery, while Workflow OS owns state, evidence, attribution, retries, and governance.
 
 ## Current Classification
 
 Target blueprint established. Implementation is partially harmonized.
+
+Current local state:
+
+- PMS Portal: route/UI family implemented; live connector certification remains partial.
+- Video Engagement OS: canonical local foundation implemented once; staging migration/application still pending.
+- Evidence Foundation: not production-certified in this checkout because `workflow_execution_evidence`, `revenue_attribution_records`, `alice_recommendation_traces`, and `mission_control_outcomes` are not present as local canonical migrations.
+- Production status: PARTIAL, not GA/GO, until evidence tables, remote migrations, env configuration, live PMS sync, ALICE traceability, and revenue attribution proof are verified.
