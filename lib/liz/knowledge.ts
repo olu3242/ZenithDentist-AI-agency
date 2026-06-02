@@ -4,8 +4,9 @@ import { workflowCatalog } from "@/lib/action-engine";
 import { automationRegistry } from "@/lib/automation/registry";
 import { PRODUCT_CATALOG } from "@/lib/platform-core/product-catalog";
 import { videoJourneys } from "@/lib/video-engagement-os";
+import { videoJourneyBlueprints } from "@/lib/video-intelligence";
 
-export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "video_engagement_os" | "roi_framework" | "faq_library";
+export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "video_engagement_os" | "video_intelligence" | "automation_audit" | "roi_framework" | "faq_library";
 
 export interface LizKnowledgeRecord {
   id: string;
@@ -83,19 +84,40 @@ export function buildLizKnowledgeBase(): LizKnowledgeRecord[] {
       body: `${automation.description} Triggers: ${automation.triggers.join(", ")}. Actions: ${automation.actions.join(", ")}. Intelligence outputs: ${automation.intelligenceOutputs.join(", ")}.`,
       tags: [automation.domain, automation.id, automation.name, ...automation.triggers, ...automation.actions]
     })),
+    ...videoJourneyBlueprints.map(journey => ({
+      id: `video-${journey.id}`,
+      source: "video_intelligence" as const,
+      title: journey.name,
+      body: `${journey.primaryOutcome} Journey stages: ${journey.stages.join(", ")}. Workflow: ${journey.workflowId}. Revenue influence: ${journey.revenueInfluence}`,
+      tags: ["video", "patient influence", "patient education", "journey", journey.type, journey.workflowId, ...journey.stages]
+    })),
     ...videoJourneys.map(journey => ({
-      id: `video-journey-${journey.key}`,
+      id: `video-engagement-${journey.key}`,
       source: "video_engagement_os" as const,
       title: `${journey.name} Video Journey`,
       body: `${journey.objective} Trigger: ${journey.trigger}. Workflow: ${journey.workflowId}. Evidence targets: ${journey.proofTargets.join(", ")}.`,
-      tags: ["video", "patient journey", "attention score", "relationship health", journey.key, journey.workflowId]
+      tags: ["video", "video engagement os", "patient journey", "attention score", "relationship health", journey.key, journey.workflowId]
     })),
+    {
+      id: "video-influence-engine",
+      source: "video_intelligence",
+      title: "Smart Video Journey and Patient Influence Engine",
+      body: "Zenith uses PMS events, Workflow OS, ALICE classification, video selection, behavioral signals, next-best-action recommendations, outcomes, evidence, and attribution to influence attendance, recall compliance, treatment acceptance, membership enrollment, reviews, referrals, and patient lifetime value. n8n owns SMS, email, WhatsApp, video delivery, external integrations, and webhook callbacks while Workflow OS owns state, logic, decisions, evidence, attribution, Mission Control, and ALICE.",
+      tags: ["video intelligence", "patient influence", "treatment acceptance", "membership", "review growth", "referral growth", "attention score", "attribution", "n8n"]
+    },
     {
       id: "video-engagement-os",
       source: "video_engagement_os",
       title: "Video Engagement OS",
-      body: "Zenith maps videos to patient journeys rather than directly to treatments. Treatment type only selects the right journey. Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing. n8n owns outbound SMS, email, WhatsApp, provider integrations, and callbacks.",
+      body: "Zenith maps videos to patient journeys rather than directly to treatments. Treatment type selects the right journey. Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing. n8n owns outbound SMS, email, WhatsApp, provider integrations, and callbacks.",
       tags: ["video", "patient influence", "video engagement os", "smart video journey", "alice", "n8n", "attribution"]
+    },
+    {
+      id: "automation-audit-framework",
+      source: "automation_audit",
+      title: "Automation Audit Framework",
+      body: "Zenith audits every automation blueprint for registry coverage, event emissions, queue handlers, runtime trace instrumentation, retry and replay readiness, dead-letter routing, ALICE grounding, observability, and SLA coverage. The internal Automation Audit Center classifies workflows as complete, partial, declared-only, missing runtime, unobservable, or critical gap.",
+      tags: ["automation audit", "coverage", "registry", "runtime trace", "replay", "dead letter", "alice grounding", "sla", "certification"]
     },
     {
       id: "roi-framework",

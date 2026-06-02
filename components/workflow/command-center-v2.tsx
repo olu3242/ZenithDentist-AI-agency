@@ -49,16 +49,28 @@ export function CommandCenterV2({
         {sections.map(section => {
           const workflow = getWorkflowCatalogItem(section.workflowId);
           if (!workflow) return null;
+          const performance = automationOS.performance.find(item => item.workflowId === workflow.id);
           return (
-            <ActionCard
-              key={section.label}
-              title={section.label}
-              value={section.value}
-              detail={section.detail}
-              workflow={workflow}
-              actions={actions.filter(action => action.workflowId === workflow.id)}
-              returnTo={returnTo}
-            />
+            <div key={section.label} className="grid gap-3">
+              <ActionCard
+                title={section.label}
+                value={section.value}
+                detail={section.detail}
+                workflow={workflow}
+                actions={actions.filter(action => action.workflowId === workflow.id)}
+                returnTo={returnTo}
+              />
+              <div className="rounded border border-line bg-white p-4 shadow-sm">
+                <p className="text-xs font-black uppercase tracking-wider text-muted">Execution proof</p>
+                <div className="mt-3 grid gap-2 text-sm font-semibold text-muted">
+                  <Proof label="Execution History" value={`${performance?.executionCount ?? 0} runs`} />
+                  <Proof label="Success Rate" value={`${performance?.successRate ?? 0}%`} />
+                  <Proof label="Failures" value={`${performance?.failureRate ?? 0}% failure rate`} />
+                  <Proof label="Recoveries" value={performance?.recoveryStatus ?? "not_run"} />
+                  <Proof label="Revenue Impact" value={`$${outcomes.revenueRecovered.toLocaleString()} attributed pool`} />
+                </div>
+              </div>
+            </div>
           );
         })}
       </section>
@@ -73,6 +85,15 @@ export function CommandCenterV2({
           </div>
         </section>
       ) : null}
+    </div>
+  );
+}
+
+function Proof({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded bg-paper px-3 py-2">
+      <span>{label}</span>
+      <strong className="text-ink">{value}</strong>
     </div>
   );
 }

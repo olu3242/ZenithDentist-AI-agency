@@ -18,6 +18,7 @@ import {
   GitBranch,
   GraduationCap,
   HeartPulse,
+  KeyRound,
   LayoutDashboard,
   Network,
   PlayCircle,
@@ -84,6 +85,7 @@ export const appNavItems: NavItem[] = [
   { href: "/internal/go-live", label: "Go Live", description: "Go-live certification and success review automation", roles: ["super_admin"], icon: CalendarCheck },
   { href: "/internal/client-playbooks", label: "Client Playbooks", description: "Post-go-live operating playbooks and success procedures", roles: ["super_admin"], icon: BookOpenCheck },
   { href: "/internal/commercial-lockdown", label: "Commercial Lockdown", description: "Pricing, payment gates, scope control and revenue visibility", roles: ["super_admin"], icon: DollarSign },
+  { href: "/internal/client-approvals", label: "Client Approvals", description: "Approve, suspend, revoke, activate and invite client platform users", roles: ["super_admin"], icon: KeyRound },
   { href: "/settings", label: "Settings", description: "Organization, user and routing preferences", roles: ["practice_owner", "staff", "agency_admin", "super_admin"], icon: Settings }
 ];
 
@@ -131,6 +133,7 @@ export const internalNavItems: NavItem[] = [
   { href: "/internal/integrations", label: "PMS", description: "PMS integrations", roles: ["super_admin"], icon: PlugZap },
   { href: "/internal/governance", label: "Governance", description: "Governance controls", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/platform", label: "Platform", description: "Platform readiness", roles: ["super_admin"], icon: ShieldCheck },
+  { href: "/internal/production-certification", label: "Certification", description: "Production evidence, claim governance, connector proof, and role workspace certification", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/ai", label: "ALICE", description: "AI operations", roles: ["super_admin"], icon: Brain },
   { href: "/internal/playbooks", label: "Playbooks", description: "Operational playbooks", roles: ["super_admin"], icon: GitBranch },
   { href: "/internal/operations", label: "Operations", description: "Operations center", roles: ["super_admin"], icon: Activity },
@@ -148,6 +151,7 @@ export const internalNavItems: NavItem[] = [
   { href: "/internal/go-live", label: "Go Live", description: "Go-live certification", roles: ["super_admin"], icon: CalendarCheck },
   { href: "/internal/client-playbooks", label: "Client Playbooks", description: "Post-go-live client operating playbooks", roles: ["super_admin"], icon: BookOpenCheck },
   { href: "/internal/commercial-lockdown", label: "Commercial", description: "Payment gates and commercial controls", roles: ["super_admin"], icon: DollarSign },
+  { href: "/internal/client-approvals", label: "Client Approvals", description: "Access approval, suspension, revocation and invitation controls", roles: ["super_admin"], icon: KeyRound },
   { href: "/lead-operations", label: "Lead Ops", description: "Lead operations workspace", roles: ["agency_admin", "super_admin"], icon: GitBranch },
   { href: "/client-operations", label: "Client Ops", description: "Client delivery operations", roles: ["agency_admin", "super_admin"], icon: Users },
   { href: "/gtm-command-center", label: "GTM Command", description: "Growth and delivery command center", roles: ["agency_admin", "super_admin"], icon: Target }

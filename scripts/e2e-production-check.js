@@ -40,7 +40,8 @@ assertContains("app/auth-actions.ts", "updatePasswordAction", "Password update a
 assertContains("app/auth/callback/page.tsx", "exchangeCodeForSession", "Auth callback must exchange Supabase code");
 assertContains("app/auth/callback/page.tsx", "resolveAuthenticatedBootstrapUser", "Auth callback must resolve Zenith profile");
 assertContains("app/auth/reset-password/page.tsx", "updatePasswordAction", "Reset password page must submit update action");
-assertContains("components/app/app-shell.tsx", "logoutAction", "AppShell profile menu must use logout action");
+assertContains("components/app/app-shell.tsx", "PortalShell", "AppShell must delegate to the governed PortalShell");
+assertContains("components/app/portal-shell.tsx", "logoutAction", "PortalShell profile menu must use logout action");
 
 const middleware = read("middleware.ts");
 for (const prefix of [

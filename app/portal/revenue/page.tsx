@@ -2,6 +2,7 @@ import { ExecutiveReport } from "@/components/portal/executive-report";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { RevenueTrendChart } from "@/components/portal/revenue-trend-chart";
 import { OperationalScorecard } from "@/components/portal/operational-scorecard";
+import { DashboardContainer } from "@/components/portal/dashboard-grid";
 import { CommandCenterV2 } from "@/components/workflow/command-center-v2";
 import { getAutomationOSState } from "@/lib/automation-os/registry";
 import { buildUniversalActions } from "@/lib/action-engine";
@@ -22,7 +23,7 @@ export default async function PortalRevenuePage() {
   const latest = data.metrics[0];
   const recoveryPipeline = admin.roiCalculations.reduce((sum, item) => sum + Number(item.recoverable_revenue ?? 0), 0);
   return (
-    <div className="space-y-6">
+    <DashboardContainer>
       <CommandCenterV2
         title="Revenue Command Center"
         subtitle="Revenue today, revenue at risk, forecast, recovery pipeline, and treatment pipeline with workflow launch actions."
@@ -44,6 +45,6 @@ export default async function PortalRevenuePage() {
       <OperationalScorecard data={data} />
       <RevenueTrendChart metrics={data.metrics} />
       <ExecutiveReport report={report} />
-    </div>
+    </DashboardContainer>
   );
 }

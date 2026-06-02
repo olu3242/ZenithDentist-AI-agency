@@ -32,12 +32,24 @@ export function middleware(request: NextRequest) {
   ];
   const hasConfiguredProtection = tokenCandidates.some(candidate => candidate.configuredToken);
   if (!hasConfiguredProtection) {
+    const role = roleFromRequest(request, null);
+    const accessGate = requireApprovedClientAccess(request, role);
+    if (accessGate) return applySecurityHeaders(accessGate);
+    if (role && !pathname.startsWith("/api/") && !roleCanAccessPath(role, pathname)) {
+      const url = request.nextUrl.clone();
+      url.pathname = getDefaultPortalForRole(role);
+      url.search = "";
+      return applySecurityHeaders(NextResponse.redirect(url));
+    }
+    if (!request.cookies.get("zenith_user_id")?.value) return failedAuthResponse(request);
     return applySecurityHeaders(NextResponse.next());
   }
 
   const authenticated = tokenCandidates.find(candidate => candidate.configuredToken && candidate.token === candidate.configuredToken);
   if (authenticated) {
     const role = roleFromRequest(request, authenticated.scope);
+    const accessGate = requireApprovedClientAccess(request, role);
+    if (accessGate) return applySecurityHeaders(accessGate);
     if (role && !pathname.startsWith("/api/") && !roleCanAccessPath(role, pathname)) {
       const url = request.nextUrl.clone();
       url.pathname = getDefaultPortalForRole(role);
@@ -66,6 +78,51 @@ export function middleware(request: NextRequest) {
     redirectTarget: "/login"
   });
   return failedAuthResponse(request);
+}
+
+function requireApprovedClientAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>) {
+  const pathname = request.nextUrl.pathname;
+  if (!requiresClientApproval(pathname)) return null;
+  if (role === "super_admin" || role === "agency_admin") return null;
+
+  const userId = request.cookies.get("zenith_user_id")?.value ?? request.headers.get("x-zenith-user-id");
+  const organizationId = request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id");
+  const approved = request.cookies.get("zenith_client_approved")?.value === "true";
+  const subscriptionActive = request.cookies.get("zenith_subscription_active")?.value === "true";
+
+  if (!userId) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("reason", "auth-required");
+    url.searchParams.set("from", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (!organizationId || !approved || !subscriptionActive) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/access-pending";
+    url.searchParams.set("reason", !organizationId ? "organization_missing" : !approved ? "approval_required" : "subscription_inactive");
+    url.searchParams.set("from", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  return null;
+}
+
+function requiresClientApproval(pathname: string) {
+  return [
+    "/portal",
+    "/dashboard",
+    "/mission-control",
+    "/workflow-os",
+    "/runtime-os",
+    "/automation-marketplace",
+    "/automation-center",
+    "/settings",
+    "/onboarding",
+    "/client-operations",
+    "/gtm-command-center"
+  ].some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
 function isProtectedApiPath(pathname: string) {

@@ -17,6 +17,12 @@ export function ForecastingRadar({ forecasts }: { forecasts: EnterpriseForecast[
               <div className="h-2 rounded-full bg-rust" style={{ width: `${Math.round(forecast.probability * 100)}%` }} />
             </div>
             <p className="mt-3 text-xs font-black uppercase tracking-wider text-teal">{Math.round(forecast.confidence * 100)}% confidence</p>
+            <div className="mt-4 grid gap-2 rounded border border-line bg-white p-3 text-xs font-bold text-muted">
+              <span>Last Run: {new Date(forecast.generated_at).toLocaleString()}</span>
+              <span>Accuracy: pending forecast_runs measurement</span>
+              <span>Data Source: enterprise_forecasts</span>
+              <span>Traceability: forecast-{forecast.id}</span>
+            </div>
           </article>
         ))}
       </div>

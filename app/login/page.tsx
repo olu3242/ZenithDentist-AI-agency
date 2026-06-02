@@ -18,8 +18,8 @@ export default async function LoginPage({ searchParams }: { searchParams?: Promi
   return (
     <AuthCard
       title="Log in"
-      subtitle="Resolve your Zenith profile and continue to the correct portal."
-      footer={<span>Need access? <Link className="font-black text-teal" href="/signup">Create an account</Link>. Forgot credentials? <Link className="font-black text-teal" href="/forgot-password">Reset access</Link>.</span>}
+      subtitle="Approved clients and internal operators can resolve their Zenith profile and continue to the correct portal."
+      footer={<span>Need access? <Link className="font-black text-teal" href="/signup">Request approval</Link>. Forgot credentials? <Link className="font-black text-teal" href="/forgot-password">Reset access</Link>.</span>}
     >
       <AuthError message={params?.error} />
       {info ? <div className="mb-4 rounded border border-green/30 bg-green/10 p-3 text-sm font-bold text-green">{info}</div> : null}

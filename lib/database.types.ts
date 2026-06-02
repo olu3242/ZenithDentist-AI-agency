@@ -97,6 +97,9 @@ export type GtmPipelineStage =
   | "case_study_candidate"
   | "referral_opportunity";
 export type ClientSuccessStatus = "healthy" | "watch" | "at_risk" | "expansion_ready";
+export type ClientAccountStatus = "lead" | "proposal" | "contract_pending" | "payment_pending" | "approved" | "active" | "suspended" | "cancelled";
+export type AuthorizedAccessValueType = "email" | "domain";
+export type AuthorizedAccessStatus = "active" | "suspended" | "revoked";
 
 export interface Database {
   public: {
@@ -160,6 +163,53 @@ export interface Database {
           role: OrganizationRole;
         };
         Update: Partial<Database["public"]["Tables"]["organization_members"]["Row"]>;
+        Relationships: [];
+      };
+      client_accounts: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          email: string;
+          full_name: string | null;
+          practice_name: string | null;
+          status: ClientAccountStatus;
+          package_type: string;
+          contract_signed: boolean;
+          setup_fee_paid: boolean;
+          implementation_started: boolean;
+          approved_for_access: boolean;
+          subscription_active: boolean;
+          approved_by: string | null;
+          approved_at: string | null;
+          suspended_at: string | null;
+          revoked_at: string | null;
+          invitation_sent_at: string | null;
+          created_at: string;
+          updated_at: string;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["client_accounts"]["Row"]> & {
+          email: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["client_accounts"]["Row"]>;
+        Relationships: [];
+      };
+      authorized_domains: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          value: string;
+          value_type: AuthorizedAccessValueType;
+          status: AuthorizedAccessStatus;
+          approved_by: string | null;
+          approved_at: string | null;
+          created_at: string;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["authorized_domains"]["Row"]> & {
+          value: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["authorized_domains"]["Row"]>;
         Relationships: [];
       };
       onboarding_states: {

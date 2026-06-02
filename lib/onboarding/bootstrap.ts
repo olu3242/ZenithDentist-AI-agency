@@ -7,6 +7,12 @@ import { getSupabaseRestUrl } from "@/lib/external-diagnostics";
 import { getDefaultPortalForRole, type ZenithRole } from "@/lib/auth-routing";
 import type { Database, Json, OrganizationRole } from "@/lib/database.types";
 import { logger } from "@/lib/logger";
+import {
+  clearApprovedAccessCookies,
+  evaluateClientAccessByEmail,
+  requestClientAccess,
+  setApprovedAccessCookies
+} from "@/lib/access-control";
 
 type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
@@ -86,6 +92,21 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
   }
 
   const state = await getBootstrapState();
+  if (state.hasPlatformAdmin) {
+    const requested = await requestClientAccess({
+      email: input.email,
+      fullName: input.fullName,
+      practiceName: input.organizationName,
+      packageType: "revenue_recovery_system",
+      metadata: { requested_role: input.role ?? "practice_owner" } as Json
+    });
+    return {
+      ok: requested.ok,
+      message: requested.message,
+      redirectTo: requested.ok ? `/access-pending?email=${encodeURIComponent(input.email)}` : undefined
+    };
+  }
+
   const role: ZenithRole = state.hasPlatformAdmin ? input.role ?? "practice_owner" : "super_admin";
   const organizationName = input.organizationName.trim() || "Default Zenith Organization";
   const organizationSlug = slugify(organizationName);
@@ -324,6 +345,27 @@ export async function resolveAuthenticatedBootstrapUser(userId: string): Promise
   }
 
   const role = profile?.role ?? "practice_owner";
+  const requiresClientApproval = role !== "super_admin" && role !== "agency_admin";
+  const accessDecision = requiresClientApproval
+    ? await evaluateClientAccessByEmail(profile?.email ?? email)
+    : { allowed: true, reason: "internal_role", organizationId: profile?.default_organization_id ?? null };
+
+  if (!accessDecision.allowed) {
+    await clearBootstrapCookies();
+    await clearApprovedAccessCookies();
+    logger.warn("client_access_denied", {
+      userId,
+      email: profile?.email ?? email,
+      reason: accessDecision.reason,
+      status: accessDecision.status ?? "missing"
+    });
+    return {
+      ok: true,
+      message: "Account exists but has not been approved for platform access.",
+      redirectTo: `/access-pending?reason=${encodeURIComponent(accessDecision.reason)}&email=${encodeURIComponent(profile?.email ?? email!)}`
+    };
+  }
+
   const organizationName = profile?.default_organization_id
     ? "Recovered Zenith Organization"
     : "Recovered Zenith Organization";
@@ -335,10 +377,19 @@ export async function resolveAuthenticatedBootstrapUser(userId: string): Promise
     organizationName,
     organizationSlug: `recovered-${userId.slice(0, 8)}`,
     allowSession: true,
-    existingProfile: profile
+    existingProfile: profile,
+    approvedOrganizationId: accessDecision.organizationId ?? null,
+    allowOrganizationRecovery: !requiresClientApproval
   });
 
   if (!recovered.ok) return recovered;
+  if (requiresClientApproval) {
+    await setApprovedAccessCookies({
+      role: recovered.role!,
+      userId: recovered.userId!,
+      organizationId: recovered.organizationId!
+    });
+  }
 
   logger.info("auth_login_recovery_audit", {
     userId,
@@ -364,6 +415,8 @@ async function recoverAuthAccount(input: {
   organizationSlug: string;
   allowSession: boolean;
   existingProfile?: Pick<ProfileRow, "id" | "email" | "full_name" | "role" | "default_organization_id" | "onboarding_completed_at"> | null;
+  approvedOrganizationId?: string | null;
+  allowOrganizationRecovery?: boolean;
 }): Promise<BootstrapResult & { audit: AuthRecoveryAudit }> {
   const supabase = createServiceClient();
   if (!supabase) {
@@ -381,14 +434,14 @@ async function recoverAuthAccount(input: {
     .eq("id", input.userId)
     .maybeSingle()).data;
 
-  let organizationId = profile?.default_organization_id ?? null;
+  let organizationId = input.approvedOrganizationId ?? profile?.default_organization_id ?? null;
   let organizationExists = false;
   if (organizationId) {
     const { data: existingOrg } = await supabase.from("organizations").select("id").eq("id", organizationId).maybeSingle();
     organizationExists = Boolean(existingOrg?.id);
   }
 
-  if (!organizationExists) {
+  if (!organizationExists && input.allowOrganizationRecovery) {
     const organization = await ensureOrganization(input.organizationName, input.organizationSlug, false);
     if (!organization.ok) {
       return {
@@ -406,6 +459,21 @@ async function recoverAuthAccount(input: {
     organizationId = organization.organizationId;
     organizationExists = true;
     selfHealed.push("organization");
+  }
+
+  if (!organizationExists || !organizationId) {
+    return {
+      ok: false,
+      message: "Organization access has not been approved for this account.",
+      audit: {
+        authUserExists: true,
+        profileExists: Boolean(profile),
+        organizationExists: false,
+        membershipExists: false,
+        onboardingCompleted: Boolean(profile?.onboarding_completed_at),
+        selfHealed
+      }
+    };
   }
 
   const recoveredRole: ZenithRole = profile?.role ?? input.role;
@@ -758,6 +826,7 @@ export async function clearBootstrapCookies() {
   ].forEach(name => {
     cookieStore.set(name, "", { path: "/", maxAge: 0, sameSite: "lax", httpOnly: true });
   });
+  await clearApprovedAccessCookies();
 }
 
 async function signInExistingEmail(email: string, password: string) {
