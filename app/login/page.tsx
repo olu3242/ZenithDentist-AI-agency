@@ -33,8 +33,12 @@ export default async function LoginPage({ searchParams }: { searchParams?: Promi
         <label className="grid gap-1 text-sm font-bold text-ink">Password<input name="password" type="password" required autoComplete="current-password" className="rounded border border-line px-3 py-2" /></label>
         <SubmitButton pendingText="Signing in...">Log In</SubmitButton>
       </form>
-      <form action={googleLoginAction} className="mt-3">
-        <SubmitButton pendingText="Opening Google..." className="w-full bg-white text-ink ring-1 ring-line hover:bg-paper">
+      <form action={googleLoginAction} className="mt-3 grid gap-2">
+        <label className="grid gap-1 text-sm font-bold text-ink">
+          Invited email
+          <input name="email" type="email" required autoComplete="email" placeholder="your@email.com" defaultValue={params?.email ?? ""} className="rounded border border-line px-3 py-2" />
+        </label>
+        <SubmitButton pendingText="Verifying invitation..." className="w-full bg-white text-ink ring-1 ring-line hover:bg-paper">
           Continue with Google
         </SubmitButton>
       </form>

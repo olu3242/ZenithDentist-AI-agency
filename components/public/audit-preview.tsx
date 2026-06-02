@@ -18,9 +18,9 @@ export function AuditPreview({
   return (
     <section id="audit" className="rounded border border-line bg-white p-6 shadow-soft">
       <p className="text-xs font-black uppercase tracking-wider text-teal">FREE Revenue Opportunity Report</p>
-      <h3 className="mt-3 text-3xl font-black">ALICE revenue recovery plan</h3>
+      <h3 className="mt-3 text-3xl font-black">Revenue recovery plan</h3>
       <p className="mt-3 text-muted">
-        Once the assessment is submitted, Zenith generates a structured ALICE report with revenue recovery estimate,
+        Once the assessment is submitted, Zenith generates a structured report with revenue recovery estimate,
         practice health score, top leaks, recommended playbooks, and a 90-day opportunity snapshot.
       </p>
       <div className="mt-5 rounded bg-paper p-5">

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { bootstrapUser, clearBootstrapCookies, loginBootstrapUser } from "@/lib/onboarding/bootstrap";
 import { normalizeZenithRole, type ZenithRole } from "@/lib/auth-routing";
 import { createServerAuthClient } from "@/lib/supabase/server";
+import { isEmailAuthorized } from "@/lib/access-control";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
@@ -34,7 +35,17 @@ export async function loginAction(formData: FormData) {
   redirect(`/login?error=${encodeURIComponent(result.message)}`);
 }
 
-export async function googleLoginAction() {
+export async function googleLoginAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) {
+    redirect(`/login?error=${encodeURIComponent("Enter your invited email address before continuing with Google.")}`);
+  }
+
+  const authorized = await isEmailAuthorized(email);
+  if (!authorized) {
+    redirect(`/access-pending?reason=not-authorized&email=${encodeURIComponent(email)}`);
+  }
+
   const authClient = createServerAuthClient();
   if (!authClient) {
     redirect(`/login?error=${encodeURIComponent("Supabase public auth credentials are required before Google login can run.")}`);

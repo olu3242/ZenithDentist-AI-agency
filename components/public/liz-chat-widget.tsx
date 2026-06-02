@@ -50,7 +50,7 @@ export function LizChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "liz",
-      text: "Hi, I am LIZ, Zenith's revenue and growth advisor. Ask me about recall recovery, reviews, workflows, assessment results, or the right next step."
+      text: "Hi, I am your Zenith Revenue Advisor. Ask me about recall recovery, reviews, workflows, assessment results, or the right next step."
     }
   ]);
   const [isPending, startTransition] = useTransition();
@@ -80,11 +80,11 @@ export function LizChatWidget() {
           body: JSON.stringify({ message: trimmed, context: { page: window.location.pathname } })
         });
         const json = await result.json();
-        if (!json.ok) throw new Error(json.error ?? "LIZ could not answer.");
+        if (!json.ok) throw new Error(json.error ?? "The advisor could not answer.");
         const response = json.response as LizResponse;
         setMessages(current => [...current, { role: "liz", text: response.message ?? response.answer, response }]);
       } catch {
-        setMessages(current => [...current, { role: "liz", text: "I could not reach the advisor service. You can still start the free assessment or contact support." }]);
+        setMessages(current => [...current, { role: "liz", text: "Could not reach the advisor service. You can still start the free assessment or contact support." }]);
       }
     });
   }
@@ -114,14 +114,14 @@ export function LizChatWidget() {
   return (
     <div className="fixed bottom-5 right-5 z-50">
       {open ? (
-        <section className="flex h-[min(720px,calc(100vh-40px))] w-[min(440px,calc(100vw-40px))] flex-col overflow-hidden rounded border border-line bg-white shadow-2xl" aria-label="LIZ Revenue Advisor chat">
+        <section className="flex h-[min(720px,calc(100vh-40px))] w-[min(440px,calc(100vw-40px))] flex-col overflow-hidden rounded border border-line bg-white shadow-2xl" aria-label="Revenue Advisor chat">
           <header className="flex items-center justify-between gap-3 border-b border-line bg-ink p-4 text-white">
             <div className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded bg-teal">
                 <Bot className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-sm font-black">LIZ Revenue Advisor</p>
+                <p className="text-sm font-black">Revenue Advisor</p>
                 <p className="text-xs font-semibold text-white/60">Actionable, grounded, tracked</p>
               </div>
             </div>
@@ -153,7 +153,7 @@ export function LizChatWidget() {
                 ) : null}
               </article>
             ))}
-            {isPending ? <div className="rounded border border-line bg-white p-3 text-sm font-bold text-muted">LIZ is checking grounded sources...</div> : null}
+            {isPending ? <div className="rounded border border-line bg-white p-3 text-sm font-bold text-muted">Checking grounded sources...</div> : null}
           </div>
 
           <div className="border-t border-line bg-white p-3">
@@ -171,8 +171,8 @@ export function LizChatWidget() {
                 sendMessage(input);
               }}
             >
-              <label className="sr-only" htmlFor="liz-message">Message LIZ</label>
-              <input id="liz-message" value={input} onChange={event => setInput(event.target.value)} placeholder="Ask LIZ about Zenith..." className="min-w-0 flex-1 rounded border border-line px-3 py-2 text-sm font-semibold text-ink" />
+              <label className="sr-only" htmlFor="liz-message">Message advisor</label>
+              <input id="liz-message" value={input} onChange={event => setInput(event.target.value)} placeholder="Ask about your practice revenue..." className="min-w-0 flex-1 rounded border border-line px-3 py-2 text-sm font-semibold text-ink" />
               <button type="submit" disabled={isPending} className="grid h-10 w-10 shrink-0 place-items-center rounded bg-primary text-white disabled:opacity-60" aria-label="Send message">
                 <Send className="h-4 w-4" />
               </button>
@@ -180,7 +180,7 @@ export function LizChatWidget() {
           </div>
         </section>
       ) : (
-        <button type="button" onClick={() => setOpen(true)} className="flex items-center gap-3 rounded-full bg-ink px-5 py-4 text-sm font-black text-white shadow-2xl" aria-label="Open LIZ Revenue Advisor">
+        <button type="button" onClick={() => setOpen(true)} className="flex items-center gap-3 rounded-full bg-ink px-5 py-4 text-sm font-black text-white shadow-2xl" aria-label="Open Revenue Advisor">
           <Bot className="h-5 w-5 text-teal" />
           Ask LIZ
         </button>

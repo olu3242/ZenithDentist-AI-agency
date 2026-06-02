@@ -27,7 +27,7 @@ export default async function HomePage() {
     name: "Zenith PROS - Patient Revenue Operating System",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    description: "Patient Revenue Operating System for dental practice revenue recovery, workflow automation, ALICE insights, and Mission Control operations."
+    description: "Patient Revenue Operating System for dental practice revenue recovery, workflow automation, intelligent insights, and Mission Control operations."
   };
 
   return (

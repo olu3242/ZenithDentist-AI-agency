@@ -50,7 +50,7 @@ const sliderConfig: Array<{
 }> = [
   { name: "monthlyAppointments", label: "Monthly Appointments", min: 50, max: 2400, step: 10, detail: "Booked, completed, and at-risk visits per month." },
   { name: "avgAppointmentValue", label: "Average Production Per Visit", min: 100, max: 1600, step: 25, prefix: "$", detail: "Average production tied to a kept visit." },
-  { name: "noShowRate", label: "No Show Rate", min: 0, max: 45, step: 1, suffix: "%", detail: "Schedule risk that ALICE routes into chair-fill plays." },
+  { name: "noShowRate", label: "No Show Rate", min: 0, max: 45, step: 1, suffix: "%", detail: "Schedule risk routed into chair-fill plays." },
   { name: "treatmentAcceptanceRate", label: "Treatment Acceptance Rate", min: 20, max: 95, step: 1, suffix: "%", detail: "Accepted diagnosed care that becomes scheduled production." },
   { name: "recallRate", label: "Recall Rate", min: 25, max: 98, step: 1, suffix: "%", detail: "Active hygiene and recall participation." },
   { name: "providers", label: "Number of Providers", min: 1, max: 24, step: 1, detail: "Clinical capacity available to recover revenue." },
@@ -164,7 +164,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
               <p className="brand-kicker">FREE Revenue Opportunity Assessment™</p>
               <h2 className="mt-3 text-3xl font-black leading-tight text-ink sm:text-4xl">Live Revenue Opportunity Engine</h2>
               <p className="mt-2 max-w-2xl text-sm font-semibold leading-7 text-muted sm:text-base">
-                Drag the sliders to watch revenue recovery, ALICE recommendations, and Practice Health Score update in real time.
+                Drag the sliders to watch revenue recovery, platform recommendations, and Practice Health Score update in real time.
               </p>
             </div>
             <div className="rounded border border-teal/30 bg-teal/10 px-4 py-3 text-center">
@@ -196,7 +196,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
               <div>
                 <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment™</p>
                 <p className="mt-1 text-sm font-semibold leading-6 text-ink">
-                  ALICE has enough signal to generate the executive report, Mission Control lead, and 90-day opportunity snapshot.
+                  The platform has enough signal to generate the executive report, Mission Control lead, and 90-day opportunity snapshot.
                 </p>
               </div>
               {!showLeadGate ? (
@@ -368,7 +368,7 @@ function AssessmentPreview({
     <aside className="sticky top-24 rounded border border-line bg-white p-5 shadow-soft">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="brand-kicker">ALICE Revenue Analysis</p>
+          <p className="brand-kicker">Revenue Analysis</p>
           <h3 className="mt-2 text-2xl font-black text-ink">Revenue Opportunity Report</h3>
         </div>
         <Bot className="h-8 w-8 text-teal" />

@@ -54,7 +54,7 @@ const navItems = [
   ["Screens", "#gallery"],
   ["Leaks", "#leaks"],
   ["Playbooks", "#playbooks"],
-  ["ALICE", "#alice"],
+  ["Intelligence", "#alice"],
   ["Mission Control", "#mission-control"],
   ["PMS Ops", "#pms-ops"],
   ["Assessment", "#roi"]
@@ -99,7 +99,7 @@ const missionTabs: Record<MissionTab, { label: string; metric: string; detail: s
     rows: ["Front desk queue compressed", "Open chair alerts active", "PMS sync checks monitored"]
   },
   alice: {
-    label: "ALICE",
+    label: "Intelligence",
     metric: "14",
     detail: "Current recommendations awaiting review",
     rows: ["Recall cluster at risk", "High-value treatment plan stalled", "Review request route underperforming"]
@@ -117,7 +117,7 @@ const roleWorkspaces: Record<RoleKey, { label: string; title: string; metrics: s
     label: "Front Desk",
     title: "Front Desk Operations Center Sandbox Preview",
     metrics: ["3 unconfirmed high-risk slots", "4.2 min inbound response target", "91% reminder coverage"],
-    queue: ["Confirm 11:00 AM hygiene appointment", "Route cancellation list for Friday openings", "Review ALICE outreach suggestion"]
+    queue: ["Confirm 11:00 AM hygiene appointment", "Route cancellation list for Friday openings", "Review platform outreach suggestion"]
   },
   manager: {
     label: "Office Manager",
@@ -148,7 +148,7 @@ const roleWorkspaces: Record<RoleKey, { label: string; title: string; metrics: s
 const apiRoutes: Record<ApiKey, { label: string; method: "GET"; path: string }> = {
   summary: { label: "Mission Control Summary", method: "GET", path: "/api/mission-control/operational-summary" },
   runtime: { label: "Runtime Health", method: "GET", path: "/api/mission-control/runtime-health" },
-  alice: { label: "ALICE Recommendations", method: "GET", path: "/api/alice/recommendations" },
+  alice: { label: "Practice Intelligence", method: "GET", path: "/api/alice/recommendations" },
   integrations: { label: "Integration Catalog", method: "GET", path: "/api/enterprise/integrations" }
 };
 
@@ -169,7 +169,7 @@ const faqs = [
   },
   {
     question: "How is ROI attributed?",
-    answer: "Each playbook is modeled through trigger, workflow, execution, runtime trace, attribution record, analytics projection, ALICE insight, and Mission Control update."
+    answer: "Each playbook is modeled through trigger, workflow, execution, runtime trace, attribution record, analytics projection, intelligence insight, and Mission Control update."
   }
 ];
 
@@ -325,7 +325,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
               Recover lost revenue. Reduce no-shows. Fill chairs. Grow production.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-              Zenith PROS turns patient operations into a measurable revenue system: Revenue Playbooks, ALICE intelligence, Mission Control, Workflow OS, and PMS operations in one customer-ready landing experience.
+              Zenith PROS turns patient operations into a measurable revenue system: Revenue Playbooks, Practice Intelligence, Mission Control, Workflow OS, and PMS operations in one customer-ready landing experience.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#roi" className="inline-flex h-12 items-center gap-2 rounded bg-teal px-5 text-sm font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90">
@@ -359,7 +359,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
               ))}
             </div>
             <div className="mt-4 rounded border border-teal/20 bg-black/20 p-4 font-mono text-xs leading-6 text-white/62">
-              <p className="text-teal">ALICE diagnostic queue</p>
+              <p className="text-teal">Intelligence diagnostic queue</p>
               <p>Assessments routed: {landingStats.assessments.toLocaleString()}</p>
               <p>Runtime traces monitored: {landingStats.activeAutomations.toLocaleString()} active/completed, {landingStats.runtimeErrorCount.toLocaleString()} failed.</p>
             </div>
@@ -371,7 +371,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
         <div className="mx-auto max-w-7xl px-5">
           <p className="text-center font-mono text-xs font-bold uppercase tracking-widest text-white/45">Dental revenue operations ecosystem</p>
           <div className="mt-7 grid grid-cols-2 gap-3 text-center text-sm font-black uppercase tracking-wide text-white/62 md:grid-cols-6">
-            {["Open Dental", "Dentrix", "Eaglesoft", "Curve", "DSO Ops", "ALICE"].map(item => (
+            {["Open Dental", "Dentrix", "Eaglesoft", "Curve", "DSO Ops"].map(item => (
               <div key={item} className="rounded border border-white/10 bg-white/[0.03] px-3 py-4">{item}</div>
             ))}
           </div>
@@ -380,7 +380,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
 
       <section id="gallery" className="mx-auto max-w-7xl px-5 py-20">
         <div className="flex flex-col justify-between gap-5 border-b border-white/10 pb-8 lg:flex-row lg:items-end">
-          <SectionHeading eyebrow="Integrated Gallery Workspace" title="Screens, clinical spaces, and ALICE actions in one operating story." body="The gallery now mirrors the uploaded workspace: product frames, PMS mapping, operatory hotspot scanning, and action-oriented intelligence cards." />
+          <SectionHeading eyebrow="Integrated Gallery Workspace" title="Screens, clinical spaces, and intelligence actions in one operating story." body="The gallery now mirrors the uploaded workspace: product frames, PMS mapping, operatory hotspot scanning, and action-oriented intelligence cards." />
           <div className="flex w-full max-w-md items-center gap-1 rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-1 font-mono text-xs">
             {(Object.keys(galleryModes) as GalleryMode[]).map(mode => (
               <button
@@ -538,7 +538,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
               </div>
               <p className="mt-5 font-mono text-2xl font-black text-white">{metric}</p>
               <button type="button" className="mt-5 rounded border border-white/10 bg-[color:var(--brand-sidebar)] px-3 py-2 text-xs font-black text-white/70">
-                Queue ALICE action
+                Queue action
               </button>
             </article>
           ))}
@@ -578,17 +578,17 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
       <section id="alice" className="border-y border-white/10 bg-background py-20 text-ink">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="font-mono text-xs font-black uppercase tracking-widest text-blue">ALICE Practice Advisor</p>
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-blue">Practice Intelligence</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">A dental revenue advisor that speaks in actions, not dashboards.</h2>
             <p className="mt-5 text-lg leading-8 text-muted">
-              ALICE summarizes daily performance, identifies revenue opportunities, detects automation risk, and recommends the next operational move for each role.
+              The platform summarizes daily performance, identifies revenue opportunities, detects automation risk, and recommends the next operational move for each role.
             </p>
           </div>
           <div className="rounded border border-line bg-white p-5 shadow-soft">
             <div className="flex items-center gap-3 border-b border-line pb-4">
               <Bot className="h-8 w-8 text-blue" />
               <div>
-                <h3 className="font-black">ALICE Daily Summary</h3>
+                <h3 className="font-black">Daily Performance Summary</h3>
                 <p className="text-sm text-muted">Generated from backend runtime and analytics modules; sandbox copy is labeled where live data is unavailable.</p>
               </div>
             </div>
@@ -596,7 +596,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
               {[
                 "Recall recovery is the highest revenue opportunity today.",
                 "Treatment acceptance follow-up is under target for two providers.",
-                "No-show prevention and chair fill recommendations are routed through ALICE when live signals are available.",
+                "No-show prevention and chair fill recommendations are routed through the platform when live signals are available.",
                 "Mission Control should watch integration writeback latency before go-live."
               ].map(item => (
                 <div key={item} className="flex gap-3 rounded border border-line bg-surface p-3 text-sm text-foreground">
@@ -610,7 +610,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
       </section>
 
       <section id="mission-control" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Mission Control" title="One command surface for revenue, runtime, operations, ALICE, and executive reporting." body="The tabbed preview gives buyers a fast sense of what internal teams and practice leaders will monitor after go-live." />
+        <SectionHeading eyebrow="Mission Control" title="One command surface for revenue, runtime, operations, intelligence, and executive reporting." body="The tabbed preview gives buyers a fast sense of what internal teams and practice leaders will monitor after go-live." />
         <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
           <div className="flex flex-wrap gap-2 border-b border-white/10 pb-4">
             {(Object.keys(missionTabs) as MissionTab[]).map(tab => (
@@ -695,7 +695,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
             <p className="font-mono text-xs font-black uppercase tracking-widest text-blue">FREE Revenue Opportunity Assessment™</p>
             <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Unlock a $1,500 revenue diagnostic before the sales call.</h2>
             <p className="mt-5 text-lg leading-8 text-muted">
-              Model recoverable revenue, generated revenue, protected revenue, Practice Health Score, and ALICE playbook recommendations. $1,500 Consulting Value — FREE.
+              Model recoverable revenue, generated revenue, protected revenue, Practice Health Score, and playbook recommendations. $1,500 Consulting Value — FREE.
             </p>
           </div>
           <div className="rounded border border-line bg-white p-5 shadow-soft">
@@ -715,7 +715,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
       <RoiFunnelForm calendlyUrl={calendlyUrl} />
 
       <section id="deployment" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Installation" title="A 9-step path from assessment to optimization." body="The updated landing page supports the operational sales motion: assessment, provisioning, PMS handshake, data mapping, playbook installation, ALICE activation, Mission Control, and optimization." />
+        <SectionHeading eyebrow="Installation" title="A 9-step path from assessment to optimization." body="The updated landing page supports the operational sales motion: assessment, provisioning, PMS handshake, data mapping, playbook installation, intelligence activation, Mission Control, and optimization." />
         <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-2">
             {[
@@ -725,7 +725,7 @@ export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
               "Data Mapping",
               "Revenue Baseline",
               "Playbook Installation",
-              "ALICE Activation",
+              "Intelligence Activation",
               "Mission Control Go-Live",
               "Optimization Cycle"
             ].map((step, index) => (
