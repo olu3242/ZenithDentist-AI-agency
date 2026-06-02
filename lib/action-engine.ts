@@ -160,6 +160,51 @@ export const workflowCatalog: WorkflowCatalogItem[] = [
     problem: "Practice health needs a composite operating score.",
     expectedOutcome: "Prioritize recommendations by health score impact.",
     measurableOutcomes: ["Revenue Recovered", "Patients Recovered", "Hours Saved"]
+  },
+  {
+    id: "treatment_acceptance_journey",
+    name: "Treatment Acceptance Video Journey",
+    category: "Growth",
+    problem: "Patients need education, benefits, financing, and success proof before accepting treatment.",
+    expectedOutcome: "Increase treatment readiness and schedule accepted care.",
+    measurableOutcomes: ["Revenue Generated", "Revenue Recovered", "Patients Recovered"],
+    lifecycleStages: ["Active Patient", "Inactive"]
+  },
+  {
+    id: "membership_enrollment_journey",
+    name: "Membership Enrollment Video Journey",
+    category: "Growth",
+    problem: "Eligible patients are not consistently enrolled into membership plans.",
+    expectedOutcome: "Increase membership enrollment and retention.",
+    measurableOutcomes: ["Revenue Generated", "Hours Saved"],
+    lifecycleStages: ["Active Patient"]
+  },
+  {
+    id: "review_request_video",
+    name: "Review Request Video",
+    category: "Growth",
+    problem: "Satisfied patients are not consistently converted into reviews.",
+    expectedOutcome: "Increase review completion through provider-personalized video.",
+    measurableOutcomes: ["Reviews Generated", "Hours Saved"],
+    lifecycleStages: ["Active Patient"]
+  },
+  {
+    id: "referral_request_video",
+    name: "Referral Request Video",
+    category: "Growth",
+    problem: "Promoter patients are not consistently converted into referral sources.",
+    expectedOutcome: "Generate referral opportunities with measurable attribution.",
+    measurableOutcomes: ["Revenue Generated", "Patients Recovered"],
+    lifecycleStages: ["Active Patient"]
+  },
+  {
+    id: "patient_30_day_checkin",
+    name: "Patient 30 Day Video Check-In",
+    category: "Operations",
+    problem: "Post-visit engagement signals are not captured early enough to guide next best actions.",
+    expectedOutcome: "Measure relationship health and route review, referral, retention, or recovery actions.",
+    measurableOutcomes: ["Hours Saved", "Reviews Generated", "Revenue Generated"],
+    lifecycleStages: ["Active Patient"]
   }
 ];
 
@@ -183,7 +228,7 @@ export function getWorkflowCatalogItem(workflowId: string) {
 export function buildUniversalActions(surface: "revenue" | "growth" | "operations" | "executive"): UniversalAction[] {
   const workflowIds = {
     revenue: ["recall_due", "appointment_no_show", "treatment_recovery", "reactivation_candidate_detected", "alice_revenue_opportunity_agent"],
-    growth: ["review_request_due", "referral_growth", "lead_created", "alice_growth_agent"],
+    growth: ["review_request_due", "referral_growth", "lead_created", "treatment_acceptance_journey", "membership_enrollment_journey", "review_request_video", "referral_request_video", "alice_growth_agent"],
     operations: ["schedule_gap_fill", "recall_capacity_optimization", "missed_call_detected", "alice_practice_health_agent"],
     executive: ["alice_practice_health_agent", "recall_due", "review_request_due", "schedule_gap_fill"]
   }[surface];
@@ -292,6 +337,7 @@ export function calculateWorkflowOutcomes({
 }
 
 function hrefForWorkflow(workflowId: string) {
+  if (workflowId.includes("journey") || workflowId.includes("video") || workflowId.includes("checkin")) return "/portal/video";
   if (workflowId.includes("review") || workflowId.includes("referral") || workflowId === "lead_created") return "/portal/reviews";
   if (workflowId.includes("schedule") || workflowId.includes("capacity") || workflowId.includes("call")) return "/portal/command";
   if (workflowId.includes("alice")) return "/portal/alice";
@@ -312,7 +358,12 @@ function rootCauseForWorkflow(workflowId: string) {
     missed_call_detected: "Demand signals are being handled manually and inconsistently.",
     alice_revenue_opportunity_agent: "Revenue signals are spread across assessments, forecasts, and runtime outcomes.",
     alice_growth_agent: "Growth signals are fragmented across reviews, referrals, and leads.",
-    alice_practice_health_agent: "Health signals need one prioritization score across revenue, operations, growth, patients, and automation."
+    alice_practice_health_agent: "Health signals need one prioritization score across revenue, operations, growth, patients, and automation.",
+    treatment_acceptance_journey: "Treatment education, financing, and proof points are not sequenced around patient readiness.",
+    membership_enrollment_journey: "Membership eligible patients are not receiving the right benefits message and CTA timing.",
+    review_request_video: "Satisfied patients are not being prompted with a personalized, high-conversion review path.",
+    referral_request_video: "Promoter patients are not being guided into a simple referral conversion moment.",
+    patient_30_day_checkin: "Post-visit attention and relationship signals are not being converted into next best actions."
   };
   return rootCauses[workflowId] ?? "Workflow signals require operator review.";
 }

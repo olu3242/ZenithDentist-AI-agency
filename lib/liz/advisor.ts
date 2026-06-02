@@ -116,7 +116,7 @@ function detectIntent(message: string): LizIntent {
   if (/\b(book|call|demo|meeting|strategy session|speak|talk)\b/.test(text)) return "booking_interest";
   if (/\b(assessment|audit|score|roi|revenue opportunity|practice health)\b/.test(text)) return "assessment_interest";
   if (/\b(price|pricing|cost|plan|subscription)\b/.test(text)) return "pricing_question";
-  if (/\b(product|workflow|automation|recall|review|referral|no-show|treatment|pms|alice|mission control)\b/.test(text)) return "product_question";
+  if (/\b(product|workflow|automation|recall|review|referral|no-show|treatment|membership|video|journey|patient influence|attention score|pms|alice|mission control)\b/.test(text)) return "product_question";
   return "unknown";
 }
 
@@ -192,10 +192,15 @@ function workflowActionsFor(message: string, intent: LizIntent): LizAction[] {
   if (/\b(recall|hygiene|overdue)\b/.test(text)) actions.push(workflowAction("recall-recovery", "Launch Recall Recovery", "recall_due", "/dashboard/recall", "Recover overdue recall patients."));
   if (/\b(review|reputation|google)\b/.test(text)) actions.push(workflowAction("review-campaign", "Launch Review Campaign", "review_request_due", "/dashboard/reviews", "Start review generation workflow."));
   if (/\b(treatment|case acceptance|unscheduled)\b/.test(text)) actions.push(workflowAction("treatment-recovery", "Launch Treatment Recovery", "treatment_recovery", "/dashboard/revenue", "Recover unscheduled treatment opportunity."));
+  if (/\b(treatment video|case acceptance|education video|procedure video|financing video)\b/.test(text)) actions.push(workflowAction("treatment-video-journey", "Launch Treatment Video Journey", "treatment_acceptance_journey", "/portal/video", "Educate patients, track readiness, and attribute treatment acceptance."));
+  if (/\b(membership|member plan|in-house plan)\b/.test(text)) actions.push(workflowAction("membership-video-journey", "Launch Membership Video Journey", "membership_enrollment_journey", "/portal/video", "Convert eligible patients with benefits videos and enrollment CTAs."));
+  if (/\b(video|patient influence|attention score|patient education|journey)\b/.test(text)) actions.push(workflowAction("video-intelligence-center", "Open Video Intelligence", "patient_30_day_checkin", "/portal/video", "Review video journeys, attention scores, conversion signals, and revenue attribution."));
   if (/\b(reactivation|inactive|dormant)\b/.test(text)) actions.push(workflowAction("reactivation", "Launch Reactivation Campaign", "reactivation_candidate_detected", "/dashboard/recall", "Reactivate dormant patients."));
   if (/\b(lead|nurture|prospect)\b/.test(text)) actions.push(workflowAction("lead-nurture", "Launch Lead Nurture", "lead_created", "/dashboard/workflows", "Nurture inbound leads and assessment requests."));
   if (/\b(referral|promoter)\b/.test(text)) actions.push(workflowAction("referral-campaign", "Launch Referral Campaign", "referral_growth", "/dashboard/reviews", "Turn promoters into referral sources."));
+  if (/\b(referral video|promoter video)\b/.test(text)) actions.push(workflowAction("referral-video", "Launch Referral Video", "referral_request_video", "/portal/video", "Turn promoters into referral sources with trackable video CTAs."));
   if (/\b(no-show|no show|missed appointment|chair fill)\b/.test(text)) actions.push(workflowAction("no-show-recovery", "Launch No Show Recovery", "appointment_no_show", "/dashboard/revenue", "Recover missed appointments and protect chair time."));
+  if (/\b(review video|google review video|reputation video)\b/.test(text)) actions.push(workflowAction("review-video", "Launch Review Video", "review_request_video", "/portal/video", "Convert satisfied patients into reviews with provider-personalized video."));
   if (!actions.length && intent === "product_question") actions.push(workflowAction("revenue-opportunity", "Open Revenue Recovery", "alice_revenue_opportunity_agent", "/dashboard/revenue", "Let ALICE prioritize the highest revenue opportunity."));
   return actions;
 }
@@ -236,6 +241,8 @@ function defaultSuggestedQuestions(intent: LizIntent) {
   return [
     "How much revenue am I losing?",
     "How does Recall Recovery work?",
+    "How do Smart Video Journeys work?",
+    "Can video improve treatment acceptance?",
     "Can Zenith integrate with OpenDental?",
     "How does ALICE help my practice?",
     "How much does Zenith cost?"

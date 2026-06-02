@@ -78,6 +78,7 @@ Owner:
 | 20260616000000 | Repair core tenancy bootstrap and product/runtime support tables | `20260615000000`, `202605210003`, `202605310001` | `organizations`, `profiles`, `organization_members`, `onboarding_states`, `storefronts`, `products`, `orders`, `workflow_events`, `platform_events`, `tenant_onboarding_runs` | Restore backup before migration or apply forward migration to archive/drop newly added repair tables after data export | High | Zenith Platform |
 | 20260617000000 | Add LIZ actionable advisor telemetry persistence | `20260616000000` | `liz_action_events` | Restore backup or apply forward rollback to archive/drop LIZ telemetry events after export | Medium | Zenith Platform |
 | 20260618000000 | Add production evidence and certification proof tables | `20260616000000`, `20260617000000` | `alice_recommendation_traces`, `workflow_execution_evidence`, `revenue_attribution_records`, `mission_control_events`, `mission_control_actions`, `mission_control_outcomes`, `connector_certifications`, `forecast_runs`, `report_generation_log`, `role_workspace_certifications`, `claim_registry` | Restore backup or apply forward rollback to archive/drop certification evidence tables after export | High | Zenith Platform |
+| 20260619000000 | Add Smart Video Journey and Patient Influence Engine tables | `20260616000000`, `20260618000000` | `video_categories`, `video_library`, `video_templates`, `video_campaigns`, `video_deliveries`, `video_engagement_events`, `provider_video_profiles`, `video_attribution_records`, `decision_journeys`, `journey_steps`, `journey_outcomes`, `behavioral_signals`, `engagement_patterns`, `conversion_profiles` | Restore backup or apply forward rollback to archive/drop video intelligence tables after export | High | Zenith Platform |
 
 ### Migration ID: 20260616000000
 
@@ -170,6 +171,46 @@ Affected Tables:
 Rollback Strategy:
 
 Restore a pre-migration database backup if applied to the wrong project. If evidence rows are already captured, export all affected tables, then apply a forward rollback migration to archive or drop the evidence tables.
+
+Risk Level:
+
+High
+
+Owner:
+
+Zenith Platform
+
+### Migration ID: 20260619000000
+
+Purpose:
+
+Add the tenant-scoped Smart Video Journey and Patient Influence Engine schema for provider video libraries, patient decision journeys, delivery callbacks, behavioral signals, attention scoring, conversion profiles, outcome tracking, and revenue attribution.
+
+Dependencies:
+
+- 20260616000000
+- 20260618000000
+
+Affected Tables:
+
+- `video_categories`
+- `provider_video_profiles`
+- `video_library`
+- `video_templates`
+- `video_campaigns`
+- `decision_journeys`
+- `journey_steps`
+- `video_deliveries`
+- `video_engagement_events`
+- `behavioral_signals`
+- `engagement_patterns`
+- `conversion_profiles`
+- `journey_outcomes`
+- `video_attribution_records`
+
+Rollback Strategy:
+
+Restore a pre-migration database backup if applied to the wrong project. If video engagement or attribution rows are already captured, export all affected tables, then apply a forward rollback migration to archive or drop the video intelligence tables.
 
 Risk Level:
 

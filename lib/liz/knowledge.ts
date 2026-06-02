@@ -3,8 +3,9 @@ import "server-only";
 import { workflowCatalog } from "@/lib/action-engine";
 import { automationRegistry } from "@/lib/automation/registry";
 import { PRODUCT_CATALOG } from "@/lib/platform-core/product-catalog";
+import { videoJourneyBlueprints } from "@/lib/video-intelligence";
 
-export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "roi_framework" | "faq_library";
+export type LizKnowledgeSource = "product_catalog" | "workflow_catalog" | "automation_catalog" | "video_intelligence" | "roi_framework" | "faq_library";
 
 export interface LizKnowledgeRecord {
   id: string;
@@ -82,6 +83,20 @@ export function buildLizKnowledgeBase(): LizKnowledgeRecord[] {
       body: `${automation.description} Triggers: ${automation.triggers.join(", ")}. Actions: ${automation.actions.join(", ")}. Intelligence outputs: ${automation.intelligenceOutputs.join(", ")}.`,
       tags: [automation.domain, automation.id, automation.name, ...automation.triggers, ...automation.actions]
     })),
+    ...videoJourneyBlueprints.map(journey => ({
+      id: `video-${journey.id}`,
+      source: "video_intelligence" as const,
+      title: journey.name,
+      body: `${journey.primaryOutcome} Journey stages: ${journey.stages.join(", ")}. Workflow: ${journey.workflowId}. Revenue influence: ${journey.revenueInfluence}`,
+      tags: ["video", "patient influence", "patient education", "journey", journey.type, journey.workflowId, ...journey.stages]
+    })),
+    {
+      id: "video-influence-engine",
+      source: "video_intelligence",
+      title: "Smart Video Journey and Patient Influence Engine",
+      body: "Zenith uses PMS events, Workflow OS, ALICE classification, video selection, behavioral signals, next-best-action recommendations, outcomes, evidence, and attribution to influence attendance, recall compliance, treatment acceptance, membership enrollment, reviews, referrals, and patient lifetime value. n8n owns SMS, email, WhatsApp, video delivery, external integrations, and webhook callbacks while Workflow OS owns state, logic, decisions, evidence, attribution, Mission Control, and ALICE.",
+      tags: ["video intelligence", "patient influence", "treatment acceptance", "membership", "review growth", "referral growth", "attention score", "attribution", "n8n"]
+    },
     {
       id: "roi-framework",
       source: "roi_framework",

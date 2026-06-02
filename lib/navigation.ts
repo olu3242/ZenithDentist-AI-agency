@@ -14,6 +14,7 @@ import {
   HeartPulse,
   LayoutDashboard,
   Network,
+  PlayCircle,
   PlugZap,
   Radar,
   RefreshCw,
@@ -82,6 +83,7 @@ export const portalNavItems: NavItem[] = [
   { href: "/portal/recall", label: "Recall", description: "Recall recovery pipeline", roles: ["practice_owner", "super_admin"], icon: RefreshCw },
   { href: "/portal/locations", label: "Locations", description: "Multi-location performance", roles: ["practice_owner", "super_admin"], icon: Building2 },
   { href: "/portal/reports", label: "Reports", description: "Executive reporting", roles: ["practice_owner", "super_admin"], icon: FileText },
+  { href: "/portal/video", label: "Video Intelligence", description: "Patient influence journeys, attention scores, and video attribution", roles: ["practice_owner", "super_admin"], icon: PlayCircle },
   { href: "/portal/simulations", label: "Simulations", description: "Operational scenario modeling", roles: ["practice_owner", "super_admin"], icon: SlidersHorizontal }
 ];
 

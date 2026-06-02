@@ -28,7 +28,15 @@ export const dentalAutomationLibrary = [
   { workflowId: "ai_followup_required", category: "Internal Operations", pack: "Post Treatment Check-In" },
   { workflowId: "alice_revenue_opportunity_agent", category: "AI", pack: "Revenue Opportunity Agent" },
   { workflowId: "alice_practice_health_agent", category: "AI", pack: "Practice Health Agent" },
-  { workflowId: "alice_growth_agent", category: "AI", pack: "Growth Agent" }
+  { workflowId: "alice_growth_agent", category: "AI", pack: "Growth Agent" },
+  { workflowId: "welcome_patient", category: "Patient Influence", pack: "New Patient Video Journey" },
+  { workflowId: "cleaning_journey", category: "Patient Influence", pack: "Cleaning Video Journey" },
+  { workflowId: "treatment_acceptance_journey", category: "Patient Influence", pack: "Treatment Acceptance Video Journey" },
+  { workflowId: "membership_enrollment_journey", category: "Patient Influence", pack: "Membership Enrollment Video Journey" },
+  { workflowId: "review_request_video", category: "Patient Influence", pack: "Review Request Video Journey" },
+  { workflowId: "referral_request_video", category: "Patient Influence", pack: "Referral Request Video Journey" },
+  { workflowId: "patient_30_day_checkin", category: "Patient Influence", pack: "Patient 30 Day Video Check-In" },
+  { workflowId: "financing_journey", category: "Patient Influence", pack: "Financing Video Journey" }
 ] as const;
 
 export interface AutomationPerformance {

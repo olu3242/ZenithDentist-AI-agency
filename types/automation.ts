@@ -10,6 +10,7 @@ export type AutomationDomain =
   | "compliance"
   | "mission_control"
   | "lead_operations"
+  | "patient_influence"
   | "ai";
 
 export type AutomationCoverageClassification =
