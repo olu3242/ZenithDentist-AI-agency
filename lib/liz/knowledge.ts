@@ -102,15 +102,15 @@ export function buildLizKnowledgeBase(): LizKnowledgeRecord[] {
       id: "video-influence-engine",
       source: "video_intelligence",
       title: "Smart Video Journey and Patient Influence Engine",
-      body: "Zenith uses PMS events, Workflow OS, ALICE classification, video selection, behavioral signals, next-best-action recommendations, outcomes, evidence, and attribution to influence attendance, recall compliance, treatment acceptance, membership enrollment, reviews, referrals, and patient lifetime value. n8n owns SMS, email, WhatsApp, video delivery, external integrations, and webhook callbacks while Workflow OS owns state, logic, decisions, evidence, attribution, Mission Control, and ALICE.",
-      tags: ["video intelligence", "patient influence", "treatment acceptance", "membership", "review growth", "referral growth", "attention score", "attribution", "n8n"]
+      body: "Zenith uses PMS events, Workflow OS, ALICE classification, video selection, behavioral signals, next-best-action recommendations, outcomes, evidence, and attribution to influence attendance, recall compliance, treatment acceptance, membership enrollment, reviews, referrals, and patient lifetime value. Workflow OS owns SMS, email, WhatsApp, video delivery via internal Communication Hub adapters; n8n is used only for external third-party connectors while Workflow OS owns state, logic, decisions, evidence, attribution, Mission Control, and ALICE.",
+      tags: ["video intelligence", "patient influence", "treatment acceptance", "membership", "review growth", "referral growth", "attention score", "attribution", "communication_hub"]
     },
     {
       id: "video-engagement-os",
       source: "video_engagement_os",
       title: "Video Engagement OS",
-      body: "Zenith maps videos to patient journeys rather than directly to treatments. Treatment type selects the right journey. Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing. n8n owns outbound SMS, email, WhatsApp, provider integrations, and callbacks.",
-      tags: ["video", "patient influence", "video engagement os", "smart video journey", "alice", "n8n", "attribution"]
+      body: "Zenith maps videos to patient journeys rather than directly to treatments. Treatment type selects the right journey. Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing. The Communication Hub owns outbound SMS, email, WhatsApp delivery; n8n is reserved for external third-party integrations only.",
+      tags: ["video", "patient influence", "video engagement os", "smart video journey", "alice", "communication_hub", "attribution"]
     },
     {
       id: "automation-audit-framework",
