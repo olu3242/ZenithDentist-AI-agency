@@ -40,6 +40,14 @@ export async function POST(request: Request) {
   });
 
   if (action.actionType === "workflow" && action.workflowId) {
+    // Workflow execution requires an internal operator token — public callers are denied.
+    const internalToken =
+      (request as any).cookies?.get?.("zenith_internal_token")?.value ??
+      (request.headers.get("x-internal-token") || "");
+    const expectedToken = process.env.ZENITH_INTERNAL_TOKEN;
+    if (!expectedToken || internalToken !== expectedToken) {
+      return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 401 });
+    }
     await executeRegisteredAutomation(action.workflowId);
   }
 

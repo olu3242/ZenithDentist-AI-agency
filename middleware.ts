@@ -133,7 +133,6 @@ function isProtectedApiPath(pathname: string) {
     "/api/gtm-command-center",
     "/api/mission-control",
     "/api/opendental",
-    "/api/reports"
   ].some(prefix => pathname.startsWith(prefix));
 }
 
@@ -169,7 +168,6 @@ export const config = {
     "/api/autonomous/:path*",
     "/api/enterprise/:path*",
     "/api/opendental/:path*",
-    "/api/reports/:path*",
     "/lead-operations/:path*",
     "/client-operations/:path*",
     "/gtm-command-center/:path*"
