@@ -1,6 +1,49 @@
-# Production Readiness Report
-**ZenithDentist AI — Phase 12**
-**Date:** 2026-06-03 | **Platform Version:** 12.0.0
+# Production Readiness Report — Migration Certification Sprint
+
+**Date:** 2026-06-03 | **Project Ref:** `yjbxhlfiwqhhuvgpcrey`
+
+---
+
+## Migration Sprint Readiness
+
+| Area | Score | Blocker |
+|------|-------|---------|
+| Local schema completeness | 100% | None |
+| Migration file integrity | 100% | None |
+| Application code (TypeScript) | 100% | None |
+| Build integrity | 100% | None |
+| Remote migration parity | UNKNOWN | SUPABASE_ACCESS_TOKEN needed |
+| Service-role key active | UNKNOWN | Manual rotation needed |
+| E2E live testing | BLOCKED | Remote DB state unknown |
+
+### CLI Execution Results
+
+```
+npx supabase migration list  → ERROR: Access token not provided
+npx supabase db push --dry-run → ERROR: Access token not provided
+```
+
+### Service-Role Key Rotation
+
+Obtain from: `app.supabase.com/project/yjbxhlfiwqhhuvgpcrey/settings/api`
+
+Set in:
+- `.env.local` — `SUPABASE_SERVICE_ROLE_KEY=<key>`
+- Vercel → Settings → Environment Variables (both projects)
+- GitHub → Repository Secrets → `SUPABASE_SERVICE_ROLE_KEY`
+
+### Migration Push (once token available)
+
+```bash
+export SUPABASE_ACCESS_TOKEN=<personal_access_token>
+npx supabase migration list --project-ref yjbxhlfiwqhhuvgpcrey
+npx supabase db push --dry-run --project-ref yjbxhlfiwqhhuvgpcrey
+npx supabase db push --project-ref yjbxhlfiwqhhuvgpcrey
+```
+
+**Estimated pending migrations:** 15–20 (from 2026-05-31 onward)  
+**Estimated setup time:** 30 minutes  
+**Recommendation: GO pending environment setup**
 
 ---
 

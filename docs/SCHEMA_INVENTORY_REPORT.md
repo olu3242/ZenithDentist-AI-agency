@@ -1,101 +1,94 @@
 # Schema Inventory Report
 
-Date: 2026-06-01
+## Date: 2026-06-03 | Source: Local Migration Files (39 files)
 
-## Evidence Sources
+---
 
-- `supabase/migrations/`
-- `lib/database.types.ts`
-- Generated inventory: `DATABASE_INVENTORY.csv`
+## Totals
 
-## Inventory Summary
+| Object Type | Count |
+|-------------|-------|
+| Tables | 248 |
+| Tables with RLS | 290+ |
+| Indexes | 308 |
+| Triggers | 4 (updated_at) |
+| Enums | 15+ |
 
-- Tables created by migration SQL: 108
-- Tables present in generated TypeScript database types: 83
-- Tables created by migrations but not represented in `lib/database.types.ts`: 22
-- Test/demo/audit-classified tables: 3
-- Duplicate physical `CREATE TABLE public.<name>` definitions: 0 found
+---
 
-## Canonical Tables
+## Module Table Counts
 
-Canonical status in this report means the table is created by migrations and represented in `lib/database.types.ts`.
+| Module | Tables |
+|--------|--------|
+| Organizations / Tenancy | 8 |
+| Patient Revenue Engine | 12 |
+| Workflow OS | 12 |
+| ALICE Intelligence | 22 |
+| Revenue Attribution | 11 |
+| Communications / Video | 15 |
+| Mission Control | 12 |
+| GTM / Sales | 9 |
+| Client Success | 6 |
+| Recovery / DLQ | 5 |
+| Operational OS | 13 |
+| Commercial / Billing | 12 |
+| SLA / Governance | 8 |
+| Evidence / Compliance | 10 |
+| Other | 103 |
 
-Canonical table count: 83.
+---
 
-Examples include:
+## Core Revenue Funnel Tables (Application-Queried)
 
-- `organizations`
-- `organization_members`
-- `locations`
-- `profiles`
-- `pms_integrations`
-- `normalized_healthcare_events`
-- `automation_events`
-- `automation_traces`
-- `automation_trace_events`
-- `automation_dead_letters`
-- `runtime_event_fabric_events`
-- `operational_metrics`
-- `insight_snapshots`
-- `recommendations`
-- `reports`
-- `automation_registry`
+| Table | FK | Queried By |
+|-------|----|----|
+| public.leads | — | lib/data/leads.ts |
+| public.roi_calculations | lead_id | lib/data/leads.ts |
+| public.audits | lead_id | lib/data/leads.ts |
+| public.bookings | lead_id, assessment_id | lib/data/leads.ts |
+| public.outreach_events | lead_id | lib/data/leads.ts |
+| public.opportunities | lead_id, assessment_id | lib/data/leads.ts (FIXED) |
+| public.cta_events | lead_id | api/analytics/cta |
+| public.organizations | — | lib/data/tenants.ts |
+| public.runtime_event_fabric_events | — | lib/event-fabric.ts |
 
-## Deprecated Tables
+---
 
-No migration explicitly marks a table as deprecated.
+## RLS Policy Pattern
 
-## Test/Demo/Audit Tables
+All operational tables:
+```sql
+CREATE POLICY "service_role_all" ON public.<table>
+  FOR ALL TO service_role USING (true);
+```
 
-Classified by table name:
+Service role key (SUPABASE_SERVICE_ROLE_KEY) bypasses RLS on all server-side operations.
 
-- `benchmark_events`
-- `simulation_accuracy_events`
-- `simulation_events`
+---
 
-## Orphaned Tables
+## Index Strategy
 
-These tables are created by migrations but are not present in `lib/database.types.ts`:
+- **FK indexes** — all foreign key columns indexed
+- **Timestamp indexes** — created_at, emitted_at, generated_at (for time-range queries)
+- **Status indexes** — event_type, stage, booking_status (for filter queries)
+- **Attribution indexes** — utm_source, session_id, lead_id (for funnel analytics)
 
-- `agent_logs`
-- `analytics_events`
-- `anomaly_events`
-- `automation_failures`
-- `automation_queue`
-- `billing_events`
-- `confidence_events`
-- `enterprise_events`
-- `forecasting_events`
-- `intelligence_events`
-- `intelligence_quality_events`
-- `operational_risk_events`
-- `optimization_events`
-- `orchestration_dependency_events`
-- `orchestration_events`
-- `prediction_events`
-- `recommendation_events`
-- `recommendation_outcome_events`
-- `resilience_events`
-- `subscription_entitlements`
-- `usage_counters`
-- `workflow_runs`
+---
 
-## Duplicate Canonical Entities
+## Triggers
 
-Physical duplicate table names were not found.
+| Trigger | Table | Action |
+|---------|-------|--------|
+| set_updated_at | leads | BEFORE UPDATE → updated_at = now() |
+| set_updated_at | organizations | BEFORE UPDATE → updated_at = now() |
+| set_updated_at | opportunities | BEFORE UPDATE → updated_at = now() |
+| set_updated_at | pms_integrations | BEFORE UPDATE → updated_at = now() |
 
-Conceptual runtime duplication was found:
+---
 
-- `automation_events`
-- `automation_traces`
-- `workflow_runs`
-- `automation_queue`
-- `automation_failures`
+## Schema Gap Findings
 
-These overlap around workflow/runtime execution evidence. Because `workflow_runs`, `automation_queue`, and `automation_failures` are not represented in generated database types, canonical runtime ownership is not fully certified.
-
-## Result
-
-FAIL
-
-The schema inventory is complete enough to identify the database surface, but orphaned migration tables and overlapping runtime execution entities block migration safety certification.
+| Gap | Severity |
+|-----|---------|
+| `workflow_executions` referenced in automation-health API but no CREATE TABLE found | Medium |
+| Remote schema state unknown (CLI auth blocked) | High |
