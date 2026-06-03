@@ -54,7 +54,7 @@ const sliderConfig: Array<{
   { name: "treatmentAcceptanceRate", label: "Treatment Acceptance Rate", min: 20, max: 95, step: 1, suffix: "%", detail: "Accepted diagnosed care that becomes scheduled production." },
   { name: "recallRate", label: "Recall Rate", min: 25, max: 98, step: 1, suffix: "%", detail: "Active hygiene and recall participation." },
   { name: "providers", label: "Number of Providers", min: 1, max: 24, step: 1, detail: "Clinical capacity available to recover revenue." },
-  { name: "locations", label: "Number of Locations", min: 1, max: 40, step: 1, detail: "Practice footprint for Mission Control routing." }
+  { name: "locations", label: "Number of Locations", min: 1, max: 40, step: 1, detail: "Practice footprint across your locations." }
 ];
 
 export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
@@ -196,7 +196,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
               <div>
                 <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment™</p>
                 <p className="mt-1 text-sm font-semibold leading-6 text-ink">
-                  The platform has enough signal to generate the executive report, Mission Control lead, and 90-day opportunity snapshot.
+                  Your practice profile is complete. Unlock your personalized Practice Growth Report and 90-day opportunity snapshot.
                 </p>
               </div>
               {!showLeadGate ? (
@@ -329,7 +329,7 @@ function LiveChart({ projection }: { projection: ReturnType<typeof calculateReve
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-wider text-teal">Live KPI Feed</p>
-          <h3 className="mt-2 text-xl font-black">Mission Control Results</h3>
+          <h3 className="mt-2 text-xl font-black">Revenue Breakdown</h3>
         </div>
         <TrendingUp className="h-6 w-6 text-gold" />
       </div>

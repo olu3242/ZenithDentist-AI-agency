@@ -2,841 +2,634 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
-  BarChart3,
-  Bot,
   CalendarCheck,
   CheckCircle2,
   ChevronDown,
-  ClipboardCheck,
-  DatabaseZap,
-  Gauge,
+  ChevronRight,
   MessageSquare,
+  Phone,
   RefreshCw,
   ShieldCheck,
   Sparkles,
   Stethoscope,
   TrendingUp,
   Users,
-  Workflow,
-  Zap
+  ClipboardCheck
 } from "lucide-react";
-import { LEGAL_ENTITY } from "@/lib/legal-entity";
 import type { LucideIcon } from "lucide-react";
 import { ZenithLogo } from "@/components/branding/ZenithLogo";
-import { OfflineState } from "@/components/ui/canonical";
 import { RoiFunnelForm } from "@/components/public/roi-funnel-form";
-import { brandConfig } from "@/lib/brand";
+import type { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 type ProsLandingProps = {
-  calendlyUrl: string;
   landingStats: {
-    revenueRecovered: number;
-    assessments: number;
-    practiceHealthScore: number;
-    runtimeOperationalScore: number;
-    activeAutomations: number;
-    runtimeErrorCount: number;
+    assessmentCount: number;
+    revenueRecovery: number;
   };
+  legalEntity: typeof LEGAL_ENTITY;
 };
 
-type MissionTab = "revenue" | "runtime" | "operations" | "alice" | "executive";
-type RoleKey = "frontdesk" | "manager" | "provider" | "owner" | "dso";
-type ApiKey = "summary" | "runtime" | "alice" | "integrations";
-type GalleryMode = "demo" | "sandbox" | "live";
-
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
 const navItems = [
-  ["Platform", "#platform"],
-  ["Screens", "#gallery"],
-  ["Leaks", "#leaks"],
-  ["Playbooks", "#playbooks"],
-  ["Intelligence", "#alice"],
-  ["Mission Control", "#mission-control"],
-  ["PMS Ops", "#pms-ops"],
-  ["Assessment", "#roi"]
+  ["Assessment", "#assessment"],
+  ["Solutions", "#solutions"],
+  ["Results", "#results"],
+  ["About", "#about"],
+  ["Case Studies", "#case-studies"],
+  ["Contact", "#contact"]
 ] as const;
 
 const revenueLeaks = [
-  { title: "No-show leakage", value: "18-25%", detail: "Unconfirmed patients and late cancellations leave production unused.", icon: CalendarCheck },
-  { title: "Recall decay", value: "40-60%", detail: "Patients due for hygiene are not consistently recovered.", icon: RefreshCw },
-  { title: "Treatment stall", value: "$42K", detail: "Diagnosed care sits unscheduled without structured follow-up.", icon: Stethoscope },
-  { title: "Chair gaps", value: "6.4 hrs", detail: "Open operatory time is detected too late to refill.", icon: Gauge },
-  { title: "Review drag", value: "12/mo", detail: "Completed visits do not reliably convert into public proof.", icon: MessageSquare },
-  { title: "Referral drift", value: "22%", detail: "High-satisfaction patients are not routed into referral loops.", icon: Users },
-  { title: "Admin overload", value: "60 hrs", detail: "Manual outreach consumes front desk capacity every month.", icon: ClipboardCheck }
-] satisfies Array<{ title: string; value: string; detail: string; icon: LucideIcon }>;
+  { title: "Missed Recalls", stat: "40–60%", detail: "Of hygiene patients fall out of the recall cycle every year.", icon: RefreshCw },
+  { title: "Unscheduled Treatment", stat: "$42,000+", detail: "In diagnosed care sits unscheduled in the average practice.", icon: Stethoscope },
+  { title: "Inactive Patients", stat: "Lost", detail: "Inactive patients represent the largest single hidden opportunity.", icon: Users },
+  { title: "Unanswered Calls", stat: "Missed", detail: "Missed calls convert to missed appointments. Most practices never track this.", icon: Phone },
+  { title: "No-Show Leakage", stat: "18–25%", detail: "Of confirmed appointments result in empty chairs.", icon: CalendarCheck },
+  { title: "Poor Follow-Up", stat: "60 hrs", detail: "Of front desk time spent on manual outreach that still underperforms.", icon: ClipboardCheck },
+  { title: "Review Gaps", stat: "12/mo", detail: "Satisfied patients leave without leaving a review. Growth slows quietly.", icon: MessageSquare }
+] satisfies Array<{ title: string; stat: string; detail: string; icon: LucideIcon }>;
 
-const playbooks = [
-  { title: "No Show Prevention", trigger: "48h, 24h, 2h confirmation windows", output: "Protected production and fewer empty chairs", icon: ShieldCheck },
-  { title: "Recall Recovery", trigger: "90, 180, 365 day patient cohorts", output: "Recovered hygiene and restorative opportunities", icon: RefreshCw },
-  { title: "Chair Fill", trigger: "Open chair inventory and cancellation risk", output: "Backfilled schedule gaps with attributable revenue", icon: CalendarCheck },
-  { title: "Treatment Acceptance", trigger: "Unscheduled diagnosed treatment plans", output: "Accepted care follow-up and projected production", icon: TrendingUp },
-  { title: "Review Growth", trigger: "Completed appointment and sentiment routing", output: "More reviews without front desk chasing", icon: Sparkles },
-  { title: "Referral Growth", trigger: "Promoters, completed care, and household signals", output: "Patient-led growth with measurable influence", icon: Users }
-] satisfies Array<{ title: string; trigger: string; output: string; icon: LucideIcon }>;
+const lizInsights = [
+  { label: "127 overdue hygiene patients", opportunity: "$18,400", type: "Recall Recovery" },
+  { label: "42 unscheduled treatment plans", opportunity: "$31,200", type: "Treatment Acceptance" },
+  { label: "Patient retention trending down", opportunity: "−$12,000 / yr", type: "Retention Risk" }
+];
 
-const missionTabs: Record<MissionTab, { label: string; metric: string; detail: string; rows: string[] }> = {
-  revenue: {
-    label: "Revenue",
-    metric: "$142,850",
-    detail: "Recovered, generated, and protected revenue view",
-    rows: ["Recall recovery: $18,000 projected", "No-show prevention: $9,800 protected", "Treatment acceptance: $42,500 generated"]
-  },
-  runtime: {
-    label: "Runtime",
-    metric: "99.4%",
-    detail: "Execution health across active workflows",
-    rows: ["Dead letters: 0 active", "Retry queue: 2 monitored", "Workflow completion rate: 96.8%"]
-  },
-  operations: {
-    label: "Ops",
-    metric: "91.6%",
-    detail: "Automation coverage for practice workflows",
-    rows: ["Front desk queue compressed", "Open chair alerts active", "PMS sync checks monitored"]
-  },
-  alice: {
-    label: "Intelligence",
-    metric: "14",
-    detail: "Current recommendations awaiting review",
-    rows: ["Recall cluster at risk", "High-value treatment plan stalled", "Review request route underperforming"]
-  },
-  executive: {
-    label: "Exec",
-    metric: "A-",
-    detail: "Weekly leadership operating summary",
-    rows: ["Practice health: 94/100", "Revenue opportunity score: 88/100", "Expansion readiness: monitored"]
-  }
-};
-
-const roleWorkspaces: Record<RoleKey, { label: string; title: string; metrics: string[]; queue: string[] }> = {
-  frontdesk: {
-    label: "Front Desk",
-    title: "Front Desk Operations Center Sandbox Preview",
-    metrics: ["3 unconfirmed high-risk slots", "4.2 min inbound response target", "91% reminder coverage"],
-    queue: ["Confirm 11:00 AM hygiene appointment", "Route cancellation list for Friday openings", "Review platform outreach suggestion"]
-  },
-  manager: {
-    label: "Office Manager",
-    title: "Office Manager System Dashboard Sandbox Preview",
-    metrics: ["$12,500 daily yield target", "9.2 admin hours saved", "100% sync integrity check"],
-    queue: ["Approve high-intent recall batch", "Review schedule utilization", "Validate PMS writeback exceptions"]
-  },
-  provider: {
-    label: "Provider",
-    title: "Provider Clinical Tracker Sandbox Preview",
-    metrics: ["74.2% acceptance pipeline", "$3,450 daily production", "42 min chair efficiency"],
-    queue: ["Review stalled scaling treatment", "Prioritize same-day care opportunity", "Prepare restorative follow-up list"]
-  },
-  owner: {
-    label: "Owner",
-    title: "Practice Owner Executive Dashboard Sandbox Preview",
-    metrics: ["$142,850 recovered revenue", "96.4 practice health score", "420% audited ROI model"],
-    queue: ["Review monthly attribution", "Approve next playbook expansion", "Compare production lift by provider"]
-  },
-  dso: {
-    label: "DSO",
-    title: "Enterprise Portfolio Workspace Sandbox Preview",
-    metrics: ["12 locations benchmarked", "99.4% isolation score", "+12.4% growth delta"],
-    queue: ["Isolate below-target locations", "Review benchmark variance", "Approve multi-practice rollout"]
-  }
-};
-
-const apiRoutes: Record<ApiKey, { label: string; method: "GET"; path: string }> = {
-  summary: { label: "Mission Control Summary", method: "GET", path: "/api/mission-control/operational-summary" },
-  runtime: { label: "Runtime Health", method: "GET", path: "/api/mission-control/runtime-health" },
-  alice: { label: "Practice Intelligence", method: "GET", path: "/api/alice/recommendations" },
-  integrations: { label: "Integration Catalog", method: "GET", path: "/api/enterprise/integrations" }
-};
-
-const galleryModes: Record<GalleryMode, { label: string; revenue: string; health: string; status: string }> = {
-  demo: { label: "Sandbox Sample", revenue: "$142,850", health: "93 / 100", status: "Sandbox sample adapter" },
-  sandbox: { label: "Sandbox", revenue: "$218,400", health: "96 / 100", status: "Sandbox replay active" },
-  live: { label: "Live Bus", revenue: "$1,248,500", health: "98 / 100", status: "Production bus view" }
-};
-
-const faqs = [
+const gallerySlides = [
   {
-    question: "Is this replacing the dental PMS?",
-    answer: "No. PROS is an operating layer around the PMS. It reads operational signals, runs revenue playbooks, and pushes teams toward measurable recovery workflows."
+    id: "missed",
+    headline: "Missed Opportunities Add Up",
+    caption: "Revenue opportunities disappear from your practice every day — silently.",
+    image: "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=900&q=80",
+    alt: "Empty dental operatory prepared for patient care",
+    type: "image" as const
   },
   {
-    question: "Can it support a first dental pilot?",
-    answer: "The landing page now routes prospects into onboarding, ROI review, playbook education, and product workspaces. Live deployment still depends on the environment and tenant controls being open and verified."
+    id: "patients",
+    headline: "Patients Fall Through The Cracks",
+    caption: "Inactive patients often represent the largest hidden growth opportunity.",
+    image: "https://images.unsplash.com/photo-1588776814546-1ffbb172d8e5?auto=format&fit=crop&w=900&q=80",
+    alt: "Dental patient consultation",
+    type: "image" as const
   },
   {
-    question: "How is ROI attributed?",
-    answer: "Each playbook is modeled through trigger, workflow, execution, runtime trace, attribution record, analytics projection, intelligence insight, and Mission Control update."
+    id: "liz",
+    headline: "LIZ Identifies What Matters",
+    caption: "See exactly where your revenue opportunities exist — prioritized by impact.",
+    image: null,
+    alt: "",
+    type: "liz" as const
+  },
+  {
+    id: "action",
+    headline: "Action Creates Growth",
+    caption: "Consistent, intelligent follow-up drives better outcomes for patients and practices.",
+    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=900&q=80",
+    alt: "Dental patient care moment",
+    type: "image" as const
+  },
+  {
+    id: "results",
+    headline: "Predictable, Measurable Growth",
+    caption: "Know where to focus next. Every week, every month.",
+    image: null,
+    alt: "",
+    type: "score" as const
   }
 ];
 
-export function ProsLanding({ calendlyUrl, landingStats }: ProsLandingProps) {
-  const [apiOpen, setApiOpen] = useState(false);
-  const [apiResponses, setApiResponses] = useState<Record<ApiKey, string>>({
-    summary: "{\"status\":\"idle\"}",
-    runtime: "{\"status\":\"idle\"}",
-    alice: "{\"status\":\"idle\"}",
-    integrations: "{\"status\":\"idle\"}"
-  });
-  const [missionTab, setMissionTab] = useState<MissionTab>("revenue");
-  const [role, setRole] = useState<RoleKey>("owner");
-  const [pms, setPms] = useState("Open Dental");
-  const [galleryMode, setGalleryMode] = useState<GalleryMode>("demo");
-  const [hotspotOpen, setHotspotOpen] = useState(false);
-  const [installStep, setInstallStep] = useState(1);
-  const [monthlyAppointments, setMonthlyAppointments] = useState(720);
-  const [visitValue, setVisitValue] = useState(485);
-  const [noShowRate, setNoShowRate] = useState(18);
-  const [openFaq, setOpenFaq] = useState(0);
+const timelineSteps = [
+  { num: "01", title: "Baseline Diagnostics", detail: "We analyze your current practice performance and identify where revenue is being lost." },
+  { num: "02", title: "Organization Setup", detail: "Your account is configured to your practice profile, locations, and team structure." },
+  { num: "03", title: "PMS Connection", detail: "We connect securely to your practice management software — Dentrix, Open Dental, Eaglesoft, or others." },
+  { num: "04", title: "Data Review", detail: "Your patient and production data is mapped and validated against your revenue baseline." },
+  { num: "05", title: "Revenue Baseline", detail: "We establish your starting point and a clear picture of your current opportunity estimate." },
+  { num: "06", title: "Playbook Installation", detail: "Recovery workflows are configured for recall, treatment acceptance, and patient reactivation." },
+  { num: "07", title: "LIZ Activation", detail: "Your Revenue Recovery Advisor begins monitoring and surfacing prioritized opportunities." },
+  { num: "08", title: "Dashboard Go-Live", detail: "Your leadership dashboard becomes your weekly operating view for practice performance." },
+  { num: "09", title: "Optimization Cycle", detail: "Monthly review and continuous improvement ensure results compound over time." }
+];
 
-  const roi = useMemo(() => {
-    const monthlyLeak = monthlyAppointments * visitValue * (noShowRate / 100);
-    const recoveredNoShows = monthlyLeak * 0.65;
-    const recoveredRecall = monthlyAppointments * visitValue * 0.12 * 0.4;
-    const treatmentLift = monthlyAppointments * visitValue * 0.06 * 0.32;
-    const annualRecovered = (recoveredNoShows + recoveredRecall + treatmentLift) * 12;
-    const annualCost = 18000;
-    return {
-      monthlyLeak,
-      annualRecovered,
-      protectedRevenue: recoveredNoShows * 12,
-      generatedRevenue: (recoveredRecall + treatmentLift) * 12,
-      roi: ((annualRecovered - annualCost) / annualCost) * 100
-    };
-  }, [monthlyAppointments, noShowRate, visitValue]);
+const outcomeCards = [
+  { title: "Revenue Recovery", detail: "Identify and recover lost production opportunities across your practice." },
+  { title: "Patient Reactivation", detail: "Bring inactive patients back into your schedule predictably." },
+  { title: "Treatment Acceptance", detail: "Help more patients say yes to diagnosed care." },
+  { title: "Recall Recovery", detail: "Rebuild hygiene participation rates and retain patients long-term." },
+  { title: "Review Growth", detail: "Convert satisfied visits into public proof that drives new patient growth." },
+  { title: "Membership Retention", detail: "Reduce plan churn and stabilize recurring membership revenue." },
+  { title: "Operational Efficiency", detail: "Reduce admin burden and manual outreach without adding staff." },
+  { title: "Practice Intelligence", detail: "Know exactly where to focus every week to move the right numbers." }
+];
 
-  async function probeRoute(key: ApiKey) {
-    const route = apiRoutes[key];
-    setApiResponses(current => ({ ...current, [key]: "{\"status\":\"loading\"}" }));
-    try {
-      const response = await fetch(route.path, { method: route.method, headers: { Accept: "application/json" } });
-      const contentType = response.headers.get("content-type") ?? "";
-      const payload = contentType.includes("application/json") ? await response.json() : await response.text();
-      setApiResponses(current => ({
-        ...current,
-        [key]: JSON.stringify({ ok: response.ok, status: response.status, payload }, null, 2).slice(0, 1200)
-      }));
-    } catch (error) {
-      setApiResponses(current => ({
-        ...current,
-        [key]: JSON.stringify({ ok: false, error: error instanceof Error ? error.message : "Unknown route probe failure" }, null, 2)
-      }));
-    }
+const faqs = [
+  {
+    question: "Does this replace our practice management software?",
+    answer: "No. Zenith works alongside your existing PMS — Dentrix, Open Dental, Eaglesoft, and others. There is nothing to replace or migrate. We connect to what you already use."
+  },
+  {
+    question: "How quickly can we get started?",
+    answer: "Most practices complete their assessment in under 3 minutes and receive their Practice Growth Report immediately. From there, your implementation team guides you through the rest."
+  },
+  {
+    question: "How is revenue recovery measured?",
+    answer: "We establish a clear production baseline at the start, model the recoverable opportunity across recall, treatment acceptance, and patient reactivation, and track improvement month over month so attribution is always transparent."
   }
+];
 
-  const missionBase = missionTabs[missionTab];
-  const mission = missionTab === "revenue"
-    ? {
-        ...missionBase,
-        metric: currency.format(landingStats.revenueRecovered),
-        rows: [
-          `Free assessments routed: ${landingStats.assessments.toLocaleString()}`,
-          `Practice health score: ${landingStats.practiceHealthScore ? `${landingStats.practiceHealthScore}/100` : "Pending live assessment"}`,
-          `Runtime traces monitored: ${landingStats.activeAutomations.toLocaleString()}`
-        ]
-      }
-    : missionTab === "runtime"
-      ? {
-          ...missionBase,
-          metric: `${landingStats.runtimeOperationalScore}%`,
-          rows: [
-            `Operational score from runtime module: ${landingStats.runtimeOperationalScore}%`,
-            `Failed runtime traces: ${landingStats.runtimeErrorCount.toLocaleString()}`,
-            `Active/completed traces: ${landingStats.activeAutomations.toLocaleString()}`
-          ]
-        }
-      : missionBase;
-  const workspace = roleWorkspaces[role];
-  const gallery = galleryModes[galleryMode];
+export function ProsLanding({ landingStats, legalEntity }: ProsLandingProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   return (
     <main className="min-h-screen bg-[color:var(--brand-sidebar)] text-white">
-      <OfflineState />
+
+      {/* ── HEADER ── */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[color:var(--brand-sidebar)]/90 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-5">
-          <ZenithLogo href="#platform" subtitle={brandConfig.trademark} mutedClassName="text-white/50" textClassName="text-white" />
+          <ZenithLogo href="/" subtitle="Dental Revenue Recovery" mutedClassName="text-white/50" textClassName="text-white" />
           <nav className="hidden items-center gap-5 text-xs font-bold text-white/62 xl:flex">
             {navItems.map(([label, href]) => (
               <a key={href} href={href} className="transition hover:text-white">{label}</a>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <a
+              href="#assessment"
+              className="inline-flex h-10 items-center gap-2 rounded bg-teal px-4 text-xs font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90"
+            >
+              Start Free Assessment <ArrowRight className="h-3.5 w-3.5" />
+            </a>
             <button
               type="button"
-              onClick={() => setApiOpen(true)}
-              className="hidden h-10 items-center gap-2 rounded border border-white/10 bg-white/5 px-3 font-mono text-[10px] font-bold uppercase text-white/70 transition hover:bg-white/10 md:flex"
+              onClick={() => setMobileMenuOpen(open => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded border border-white/10 xl:hidden"
+              aria-label="Toggle menu"
             >
-              <span className="h-2 w-2 rounded-full bg-gold" />
-              Route Probe
+              <span className="block h-[1.5px] w-5 bg-white shadow-[0_6px_0_white,-6px_0_0_white]" />
             </button>
-            <a href="#roi" className="inline-flex h-10 items-center rounded bg-teal px-4 text-xs font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90">
-              Get My Free Assessment
+          </div>
+        </div>
+        {mobileMenuOpen && (
+          <div className="border-t border-white/10 bg-[color:var(--brand-sidebar)] px-5 pb-6 xl:hidden">
+            <nav className="flex flex-col gap-1 pt-4">
+              {navItems.map(([label, href]) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="rounded px-3 py-3 text-sm font-bold text-white/70 transition hover:bg-white/5 hover:text-white"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
+            <a
+              href="#assessment"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-4 flex h-12 w-full items-center justify-center rounded bg-teal text-sm font-black text-[color:var(--brand-sidebar)]"
+            >
+              Start Free Assessment
             </a>
           </div>
-        </div>
+        )}
       </header>
 
-      <aside className={`fixed bottom-0 right-0 top-[72px] z-40 w-full max-w-[500px] border-l border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5 shadow-2xl transition-transform duration-300 ${apiOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div>
-            <p className="font-mono text-xs font-bold uppercase tracking-widest text-teal">App Route Probe</p>
-            <p className="mt-1 text-sm text-white/58">Checks deployed Next.js routes from this browser session.</p>
-          </div>
-          <button type="button" onClick={() => setApiOpen(false)} className="rounded border border-white/10 px-3 py-1 text-sm text-white/70 hover:bg-white/10">Close</button>
-        </div>
-        <div className="mt-5 space-y-4 overflow-y-auto pb-8">
-          {(Object.keys(apiRoutes) as ApiKey[]).map(key => {
-            const route = apiRoutes[key];
-            return (
-              <div key={key} className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-4">
-                <div className="flex items-center justify-between gap-3 font-mono text-xs">
-                  <span className="font-black text-green">{route.method}</span>
-                  <span className="truncate text-white/56">{route.path}</span>
-                </div>
-                <button type="button" onClick={() => probeRoute(key)} className="mt-3 h-9 w-full rounded bg-white/10 text-xs font-bold text-white transition hover:bg-white/15">
-                  Probe {route.label}
-                </button>
-                <pre className="mt-3 max-h-40 overflow-auto rounded bg-black/30 p-3 text-[10px] leading-relaxed text-teal">{apiResponses[key]}</pre>
-              </div>
-            );
-          })}
-        </div>
-      </aside>
-
-      <section id="platform" className="relative isolate overflow-hidden pt-[128px]">
+      {/* ── HERO ── */}
+      <section className="relative isolate overflow-hidden pt-[72px]">
         <Image
           src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1800&q=80"
           alt="Modern dental operatory prepared for patient care"
           fill
           priority
           sizes="100vw"
-          className="-z-10 object-cover opacity-22"
+          className="-z-10 object-cover opacity-[0.18]"
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(10,15,28,0.72),var(--brand-sidebar)_84%)]" />
-        <div className="mx-auto grid min-h-[calc(100vh-72px)] max-w-7xl content-center gap-12 px-5 pb-16 lg:grid-cols-[1fr_0.9fr]">
-          <div>
-            <div className="inline-flex rounded-full border border-teal/30 bg-teal/10 px-3 py-1 font-mono text-xs font-bold uppercase tracking-widest text-teal">
-              The Patient Revenue Operating System™
-            </div>
-            <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[1.02] tracking-normal md:text-7xl">
-              Recover lost revenue. Reduce no-shows. Fill chairs. Grow production.
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(10,15,28,0.7),var(--brand-sidebar)_88%)]" />
+        <div className="mx-auto flex min-h-[calc(100vh-72px)] max-w-7xl flex-col justify-center px-5 py-20">
+          <div className="max-w-3xl">
+            <h1 className="text-5xl font-black leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+              Recover Lost Revenue.<br />
+              Fill More Chairs.<br />
+              Grow Predictably.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-              Zenith PROS turns patient operations into a measurable revenue system: Revenue Playbooks, Practice Intelligence, Mission Control, Workflow OS, and PMS operations in one customer-ready landing experience.
+              Zenith helps dental practices uncover hidden revenue opportunities, improve treatment acceptance, recover inactive patients, and increase patient retention.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#roi" className="inline-flex h-12 items-center gap-2 rounded bg-teal px-5 text-sm font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90">
-                Get My Free Assessment <ArrowRight className="h-4 w-4" />
-              </a>
-              <a href="#gallery" className="inline-flex h-12 items-center rounded border border-white/15 bg-white/8 px-5 text-sm font-black text-white transition hover:bg-white/12">
-                Watch Demo
-              </a>
-            </div>
-          </div>
-
-          <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)]/88 p-5 shadow-2xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/52">
-                <span className="h-2 w-2 rounded-full bg-green" />
-                Mission Control Preview
-              </div>
-              <span className="rounded border border-gold/30 bg-gold/10 px-2 py-1 font-mono text-[10px] uppercase text-gold">Backend summary snapshot</span>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {[
-                ["Revenue Opportunity", currency.format(landingStats.revenueRecovered), "text-teal"],
-                ["Free Assessments", landingStats.assessments.toLocaleString(), "text-gold"],
-                ["Runtime Score", `${landingStats.runtimeOperationalScore}%`, "text-blue"],
-                ["Practice Health", landingStats.practiceHealthScore ? `${landingStats.practiceHealthScore}/100` : "Pending", "text-green"]
-              ].map(([label, value, color]) => (
-                <div key={label} className="rounded border border-white/10 bg-white/[0.04] p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/45">{label}</p>
-                  <p className={`mt-2 text-3xl font-black ${color}`}>{value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 rounded border border-teal/20 bg-black/20 p-4 font-mono text-xs leading-6 text-white/62">
-              <p className="text-teal">Intelligence diagnostic queue</p>
-              <p>Assessments routed: {landingStats.assessments.toLocaleString()}</p>
-              <p>Runtime traces monitored: {landingStats.activeAutomations.toLocaleString()} active/completed, {landingStats.runtimeErrorCount.toLocaleString()} failed.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-10">
-        <div className="mx-auto max-w-7xl px-5">
-          <p className="text-center font-mono text-xs font-bold uppercase tracking-widest text-white/45">Dental revenue operations ecosystem</p>
-          <div className="mt-7 grid grid-cols-2 gap-3 text-center text-sm font-black uppercase tracking-wide text-white/62 md:grid-cols-6">
-            {["Open Dental", "Dentrix", "Eaglesoft", "Curve", "DSO Ops"].map(item => (
-              <div key={item} className="rounded border border-white/10 bg-white/[0.03] px-3 py-4">{item}</div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="gallery" className="mx-auto max-w-7xl px-5 py-20">
-        <div className="flex flex-col justify-between gap-5 border-b border-white/10 pb-8 lg:flex-row lg:items-end">
-          <SectionHeading eyebrow="Integrated Gallery Workspace" title="Screens, clinical spaces, and intelligence actions in one operating story." body="The gallery now mirrors the uploaded workspace: product frames, PMS mapping, operatory hotspot scanning, and action-oriented intelligence cards." />
-          <div className="flex w-full max-w-md items-center gap-1 rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-1 font-mono text-xs">
-            {(Object.keys(galleryModes) as GalleryMode[]).map(mode => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setGalleryMode(mode)}
-                className={`flex-1 rounded px-3 py-2 font-bold uppercase transition ${galleryMode === mode ? "bg-[color:var(--brand-slate)] text-white" : "text-white/52 hover:text-white"}`}
+              <a
+                href="#assessment"
+                className="inline-flex h-12 items-center gap-2 rounded bg-teal px-6 text-sm font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90"
               >
-                {galleryModes[mode].label}
-              </button>
-            ))}
+                Start Free Assessment <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href="#results"
+                className="inline-flex h-12 items-center rounded border border-white/15 bg-white/8 px-6 text-sm font-black text-white transition hover:bg-white/12"
+              >
+                See How It Works
+              </a>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-5 text-sm font-bold text-white/55">
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal" /> 3-Minute Assessment</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal" /> Personalized Results</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-teal" /> No Obligation</span>
+            </div>
           </div>
-        </div>
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <article className="flex min-h-[480px] flex-col justify-between rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/52">
-                <span className="h-2 w-2 rounded-full bg-green" />
-                Sys Screen: Mission Control Command
-              </div>
-              <span className="rounded border border-teal/25 bg-teal/10 px-2 py-1 font-mono text-[9px] font-bold uppercase text-teal">Revenue active</span>
-            </div>
-            <div className="mt-5 flex flex-1 flex-col justify-between rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5 font-mono">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded border border-white/10 bg-white/[0.04] p-4">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/42">Total Revenue Recovered</span>
-                  <span className="mt-2 block text-3xl font-black text-teal">{gallery.revenue}</span>
-                </div>
-                <div className="rounded border border-white/10 bg-white/[0.04] p-4">
-                  <span className="block text-[10px] uppercase tracking-widest text-white/42">Executive Operating Score</span>
-                  <span className="mt-2 block text-3xl font-black text-white">{gallery.health}</span>
-                </div>
-              </div>
-              <div className="mt-5 space-y-2 border-t border-white/10 pt-4 text-xs text-white/62">
-                <p className="text-[10px] uppercase tracking-widest text-white/42">Active Dispatch Log</p>
-                <div className="flex justify-between rounded border border-white/10 bg-white/[0.04] p-3">
-                  <span>Recall cohort recovery loop</span>
-                  <span className="text-green">DISPATCHED</span>
-                </div>
-                <div className="flex justify-between rounded border border-white/10 bg-white/[0.04] p-3">
-                  <span>Crown gap matching playbook</span>
-                  <span className="text-teal">COMPLETED</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-3 text-xs text-white/56">
-              <span>{gallery.status}</span>
-              <button type="button" onClick={() => setGalleryMode("sandbox")} className="rounded border border-white/10 bg-[color:var(--brand-slate)] px-4 py-2 font-mono text-[11px] font-bold text-blue transition hover:bg-[color:var(--brand-slate-hover)]">
-                Simulate Dispatch
-              </button>
-            </div>
-          </article>
-
-          <article className="flex min-h-[480px] flex-col justify-between rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-white/52">
-                <span className="h-2 w-2 rounded-full bg-blue" />
-                Sys Screen: PMS Integration Translator
-              </div>
-              <span className="rounded border border-blue/25 bg-blue/10 px-2 py-1 font-mono text-[9px] font-bold uppercase text-blue">Schema compiler</span>
-            </div>
-            <div className="mt-5 flex flex-1 flex-col justify-between rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5 font-mono text-xs">
-              <div className="space-y-3">
-                <p className="text-[10px] uppercase tracking-widest text-white/42">Local adapter database field configuration</p>
-                {[
-                  ["txt_pat_id", "patient_id (UUID)"],
-                  ["dt_last_visit", "last_hygiene_date"],
-                  ["fl_unsched_amt", "outstanding_balance"]
-                ].map(([from, to]) => (
-                  <div key={from} className="flex items-center justify-between gap-3 rounded border border-white/10 bg-white/[0.04] p-3">
-                    <span className="font-bold text-white">{from}</span>
-                    <span className="font-black text-blue">=====</span>
-                    <span className="text-teal">{to}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 rounded border border-white/10 bg-black/20 p-4 text-[10px] leading-6 text-white/48">
-                <p className="font-bold text-green">Adapter state: schema validation integrity ready</p>
-                <p>Thread safety parameter locks queued for writeback validation.</p>
-              </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-3 text-xs text-white/56">
-              <span>Backend sync: integrations / PMS adapter</span>
-              <span className="rounded border border-teal/20 bg-teal/10 px-2.5 py-1 font-mono text-[11px] text-teal">Writeback verified</span>
-            </div>
-          </article>
-        </div>
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-12">
-          <article className="relative min-h-[420px] overflow-hidden rounded border border-white/10 bg-[color:var(--brand-slate)] shadow-2xl lg:col-span-7">
-            <Image
-              src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80"
-              alt="Dental operatory with clinical equipment"
-              fill
-              sizes="(min-width: 1024px) 58vw, 100vw"
-              className="object-cover opacity-75"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--brand-sidebar)] via-transparent to-transparent" />
-            <button
-              type="button"
-              onClick={() => setHotspotOpen(true)}
-              className="absolute left-[60%] top-[40%] z-20"
-              aria-label="Inspect operatory hotspot"
-            >
-              <span className="absolute -left-3 -top-3 h-9 w-9 animate-ping rounded-full bg-blue/30" />
-              <span className="block h-4 w-4 rounded-full border-2 border-white bg-blue" />
-            </button>
-            <div className="absolute bottom-6 left-6 z-10">
-              <span className="rounded border border-teal/20 bg-teal/10 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-teal">Hygienist area</span>
-              <h3 className="mt-2 text-xl font-black">Operatory Room 4</h3>
-            </div>
-          </article>
-
-          <article className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded border border-white/10 bg-[color:var(--brand-slate)] p-6 lg:col-span-5">
-            <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-blue/10 blur-3xl" />
-            <div className="relative">
-              <div className="flex items-center gap-2 border-b border-white/10 pb-4 font-mono text-[10px] uppercase tracking-widest text-white/52">
-                <span className="h-2 w-2 rounded-full bg-blue" />
-                Hotspot telemetry diagnostics
-              </div>
-              <div className="mt-5 space-y-4 text-sm leading-7 text-white/64">
-                {hotspotOpen ? (
-                  <>
-                    <h3 className="text-2xl font-black text-white">Chair Monitor Interface Setup</h3>
-                    <p>Visual indicators surface outstanding treatment plans directly to clinicians as patients move through Room 4.</p>
-                    <div className="rounded border border-teal/20 bg-[color:var(--brand-sidebar)] p-3 font-mono text-xs text-teal">Mapping node: txt_pat_id ===== patient_id (UUID)</div>
-                  </>
-                ) : (
-                  <>
-                    <h3 className="text-2xl font-black text-white">Click the operatory signal</h3>
-                    <p>Scan checks reveal how the Patient Revenue Operating System connects software prompts to physical clinic workflows.</p>
-                  </>
-                )}
-              </div>
-            </div>
-            <p className="relative border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-widest text-white/42">Workspace diagnostics pool: connected</p>
-          </article>
-        </div>
-
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          {[
-            ["43 overdue hygiene recalls", "$18,250", "Recall recovery playbook", "text-teal", "bg-teal"],
-            ["Friday vacancy forecast", "High risk", "Chair fill protection", "text-blue", "bg-blue"],
-            ["Unsubmitted claims audit", "+$12,450", "Revenue operations cleanup", "text-green", "bg-green"]
-          ].map(([title, metric, detail, tone, bar]) => (
-            <article key={title} className="relative overflow-hidden rounded border border-white/10 bg-[color:var(--brand-slate)] p-5">
-              <div className={`absolute left-0 top-0 h-1 w-full ${bar}`} />
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className={`font-mono text-xs font-black uppercase tracking-widest ${tone}`}>{detail}</p>
-                  <h3 className="mt-4 text-xl font-black">{title}</h3>
-                </div>
-                <Bot className={`h-7 w-7 ${tone}`} />
-              </div>
-              <p className="mt-5 font-mono text-2xl font-black text-white">{metric}</p>
-              <button type="button" className="mt-5 rounded border border-white/10 bg-[color:var(--brand-sidebar)] px-3 py-2 text-xs font-black text-white/70">
-                Queue action
-              </button>
-            </article>
-          ))}
         </div>
       </section>
 
-      <section id="leaks" className="border-y border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-20">
+      {/* ── PMS TRUST BAR ── */}
+      <section className="border-y border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-8">
         <div className="mx-auto max-w-7xl px-5">
-          <SectionHeading eyebrow="Seven Revenue Leaks" title="The buying problem is concrete: revenue is leaking through daily operations." body="Each leak maps to a measurable workflow, attribution path, and executive reporting outcome." />
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-white/40">Works With Your Practice Software</p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm font-black uppercase tracking-wide text-white/55">
+            {["Open Dental", "Dentrix", "Eaglesoft", "Curve Cloud", "Denticon"].map(name => (
+              <span key={name} className="rounded border border-white/10 bg-white/[0.04] px-4 py-2">{name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ASSESSMENT ── */}
+      <section id="assessment" className="bg-background py-16 text-ink">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-10 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Free Practice Growth Assessment</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Discover Hidden Revenue Opportunities</h2>
+            <p className="mt-4 text-lg leading-8 text-muted">
+              Complete a short assessment and receive a personalized Practice Growth Report — including your Revenue Opportunity Estimate, Patient Retention Analysis, and LIZ Recommendations.
+            </p>
+          </div>
+          <RoiFunnelForm calendlyUrl="" />
+        </div>
+      </section>
+
+      {/* ── REVENUE LEAKS ── */}
+      <section id="solutions" className="border-y border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-20">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-10 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Revenue Leaks</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Your Practice Is Already Losing Revenue</h2>
+            <p className="mt-4 text-lg leading-7 text-white/60">Every dental practice loses revenue through the same predictable gaps. Here is what is slipping through.</p>
+          </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {revenueLeaks.map(item => (
-              <article key={item.title} className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5">
-                <item.icon className="h-7 w-7 text-gold" />
-                <p className="mt-5 text-3xl font-black text-white">{item.value}</p>
-                <h3 className="mt-2 text-lg font-black">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/56">{item.detail}</p>
+            {revenueLeaks.map(leak => (
+              <article key={leak.title} className="rounded-xl border border-white/10 bg-[color:var(--brand-sidebar)] p-5">
+                <leak.icon className="h-6 w-6 text-teal" />
+                <p className="mt-4 text-2xl font-black text-white">{leak.stat}</p>
+                <h3 className="mt-1 font-black text-white">{leak.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/55">{leak.detail}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="playbooks" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Revenue Playbooks" title="Install playbooks that create workflows, triggers, attribution, and monitoring." body="The landing page explains the operational path from problem to measurable revenue outcome without adding a new platform layer." />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {playbooks.map(item => (
-            <article key={item.title} className="rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
-              <item.icon className="h-8 w-8 text-teal" />
-              <h3 className="mt-5 text-xl font-black">{item.title}</h3>
-              <p className="mt-3 text-sm text-white/52">{item.trigger}</p>
-              <p className="mt-4 rounded border border-green/20 bg-green/10 p-3 text-sm font-bold text-green">{item.output}</p>
-            </article>
-          ))}
+      {/* ── LIZ SECTION ── */}
+      <section id="about" className="bg-background py-20 text-ink">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2">
+          <div className="flex flex-col justify-center">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Meet LIZ</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Your Revenue Recovery Advisor™</h2>
+            <p className="mt-5 text-lg leading-8 text-muted">
+              LIZ continuously analyzes opportunities across your practice and surfaces the actions most likely to recover revenue, improve retention, and support patient engagement.
+            </p>
+            <a
+              href="#assessment"
+              className="mt-8 inline-flex h-12 w-fit items-center gap-2 rounded bg-teal px-6 text-sm font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90"
+            >
+              Start Free Assessment <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+          <div className="space-y-4">
+            {lizInsights.map(insight => (
+              <div key={insight.label} className="rounded-xl border border-line bg-white p-5 shadow-soft">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-teal" />
+                      <span className="text-xs font-black uppercase tracking-wider text-teal">Opportunity Identified</span>
+                    </div>
+                    <p className="mt-2 font-black text-ink">{insight.label}</p>
+                    <p className="text-xs font-bold text-muted">{insight.type}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-bold text-muted">Estimated opportunity</p>
+                    <p className="text-2xl font-black text-teal">{insight.opportunity}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <p className="text-xs text-muted">Sample practice data for illustration. Your assessment generates personalized estimates.</p>
+          </div>
         </div>
       </section>
 
-      <section id="alice" className="border-y border-white/10 bg-background py-20 text-ink">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="font-mono text-xs font-black uppercase tracking-widest text-blue">Practice Intelligence</p>
-            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">A dental revenue advisor that speaks in actions, not dashboards.</h2>
-            <p className="mt-5 text-lg leading-8 text-muted">
-              The platform summarizes daily performance, identifies revenue opportunities, detects automation risk, and recommends the next operational move for each role.
-            </p>
+      {/* ── STORY GALLERY ── */}
+      <section id="results" className="border-y border-white/10 py-20">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-10 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">How It Works</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">A Practice That Grows Without Adding Overhead</h2>
           </div>
-          <div className="rounded border border-line bg-white p-5 shadow-soft">
-            <div className="flex items-center gap-3 border-b border-line pb-4">
-              <Bot className="h-8 w-8 text-blue" />
-              <div>
-                <h3 className="font-black">Daily Performance Summary</h3>
-                <p className="text-sm text-muted">Generated from backend runtime and analytics modules; sandbox copy is labeled where live data is unavailable.</p>
-              </div>
-            </div>
-            <div className="mt-5 space-y-3">
-              {[
-                "Recall recovery is the highest revenue opportunity today.",
-                "Treatment acceptance follow-up is under target for two providers.",
-                "No-show prevention and chair fill recommendations are routed through the platform when live signals are available.",
-                "Mission Control should watch integration writeback latency before go-live."
-              ].map(item => (
-                <div key={item} className="flex gap-3 rounded border border-line bg-surface p-3 text-sm text-foreground">
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  <span>{item}</span>
-                </div>
+          <div className="relative overflow-hidden">
+            <div className="flex gap-5 overflow-x-auto scroll-smooth pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+              {gallerySlides.map((slide, index) => (
+                <article
+                  key={slide.id}
+                  className="relative min-h-[380px] min-w-[320px] flex-shrink-0 snap-start overflow-hidden rounded-xl border border-white/10 md:min-w-[440px]"
+                  onClick={() => setActiveSlide(index)}
+                >
+                  {slide.type === "image" && slide.image ? (
+                    <>
+                      <Image
+                        src={slide.image}
+                        alt={slide.alt}
+                        fill
+                        sizes="440px"
+                        className="object-cover opacity-70"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--brand-sidebar)] via-[color:var(--brand-sidebar)]/20 to-transparent" />
+                    </>
+                  ) : slide.type === "liz" ? (
+                    <div className="flex h-full flex-col justify-center bg-[color:var(--brand-sidebar-elevated)] p-8">
+                      <div className="space-y-3">
+                        {lizInsights.slice(0, 2).map(insight => (
+                          <div key={insight.label} className="rounded-lg border border-white/10 bg-white/5 p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Sparkles className="h-3.5 w-3.5 text-teal" />
+                              <span className="text-[10px] font-black uppercase tracking-wider text-teal">Opportunity Identified</span>
+                            </div>
+                            <p className="text-sm font-bold text-white">{insight.label}</p>
+                            <p className="mt-1 text-xl font-black text-teal">{insight.opportunity}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex h-full flex-col justify-center bg-[color:var(--brand-sidebar-elevated)] p-8">
+                      <p className="text-xs font-black uppercase tracking-widest text-teal">Practice Growth Report</p>
+                      <div className="mt-4 space-y-3">
+                        <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                          <p className="text-xs text-white/50">Practice Growth Score</p>
+                          <p className="text-4xl font-black text-white">78 <span className="text-xl text-white/40">/ 100</span></p>
+                        </div>
+                        <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                          <p className="text-xs text-white/50">Revenue Opportunity</p>
+                          <p className="text-2xl font-black text-teal">$12,000 – $27,000</p>
+                          <p className="text-xs text-white/40">per month</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-xl font-black text-white">{slide.headline}</h3>
+                    <p className="mt-1 text-sm leading-6 text-white/65">{slide.caption}</p>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      <section id="mission-control" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Mission Control" title="One command surface for revenue, runtime, operations, intelligence, and executive reporting." body="The tabbed preview gives buyers a fast sense of what internal teams and practice leaders will monitor after go-live." />
-        <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
-          <div className="flex flex-wrap gap-2 border-b border-white/10 pb-4">
-            {(Object.keys(missionTabs) as MissionTab[]).map(tab => (
+          <div className="mt-5 flex justify-center gap-2">
+            {gallerySlides.map((_, index) => (
               <button
-                key={tab}
+                key={index}
                 type="button"
-                onClick={() => setMissionTab(tab)}
-                className={`rounded px-4 py-2 text-xs font-black uppercase tracking-wide transition ${missionTab === tab ? "bg-teal text-[color:var(--brand-sidebar)]" : "bg-white/5 text-white/62 hover:bg-white/10"}`}
-              >
-                {missionTabs[tab].label}
-              </button>
+                onClick={() => setActiveSlide(index)}
+                className={`h-1.5 rounded-full transition-all ${activeSlide === index ? "w-6 bg-teal" : "w-1.5 bg-white/25"}`}
+                aria-label={`Slide ${index + 1}`}
+              />
             ))}
           </div>
-          <div className="mt-6 grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
-            <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5">
-              <p className="font-mono text-xs uppercase tracking-widest text-white/45">{mission.detail}</p>
-              <p className="mt-5 text-6xl font-black text-teal">{mission.metric}</p>
-            </div>
-            <div className="space-y-3">
-              {mission.rows.map(row => (
-                <div key={row} className="flex items-start gap-3 rounded border border-white/10 bg-white/[0.04] p-4">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green" />
-                  <span className="text-white/72">{row}</span>
-                </div>
+        </div>
+      </section>
+
+      {/* ── IMPLEMENTATION TIMELINE ── */}
+      <section id="case-studies" className="bg-[color:var(--brand-sidebar-elevated)] py-20">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-12 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Getting Started</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">How Zenith Gets You Results</h2>
+          </div>
+          <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
+            <div className="space-y-1.5">
+              {timelineSteps.map((step, index) => (
+                <button
+                  key={step.num}
+                  type="button"
+                  onClick={() => setActiveStep(index)}
+                  className={`flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition ${activeStep === index ? "border-teal bg-teal/10 text-white" : "border-white/10 bg-white/[0.03] text-white/55 hover:bg-white/[0.06] hover:text-white/80"}`}
+                >
+                  <span className="font-bold"><span className="mr-2 font-mono text-teal/70">{step.num}</span>{step.title}</span>
+                  <ChevronRight className={`h-4 w-4 shrink-0 transition ${activeStep === index ? "text-teal" : "text-white/25"}`} />
+                </button>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="pms-ops" className="border-y border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-2">
-          <div>
-            <SectionHeading eyebrow="PMS Operations" title="Connection readiness without claiming what production has not proven." body="The page presents connector operations, sync posture, and rollback-minded deployment steps while route access and tenant safety remain verifiable." />
-            <select value={pms} onChange={event => setPms(event.target.value)} className="mt-4 h-12 w-full max-w-md rounded border border-white/10 bg-[color:var(--brand-sidebar)] px-4 text-white">
-              <option>Open Dental</option>
-              <option>Dentrix Enterprise</option>
-              <option>Eaglesoft</option>
-              <option>Curve Cloud</option>
-            </select>
-          </div>
-          <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5 font-mono text-xs leading-7 text-white/62">
-            <p className="text-teal">[{pms}] connector profile selected</p>
-            <p>INF sync health check queued</p>
-            <p>INF tenant-scoped writeback verification required</p>
-            <p className="text-gold">WRN production PMS claims require live credential validation</p>
-            <p className="text-green">OK landing experience can route assessment and onboarding demand</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="role-workspaces" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Role Workspaces" title="Every stakeholder sees the operating work that belongs to them." body="Front desk, managers, providers, owners, and DSOs get different action queues while sharing the same revenue truth." />
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(roleWorkspaces) as RoleKey[]).map(key => (
-            <button key={key} type="button" onClick={() => setRole(key)} className={`rounded px-4 py-2 text-sm font-black transition ${role === key ? "bg-gold text-[color:var(--brand-sidebar)]" : "bg-white/8 text-white/66 hover:bg-white/12"}`}>
-              {roleWorkspaces[key].label}
-            </button>
-          ))}
-        </div>
-        <div className="mt-6 rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
-          <h3 className="text-2xl font-black">{workspace.title}</h3>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {workspace.metrics.map(metric => (
-              <div key={metric} className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-4 font-bold text-white/78">{metric}</div>
-            ))}
-          </div>
-          <div className="mt-5 space-y-3">
-            {workspace.queue.map(item => (
-              <div key={item} className="flex gap-3 rounded border border-white/10 bg-white/[0.04] p-4 text-white/68">
-                <Zap className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>{item}</span>
+            <div className="rounded-xl border border-white/10 bg-[color:var(--brand-sidebar)] p-8">
+              <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Step {timelineSteps[activeStep].num}</p>
+              <h3 className="mt-3 text-3xl font-black">{timelineSteps[activeStep].title}</h3>
+              <p className="mt-4 text-lg leading-8 text-white/65">{timelineSteps[activeStep].detail}</p>
+              <div className="mt-8 flex gap-3">
+                {activeStep > 0 && (
+                  <button type="button" onClick={() => setActiveStep(s => s - 1)} className="rounded border border-white/10 px-4 py-2 text-sm font-bold text-white/60 transition hover:bg-white/5">
+                    Previous
+                  </button>
+                )}
+                {activeStep < timelineSteps.length - 1 && (
+                  <button type="button" onClick={() => setActiveStep(s => s + 1)} className="rounded bg-teal px-4 py-2 text-sm font-bold text-[color:var(--brand-sidebar)] transition hover:bg-teal/90">
+                    Next Step
+                  </button>
+                )}
+                {activeStep === timelineSteps.length - 1 && (
+                  <a href="#assessment" className="inline-flex items-center gap-2 rounded bg-teal px-4 py-2 text-sm font-bold text-[color:var(--brand-sidebar)]">
+                    Start Your Assessment <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="roi-engine" className="border-y border-white/10 bg-background py-20 text-ink">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="font-mono text-xs font-black uppercase tracking-widest text-blue">FREE Revenue Opportunity Assessment™</p>
-            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Unlock a $1,500 revenue diagnostic before the sales call.</h2>
-            <p className="mt-5 text-lg leading-8 text-muted">
-              Model recoverable revenue, generated revenue, protected revenue, Practice Health Score, and playbook recommendations. $1,500 Consulting Value — FREE.
-            </p>
-          </div>
-          <div className="rounded border border-line bg-white p-5 shadow-soft">
-            <RoiSlider label="Monthly appointments" value={monthlyAppointments} min={120} max={1600} step={20} onChange={setMonthlyAppointments} suffix="" />
-            <RoiSlider label="Average visit value" value={visitValue} min={150} max={1200} step={25} onChange={setVisitValue} prefix="$" />
-            <RoiSlider label="No-show rate" value={noShowRate} min={4} max={35} step={1} onChange={setNoShowRate} suffix="%" />
-            <div className="mt-6 grid gap-3 md:grid-cols-2">
-              <RoiOutput label="Annual recovered revenue" value={currency.format(roi.annualRecovered)} tone="text-teal" />
-              <RoiOutput label="Attributable ROI" value={`${roi.roi.toFixed(1)}%`} tone="text-blue" />
-              <RoiOutput label="Protected revenue" value={currency.format(roi.protectedRevenue)} tone="text-green" />
-              <RoiOutput label="Generated revenue" value={currency.format(roi.generatedRevenue)} tone="text-gold" />
             </div>
           </div>
         </div>
       </section>
 
-      <RoiFunnelForm calendlyUrl={calendlyUrl} />
-
-      <section id="deployment" className="mx-auto max-w-7xl px-5 py-20">
-        <SectionHeading eyebrow="Installation" title="A 9-step path from assessment to optimization." body="The updated landing page supports the operational sales motion: assessment, provisioning, PMS handshake, data mapping, playbook installation, intelligence activation, Mission Control, and optimization." />
-        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-          <div className="space-y-2">
-            {[
-              "Baseline Diagnostics",
-              "Organization Provisioning",
-              "PMS Connection",
-              "Data Mapping",
-              "Revenue Baseline",
-              "Playbook Installation",
-              "Intelligence Activation",
-              "Mission Control Go-Live",
-              "Optimization Cycle"
-            ].map((step, index) => (
-              <button key={step} type="button" onClick={() => setInstallStep(index + 1)} className={`flex w-full items-center justify-between rounded border px-4 py-3 text-left text-sm font-bold transition ${installStep === index + 1 ? "border-teal bg-teal/10 text-white" : "border-white/10 bg-white/[0.03] text-white/58 hover:bg-white/[0.06]"}`}>
-                <span>{String(index + 1).padStart(2, "0")} {step}</span>
-                <span className={`h-2 w-2 rounded-full ${installStep === index + 1 ? "bg-teal" : "bg-white/20"}`} />
-              </button>
+      {/* ── OUTCOMES ── */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-10 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Results</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">What Practices Gain</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {outcomeCards.map(card => (
+              <article key={card.title} className="rounded-xl border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-5">
+                <ShieldCheck className="h-5 w-5 text-teal" />
+                <h3 className="mt-4 font-black text-white">{card.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/55">{card.detail}</p>
+              </article>
             ))}
           </div>
-          <div className="rounded border border-white/10 bg-[color:var(--brand-sidebar-elevated)] p-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-teal">Step {installStep}</p>
-            <h3 className="mt-3 text-3xl font-black">Deployment readiness checkpoint</h3>
-            <p className="mt-4 text-white/62">
-              This phase validates scope, tenant safety, data readiness, playbook ownership, and success criteria before a live dental practice uses the system.
-            </p>
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              {["Owner assigned", "Evidence captured", "Rollback path known"].map(item => (
-                <div key={item} className="rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-4 text-sm font-bold text-white/72">{item}</div>
-              ))}
+        </div>
+      </section>
+
+      {/* ── SAMPLE REPORT ── */}
+      <section className="border-y border-white/10 bg-background py-20 text-ink">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="mb-10 max-w-2xl">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">Practice Growth Report</p>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">See What Your Assessment Reveals</h2>
+          </div>
+          <div className="rounded-xl border border-line bg-white p-8 shadow-soft">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="lg:col-span-2">
+                <p className="text-xs font-black uppercase tracking-wider text-muted">Practice Growth Score</p>
+                <p className="mt-2 text-6xl font-black text-ink">78 <span className="text-2xl font-bold text-muted">/ 100</span></p>
+              </div>
+              <div className="lg:col-span-2">
+                <p className="text-xs font-black uppercase tracking-wider text-muted">Revenue Opportunity</p>
+                <p className="mt-2 text-4xl font-black text-teal">$12,000 – $27,000</p>
+                <p className="text-sm text-muted">per month estimated</p>
+              </div>
+            </div>
+            <div className="mt-8 border-t border-line pt-6">
+              <p className="mb-4 text-xs font-black uppercase tracking-wider text-muted">Opportunity Breakdown</p>
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { label: "Recall Recovery", pct: 72 },
+                  { label: "Treatment Acceptance", pct: 58 },
+                  { label: "Review Growth", pct: 44 },
+                  { label: "Membership Retention", pct: 68 }
+                ].map(item => (
+                  <div key={item.label} className="rounded-lg border border-line bg-surface p-4">
+                    <p className="text-xs font-bold text-muted">{item.label}</p>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line">
+                      <div className="h-full rounded-full bg-teal" style={{ width: `${item.pct}%` }} />
+                    </div>
+                    <p className="mt-1 text-xs font-black text-ink">{item.pct}%</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#assessment"
+                className="inline-flex h-11 items-center gap-2 rounded bg-teal px-6 text-sm font-black text-[color:var(--brand-sidebar)]"
+              >
+                Get Your Free Report <ArrowRight className="h-4 w-4" />
+              </a>
+              <p className="flex items-center text-sm font-bold text-muted">Sample data shown — your report uses real practice numbers.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="faq" className="border-t border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-20">
-        <div className="mx-auto max-w-4xl px-5">
-          <SectionHeading eyebrow="FAQ" title="Answers for buyers and pilot practices." body="" />
+      {/* ── FAQ ── */}
+      <section id="contact" className="border-t border-white/10 bg-[color:var(--brand-sidebar-elevated)] py-20">
+        <div className="mx-auto max-w-3xl px-5">
+          <div className="mb-10">
+            <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">FAQ</p>
+            <h2 className="mt-4 text-4xl font-black">Common Questions</h2>
+          </div>
           <div className="space-y-3">
             {faqs.map((faq, index) => (
-              <button key={faq.question} type="button" onClick={() => setOpenFaq(openFaq === index ? -1 : index)} className="w-full rounded border border-white/10 bg-[color:var(--brand-sidebar)] p-5 text-left">
+              <button
+                key={faq.question}
+                type="button"
+                onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                className="w-full rounded-xl border border-white/10 bg-[color:var(--brand-sidebar)] p-5 text-left transition hover:border-white/20"
+              >
                 <span className="flex items-center justify-between gap-4">
                   <span className="font-black">{faq.question}</span>
                   <ChevronDown className={`h-5 w-5 shrink-0 text-teal transition ${openFaq === index ? "rotate-180" : ""}`} />
                 </span>
-                {openFaq === index && <span className="mt-4 block leading-7 text-white/62">{faq.answer}</span>}
+                {openFaq === index && (
+                  <span className="mt-4 block text-sm leading-7 text-white/65">{faq.answer}</span>
+                )}
               </button>
             ))}
-          </div>
-          <div className="mt-10 rounded border border-teal/25 bg-teal/10 p-6 text-center">
-            <h2 className="text-3xl font-black">Ready to install the Patient Revenue Operating System?</h2>
-            <p className="mt-3 text-white/64">Start with a revenue assessment, then move into onboarding and pilot activation.</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <a href="#roi" className="inline-flex h-12 items-center rounded bg-teal px-5 text-sm font-black text-[color:var(--brand-sidebar)]">Get My Free Assessment</a>
-              <a href="#gallery" className="inline-flex h-12 items-center rounded border border-white/15 px-5 text-sm font-black text-white">Watch Demo</a>
-            </div>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-white/10 bg-[color:var(--brand-sidebar)] px-5 py-8 text-center text-sm font-semibold text-white/58">
-        <p className="font-black text-white">Zenith AI Automation Agency™</p>
-        <p className="mt-2">A product and service of {LEGAL_ENTITY.legalName}.</p>
-        <p className="mt-2">© {LEGAL_ENTITY.currentYear} {LEGAL_ENTITY.legalName}. All Rights Reserved.</p>
+      {/* ── FINAL CTA ── */}
+      <section className="bg-[color:var(--brand-sidebar)] py-24">
+        <div className="mx-auto max-w-3xl px-5 text-center">
+          <h2 className="text-4xl font-black leading-tight md:text-5xl">Ready To Discover What&apos;s Being Missed?</h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-white/60">
+            Receive a complimentary Practice Growth Assessment and uncover hidden opportunities inside your practice.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <a
+              href="#assessment"
+              className="inline-flex h-13 items-center gap-2 rounded bg-teal px-8 text-sm font-black text-[color:var(--brand-sidebar)] transition hover:bg-teal/90"
+            >
+              Start Free Assessment <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex h-13 items-center rounded border border-white/15 bg-white/8 px-8 text-sm font-black text-white transition hover:bg-white/12"
+            >
+              Book Strategy Session
+            </a>
+          </div>
+          {landingStats.assessmentCount > 0 && (
+            <p className="mt-6 text-sm text-white/40">
+              {landingStats.assessmentCount.toLocaleString()} practice{landingStats.assessmentCount !== 1 ? "s" : ""} have completed this assessment.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-white/10 bg-[color:var(--brand-sidebar)] pt-16 pb-8">
+        <div className="mx-auto max-w-7xl px-5">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-white/40">Company</p>
+              <ul className="mt-4 space-y-3">
+                {["About", "Case Studies", "Contact"].map(label => (
+                  <li key={label}><a href="#" className="text-sm font-semibold text-white/60 transition hover:text-white">{label}</a></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-white/40">Solutions</p>
+              <ul className="mt-4 space-y-3">
+                {["Revenue Recovery", "Treatment Acceptance", "Patient Retention", "Recall Recovery"].map(label => (
+                  <li key={label}><a href="#solutions" className="text-sm font-semibold text-white/60 transition hover:text-white">{label}</a></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-white/40">Resources</p>
+              <ul className="mt-4 space-y-3">
+                {[["Assessment", "#assessment"], ["Growth Report", "#sample-report"], ["FAQs", "#contact"]].map(([label, href]) => (
+                  <li key={label}><a href={href} className="text-sm font-semibold text-white/60 transition hover:text-white">{label}</a></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-white/40">Contact</p>
+              <div className="mt-4 space-y-3 text-sm font-semibold text-white/60">
+                <p>hello@zenith.dental</p>
+                <p>Dental Revenue Recovery Platform</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-12 flex flex-col items-center gap-3 border-t border-white/10 pt-8 text-center">
+            <p className="font-black text-white">Zenith AI Automation Agency™</p>
+            <p className="text-xs text-white/40">Dental Revenue Recovery Platform</p>
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-white/35">
+              <Link href="/privacy" className="transition hover:text-white/60">Privacy Policy</Link>
+              <Link href="/terms" className="transition hover:text-white/60">Terms of Service</Link>
+              <span>© {legalEntity.currentYear} {legalEntity.legalName}. All Rights Reserved.</span>
+            </div>
+          </div>
+        </div>
       </footer>
+
     </main>
-  );
-}
-
-function SectionHeading({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
-  return (
-    <div className="mb-10 max-w-3xl">
-      <p className="font-mono text-xs font-black uppercase tracking-widest text-teal">{eyebrow}</p>
-      <h2 className="mt-4 text-4xl font-black leading-tight text-current md:text-5xl">{title}</h2>
-      {body ? <p className="mt-5 text-lg leading-8 text-white/60 [.text-ink_&]:text-muted">{body}</p> : null}
-    </div>
-  );
-}
-
-function RoiSlider({
-  label,
-  value,
-  min,
-  max,
-  step,
-  onChange,
-  prefix = "",
-  suffix = ""
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  onChange: (value: number) => void;
-  prefix?: string;
-  suffix?: string;
-}) {
-  return (
-    <label className="block border-b border-line py-4 last:border-b-0">
-      <span className="flex items-center justify-between gap-4 text-sm font-black">
-        <span>{label}</span>
-        <span className="font-mono text-blue">{prefix}{value.toLocaleString()}{suffix}</span>
-      </span>
-      <input
-        type="range"
-        value={value}
-        min={min}
-        max={max}
-        step={step}
-        onChange={event => onChange(Number(event.target.value))}
-        className="mt-4 w-full accent-teal"
-      />
-    </label>
-  );
-}
-
-function RoiOutput({ label, value, tone }: { label: string; value: string; tone: string }) {
-  return (
-    <div className="rounded border border-line bg-surface p-4">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
-      <p className={`mt-2 text-3xl font-black ${tone}`}>{value}</p>
-    </div>
   );
 }
