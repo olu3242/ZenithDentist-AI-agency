@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createLeadFunnel, RevenueAuditError, trackBookingClick, trackOutreachEvent } from "@/lib/data/leads";
+import { publishFunnelEvent } from "@/lib/event-fabric";
 import { sendAuditEmails } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import { getErrorDiagnostics } from "@/lib/external-diagnostics";
@@ -48,6 +49,11 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
   });
 
   try {
+    void publishFunnelEvent({
+      eventType: "assessment_started",
+      metadata: { source: parsed.data.source, practiceName: parsed.data.practiceName }
+    });
+
     const result = await createLeadFunnel(parsed.data);
     logger.info("[AUDIT] Email Send", {
       status: "queued",

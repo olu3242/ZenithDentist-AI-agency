@@ -15,12 +15,27 @@ export type Audit = Database["public"]["Tables"]["audits"]["Row"];
 export type Booking = Database["public"]["Tables"]["bookings"]["Row"];
 export type OutreachEvent = Database["public"]["Tables"]["outreach_events"]["Row"];
 
+export interface Opportunity {
+  id: string;
+  lead_id: string | null;
+  assessment_id: string | null;
+  audit_id: string | null;
+  stage: string;
+  pipeline_value: number | null;
+  estimated_recovery: number | null;
+  practice_name: string | null;
+  contact_email: string | null;
+  created_at: string;
+  updated_at: string | null;
+}
+
 export interface AdminDashboardData {
   leads: Lead[];
   roiCalculations: RoiCalculation[];
   audits: Audit[];
   bookings: Booking[];
   events: OutreachEvent[];
+  opportunities: Opportunity[];
 }
 
 export interface FunnelResult {
@@ -378,12 +393,13 @@ export async function getAdminDashboardData(organizationId?: string): Promise<Ad
     return organizationId ? query.eq("organization_id", organizationId) : query;
   };
 
-  const [leads, roi, audits, bookings, events] = await Promise.all([
+  const [leads, roi, audits, bookings, events, opportunities] = await Promise.all([
     scope(supabase.from("leads").select("*")).order("created_at", { ascending: false }).limit(100),
     scope(supabase.from("roi_calculations").select("*")).order("created_at", { ascending: false }).limit(100),
     scope(supabase.from("audits").select("*")).order("generated_at", { ascending: false }).limit(100),
     scope(supabase.from("bookings").select("*")).order("created_at", { ascending: false }).limit(100),
-    scope(supabase.from("outreach_events").select("*")).order("created_at", { ascending: false }).limit(200)
+    scope(supabase.from("outreach_events").select("*")).order("created_at", { ascending: false }).limit(200),
+    (supabase as any).from("opportunities").select("*").order("created_at", { ascending: false }).limit(100)
   ]);
 
   return {
@@ -391,7 +407,8 @@ export async function getAdminDashboardData(organizationId?: string): Promise<Ad
     roiCalculations: roi.data ?? [],
     audits: audits.data ?? [],
     bookings: bookings.data ?? [],
-    events: events.data ?? []
+    events: events.data ?? [],
+    opportunities: opportunities.data ?? []
   };
 }
 
@@ -483,7 +500,8 @@ function emptyAdminData(): AdminDashboardData {
     roiCalculations: [] as RoiCalculation[],
     audits: [] as Audit[],
     bookings: [] as Booking[],
-    events: [] as OutreachEvent[]
+    events: [] as OutreachEvent[],
+    opportunities: [] as Opportunity[]
   };
 }
 

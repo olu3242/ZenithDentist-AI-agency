@@ -13,7 +13,7 @@ export default async function AdminPage() {
     <div className="space-y-6">
       <AdminHeader title="Revenue Command Center" subtitle="Operational CRM, funnel analytics, and revenue intelligence in one view." />
       <AdminShellNote />
-      <RevenueDashboard {...data} />
+      <RevenueDashboard {...data} opportunities={data.opportunities} />
       <LeadPipeline leads={data.leads} bookings={data.bookings} />
       <AdminCharts leads={data.leads} roiCalculations={data.roiCalculations} events={data.events} />
       <CRMTable
