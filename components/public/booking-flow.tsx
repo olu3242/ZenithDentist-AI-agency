@@ -12,6 +12,11 @@ export function BookingFlow({
   calendlyUrl: string;
   leadId?: string;
 }) {
+  // Inject leadId as utm_content so the Calendly webhook can link the booking back to this lead
+  const href = leadId && calendlyUrl
+    ? `${calendlyUrl}${calendlyUrl.includes("?") ? "&" : "?"}utm_content=${encodeURIComponent(leadId)}&utm_source=zenith_assessment&utm_medium=report_cta`
+    : calendlyUrl;
+
   return (
     <Button
       asChild
@@ -21,7 +26,7 @@ export function BookingFlow({
         trackBookingClickAction({ leadId, source: "audit_preview" }).catch(() => undefined);
       }}
     >
-      <a href={calendlyUrl} target="_blank" rel="noreferrer">
+      <a href={href} target="_blank" rel="noreferrer">
         <CalendarCheck className="h-4 w-4" />
         Schedule Strategy Session
       </a>

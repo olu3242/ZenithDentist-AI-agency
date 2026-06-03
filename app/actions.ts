@@ -75,7 +75,7 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
     });
     return {
       ok: true,
-      message: "FREE Revenue Opportunity Report generated. ALICE has routed the lead to Mission Control.",
+      message: "Your Practice Growth Report is ready. Book your strategy session to review the findings.",
       leadId: result.lead.id,
       auditId: result.audit.id,
       projectedRecovery: result.audit.projected_recovery,

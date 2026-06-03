@@ -32,7 +32,7 @@ export function AuditPreview({
       <ul className="mt-5 grid gap-3 text-sm text-muted">
         <li>$1,500 consulting value delivered free before implementation</li>
         <li>Recall, treatment acceptance, and chair fill opportunity breakdown</li>
-        <li>Mission Control lead routing and internal sales notification</li>
+        <li>Personalized strategy session preparation with your growth advisor</li>
       </ul>
       <div className="mt-6">
         {reportReady ? (

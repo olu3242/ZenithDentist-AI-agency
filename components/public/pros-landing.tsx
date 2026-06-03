@@ -25,6 +25,7 @@ import { RoiFunnelForm } from "@/components/public/roi-funnel-form";
 import type { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 type ProsLandingProps = {
+  calendlyUrl: string;
   landingStats: {
     assessmentCount: number;
     revenueRecovery: number;
@@ -138,7 +139,7 @@ const faqs = [
   }
 ];
 
-export function ProsLanding({ landingStats, legalEntity }: ProsLandingProps) {
+export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLandingProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -264,7 +265,7 @@ export function ProsLanding({ landingStats, legalEntity }: ProsLandingProps) {
               Complete a short assessment and receive a personalized Practice Growth Report — including your Revenue Opportunity Estimate, Patient Retention Analysis, and LIZ Recommendations.
             </p>
           </div>
-          <RoiFunnelForm calendlyUrl="" />
+          <RoiFunnelForm calendlyUrl={calendlyUrl} />
         </div>
       </section>
 
