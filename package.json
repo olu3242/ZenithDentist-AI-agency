@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "smoke": "node smoke-test.js",
+    "smoke": "node smoke-test.js && node scripts/pipeline-smoke-test.js",
+    "smoke:pipeline": "node scripts/pipeline-smoke-test.js",
     "test:e2e": "node scripts/e2e-production-check.js",
     "migration:validate": "node scripts/validate-migrations.js"
   },

@@ -268,6 +268,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
             calendlyUrl={calendlyUrl}
             leadId={result?.leadId}
             reportId={result?.auditId}
+            assessmentId={result?.assessmentId}
             projectedRecovery={result?.projectedRecovery ?? projection.revenueRecoveryOpportunity}
           />
         </div>

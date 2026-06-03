@@ -7,6 +7,7 @@ import type { FunnelSubmissionInput } from "@/lib/validation";
 import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib/runtime/instrumentation";
 import { getErrorDiagnostics, supabaseErrorContext } from "@/lib/external-diagnostics";
 import { executeRegisteredAutomation } from "@/lib/automation-os/registry";
+import { publishFunnelEvent } from "@/lib/event-fabric";
 
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type RoiCalculation = Database["public"]["Tables"]["roi_calculations"]["Row"];
@@ -265,6 +266,8 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
 
   void runLeadFunnelSideEffects({
     lead,
+    roi,
+    audit,
     input,
     projection
   });
@@ -274,10 +277,14 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
 
 async function runLeadFunnelSideEffects({
   lead,
+  roi,
+  audit,
   input,
   projection
 }: {
   lead: Lead;
+  roi: RoiCalculation;
+  audit: Audit;
   input: FunnelSubmissionInput;
   projection: ReturnType<typeof calculateRevenueProjection>;
 }) {
@@ -300,6 +307,52 @@ async function runLeadFunnelSideEffects({
         missionControlStatus: "assessment_requested"
       }
     });
+
+    // Publish Event Fabric events for the conversion pipeline
+    await publishFunnelEvent({
+      eventType: "assessment_completed",
+      leadId: lead.id,
+      assessmentId: roi.id,
+      auditId: audit.id,
+      metadata: {
+        practice_name: lead.practice_name,
+        revenue_recovery_opportunity: projection.revenueRecoveryOpportunity,
+        practice_health_score: projection.practiceHealthScore
+      }
+    });
+
+    await publishFunnelEvent({
+      eventType: "audit_generated",
+      leadId: lead.id,
+      assessmentId: roi.id,
+      auditId: audit.id,
+      metadata: {
+        projected_recovery: audit.projected_recovery,
+        practice_name: lead.practice_name
+      }
+    });
+
+    // Create opportunity record
+    const supabase = createServiceClient();
+    if (supabase) {
+      await (supabase as any).from("opportunities").insert({
+        lead_id: lead.id,
+        assessment_id: roi.id,
+        audit_id: audit.id,
+        stage: "assessment_submitted",
+        pipeline_value: projection.revenueRecoveryOpportunity * 12,
+        estimated_recovery: projection.revenueRecoveryOpportunity,
+        practice_name: lead.practice_name,
+        contact_email: lead.email
+      });
+      await publishFunnelEvent({
+        eventType: "opportunity_created",
+        leadId: lead.id,
+        assessmentId: roi.id,
+        auditId: audit.id,
+        metadata: { estimated_recovery: projection.revenueRecoveryOpportunity }
+      });
+    }
 
     await executeRegisteredAutomation("lead_created");
     await completeRuntimeTrace(trace);

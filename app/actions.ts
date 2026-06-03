@@ -12,6 +12,7 @@ export type FunnelActionState = {
   message: string;
   leadId?: string;
   auditId?: string;
+  assessmentId?: string;
   projectedRecovery?: number;
   practiceHealthScore?: number | null;
   revenueRecoveryOpportunity?: number | null;
@@ -78,6 +79,7 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
       message: "Your Practice Growth Report is ready. Book your strategy session to review the findings.",
       leadId: result.lead.id,
       auditId: result.audit.id,
+      assessmentId: result.roi.id,
       projectedRecovery: result.audit.projected_recovery,
       practiceHealthScore: result.roi.practice_health_score,
       revenueRecoveryOpportunity: result.roi.revenue_recovery_opportunity,

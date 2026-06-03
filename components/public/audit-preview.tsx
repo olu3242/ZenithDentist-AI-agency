@@ -6,12 +6,14 @@ export function AuditPreview({
   projectedRecovery,
   calendlyUrl,
   leadId,
-  reportId
+  reportId,
+  assessmentId
 }: {
   projectedRecovery?: number;
   calendlyUrl: string;
   leadId?: string;
   reportId?: string;
+  assessmentId?: string;
 }) {
   const reportReady = Boolean(leadId && reportId);
 
@@ -38,11 +40,11 @@ export function AuditPreview({
         {reportReady ? (
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" variant="secondary">
-              <a href={`/api/reports/${reportId}`}>
-                Download Report
+              <a href={`/api/audit/${reportId}/download`}>
+                Download Audit Report
               </a>
             </Button>
-            <BookingFlow calendlyUrl={calendlyUrl} leadId={leadId} />
+            <BookingFlow calendlyUrl={calendlyUrl} leadId={leadId} assessmentId={assessmentId} />
           </div>
         ) : (
           <p className="rounded border border-line bg-surface p-3 text-sm font-bold text-muted">

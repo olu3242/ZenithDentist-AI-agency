@@ -11,7 +11,12 @@ export type OutreachEventType =
   | "email_sent"
   | "cta_clicked"
   | "faq_interaction"
-  | "funnel_abandoned";
+  | "funnel_abandoned"
+  | "assessment_started"
+  | "assessment_completed"
+  | "audit_generated"
+  | "calendly_booking_created"
+  | "opportunity_created";
 export type AutomationEventStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
 export type NotificationSeverity = "info" | "success" | "warning" | "critical";
 export type ReportPeriod = "weekly" | "monthly";
