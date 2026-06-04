@@ -50,6 +50,7 @@ These files are retained for historical replay only and must not be modified:
 | 20260623000000 | Add Commercial Lockdown payment gates, package controls, scope protection, expansion quotes, and offboarding rules | `20260622000000` | `commercial_packages`, `commercial_payment_gates`, `client_commercial_controls`, `client_payment_milestones`, `change_requests`, `expansion_quotes`, `client_offboarding_checklists` | Restore backup or archive/drop commercial lockdown tables after export | High | Zenith Platform |
 | 20260624000000 | Add FinClarity legal entity governance for Zenith brand commercial controls | `20260623000000` | `commercial_packages`, `client_commercial_controls` | Restore backup or archive/drop legal entity governance columns after export | Medium | Zenith Platform |
 | 20260625000000 | Add approved-client access lockdown, client accounts, and authorized email/domain allowlist | `20260624000000` | `client_accounts`, `authorized_domains` | Restore backup or archive/drop access approval records after export | High | Zenith Platform |
+| 20260629000000 | Add i18n and multi-currency preference columns | `20260625000000` | `organizations`, `profiles`, `patients` | Restore backup or apply forward migration to drop added preference columns after export | Medium | Zenith Platform |
 
 ## Forward Migration Details
 
@@ -397,6 +398,34 @@ Restore backup or archive/drop access approval records after export.
 Risk Level:
 
 High
+
+Owner:
+
+Zenith Platform
+
+### Migration ID: 20260629000000
+
+Purpose:
+
+Add organization, profile, and patient locale/currency preferences for supported US and Canada operating modes.
+
+Dependencies:
+
+- 20260625000000
+
+Affected Tables:
+
+- `organizations`
+- `profiles`
+- `patients`
+
+Rollback Strategy:
+
+Restore backup or apply a forward rollback migration to drop added locale/currency preference columns after exporting affected preference data.
+
+Risk Level:
+
+Medium
 
 Owner:
 

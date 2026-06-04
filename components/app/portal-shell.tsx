@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Bell, ChevronDown, LogOut, UserCircle } from "lucide-react";
 import { logoutAction } from "@/app/auth-actions";
 import { ZenithLogo } from "@/components/branding/ZenithLogo";
+import { LocaleSwitcher } from "@/components/i18n/locale-switcher";
 import { OfflineState } from "@/components/ui/canonical";
 import { brandConfig } from "@/lib/brand";
 import { getDefaultPortalForRole, roleLabel, type ZenithRole } from "@/lib/auth-routing";
@@ -9,18 +10,21 @@ import { navForRole } from "@/lib/navigation";
 import type { Location, Organization } from "@/lib/data/tenants";
 import { BackgroundWatermark } from "@/components/app/background-watermark";
 import { ShellBreadcrumbs } from "@/components/app/shell-breadcrumbs";
+import { localeLabels, type SupportedLocale } from "@/lib/i18n/config";
 
 export function PortalShell({
   role,
   organization,
   locations,
   unread = 0,
+  locale,
   children
 }: {
   role: ZenithRole;
   organization: Organization;
   locations: Location[];
   unread?: number;
+  locale: SupportedLocale;
   children: React.ReactNode;
 }) {
   const nav = navForRole(role);
@@ -40,6 +44,12 @@ export function PortalShell({
               <option key={location.id}>{location.name}</option>
             ))}
           </select>
+        </div>
+
+        <div className="mt-3 rounded border border-white/10 bg-white/8 p-3">
+          <p className="text-xs font-black uppercase tracking-wider text-white/45">Locale</p>
+          <p className="mt-1 text-sm font-bold text-white">{localeLabels[locale]}</p>
+          <p className="text-xs font-semibold text-white/50">{organization.default_currency ?? "USD"}</p>
         </div>
 
         <nav className="mt-6 grid gap-5" aria-label="Application navigation">
@@ -64,6 +74,7 @@ export function PortalShell({
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                <LocaleSwitcher currentLocale={locale} compact />
                 <Link href="/portal-select" className="hidden rounded border border-line px-3 py-2 text-xs font-black text-muted hover:bg-paper md:inline-flex">
                   Portal Selector
                 </Link>

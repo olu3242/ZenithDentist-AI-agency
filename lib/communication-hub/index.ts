@@ -12,12 +12,22 @@ export { makeVoiceCall } from "@/lib/adapters/voice-adapter";
 export { deliverPortalItem } from "@/lib/adapters/portal-adapter";
 export type { DeliveryChannel, DeliveryRequest, DeliveryResult, AdapterResult } from "@/lib/adapters/communication-adapter";
 
+export { buildLocalizedSms } from "@/lib/localized-messaging";
+
 // Route a delivery request to the correct adapter
 export async function deliverMessage(req: import("@/lib/adapters/communication-adapter").DeliveryRequest): Promise<import("@/lib/adapters/communication-adapter").DeliveryResult> {
   switch (req.channel) {
     case "sms": {
       const { sendSMS } = await import("@/lib/adapters/sms-adapter");
-      return sendSMS(req.organizationId, "", req.content, req.metadata);
+      const { buildLocalizedSms } = await import("@/lib/localized-messaging");
+      const template = typeof req.metadata?.template === "string" ? req.metadata.template : null;
+      const content = template === "assessmentReady" || template === "bookingReminder"
+        ? buildLocalizedSms(template, {
+          locale: typeof req.metadata?.locale === "string" ? req.metadata.locale : undefined,
+          currency: typeof req.metadata?.currency === "string" ? req.metadata.currency : undefined
+        })
+        : req.content;
+      return sendSMS(req.organizationId, "", content, req.metadata);
     }
     case "email": {
       const { sendEmail } = await import("@/lib/adapters/email-adapter");

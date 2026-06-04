@@ -23,6 +23,7 @@ import { PlatformizationPanel } from "@/components/mission-control/platformizati
 import { PredictiveAlertFeed } from "@/components/mission-control/predictive-alert-feed";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
 import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
+import { getTranslations } from "next-intl/server";
 import { ReplayCenter } from "@/components/mission-control/replay-center";
 import { RuntimeHealthDashboard } from "@/components/mission-control/runtime-health-dashboard";
 import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-bar";
@@ -61,6 +62,7 @@ import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 import { getCurrentZenithRole } from "@/lib/server-auth";
 
 export default async function MissionControlPage() {
+  const t = await getTranslations("missionControl");
   const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization, tenantData, role] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),
@@ -103,9 +105,9 @@ export default async function MissionControlPage() {
         </aside>
         <section className="min-w-0 space-y-6">
           <header className="rounded border border-line bg-white p-5 shadow-sm">
-            <p className="brand-kicker">Zenith PROS Mission Control</p>
-            <h1 className="mt-2 text-4xl font-black text-ink">Mission Control</h1>
-            <p className="mt-2 max-w-4xl text-base font-semibold text-muted">Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring.</p>
+            <p className="brand-kicker">{t("kicker")}</p>
+            <h1 className="mt-2 text-4xl font-black text-ink">{t("title")}</h1>
+            <p className="mt-2 max-w-4xl text-base font-semibold text-muted">{t("subtitle")}</p>
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
           <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />

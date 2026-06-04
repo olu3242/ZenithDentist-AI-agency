@@ -1,16 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getDefaultPortalForRole, isProtectedPath, roleCanAccessPath, roleFromRequest } from "@/lib/auth-routing";
 import { applySecurityHeaders, failedAuthResponse, rateLimit } from "@/lib/security-edge";
+import { defaultLocale, isSupportedLocale } from "@/lib/i18n/config";
 
 export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const localeRoute = getLocaleRoute(request);
+  const pathname = localeRoute.pathname;
   const rate = rateLimit(request);
   if (!rate.allowed) {
-    return applySecurityHeaders(NextResponse.json({ error: "Too many requests." }, { status: 429 }));
+    return withLocaleResponse(applySecurityHeaders(NextResponse.json({ error: "Too many requests." }, { status: 429 })), localeRoute.locale);
   }
 
   if (!isProtectedPath(pathname) && !isProtectedApiPath(pathname)) {
-    return applySecurityHeaders(NextResponse.next());
+    return withLocaleResponse(applySecurityHeaders(nextLocalized(request, localeRoute)), localeRoute.locale);
   }
 
   const tokenCandidates = [
@@ -41,8 +43,8 @@ export function middleware(request: NextRequest) {
       url.search = "";
       return applySecurityHeaders(NextResponse.redirect(url));
     }
-    if (!request.cookies.get("zenith_user_id")?.value) return failedAuthResponse(request);
-    return applySecurityHeaders(NextResponse.next());
+    if (!request.cookies.get("zenith_user_id")?.value) return withLocaleResponse(failedAuthResponse(request), localeRoute.locale);
+    return withLocaleResponse(applySecurityHeaders(nextLocalized(request, localeRoute)), localeRoute.locale);
   }
 
   const authenticated = tokenCandidates.find(candidate => candidate.configuredToken && candidate.token === candidate.configuredToken);
@@ -68,7 +70,7 @@ export function middleware(request: NextRequest) {
       organizationId: request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id"),
       redirectTarget: null
     });
-    return applySecurityHeaders(NextResponse.next());
+    return withLocaleResponse(applySecurityHeaders(nextLocalized(request, localeRoute)), localeRoute.locale);
   }
 
   logAuthDecision(request, {
@@ -77,7 +79,49 @@ export function middleware(request: NextRequest) {
     organizationId: request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id"),
     redirectTarget: "/login"
   });
-  return failedAuthResponse(request);
+  return withLocaleResponse(failedAuthResponse(request), localeRoute.locale);
+}
+
+function getLocaleRoute(request: NextRequest) {
+  const url = request.nextUrl;
+  const [, firstSegment, ...rest] = url.pathname.split("/");
+  const locale = isSupportedLocale(firstSegment)
+    ? firstSegment
+    : isSupportedLocale(request.cookies.get("zenith_locale")?.value)
+      ? request.cookies.get("zenith_locale")!.value
+      : defaultLocale;
+  const pathname = isSupportedLocale(firstSegment) ? `/${rest.join("/")}` || "/" : url.pathname;
+  return {
+    locale,
+    pathname,
+    isPrefixed: isSupportedLocale(firstSegment)
+  };
+}
+
+function requestHeadersWithLocale(request: NextRequest, locale: string) {
+  const headers = new Headers(request.headers);
+  headers.set("x-zenith-locale", locale);
+  return headers;
+}
+
+function nextLocalized(request: NextRequest, route: ReturnType<typeof getLocaleRoute>) {
+  const headers = requestHeadersWithLocale(request, route.locale);
+  if (route.isPrefixed) {
+    const url = request.nextUrl.clone();
+    url.pathname = route.pathname;
+    return NextResponse.rewrite(url, { request: { headers } });
+  }
+  return NextResponse.next({ request: { headers } });
+}
+
+function withLocaleResponse(response: NextResponse, locale: string) {
+  response.cookies.set("zenith_locale", locale, {
+    path: "/",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 365
+  });
+  response.headers.set("x-zenith-locale", locale);
+  return response;
 }
 
 function requireApprovedClientAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>) {
@@ -133,6 +177,7 @@ function isProtectedApiPath(pathname: string) {
     "/api/gtm-command-center",
     "/api/mission-control",
     "/api/opendental",
+    "/api/reports",
   ].some(prefix => pathname.startsWith(prefix));
 }
 
@@ -169,6 +214,14 @@ export const config = {
     "/api/enterprise/:path*",
     "/api/opendental/:path*",
     "/api/reports/:path*",
+    "/en-US",
+    "/en-US/:path*",
+    "/es-US",
+    "/es-US/:path*",
+    "/en-CA",
+    "/en-CA/:path*",
+    "/fr-CA",
+    "/fr-CA/:path*",
     "/lead-operations/:path*",
     "/client-operations/:path*",
     "/gtm-command-center/:path*"

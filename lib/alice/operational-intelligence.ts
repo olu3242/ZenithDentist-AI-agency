@@ -9,6 +9,7 @@ import type { ProviderHealth } from "@/lib/runtime/provider-health";
 import type { AutonomousRecoveryState } from "@/lib/runtime/autonomous-recovery";
 import type { GovernanceState } from "@/lib/runtime/governance";
 import { suggestRemediation } from "@/lib/runtime/self-healing";
+import { buildLocalizedAliceBriefing, type LocalizationContext } from "@/lib/localized-messaging";
 
 export async function summarizeAutomationHealth() {
   const runtime = await getRuntimeHealthState();
@@ -36,6 +37,14 @@ export async function detectCriticalFailures() {
 export async function generateOperationalInsights() {
   const runtime = await getRuntimeHealthState();
   return buildOperationalInsights(runtime);
+}
+
+export function generateLocalizedAliceBriefing(localization: LocalizationContext = {}) {
+  return {
+    briefing: buildLocalizedAliceBriefing(localization),
+    locale: localization.locale ?? "en-US",
+    currency: localization.currency ?? "USD"
+  };
 }
 
 export async function generateRemediationPlan() {

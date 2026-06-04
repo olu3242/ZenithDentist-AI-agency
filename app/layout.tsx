@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import { env } from "@/lib/env";
 import { AnalyticsProvider } from "@/components/providers/analytics-provider";
@@ -50,19 +52,24 @@ export const viewport: Viewport = {
   initialScale: 1
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang={locale} className={inter.variable}>
       <body className="font-sans antialiased">
-        <DatabaseProvider>
-          <BrandProvider>
-            <GlobalThemeProvider>
-              <AnalyticsProvider />
-              {children}
-              <LizChatWidget />
-            </GlobalThemeProvider>
-          </BrandProvider>
-        </DatabaseProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <DatabaseProvider>
+            <BrandProvider>
+              <GlobalThemeProvider>
+                <AnalyticsProvider />
+                {children}
+                <LizChatWidget />
+              </GlobalThemeProvider>
+            </BrandProvider>
+          </DatabaseProvider>
+        </NextIntlClientProvider>
         {env.NEXT_PUBLIC_GA_ID ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${env.NEXT_PUBLIC_GA_ID}`} strategy="afterInteractive" />

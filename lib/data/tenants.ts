@@ -15,6 +15,8 @@ export interface Organization {
   settings: Json;
   branding: Json;
   timezone: string;
+  default_locale: string;
+  default_currency: string;
   primary_location_id: string | null;
 }
 
@@ -95,17 +97,22 @@ export async function getTenantData(slug?: string): Promise<TenantData> {
     : await organizationQuery.eq("slug", requestedSlug).maybeSingle();
 
   if (!org) return emptyTenantData(requestedSlug);
+  const organization: Organization = {
+    ...(org as Organization),
+    default_locale: (org as Partial<Organization>).default_locale ?? "en-US",
+    default_currency: (org as Partial<Organization>).default_currency ?? "USD"
+  };
 
   const [locations, plans, usage, benchmarks] = await Promise.all([
-    supabase.from("locations").select("*").eq("organization_id", org.id).order("is_primary", { ascending: false }),
+    supabase.from("locations").select("*").eq("organization_id", organization.id).order("is_primary", { ascending: false }),
     supabase.from("subscription_plans").select("*").eq("is_active", true).order("price_monthly", { ascending: true }),
-    supabase.from("usage_metrics").select("*").eq("organization_id", org.id).order("metric_month", { ascending: false }).limit(12),
-    supabase.from("benchmark_snapshots").select("*").or(`organization_id.eq.${org.id},organization_id.is.null`).order("benchmark_date", { ascending: false }).limit(20)
+    supabase.from("usage_metrics").select("*").eq("organization_id", organization.id).order("metric_month", { ascending: false }).limit(12),
+    supabase.from("benchmark_snapshots").select("*").or(`organization_id.eq.${organization.id},organization_id.is.null`).order("benchmark_date", { ascending: false }).limit(20)
   ]);
 
   return {
-    tenant: { organizationId: org.id, organizationSlug: org.slug },
-    organization: org,
+    tenant: { organizationId: organization.id, organizationSlug: organization.slug },
+    organization,
     locations: locations.data ?? [],
     plans: plans.data ?? [],
     usage: usage.data ?? [],
@@ -126,6 +133,8 @@ export function emptyTenantData(slug = "unconfigured-tenant"): TenantData {
     settings: {},
     branding: {},
     timezone: "America/Chicago",
+    default_locale: "en-US",
+    default_currency: "USD",
     primary_location_id: null
   };
   return { tenant: { organizationId: organization.id, organizationSlug: slug }, organization, locations: [], plans: [], usage: [], benchmarks: [] };

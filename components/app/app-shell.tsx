@@ -1,8 +1,10 @@
 import { type ZenithRole } from "@/lib/auth-routing";
 import type { Organization, Location } from "@/lib/data/tenants";
 import { PortalShell } from "@/components/app/portal-shell";
+import { getLocale } from "next-intl/server";
+import { normalizeLocale } from "@/lib/i18n/config";
 
-export function AppShell({
+export async function AppShell({
   role,
   organization,
   locations,
@@ -15,8 +17,10 @@ export function AppShell({
   unread?: number;
   children: React.ReactNode;
 }) {
+  const locale = normalizeLocale(await getLocale());
+
   return (
-    <PortalShell role={role} organization={organization} locations={locations} unread={unread}>
+    <PortalShell role={role} organization={organization} locations={locations} unread={unread} locale={locale}>
       {children}
     </PortalShell>
   );

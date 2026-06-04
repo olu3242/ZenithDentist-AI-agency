@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowRight,
   CalendarCheck,
@@ -23,8 +24,11 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ZenithLogo } from "@/components/branding/ZenithLogo";
+import { LocaleSwitcher } from "@/components/i18n/locale-switcher";
 import { RoiFunnelForm } from "@/components/public/roi-funnel-form";
 import { LizExecutiveWidget } from "@/components/public/liz-executive-widget";
+import { formatCurrencyForLocale } from "@/lib/currency";
+import { normalizeLocale } from "@/lib/i18n/config";
 import type { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 type ProsLandingProps = {
@@ -220,6 +224,8 @@ function RevenuePulseTicker() {
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 
 export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLandingProps) {
+  const t = useTranslations("landing");
+  const locale = normalizeLocale(useLocale());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -239,15 +245,18 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
           <ZenithLogo href="/" subtitle="Dental Revenue Recovery" mutedClassName="text-white/40" textClassName="text-white" />
           <nav className="hidden items-center gap-6 text-xs font-bold text-white/55 xl:flex">
             {navItems.map(([label, href]) => (
-              <a key={href} href={href} className="transition hover:text-white">{label}</a>
+              <a key={href} href={href} className="transition hover:text-white">{t(`nav.${label.toLowerCase()}`)}</a>
             ))}
           </nav>
           <div className="flex items-center gap-3">
+            <div className="hidden md:block">
+              <LocaleSwitcher currentLocale={locale} compact />
+            </div>
             <a
               href="#assessment"
               className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#14B8A6] px-5 text-xs font-black text-[#0A0F1C] transition hover:bg-[#14B8A6]/90"
             >
-              Start Free Assessment <ArrowRight className="h-3.5 w-3.5" />
+              {t("primaryCta")} <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <button
               type="button"
@@ -269,7 +278,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
                   onClick={() => setMobileMenuOpen(false)}
                   className="rounded-lg px-3 py-3 text-sm font-bold text-white/70 transition hover:bg-white/5 hover:text-white"
                 >
-                  {label}
+                  {t(`nav.${label.toLowerCase()}`)}
                 </a>
               ))}
             </nav>
@@ -278,7 +287,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
               onClick={() => setMobileMenuOpen(false)}
               className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-[#14B8A6] text-sm font-black text-[#0A0F1C]"
             >
-              Start Free Assessment
+              {t("primaryCta")}
             </a>
           </div>
         )}
@@ -304,22 +313,21 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
             animate="show"
           >
             <motion.p variants={fadeUp} className="mb-5 text-[11px] font-black uppercase tracking-[0.2em] text-[#14B8A6]">
-              Dental Revenue Operating System
+              {t("kicker")}
             </motion.p>
 
             <motion.h1
               variants={fadeUp}
               className="text-6xl font-black leading-[1.0] tracking-tight md:text-7xl lg:text-8xl"
             >
-              Grow<br />Predictably.
+              {t("headline")}
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
               className="mt-7 max-w-2xl text-xl leading-9 text-white/60 md:text-2xl md:leading-10"
             >
-              Zenith helps dental practices automate patient acquisition, recall recovery,
-              treatment acceptance, and operational growth through AI-powered revenue intelligence.
+              {t("subtitle")}
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-4">
@@ -327,14 +335,14 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
                 href="#assessment"
                 className="inline-flex h-14 items-center gap-2.5 rounded-xl bg-[#14B8A6] px-8 text-sm font-black text-[#0A0F1C] shadow-[0_0_32px_rgba(20,184,166,0.25)] transition hover:bg-[#14B8A6]/90 hover:shadow-[0_0_44px_rgba(20,184,166,0.35)]"
               >
-                Start Free Revenue Assessment <ArrowRight className="h-4 w-4" />
+                {t("primaryCta")} <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="#results"
                 className="inline-flex h-14 items-center gap-2.5 rounded-xl border border-white/12 bg-white/6 px-8 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/10"
               >
                 <Play className="h-4 w-4 text-[#14B8A6]" />
-                Watch Platform Demo
+                {t("demoCta")}
               </a>
             </motion.div>
 
@@ -482,9 +490,9 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
         <div className="mx-auto max-w-7xl px-5">
           <div className="mb-10 max-w-2xl">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#14B8A6]">Free Practice Growth Assessment</p>
-            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Discover Hidden Revenue Opportunities</h2>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">{t("assessmentTitle")}</h2>
             <p className="mt-4 text-lg leading-8 text-[#64748B]">
-              Complete a short assessment and receive a personalized Practice Growth Report — including your Revenue Opportunity Estimate, Patient Retention Analysis, and LIZ Recommendations.
+              {t("assessmentBody")}
             </p>
           </div>
           <RoiFunnelForm calendlyUrl={calendlyUrl} />
@@ -542,7 +550,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-xs font-bold text-[#64748B]">Estimated opportunity</p>
-                    <p className="text-2xl font-black text-[#14B8A6]">{insight.opportunity}</p>
+                    <p className="text-2xl font-black text-[#14B8A6]">{insight.opportunity.replace("$18,400", formatCurrencyForLocale(18400, locale)).replace("$31,200", formatCurrencyForLocale(31200, locale)).replace("$12,000", formatCurrencyForLocale(12000, locale))}</p>
                   </div>
                 </div>
               </div>
@@ -633,7 +641,9 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
               </div>
               <div className="lg:col-span-2">
                 <p className="text-xs font-black uppercase tracking-wider text-[#64748B]">Revenue Opportunity</p>
-                <p className="mt-2 text-4xl font-black text-[#14B8A6]">$12,000 – $27,000</p>
+                <p className="mt-2 text-4xl font-black text-[#14B8A6]">
+                  {formatCurrencyForLocale(12000, locale)} – {formatCurrencyForLocale(27000, locale)}
+                </p>
                 <p className="text-sm text-[#64748B]">per month estimated</p>
               </div>
             </div>
@@ -702,7 +712,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(20,184,166,0.07),transparent)]" />
         <div className="mx-auto max-w-3xl px-5 text-center">
           <h2 className="text-4xl font-black leading-tight md:text-5xl lg:text-6xl">
-            Ready To Discover<br />What&apos;s Being Missed?
+            {t("finalCta")}
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-xl leading-9 text-white/50">
             Receive a complimentary Practice Growth Assessment and uncover hidden opportunities inside your practice.
@@ -712,7 +722,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
               href="#assessment"
               className="inline-flex h-14 items-center gap-2.5 rounded-xl bg-[#14B8A6] px-10 text-sm font-black text-[#0A0F1C] shadow-[0_0_40px_rgba(20,184,166,0.18)] transition hover:bg-[#14B8A6]/90 hover:shadow-[0_0_52px_rgba(20,184,166,0.28)]"
             >
-              Start Free Assessment <ArrowRight className="h-4 w-4" />
+              {t("primaryCta")} <ArrowRight className="h-4 w-4" />
             </a>
             <a
               href={calendlyUrl || "#"}
@@ -720,7 +730,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
               rel="noreferrer"
               className="inline-flex h-14 items-center rounded-xl border border-white/12 bg-white/6 px-10 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/10"
             >
-              Book Strategy Session
+              {t("bookStrategy")}
             </a>
           </div>
           {landingStats.assessmentCount > 0 && (

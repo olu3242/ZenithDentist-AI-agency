@@ -1,4 +1,5 @@
 import { DashboardContainer, ActionGrid } from "@/components/portal/dashboard-grid";
+import { ProfileLocaleSettings } from "@/components/i18n/profile-locale-settings";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { OrganizationSettings } from "@/components/tenant/organization-settings";
 import { PlanComparison } from "@/components/tenant/plan-comparison";
@@ -19,6 +20,7 @@ export default async function PortalSettingsPage() {
   return (
     <DashboardContainer>
       <PortalHeader title="Client Settings" subtitle="Practice-level automation preferences prepared for authenticated role-based editing." />
+      <ProfileLocaleSettings />
       <OrganizationSettings organization={tenantData.organization} />
       <UsageMeter usage={tenantData.usage[0]} plan={activePlan} />
       <PlanComparison plans={tenantData.plans} activePlan={tenantData.organization.active_plan} />

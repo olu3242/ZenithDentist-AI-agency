@@ -1,0 +1,109 @@
+{
+  "common": {
+    "locale": "Idioma",
+    "currency": "Moneda",
+    "save": "Guardar",
+    "settings": "Configuración",
+    "organization": "Organización",
+    "portalSelector": "Selector de portal",
+    "signOut": "Cerrar sesión"
+  },
+  "landing": {
+    "nav": {
+      "assessment": "Evaluación",
+      "solutions": "Soluciones",
+      "results": "Resultados",
+      "about": "Acerca de",
+      "contact": "Contacto"
+    },
+    "kicker": "Sistema operativo de ingresos dentales",
+    "headline": "Crezca con previsibilidad.",
+    "subtitle": "Zenith ayuda a las clínicas dentales a automatizar adquisición de pacientes, recuperación de recall, aceptación de tratamientos y crecimiento operativo con inteligencia de ingresos impulsada por IA.",
+    "primaryCta": "Iniciar evaluación gratuita",
+    "demoCta": "Ver demo de la plataforma",
+    "assessmentTitle": "Descubra oportunidades de ingresos ocultas",
+    "assessmentBody": "Complete una evaluación breve y reciba un informe personalizado con estimación de oportunidad de ingresos, análisis de retención de pacientes y recomendaciones de ALICE.",
+    "finalCta": "¿Listo para descubrir lo que se está perdiendo?",
+    "bookStrategy": "Reservar sesión estratégica"
+  },
+  "auth": {
+    "loginTitle": "Iniciar sesión",
+    "loginSubtitle": "Los clientes aprobados y operadores internos pueden resolver su perfil de Zenith y continuar al portal correcto.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "pending": "Iniciando sesión...",
+    "google": "Continuar con Google",
+    "invitedEmail": "Correo invitado",
+    "requestApproval": "Solicitar aprobación",
+    "resetAccess": "Restablecer acceso"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "alicePriority": "Prioridad de ALICE",
+    "recoveredRevenue": "Ingresos recuperados",
+    "patients": "Pacientes",
+    "bookings": "Reservas"
+  },
+  "missionControl": {
+    "kicker": "Zenith PROS Mission Control",
+    "title": "Mission Control",
+    "subtitle": "Centro de comando operativo empresarial para inteligencia de ejecución, confianza de proveedores, trazabilidad, replay seguro y monitoreo predictivo."
+  },
+  "workflowOS": {
+    "kicker": "Zenith PROS Workflow OS",
+    "title": "Workflow OS",
+    "subtitle": "Automatizaciones dentales registradas, analítica de ejecución, postura de replay, presión SLA y salud de workflows.",
+    "registeredWorkflows": "Workflows registrados",
+    "operationalScore": "Puntaje operativo",
+    "replayQueue": "Cola de replay",
+    "slaBreaches": "Incumplimientos SLA",
+    "registry": "Registro de workflows",
+    "healthy": "Saludable",
+    "review": "Revisar"
+  },
+  "patientRevenueEngine": {
+    "title": "Motor de ingresos del paciente",
+    "install": "Instalar Patient Revenue Engine",
+    "deploy": "Desplegar Patient Revenue Engine",
+    "description": "Recupere ingresos de pacientes mediante recall, reactivación, aceptación de tratamientos, membresías, referidos y reseñas."
+  },
+  "clientSuccessOS": {
+    "title": "Client Success OS",
+    "implementation": "Implementación",
+    "adoption": "Adopción",
+    "goLive": "Preparación para lanzamiento"
+  },
+  "alice": {
+    "title": "Inteligencia operativa ALICE",
+    "recommendation": "Recomendación",
+    "confidence": "Confianza",
+    "localizedBriefing": "ALICE usa idioma {locale} y contexto financiero {currency}."
+  },
+  "roi": {
+    "title": "Motor de oportunidad de ingresos en vivo",
+    "subtitle": "Mueva los controles para ver recuperación de ingresos, recomendaciones y puntaje de salud en tiempo real.",
+    "monthlyAppointments": "Citas mensuales",
+    "avgAppointmentValue": "Producción promedio por visita",
+    "noShowRate": "Tasa de no presentación",
+    "treatmentAcceptanceRate": "Tasa de aceptación de tratamiento",
+    "recallRate": "Tasa de recall",
+    "providers": "Número de proveedores",
+    "locations": "Número de ubicaciones",
+    "recovery": "Recuperación",
+    "recall": "Recall",
+    "treatment": "Tratamiento",
+    "chairFill": "Sillas ocupadas",
+    "reviews": "Reseñas",
+    "referrals": "Referidos"
+  },
+  "email": {
+    "auditSubject": "Su evaluación gratuita de oportunidad de ingresos para {practiceName}",
+    "auditReady": "Su informe gratuito de oportunidad de ingresos está listo",
+    "bookWalkthrough": "Reserve su revisión de implementación para ver los playbooks recomendados de Zenith PROS."
+  },
+  "sms": {
+    "assessmentReady": "Su informe de oportunidad de ingresos de Zenith está listo. Reserve su revisión cuando le convenga.",
+    "bookingReminder": "Recordatorio: su sesión estratégica de Zenith se acerca."
+  }
+}
