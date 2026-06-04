@@ -168,6 +168,7 @@ export const config = {
     "/api/autonomous/:path*",
     "/api/enterprise/:path*",
     "/api/opendental/:path*",
+    "/api/reports/:path*",
     "/lead-operations/:path*",
     "/client-operations/:path*",
     "/gtm-command-center/:path*"
