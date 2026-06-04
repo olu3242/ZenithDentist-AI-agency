@@ -165,14 +165,14 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
         <div className="rounded border border-line bg-white p-4 shadow-soft sm:p-6">
           <div className="flex flex-col gap-4 border-b border-line pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="brand-kicker">FREE Revenue Opportunity Assessment</p>
-              <h2 className="mt-3 text-3xl font-black leading-tight text-ink sm:text-4xl">{t("title")}</h2>
+              <p className="brand-kicker">FREE Revenue Opportunity Assessment™</p>
+              <h2 className="mt-3 text-3xl font-black leading-tight text-ink sm:text-4xl">Live Revenue Opportunity Engine</h2>
               <p className="mt-2 max-w-2xl text-sm font-semibold leading-7 text-muted sm:text-base">
-                {t("subtitle")}
+                Drag the sliders to watch revenue recovery, platform recommendations, and Practice Health Score update in real time.
               </p>
             </div>
             <div className="rounded border border-teal/30 bg-teal/10 px-4 py-3 text-center">
-              <p className="text-xs font-black uppercase tracking-wider text-teal">{formatCurrency(1500, locale)} Consulting Value</p>
+              <p className="text-xs font-black uppercase tracking-wider text-teal">$1,500 Consulting Value</p>
               <p className="text-3xl font-black text-ink">FREE</p>
             </div>
           </div>
@@ -183,14 +183,12 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
                 <SliderControl
                   key={config.name}
                   config={config}
-                  label={t(config.name)}
                   value={Number(values[config.name] ?? defaults[config.name] ?? 0)}
-                  locale={locale}
                   onChange={updateNumber}
                 />
               ))}
             </div>
-            <LiveChart projection={projection} locale={locale} />
+            <LiveChart projection={projection} />
           </div>
 
           <motion.div
@@ -200,7 +198,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
           >
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment</p>
+                <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment™</p>
                 <p className="mt-1 text-sm font-semibold leading-6 text-ink">
                   Your practice profile is complete. Unlock your personalized Practice Growth Report and 90-day opportunity snapshot.
                 </p>
@@ -269,7 +267,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
         </div>
 
         <div className="space-y-5">
-          <AssessmentPreview submitted={submitted} projection={projection} aliceReport={aliceReport} locale={locale} />
+          <AssessmentPreview submitted={submitted} projection={projection} aliceReport={aliceReport} />
           <AuditPreview
             calendlyUrl={calendlyUrl}
             leadId={result?.leadId}
@@ -279,7 +277,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
           />
         </div>
 
-        <MobileResultsPanel projection={projection} locale={locale} />
+        <MobileResultsPanel projection={projection} />
       </form>
     </section>
   );
@@ -287,30 +285,23 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
 
 function SliderControl({
   config,
-  label,
   value,
-  locale,
   onChange
 }: {
   config: (typeof sliderConfig)[number];
-  label: string;
   value: number;
-  locale: string;
   onChange: (name: NumberField, value: number) => void;
 }) {
   const progress = ((value - config.min) / (config.max - config.min)) * 100;
-  const displayValue = config.name === "avgAppointmentValue"
-    ? formatCurrency(value, locale)
-    : `${config.prefix ?? ""}${value.toLocaleString()}${config.suffix ?? ""}`;
   return (
     <label className="rounded border border-line bg-surface p-4">
       <span className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <span>
-          <span className="block text-sm font-black text-ink">{label}</span>
+          <span className="block text-sm font-black text-ink">{config.label}</span>
           <span className="mt-1 block text-xs font-semibold leading-5 text-muted">{config.detail}</span>
         </span>
         <strong className="text-2xl font-black text-teal">
-          {displayValue}
+          {config.prefix}{value.toLocaleString()}{config.suffix}
         </strong>
       </span>
       <input
@@ -327,15 +318,14 @@ function SliderControl({
   );
 }
 
-function LiveChart({ projection, locale }: { projection: ReturnType<typeof calculateRevenueProjection>; locale: string }) {
-  const t = useTranslations("roi");
+function LiveChart({ projection }: { projection: ReturnType<typeof calculateRevenueProjection> }) {
   const rows = [
-    [t("recovery"), projection.revenueRecoveryOpportunity],
-    [t("recall"), projection.recallOpportunity],
-    [t("treatment"), projection.treatmentOpportunity],
-    [t("chairFill"), projection.chairFillOpportunity],
-    [t("reviews"), projection.reviewOpportunity],
-    [t("referrals"), projection.referralOpportunity]
+    ["Recovery", projection.revenueRecoveryOpportunity],
+    ["Recall", projection.recallOpportunity],
+    ["Treatment", projection.treatmentOpportunity],
+    ["Chair Fill", projection.chairFillOpportunity],
+    ["Reviews", projection.reviewOpportunity],
+    ["Referrals", projection.referralOpportunity]
   ] as const;
   const max = Math.max(...rows.map(([, value]) => value), 1);
 
@@ -353,7 +343,7 @@ function LiveChart({ projection, locale }: { projection: ReturnType<typeof calcu
           <div key={label}>
             <div className="mb-1 flex items-center justify-between gap-3 text-xs font-bold">
               <span className="text-white/70">{label}</span>
-              <span>{formatCurrency(value, locale)}</span>
+              <span>{formatCurrency(value)}</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-white/10">
               <motion.div
@@ -373,13 +363,11 @@ function LiveChart({ projection, locale }: { projection: ReturnType<typeof calcu
 function AssessmentPreview({
   submitted,
   projection,
-  aliceReport,
-  locale
+  aliceReport
 }: {
   submitted: boolean;
   projection: ReturnType<typeof calculateRevenueProjection>;
   aliceReport: ReturnType<typeof buildAliceRevenueOpportunityReport>;
-  locale: string;
 }) {
   return (
     <aside className="sticky top-24 rounded border border-line bg-white p-5 shadow-soft">
@@ -391,13 +379,13 @@ function AssessmentPreview({
         <Bot className="h-8 w-8 text-teal" />
       </div>
       <div className="mt-5 grid gap-3">
-        <PreviewMetric label="Revenue Recovery Opportunity" value={formatCurrency(projection.revenueRecoveryOpportunity, locale)} />
+        <PreviewMetric label="Revenue Recovery Opportunity" value={formatCurrency(projection.revenueRecoveryOpportunity)} />
         <PreviewMetric label="Practice Health Score" value={`${projection.practiceHealthScore}/100`} />
-        <PreviewMetric label="Recall Opportunity" value={formatCurrency(projection.recallOpportunity, locale)} />
-        <PreviewMetric label="Treatment Opportunity" value={formatCurrency(projection.treatmentOpportunity, locale)} />
-        <PreviewMetric label="Chair Fill Opportunity" value={formatCurrency(projection.chairFillOpportunity, locale)} />
-        <PreviewMetric label="Review Opportunity" value={formatCurrency(projection.reviewOpportunity, locale)} />
-        <PreviewMetric label="Referral Opportunity" value={formatCurrency(projection.referralOpportunity, locale)} />
+        <PreviewMetric label="Recall Opportunity" value={formatCurrency(projection.recallOpportunity)} />
+        <PreviewMetric label="Treatment Opportunity" value={formatCurrency(projection.treatmentOpportunity)} />
+        <PreviewMetric label="Chair Fill Opportunity" value={formatCurrency(projection.chairFillOpportunity)} />
+        <PreviewMetric label="Review Opportunity" value={formatCurrency(projection.reviewOpportunity)} />
+        <PreviewMetric label="Referral Opportunity" value={formatCurrency(projection.referralOpportunity)} />
       </div>
       <div className="mt-5 rounded border border-line bg-surface p-4">
         <p className="text-xs font-black uppercase tracking-wider text-muted">Recommended Revenue Playbooks</p>
@@ -422,13 +410,13 @@ function AssessmentPreview({
   );
 }
 
-function MobileResultsPanel({ projection, locale }: { projection: ReturnType<typeof calculateRevenueProjection>; locale: string }) {
+function MobileResultsPanel({ projection }: { projection: ReturnType<typeof calculateRevenueProjection> }) {
   return (
     <div className="sticky bottom-3 z-20 rounded border border-teal/30 bg-ink p-3 text-white shadow-soft lg:hidden">
       <div className="grid grid-cols-3 gap-2 text-center">
-        <CompactMetric label="Recovery" value={formatCurrency(projection.revenueRecoveryOpportunity, locale)} />
+        <CompactMetric label="Recovery" value={formatCurrency(projection.revenueRecoveryOpportunity)} />
         <CompactMetric label="Health" value={`${projection.practiceHealthScore}/100`} />
-        <CompactMetric label="Chair Fill" value={formatCurrency(projection.chairFillOpportunity, locale)} />
+        <CompactMetric label="Chair Fill" value={formatCurrency(projection.chairFillOpportunity)} />
       </div>
     </div>
   );

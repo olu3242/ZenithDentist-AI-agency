@@ -1,8 +1,8 @@
-# Reputation Growth Engine
+# Reputation Growth Engine™
 
 ## Overview
 
-The Reputation Growth Engine automates review generation, tracks review receipt across platforms, manages response workflows, and provides reputation analytics. It is one of five engines within the Dental Growth OS and contributes the Reviews dimension (20%) to the Growth Score.
+The Reputation Growth Engine™ automates review generation, tracks review receipt across platforms, manages response workflows, and provides reputation analytics. It is one of five engines within the Dental Growth OS™ and contributes the Reviews dimension (20%) to the Growth Score™.
 
 ---
 
@@ -10,7 +10,7 @@ The Reputation Growth Engine automates review generation, tracks review receipt 
 
 | Goal | Mechanism |
 |------|-----------|
-| Automate review requests after positive visits | Automation Platform triggers `reputation.review_requested` event |
+| Automate review requests after positive visits | Workflow OS triggers `reputation.review_requested` event |
 | Track reviews received across platforms | `reputation_events` table with `review_received` records |
 | Manage review response workflow | ALICE generates draft responses; staff reviews and sends |
 | Recover negative reviews | Recovery response flow with sentiment tracking |
@@ -60,11 +60,11 @@ Index: `(organization_id, platform, created_at DESC)` for platform-level analyti
 
 ### review_requested
 
-Created when the Automation Platform sends a review request to a patient after a positive appointment completion.
+Created when the Workflow OS sends a review request to a patient after a positive appointment completion.
 
 Trigger chain:
 ```
-Appointment completed (PMS event or Automation Platform signal)
+Appointment completed (PMS event or Workflow OS signal)
   → Workflow: post_visit_review_request
   → recordReviewRequest(orgId, patientExternalId, 'google')
   → Event emitted: reputation.review_requested.<patientExternalId>
@@ -99,7 +99,7 @@ Created when a follow-up action converts a negative/neutral review situation. Tr
 
 ## Review Request Automation
 
-The Automation Platform handles the timing and delivery of review requests. The `post_visit_checkin` journey includes a review request step:
+The Workflow OS handles the timing and delivery of review requests. The `post_visit_checkin` journey includes a review request step:
 
 ```
 post_visit_checkin journey:

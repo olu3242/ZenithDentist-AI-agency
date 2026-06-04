@@ -8,7 +8,7 @@ Certified locally:
 - Migration manifest entry exists
 - Tenant-scoped schema design exists
 - RLS policies exist
-- Automation Platform blueprints exist
+- Workflow OS blueprints exist
 - Portal route exists
 - LIZ knowledge/action integration exists
 

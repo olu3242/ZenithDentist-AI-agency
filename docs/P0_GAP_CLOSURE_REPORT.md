@@ -71,6 +71,6 @@
 | Opportunity Created | ✅ opportunities | ✅ lead_id, assessment_id FK | ✅ opportunity_created | ✅ Active Opportunities metric (FIXED) |
 | Calendly Booking | ✅ bookings | ✅ lead_id, assessment_id FK | ✅ calendly_booking_created | ✅ Bookings metric |
 | Opportunity Stage Update | ✅ opportunities.stage = booking_created | — | — | ✅ Pipeline value metric |
-| Executive Dashboard | — | — | — | ✅ All 9 metrics from real data |
+| Mission Control | — | — | — | ✅ All 9 metrics from real data |
 
 ## Result: PASS — All P0 gaps closed

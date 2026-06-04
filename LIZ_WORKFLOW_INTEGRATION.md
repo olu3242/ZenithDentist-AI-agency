@@ -17,7 +17,7 @@ LIZ action button
   -> /api/liz/action
     -> track LIZ telemetry
     -> executeRegisteredAutomation
-      -> Automation Platform
+      -> Workflow OS
       -> Runtime OS
       -> trace / event fabric
 ```

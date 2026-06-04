@@ -47,11 +47,11 @@
 
 | KPI | Source | Visibility |
 |-----|--------|------------|
-| Workflow Health Score | automation_traces | ✅ Executive Dashboard |
-| Dead Letter Queue Depth | automation_dead_letters | ✅ Executive Dashboard |
-| Recovery Success Rate | workflow_recovery_metrics | ✅ Executive Dashboard |
+| Workflow Health Score | automation_traces | ✅ Mission Control |
+| Dead Letter Queue Depth | automation_dead_letters | ✅ Mission Control |
+| Recovery Success Rate | workflow_recovery_metrics | ✅ Mission Control |
 | PMS Sync Uptime | pms_integrations | ✅ /dashboard/pms/sync-health |
-| Event Fabric Throughput | runtime_event_fabric_events | ✅ Executive Dashboard |
+| Event Fabric Throughput | runtime_event_fabric_events | ✅ Mission Control |
 
 ---
 
@@ -60,8 +60,8 @@
 | Dashboard | URL | Audience |
 |-----------|-----|----------|
 | Revenue Command Center | /admin | Internal team |
-| Executive Dashboard | /mission-control | Platform ops |
-| Automation Platform | /workflow-os | Engineering |
+| Mission Control | /mission-control | Platform ops |
+| Workflow OS | /workflow-os | Engineering |
 | Runtime OS | /runtime-os | Engineering |
 | Client Portal | /portal/revenue | Client |
 | GTM Command Center | /gtm-command-center | Sales/Marketing |

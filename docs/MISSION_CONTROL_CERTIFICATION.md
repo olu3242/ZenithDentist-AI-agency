@@ -1,4 +1,4 @@
-# Executive Dashboard Certification
+# Mission Control Certification
 
 ## Status: CERTIFIED ✅
 
@@ -24,7 +24,7 @@ All panels sourced from `getAdminDashboardData()` → live Supabase queries.
 
 ---
 
-## Executive Dashboard Page (`/mission-control`) — Panel Audit
+## Mission Control Page (`/mission-control`) — Panel Audit
 
 | Panel | Data Source | Status |
 |-------|-------------|--------|
@@ -81,4 +81,4 @@ Displayed on: `/workflow-os`, `/runtime-os`, `/mission-control`
 
 ---
 
-## Result: CERTIFIED — All 9 admin panels and all Executive Dashboard panels verified as real queries with no mock data
+## Result: CERTIFIED — All 9 admin panels and all Mission Control panels verified as real queries with no mock data

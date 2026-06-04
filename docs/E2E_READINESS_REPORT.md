@@ -19,7 +19,7 @@
 | Admin dashboard 9 metrics | ✅ | ✅ | ⚠️ needs service key |
 | LIZ action API token protection | ✅ | ✅ | ⚠️ needs token config |
 | Workflow recovery DLQ | ✅ | ✅ | ⚠️ needs service key |
-| Executive Dashboard panels | ✅ | ✅ | ⚠️ needs service key |
+| Mission Control panels | ✅ | ✅ | ⚠️ needs service key |
 
 ---
 
@@ -73,7 +73,7 @@ npm run smoke
 ### Step 4: Verify in Admin
 - Visit `/admin` → confirm 9 metric cards load with real data
 - Submit assessment form → confirm lead appears in CRM table
-- Check Executive Dashboard → confirm events visible
+- Check Mission Control → confirm events visible
 
 ---
 

@@ -3,7 +3,7 @@
 ## Funnel Map
 
 ```
-Visitor → Hero CTA → Assessment → Score/Report → Lead Capture → Strategy Session → CRM → Executive Dashboard
+Visitor → Hero CTA → Assessment → Score/Report → Lead Capture → Strategy Session → CRM → Mission Control
 ```
 
 ---
@@ -32,12 +32,12 @@ Visitor → Hero CTA → Assessment → Score/Report → Lead Capture → Strate
 - **File**: app/page.tsx, components/public/pros-landing.tsx
 
 ### ✅ FIXED — Internal language in public copy
-- **Was**: "ALICE has routed the lead to Executive Dashboard" in success message
+- **Was**: "ALICE has routed the lead to Mission Control" in success message
 - **Fix**: "Your Practice Growth Report is ready. Book your strategy session to review the findings."
 - **File**: app/actions.ts
 
 ### ✅ FIXED — Internal language in audit preview
-- **Was**: "Executive Dashboard lead routing and internal sales notification"
+- **Was**: "Mission Control lead routing and internal sales notification"
 - **Fix**: "Personalized strategy session preparation with your growth advisor"
 - **File**: components/public/audit-preview.tsx
 
@@ -83,10 +83,10 @@ Visitor → Hero CTA → Assessment → Score/Report → Lead Capture → Strate
 - ⚠️ Status not updated to "booked" when Calendly webhook fires
 - **Fix needed**: Calendly webhook should update lead status
 
-### Step 7: Executive Dashboard Visibility
+### Step 7: Mission Control Visibility
 - ✅ getAdminDashboardData() loads all leads
 - ✅ Admin dashboard shows full pipeline
-- ✅ Executive Dashboard loads operational data
+- ✅ Mission Control loads operational data
 - ✅ Booking appears in bookings table
 
 ### Step 8: Analytics

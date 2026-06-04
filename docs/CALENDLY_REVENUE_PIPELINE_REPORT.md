@@ -46,7 +46,7 @@
 - `pipeline_value = revenue_recovery_opportunity × 12` (annual)
 - `estimated_recovery = revenue_recovery_opportunity` (monthly)
 
-### Step 6: Executive Dashboard Visibility ✅
+### Step 6: Mission Control Visibility ✅
 - `getAdminDashboardData()` now queries `opportunities` table
 - Admin dashboard shows "Active Opportunities" count and pipeline value
 - Lead status updated to "booked" → visible in CRM table
@@ -77,4 +77,4 @@
 
 ---
 
-## Result: CERTIFIED — Full CTA → Assessment → Audit → Calendly → Booking → Opportunity → Executive Dashboard pipeline verified
+## Result: CERTIFIED — Full CTA → Assessment → Audit → Calendly → Booking → Opportunity → Mission Control pipeline verified

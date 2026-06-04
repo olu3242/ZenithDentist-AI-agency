@@ -19,10 +19,10 @@ Compared legacy PRD against current PROS.
 
 ## Expanded Requirements
 
-- Legacy Revenue Recovery System expanded into Patient Revenue Operating System.
+- Legacy Patient Revenue Engine expanded into Patient Revenue Operating System.
 - Revenue Playbooks now cover No Show Prevention, Recall Recovery, Chair Fill, Treatment Acceptance, Review Growth, and Referral Growth.
 - ALICE adds operational intelligence, reports, recommendations, and executive summaries.
-- Executive Dashboard expands beyond dashboarding into runtime, recovery, event fabric, governance, and provider health.
+- Mission Control expands beyond dashboarding into runtime, recovery, event fabric, governance, and provider health.
 - Pilot operations and commercial operations are defined.
 - Migration governance is now formalized.
 
@@ -37,7 +37,7 @@ Compared legacy PRD against current PROS.
 
 - Legacy single-practice `practices` tenant model is superseded by `organizations`, `organization_members`, and `locations`.
 - Legacy Next.js 14 folder plan is superseded by current Next.js 15 app routes.
-- Legacy basic dashboard has been superseded by portal dashboard plus Executive Dashboard.
+- Legacy basic dashboard has been superseded by portal dashboard plus Mission Control.
 
 ## Result
 

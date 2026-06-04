@@ -18,7 +18,7 @@ Specialist: Data & Analytics Architect
 
 Implemented path:
 
-Runtime Event Fabric -> Automation Traces -> Workflow Analytics -> Automation Registry -> Analytics Projector -> ALICE -> Executive Dashboard
+Runtime Event Fabric -> Automation Traces -> Workflow Analytics -> Automation Registry -> Analytics Projector -> ALICE -> Mission Control
 
 ## KPI Framework
 

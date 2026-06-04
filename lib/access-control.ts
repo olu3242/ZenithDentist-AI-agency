@@ -1,11 +1,12 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-import { getDefaultPortalForRole, type ZenithRole } from "@/lib/auth-routing";
+import { getDefaultPortalForRole, isPlatformAdminRole, type ZenithRole } from "@/lib/auth-routing";
 import type { Json } from "@/lib/database.types";
 import { LEGAL_ENTITY } from "@/lib/legal-entity";
 import { logger } from "@/lib/logger";
 import { createServiceClient } from "@/lib/supabase/server";
+import { logAuditEvent } from "@/lib/audit";
 
 export type ClientAccountStatus =
   | "lead"
@@ -84,6 +85,46 @@ export async function evaluateClientAccessByEmail(emailInput: string | null | un
   if (!email) return { allowed: false, reason: "email_missing" };
 
   const client = supabase as any;
+  const platformAdmin = await getPlatformAdminProfileByEmail(email);
+  if (platformAdmin) {
+    const organizationId = await ensurePlatformAdminOrganization(platformAdmin);
+    if (!organizationId) {
+      return { allowed: false, reason: "organization_missing", email, organizationId: null };
+    }
+
+    await ensurePlatformAdminClientAccount({
+      email,
+      fullName: platformAdmin.full_name ?? "Zenith Platform Admin",
+      organizationId,
+      profileId: platformAdmin.id
+    });
+    await logAuditEvent({
+      organizationId,
+      actorType: "admin",
+      eventType: "platform_admin.access_granted",
+      title: "Platform admin access granted",
+      description: `Platform admin ${email} bypassed client approval and subscription gates by role.`,
+      severity: "moderate",
+      metadata: {
+        userId: platformAdmin.id,
+        role: platformAdmin.role,
+        bypass: "client_access_lockdown",
+        gatesPreservedForClients: true
+      }
+    });
+
+    return {
+      allowed: true,
+      reason: "platform_admin_bypass",
+      status: "active",
+      email,
+      organizationId,
+      packageType: "platform_admin",
+      subscriptionActive: true,
+      approvedForAccess: true
+    };
+  }
+
   const { data: account, error } = await client
     .from("client_accounts")
     .select("id, organization_id, email, status, package_type, contract_signed, setup_fee_paid, implementation_started, approved_for_access, subscription_active")
@@ -289,6 +330,147 @@ async function upsertAuthorizedEmail(emailInput: string, organizationId: string,
     approved_by: approvedBy || null,
     approved_at: new Date().toISOString()
   }, { onConflict: "value,value_type" });
+}
+
+async function getPlatformAdminProfileByEmail(email: string) {
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, email, full_name, role, default_organization_id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    logger.warn("platform_admin_profile_lookup_failed", { email, error: error.message });
+    return null;
+  }
+
+  return data && isPlatformAdminRole(data.role as ZenithRole) ? data : null;
+}
+
+async function ensurePlatformAdminOrganization(profile: {
+  id: string;
+  email: string;
+  full_name: string | null;
+  role: string;
+  default_organization_id: string | null;
+}) {
+  const supabase = createServiceClient();
+  if (!supabase) return null;
+
+  if (profile.default_organization_id) {
+    const { data: organization } = await supabase
+      .from("organizations")
+      .select("id")
+      .eq("id", profile.default_organization_id)
+      .maybeSingle();
+    if (organization?.id) {
+      await ensurePlatformAdminMembership(profile.id, organization.id as string, profile.role as ZenithRole);
+      return organization.id as string;
+    }
+  }
+
+  const organization = await createApprovedOrganization("Zenith Platform");
+  if (!organization.ok) {
+    logger.warn("platform_admin_organization_provision_failed", {
+      email: profile.email,
+      message: organization.message
+    });
+    return null;
+  }
+
+  const organizationId = organization.organizationId;
+  const now = new Date().toISOString();
+  await supabase
+    .from("profiles")
+    .update({ default_organization_id: organizationId, updated_at: now })
+    .eq("id", profile.id);
+
+  await ensurePlatformAdminMembership(profile.id, organizationId, profile.role as ZenithRole);
+  return organizationId;
+}
+
+async function ensurePlatformAdminMembership(userId: string, organizationId: string, role: ZenithRole) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+
+  const { data: existingMember } = await supabase
+    .from("organization_members")
+    .select("id")
+    .eq("organization_id", organizationId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const payload = {
+    organization_id: organizationId,
+    user_id: userId,
+    role: "admin" as const,
+    permissions: { platform_role: role, platform_admin: true } as Json,
+    accepted_at: new Date().toISOString()
+  };
+
+  if (existingMember?.id) {
+    await supabase.from("organization_members").update(payload).eq("id", existingMember.id);
+  } else {
+    await supabase.from("organization_members").insert(payload);
+  }
+}
+
+async function ensurePlatformAdminClientAccount(input: {
+  email: string;
+  fullName: string;
+  organizationId: string;
+  profileId: string;
+}) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+
+  const now = new Date().toISOString();
+  const { error } = await (supabase as any).from("client_accounts").upsert({
+    email: input.email,
+    full_name: input.fullName,
+    practice_name: "Zenith Platform",
+    organization_id: input.organizationId,
+    package_type: "platform_admin",
+    status: "active",
+    contract_signed: true,
+    setup_fee_paid: true,
+    implementation_started: true,
+    approved_for_access: true,
+    subscription_active: true,
+    approved_by: input.profileId,
+    approved_at: now,
+    updated_at: now,
+    metadata: {
+      source: "platform_admin_auto_provisioning",
+      provisioned_at: now
+    } as Json
+  }, { onConflict: "email" });
+
+  if (error) {
+    logger.warn("platform_admin_client_account_provision_failed", {
+      email: input.email,
+      error: error.message
+    });
+    return;
+  }
+
+  await logAuditEvent({
+    organizationId: input.organizationId,
+    actorType: "admin",
+    eventType: "platform_admin.client_account_auto_provisioned",
+    title: "Platform admin client account auto-provisioned",
+    description: `Platform admin ${input.email} was auto-provisioned for founder access recovery.`,
+    severity: "moderate",
+    metadata: {
+      userId: input.profileId,
+      packageType: "platform_admin",
+      approvedForAccess: true,
+      subscriptionActive: true
+    }
+  });
 }
 
 function normalizeEmail(value: string | null | undefined) {

@@ -91,7 +91,7 @@ Zenith helps dental practices uncover hidden revenue opportunities, improve trea
 
 **Eyebrow:** Meet LIZ
 
-**H2:** Your Revenue Recovery Advisor
+**H2:** Your Revenue Recovery Advisor™
 
 **Body:** LIZ continuously analyzes opportunities across your practice and surfaces the actions most likely to recover revenue, improve retention, and support patient engagement.
 

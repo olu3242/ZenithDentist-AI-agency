@@ -41,7 +41,7 @@ The Integration OS abstracts all PMS vendor dependencies behind a canonical data
 
 ### 3. No Business Logic in n8n
 
-All internal automation logic has been migrated to Automation Platform within the platform.
+All internal automation logic has been migrated to Workflow OS within the platform.
 
 | Before                              | After                               |
 |-------------------------------------|-------------------------------------|
@@ -69,9 +69,9 @@ All internal automation logic has been migrated to Automation Platform within th
 | Agent observability (insights logged)                 | Complete    | ✓     |
 | Agent learning signals                                | Complete    | ✓     |
 | No business logic in n8n                              | Complete    | ✓     |
-| Automation Platform governs all internal automation           | Complete    | ✓     |
+| Workflow OS governs all internal automation           | Complete    | ✓     |
 | Multi-tenant isolation (RLS)                          | Complete    | ✓     |
-| Executive Dashboard Agent Center                          | Complete    | ✓     |
+| Mission Control Agent Center                          | Complete    | ✓     |
 | Digital Dentist Twin (avatar + voice + script)        | Complete    | ✓     |
 | Channel Optimization Engine                           | Complete    | ✓     |
 | Journey Library with delivery                         | Partial     | ~     |
@@ -120,7 +120,7 @@ All internal automation logic has been migrated to Automation Platform within th
 3. **Wire journey scheduler**
    - pg_cron or application-level scheduler
    - Query `journey_assignments` WHERE `next_step_due_at <= now()`
-   - Trigger step execution via Automation Platform
+   - Trigger step execution via Workflow OS
 
 4. **End-to-end journey test**
    - Full pipeline validation: PMS data → influence score → channel optimization → script selection → video generation → delivery → engagement tracking
@@ -143,7 +143,7 @@ All internal automation logic has been migrated to Automation Platform within th
 2. **ALICE AI OS** — continuous intelligence layer operating across all practice dimensions
 3. **7-Agent specialization** — domain-specific agents with governance boundaries
 4. **PMS-agnostic Integration OS** — works with any dental PMS via normalization layer
-5. **Automation Platform governance** — all automation tracked, auditable, and recoverable
+5. **Workflow OS governance** — all automation tracked, auditable, and recoverable
 6. **Growth Score** — single composite metric for daily practice performance monitoring
 
 ---

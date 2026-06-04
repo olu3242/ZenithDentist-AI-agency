@@ -105,7 +105,7 @@ export function LizChatWidget() {
     }).catch(() => undefined);
 
     if (action.actionType === "workflow") {
-      setMessages(current => [...current, { role: "liz", text: `${action.label} launched. I routed it through Automation Platform and will keep the recommendation grounded in runtime outcomes.` }]);
+      setMessages(current => [...current, { role: "liz", text: `${action.label} launched. I routed it through Workflow OS and will keep the recommendation grounded in runtime outcomes.` }]);
     }
 
     if (action.href) window.location.href = action.href;

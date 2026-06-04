@@ -5,11 +5,11 @@
 - Created `mission_control_events`.
 - Created `mission_control_actions`.
 - Created `mission_control_outcomes`.
-- Production Certification Center displays Executive Dashboard proof coverage.
+- Production Certification Center displays Mission Control proof coverage.
 
 ## Required Card Actions
 
-Executive Dashboard cards now have an evidence model for:
+Mission Control cards now have an evidence model for:
 
 - View Event
 - View Workflow
@@ -20,4 +20,4 @@ Executive Dashboard cards now have an evidence model for:
 
 Status: PILOT CERTIFIED
 
-Remaining: each Executive Dashboard card action must write and link event, action, evidence, and outcome records during browser E2E certification.
+Remaining: each Mission Control card action must write and link event, action, evidence, and outcome records during browser E2E certification.

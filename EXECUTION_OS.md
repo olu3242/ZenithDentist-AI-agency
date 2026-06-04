@@ -28,4 +28,4 @@ Execute decisions.
 
 ## Rule
 
-Every autonomous execution enters through Automation Platform. No product module should execute side effects directly.
+Every autonomous execution enters through Workflow OS. No product module should execute side effects directly.

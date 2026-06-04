@@ -22,9 +22,9 @@ Zenith now models the application as role-specific operating surfaces instead of
 | Clinical Provider | `staff` | Clinical Growth Command Center | Treatment follow-up and recovered production |
 | Office Manager | `staff` | Practice Operations Command Center | PMS readiness, staff throughput, workflow reliability |
 | Practice Owner | `practice_owner` | Executive Command Center | Revenue recovery, retention, automation ROI |
-| DSO Executive | `practice_owner`, `super_admin` | DSO Enterprise Executive Dashboard | Location benchmarking and portfolio variance control |
+| DSO Executive | `practice_owner`, `super_admin` | DSO Enterprise Mission Control | Location benchmarking and portfolio variance control |
 | Agency Growth Operator | `agency_admin` | Growth Operations Command Center | Assessment-to-strategy-session conversion |
-| Zenith Platform Operator | `super_admin` | Zenith Internal Executive Dashboard | Multi-tenant reliability, runtime recovery, governance |
+| Zenith Platform Operator | `super_admin` | Zenith Internal Mission Control | Multi-tenant reliability, runtime recovery, governance |
 
 ## Role-To-Persona Mapping
 
@@ -49,7 +49,7 @@ Every persona owns:
 - Operating cadence
 - Outcomes
 - KPIs
-- AI Revenue Intelligence recommendations
+- ALICE recommendations
 - Workflows
 - Reports
 - Navigation

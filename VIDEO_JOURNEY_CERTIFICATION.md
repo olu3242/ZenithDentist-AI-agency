@@ -17,4 +17,4 @@ Journey model is patient-journey first. Treatment type only selects a journey.
 | Treatment Acceptance | `video_treatment_acceptance` | Treatment plan created | PARTIAL |
 | VIP Loyalty | `video_vip_loyalty` | High value loyalty moment | PARTIAL |
 
-PARTIAL means schema, workflow blueprint, Executive Dashboard visibility, and ALICE/LIZ routing exist locally. PASS requires remote migration application, n8n callback verification, workflow execution evidence, ALICE trace rows, delivery records, engagement records, and revenue attribution rows in staging.
+PARTIAL means schema, workflow blueprint, Mission Control visibility, and ALICE/LIZ routing exist locally. PASS requires remote migration application, n8n callback verification, workflow execution evidence, ALICE trace rows, delivery records, engagement records, and revenue attribution rows in staging.

@@ -1,8 +1,8 @@
-# Event Fabric Automation Architecture
+# Event Fabric™ Automation Architecture
 
 ## Overview
 
-Event Fabric is the nervous system of Zenith Patient OS. Every automation starts from an event. No workflow executes, no ALICE decision fires, no communication delivers, and no revenue is attributed without a corresponding Event Fabric event. The Event Fabric provides the immutable audit backbone and the real-time trigger layer for the entire Zenith automation platform.
+Event Fabric™ is the nervous system of Zenith Patient OS. Every automation starts from an event. No workflow executes, no ALICE decision fires, no communication delivers, and no revenue is attributed without a corresponding Event Fabric event. The Event Fabric provides the immutable audit backbone and the real-time trigger layer for the entire Zenith automation platform.
 
 Events are dual-written to both `runtime_event_fabric_events` and `mission_control_events`, ensuring operational observability and immutable audit history are maintained simultaneously.
 
@@ -13,14 +13,14 @@ Events are dual-written to both `runtime_event_fabric_events` and `mission_contr
 ```
 Patient Action / PMS Trigger / Webhook
               ↓
-  Event Fabric (publishRuntimeFabricEvent)
+  Event Fabric™ (publishRuntimeFabricEvent)
               ↓
   ┌─────────────────────────────────────┐
   │  runtime_event_fabric_events        │  ← immutable audit log
   │  mission_control_events             │  ← operational observability
   └─────────────────────────────────────┘
               ↓
-  Automation Platform (executeWorkflow)
+  Workflow OS™ (executeWorkflow)
   triggered by event subscription
               ↓
   ALICE Decision Engine
@@ -107,9 +107,9 @@ Patient Action / PMS Trigger / Webhook
 
 | Event Key | Description |
 |-----------|-------------|
-| `workflow.started` | Automation Platform execution begun |
-| `workflow.completed` | Automation Platform execution completed successfully |
-| `workflow.failed` | Automation Platform execution failed |
+| `workflow.started` | Workflow OS™ execution begun |
+| `workflow.completed` | Workflow OS™ execution completed successfully |
+| `workflow.failed` | Workflow OS™ execution failed |
 | `workflow.dead_lettered` | Workflow exceeded max retries → DLQ |
 
 ---
@@ -175,7 +175,7 @@ Replay is implemented in `lib/workflow-os/workflow-replay.ts`.
 The `n8nAdapter` in `lib/adapters/n8n-adapter.ts` can subscribe to Event Fabric events and forward them to configured n8n webhook endpoints. This is the bridge for external integrations:
 
 ```
-Event Fabric event (e.g. appointment.completed)
+Event Fabric™ event (e.g. appointment.completed)
         ↓
   n8nAdapter.forward(event)
         ↓

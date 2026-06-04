@@ -14,7 +14,7 @@ Submission
 ↓
 Supabase
 ↓
-Executive Dashboard Lead
+Mission Control Lead
 ↓
 Notification
 ↓
@@ -29,7 +29,7 @@ Revenue Report
 | Submission exists | PASS | Uses `submitFunnelAction`; API route `POST /api/roi-assessment` also exists. |
 | Lead stored | PASS pending live env | `createLeadFunnel()` inserts into `leads`. |
 | Assessment stored | PASS pending migration | Inserts into `roi_calculations` and `audits`; migration adds commercial columns. |
-| Executive Dashboard lead created | PASS | `leads.status = audit_requested`; attribution includes `mission_control_status`. |
+| Mission Control lead created | PASS | `leads.status = audit_requested`; attribution includes `mission_control_status`. |
 | Notification email sent | PASS pending provider env | `sendAuditEmails()` sends customer email via Resend when key exists. |
 | Sales notification created | PASS pending provider env | `sendAuditEmails()` sends internal notification to ops mailbox. |
 | CRM record created | PARTIAL | Lead table is the internal CRM source; no external CRM integration found. |

@@ -7,7 +7,7 @@ READY FOR PILOT PREP, NOT YET READY FOR FINAL PILOT ACTIVATION.
 ## Passed
 
 - Revenue Opportunity Assessment V2
-- Automation Platform enterprise governance schema
+- Workflow OS enterprise governance schema
 - ALICE V3 knowledge grounding
 - PMS route family exists
 - Role dashboards exist

@@ -13,16 +13,16 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
-    name: "Zenith Pros",
-    description: "Patient Revenue Operating System for dental practice revenue recovery, intelligent patient engagement, recall recovery, and treatment acceptance.",
-    url: "https://zenithprosai.com",
+    name: "Zenith AI Automation Agency",
+    description: "Dental practice revenue recovery — identify and recover lost revenue through intelligent patient engagement, recall recovery, and treatment acceptance.",
+    url: "https://zenith.dental",
     areaServed: "US",
     medicalSpecialty: "Dentistry"
   };
 
   return (
-      <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ProsLanding
         calendlyUrl={env.CALENDLY_URL}
         landingStats={{ assessmentCount, revenueRecovery }}

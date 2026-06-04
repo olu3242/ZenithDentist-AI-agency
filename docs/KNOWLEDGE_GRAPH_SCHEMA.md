@@ -4,7 +4,7 @@
 
 The Practice Knowledge Graph is the connected structure of `practice_memory_records`. It is not a graph database — it is a relational representation of a knowledge graph, where nodes are entities (patients, providers, campaigns, etc.) and edges are memory records that connect them through meaningful events.
 
-The graph enables ALICE and the Practice Intelligence OS to traverse patient and provider history, compute effectiveness scores per entity, and identify high-value opportunities without requiring real-time PMS queries.
+The graph enables ALICE™ and the Practice Intelligence OS™ to traverse patient and provider history, compute effectiveness scores per entity, and identify high-value opportunities without requiring real-time PMS queries.
 
 ---
 

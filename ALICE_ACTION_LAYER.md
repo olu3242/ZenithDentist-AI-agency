@@ -15,7 +15,7 @@ Every rendered ALICE action supports:
 
 ## Current Behavior
 
-`Execute` launches the mapped workflow immediately through Automation Platform. Approve, Modify, and Reject are UI controls prepared for recommendation decision persistence.
+`Execute` launches the mapped workflow immediately through Workflow OS. Approve, Modify, and Reject are UI controls prepared for recommendation decision persistence.
 
 ## Required Persistence Follow-Up
 
@@ -32,4 +32,4 @@ Add an `alice_recommendation_actions` table with:
 
 ## Rule
 
-AI Revenue Intelligence recommendations are not complete unless they can become workflow actions.
+ALICE recommendations are not complete unless they can become workflow actions.

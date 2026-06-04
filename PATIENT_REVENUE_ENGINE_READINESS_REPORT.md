@@ -1,10 +1,10 @@
-# Revenue Recovery System Readiness Report
+# Patient Revenue Engine Readiness Report
 
 Generated: 2026-06-01
 
 ## Readiness Score
 
-Revenue Recovery System Readiness: 82 / 100
+Patient Revenue Engine Readiness: 82 / 100
 
 ## What Is Ready
 
@@ -14,11 +14,11 @@ Revenue Recovery System Readiness: 82 / 100
 - Deploy PRE action.
 - PRE workflow bundle mapped to existing Automation OS workflows.
 - Automation Center execution path.
-- Automation Platform event publication path.
+- Workflow OS event publication path.
 - Runtime trace and event fabric path.
 - Portal dashboard/revenue dashboard.
 - Admin ROI dashboard.
-- Executive Dashboard visibility.
+- Mission Control visibility.
 - ALICE analytics grounding.
 - Client Success dashboard.
 - Reporting routes.
@@ -44,6 +44,6 @@ Conditions for GO:
    - `appointment_no_show`
    - `unpaid_invoice_detected`
 3. Verify event rows and trace rows are tenant-scoped.
-4. Verify Executive Dashboard and ALICE update from live events.
+4. Verify Mission Control and ALICE update from live events.
 5. Generate and download ROI/executive report.
 6. Confirm Client Success dashboard reflects updated runtime and ROI state.

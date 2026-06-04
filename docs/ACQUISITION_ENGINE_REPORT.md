@@ -83,4 +83,4 @@ referrer TEXT
 - Full UTM params
 - Referrer
 
-This feeds the "Visitors" metric in Executive Dashboard.
+This feeds the "Visitors" metric in Mission Control.

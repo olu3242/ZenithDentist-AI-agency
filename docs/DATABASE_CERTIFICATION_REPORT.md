@@ -29,13 +29,13 @@
 - RLS: ✅ service_role_all on all tables
 - FK integrity: organization_members → organizations (CASCADE)
 
-### Revenue Recovery System ✅
+### Patient Revenue Engine ✅
 - `leads`, `roi_calculations`, `audits`, `bookings`, `cta_events`, `opportunities`
 - RLS: ✅ all tables
 - FK integrity: roi_calculations.lead_id, audits.lead_id, bookings.lead_id + assessment_id, opportunities.lead_id + assessment_id
 - Note: `opportunities` now queried by application (P0 fix applied)
 
-### Automation Platform ✅
+### Workflow OS ✅
 - `automation_blueprints`, `automation_traces`, `automation_dead_letters`, `workflow_runs`, `workflow_recovery_*`
 - RLS: ✅ all tables
 - Gap: `workflow_executions` referenced in API code but no matching CREATE TABLE — likely aliased to `automation_traces`
@@ -55,7 +55,7 @@
 - Video: `patient_video_campaigns`, `video_library`, `video_campaigns`
 - RLS: ✅ all tables
 
-### Executive Dashboard ✅
+### Mission Control ✅
 - `operational_metrics`, `operational_health_snapshots`, `operational_incidents`, `mission_control_*`
 - `operational_digital_twins`, `operational_agents`, `operational_scores`
 - RLS: ✅ all tables

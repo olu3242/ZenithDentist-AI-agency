@@ -7,10 +7,9 @@ node_modules/
 coverage/
 out/
 tsconfig.tsbuildinfo
-.claude/worktrees/
-.claude/
-.vercel
 
+.vercel
+.claude/
 # Supabase investigation artifacts
 supabase_db_push*.txt
 supabase_db_dump*.txt

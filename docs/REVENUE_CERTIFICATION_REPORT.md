@@ -4,7 +4,7 @@ Date: 2026-06-01
 
 ## Certification Path
 
-Revenue Playbook -> Workflow -> Runtime -> Attribution -> Analytics -> ALICE -> Executive Dashboard
+Revenue Playbook -> Workflow -> Runtime -> Attribution -> Analytics -> ALICE -> Mission Control
 
 Implemented in `runRevenueCertificationTests` and `summarizeRevenueCertification`.
 
@@ -27,7 +27,7 @@ Implemented in `runRevenueCertificationTests` and `summarizeRevenueCertification
 - Attribution Record
 - Analytics Projection
 - ALICE Insight
-- Executive Dashboard Update
+- Mission Control Update
 
 ## Answers
 
@@ -55,4 +55,4 @@ What revenue did ALICE influence?
 
 CERTIFIED FOR LIVE DENTAL PRACTICE
 
-Revenue outcomes are traceable from playbook trigger through workflow, runtime trace, attribution record, analytics projection, ALICE insight, and Executive Dashboard update.
+Revenue outcomes are traceable from playbook trigger through workflow, runtime trace, attribution record, analytics projection, ALICE insight, and Mission Control update.

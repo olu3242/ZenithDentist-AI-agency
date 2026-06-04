@@ -37,7 +37,7 @@ All gates must pass before a platform release is certified:
 | RLS Policies Validated | All tables have correct org-isolation policies | Security Officer |
 | PHI Scan Clean | No PHI detected in any tables or logs | Security Officer |
 | Event Dual-Write Verified | All new events write to both event tables | Platform Architect |
-| Automation Platform Coverage | All new workflows have all 8 components implemented | Platform Architect |
+| Workflow OS Coverage | All new workflows have all 8 components implemented | Platform Architect |
 | Test Suite Green | All unit + integration tests passing | Engineering |
 | Performance Benchmarks | p99 latency within SLA for all critical paths | Engineering |
 | Growth Score Validated | Score computation matches spec for test fixtures | Growth OS Owner |
@@ -66,7 +66,7 @@ All gates must pass before a platform release is certified:
 | Data Model | Tables documented with schema and indexes |
 | RLS Policies | Row-level security verified for all tables |
 | Event Emissions | All events documented and tested |
-| Workflow Integration | Automation Platform integration tested (all 8 components) |
+| Workflow Integration | Workflow OS integration tested (all 8 components) |
 | ALICE Integration | Decision consumption tested if applicable |
 | Growth Score Integration | Dimension contribution tested if applicable |
 | Performance Test | Load test at 10× expected volume |
@@ -87,9 +87,9 @@ All gates must pass before a platform release is certified:
 | Patient Influence Engine | — | — |
 | Practice Memory Graph | — | — |
 | Digital Dentist Twin | — | — |
-| Automation Platform | — | — |
+| Workflow OS | — | — |
 | Event Fabric | — | — |
-| Executive Dashboard | — | — |
+| Mission Control | — | — |
 | Patient Portal | — | — |
 | Revenue Attribution | — | — |
 
@@ -120,7 +120,7 @@ Before any new practice goes live, ALL items must be verified:
 - [ ] Test video approved
 - [ ] Patient consent flow active
 
-**Executive Dashboard:**
+**Mission Control:**
 - [ ] Practice admin user account created
 - [ ] Dashboard access verified
 - [ ] Notification preferences configured
@@ -206,4 +206,4 @@ All certification results are stored as immutable records with:
 - Any exceptions granted with justification
 - Next certification due date
 
-Certification records are available in Executive Dashboard → Platform Certification Center.
+Certification records are available in Mission Control → Platform Certification Center.

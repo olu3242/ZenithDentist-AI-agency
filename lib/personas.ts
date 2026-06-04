@@ -265,6 +265,7 @@ export const defaultPersonaByRole: Record<ZenithRole, PersonaKey> = {
   practice_owner: "practice_owner",
   staff: "front_desk_operator",
   agency_admin: "agency_growth_operator",
+  platform_admin: "zenith_platform_operator",
   super_admin: "zenith_platform_operator"
 };
 
@@ -272,6 +273,7 @@ export const rolePersonaOptions: Record<ZenithRole, PersonaKey[]> = {
   practice_owner: ["practice_owner", "dso_executive"],
   staff: ["front_desk_operator", "clinical_provider", "office_manager"],
   agency_admin: ["agency_growth_operator"],
+  platform_admin: ["zenith_platform_operator", "dso_executive", "agency_growth_operator", "practice_owner"],
   super_admin: ["zenith_platform_operator", "dso_executive", "agency_growth_operator", "practice_owner"]
 };
 

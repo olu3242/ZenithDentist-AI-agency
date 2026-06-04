@@ -15,7 +15,7 @@ The Zenith platform spans 10 architectural domains across ~200+ source files. Th
 **Key findings:**
 - 3 overlapping Event Fabric implementations (consolidation needed)
 - 2 overlapping Workflow Registry implementations
-- 3 Executive Dashboard entry points (1 canonical, 2 secondary)
+- 3 Mission Control entry points (1 canonical, 2 secondary)
 - Legacy `lib/ai/` directory shadowed by canonical `lib/ai-os/`
 - LIZ and ALICE are distinct systems (not duplicates) — both required
 
@@ -86,12 +86,12 @@ Organization creation is gated: no self-registration, no automatic tenant creati
 
 ---
 
-## Domain 4: Automation Platform
+## Domain 4: Workflow OS
 
 ### Canonical Sources
 | Artifact | Classification | Role |
 |----------|---------------|------|
-| `lib/workflow-os/index.ts` | ✅ ACTIVE (CANONICAL) | Automation Platform entry point |
+| `lib/workflow-os/index.ts` | ✅ ACTIVE (CANONICAL) | Workflow OS entry point |
 | `lib/workflow-os/workflow-engine.ts` | ✅ ACTIVE (CANONICAL) | Execution engine |
 | `lib/workflow-os/state-machine.ts` | ✅ ACTIVE | State transitions |
 | `lib/workflow-os/registry.ts` | ✅ ACTIVE | Workflow definitions |
@@ -106,7 +106,7 @@ Organization creation is gated: no self-registration, no automatic tenant creati
 | `lib/automation-os/index.ts` | ⚠️ REDUNDANT | Overlaps with lib/workflow-os/ |
 
 ### Recommendation
-`lib/workflow-os/` is the canonical Automation Platform. `lib/automation/` and `lib/automation-os/` are legacy paths. Phase 13 candidate: consolidate all callers to `lib/workflow-os/`, delete automation registries.
+`lib/workflow-os/` is the canonical Workflow OS. `lib/automation/` and `lib/automation-os/` are legacy paths. Phase 13 candidate: consolidate all callers to `lib/workflow-os/`, delete automation registries.
 
 ### Schema Gap
 `workflow_executions` referenced in `app/api/automation-health/route.ts` — no CREATE TABLE migration found. Likely aliased to `automation_traces`. **Action:** Add alias or migration.
@@ -257,7 +257,7 @@ PMS Translation Layer, Integration Catalogs, Schema Mapping, and Database Struct
 
 ---
 
-## Domain 10: Executive Dashboard
+## Domain 10: Mission Control
 
 ### Canonical Sources
 | Artifact | Classification | Role |
@@ -274,7 +274,7 @@ PMS Translation Layer, Integration Catalogs, Schema Mapping, and Database Struct
 ### Recommendation
 Audit whether `app/dashboard/mission-control/` and `app/internal/mission-control/` render the same content as `app/mission-control/`. If so, redirect to canonical URL and mark as DEPRECATED.
 
-### Admin vs Executive Dashboard Distinction
+### Admin vs Mission Control Distinction
 These serve different audiences and are NOT duplicates:
 
 | Panel | Audience | Content |
@@ -382,7 +382,7 @@ These serve different audiences and are NOT duplicates:
 
 ### Phase 13 — Medium Priority
 4. **workflow_executions gap** — add `CREATE TABLE IF NOT EXISTS public.workflow_executions` migration or update `automation-health` route
-5. **Executive Dashboard route audit** — verify dashboard/internal mission-control routes; redirect duplicates
+5. **Mission Control route audit** — verify dashboard/internal mission-control routes; redirect duplicates
 6. **Commerce table consolidation** — merge `commercial_packages` into `subscription_plans`
 
 ### Phase 14 — Low Priority
@@ -397,7 +397,7 @@ The following domains are proprietary and must never be exposed via public route
 
 | Domain | Protected Artifacts | Enforcement |
 |--------|-------------------|-------------|
-| Automation Platform | lib/workflow-os/, DLQ, recovery | Auth gate on all /internal routes |
+| Workflow OS | lib/workflow-os/, DLQ, recovery | Auth gate on all /internal routes |
 | Event Fabric | lib/event-fabric.ts, runtime_event_fabric_events | Server-side only, never in client bundles |
 | ALICE | lib/ai-os/, lib/alice/, alice_* tables | /api/alice/* routes require auth |
 | PMS Translation | lib/pms.ts, lib/integration-os/ | Never rendered client-side |

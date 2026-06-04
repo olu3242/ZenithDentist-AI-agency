@@ -16,7 +16,7 @@ Subsystem gates:
 | --- | ---: |
 | Evidence Coverage | 95% |
 | Revenue Attribution | 90% |
-| AI Decision Traceability | 95% |
+| ALICE Traceability | 95% |
 | Incident Coverage | 95% |
 | Recovery Coverage | 95% |
 | SLA Coverage | 95% |

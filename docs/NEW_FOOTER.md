@@ -4,7 +4,7 @@
 
 ```
 COMPANY          SOLUTIONS              RESOURCES          CONTACT
-About            Revenue Recovery       Assessment         hello@zenithprosai.com
+About            Revenue Recovery       Assessment         hello@zenith.dental
 Case Studies     Treatment Acceptance   Growth Report      (555) 555-0000
 Contact          Patient Retention      Blog               [City, State]
                  Recall Recovery        FAQs
@@ -12,7 +12,7 @@ Contact          Patient Retention      Blog               [City, State]
 
 ## Bottom Row
 ```
-Zenith Pros  |  Dental Revenue Recovery Platform
+Zenith AI Automation Agency™  |  Dental Revenue Recovery Platform
 Privacy Policy  ·  Terms of Service  ·  © 2025 EduRadius LLC. All Rights Reserved.
 ```
 

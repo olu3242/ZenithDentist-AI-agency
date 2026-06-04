@@ -1,7 +1,7 @@
 # Revenue Attribution Governance
 
 **Document Type:** Canonical Governance Reference
-**Platform:** Zenith Patient OS
+**Platform:** Zenith Patient OS™
 **Last Updated:** 2026-06-02
 **Status:** ACTIVE — governs all revenue attribution claims
 
@@ -11,7 +11,7 @@
 
 > **Every revenue claim must be traceable to a specific touchpoint.**
 
-Revenue attribution is the mechanism by which the Zenith Patient OS demonstrates financial value to practices. Because these numbers directly influence subscription renewals, upsells, and ROI conversations, attribution must be conservative, traceable, and auditable.
+Revenue attribution is the mechanism by which the Zenith Patient OS™ demonstrates financial value to practices. Because these numbers directly influence subscription renewals, upsells, and ROI conversations, attribution must be conservative, traceable, and auditable.
 
 Overclaiming revenue attribution — attributing revenue without a verifiable causal link — is a platform integrity violation. The platform's long-term credibility depends on accurate attribution.
 
@@ -72,7 +72,7 @@ All `touchpoint_type` values must be one of these four canonical attribution eng
 
 ### 4.2 treatment_acceptance
 - **What it measures:** Revenue from treatment plans that were accepted after platform-influenced patient engagement
-- **Touchpoint:** ALICE recommendation or Digital Dentist Twin treatment explanation video
+- **Touchpoint:** ALICE recommendation or Digital Dentist Twin™ treatment explanation video
 - **Revenue calculation:** Treatment plan value × attribution confidence
 - **Minimum confidence required:** `direct` (0.9) — patient accepted treatment within 24h of video/recommendation
 

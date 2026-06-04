@@ -15,17 +15,17 @@ export function CertificationCenter({ state }: { state: ProductionCertificationS
         <p className="brand-kicker">Production evidence dashboard</p>
         <h1 className="mt-2 text-3xl font-black text-ink">Production Certification Center</h1>
         <p className="mt-2 max-w-3xl text-sm font-semibold text-muted">
-          Evidence coverage for AI Revenue Intelligence traceability, workflow proof, revenue attribution, connector certification, forecasting, reports, roles, and public claim governance.
+          Evidence coverage for ALICE traceability, workflow proof, revenue attribution, connector certification, forecasting, reports, roles, and public claim governance.
         </p>
         <p className="mt-4 text-xs font-black uppercase tracking-wider text-muted">Generated {new Date(state.generatedAt).toLocaleString()}</p>
       </header>
 
       <MetricGrid metrics={state.summary} />
       <section className="grid gap-6 xl:grid-cols-2">
-        <EvidencePanel title="AI Decision Traceability" metrics={state.aliceTraceability} />
+        <EvidencePanel title="ALICE Traceability" metrics={state.aliceTraceability} />
         <EvidencePanel title="Workflow Proof" metrics={state.workflowProof} />
         <EvidencePanel title="Revenue Attribution" metrics={state.revenueAttribution} />
-        <EvidencePanel title="Executive Dashboard Proof" metrics={state.missionControlProof} />
+        <EvidencePanel title="Mission Control Proof" metrics={state.missionControlProof} />
         <EvidencePanel title="Connector Certification" metrics={state.connectorCertification} />
         <EvidencePanel title="Forecasting Certification" metrics={state.forecastingCertification} />
         <EvidencePanel title="Report Traceability" metrics={state.reportTraceability} />

@@ -104,7 +104,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
       treatment_acceptance_rate: input.treatmentAcceptanceRate ?? null,
       recall_rate: input.recallRate ?? null
     } as Json,
-    notes: "FREE Revenue Opportunity Assessment - Executive Dashboard lead record created"
+    notes: "FREE Revenue Opportunity Assessment - Mission Control lead record created"
   };
 
   logger.info("[AUDIT] Database Insert", {
@@ -386,12 +386,11 @@ async function runLeadFunnelSideEffects({
 }
 
 export async function getAdminDashboardData(organizationId?: string): Promise<AdminDashboardData> {
-  if (!organizationId) return emptyAdminData();
   const supabase = createServiceClient();
   if (!supabase) return emptyAdminData();
 
   const scope = <T extends { eq: (column: string, value: string) => T }>(query: T) => {
-    return query.eq("organization_id", organizationId);
+    return organizationId ? query.eq("organization_id", organizationId) : query;
   };
 
   const [leads, roi, audits, bookings, events, opportunities] = await Promise.all([
@@ -400,7 +399,7 @@ export async function getAdminDashboardData(organizationId?: string): Promise<Ad
     scope(supabase.from("audits").select("*")).order("generated_at", { ascending: false }).limit(100),
     scope(supabase.from("bookings").select("*")).order("created_at", { ascending: false }).limit(100),
     scope(supabase.from("outreach_events").select("*")).order("created_at", { ascending: false }).limit(200),
-    (supabase as any).from("opportunities").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(100)
+    (supabase as any).from("opportunities").select("*").order("created_at", { ascending: false }).limit(100)
   ]);
 
   return {

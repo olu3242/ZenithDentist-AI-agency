@@ -92,7 +92,7 @@ ALICE identifies patients for referral activation based on:
 
 ---
 
-## 5. Referral Workflow (Automation Platform)
+## 5. Referral Workflow (Workflow OS)
 
 ### Workflow: `referral_activation_campaign`
 
@@ -204,7 +204,7 @@ When a referred patient converts:
 
 ## 10. Referral Analytics
 
-Available in Executive Dashboard → Revenue Dashboard:
+Available in Mission Control → Revenue Dashboard:
 
 | Metric | Description |
 |--------|-------------|

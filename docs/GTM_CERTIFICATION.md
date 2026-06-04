@@ -15,7 +15,7 @@
 | Proposal Process | ✅ READY | Proposal template with ROI calculator |
 | Client Onboarding | ✅ READY | Organization creation, portal activation |
 | Customer Success | ✅ READY | Success dashboard, retention playbook |
-| Executive Reporting | ✅ READY | 9-metric admin dashboard, Executive Dashboard |
+| Executive Reporting | ✅ READY | 9-metric admin dashboard, Mission Control |
 
 ---
 
@@ -28,7 +28,7 @@
 | Audit Generation | ✅ Automatic, downloadable HTML report |
 | Calendly Integration | ✅ Hardened, full UTM attribution |
 | Opportunity Tracking | ✅ Auto-created, stage-tracked, admin visible |
-| Executive Dashboard | ✅ 9 real-data metrics |
+| Mission Control | ✅ 9 real-data metrics |
 | Email Notifications | ✅ Resend, non-blocking |
 | Portal Access | ✅ Gated, approval-required |
 
@@ -42,7 +42,7 @@
 4. Receives personalized audit with $X recovery estimate
 5. Downloads audit report
 6. Clicks "Schedule Strategy Session" → Calendly (full attribution)
-7. Strategy session booked → visible in Executive Dashboard
+7. Strategy session booked → visible in Mission Control
 8. Discovery call → proposal → close → onboarding
 
 **Total time from visit to strategy session:** 5-10 minutes  

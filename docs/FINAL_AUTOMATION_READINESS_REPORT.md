@@ -4,12 +4,12 @@
 
 | Domain | Score | Rationale |
 |--------|-------|-----------|
-| Automation Platform Independence | 95 / 100 | Automation Platform fully built (engine, registry, scheduler, replay, state machine, versioning, execution layer); all Patient OS workflows registered and executable |
+| Workflow OS™ Independence | 95 / 100 | Workflow OS™ fully built (engine, registry, scheduler, replay, state machine, versioning, execution layer); all Patient OS workflows registered and executable |
 | Communication Hub Coverage | 85 / 100 | All 6 channels have fully implemented adapters (SMS, Email, WhatsApp, Video, Voice, Portal); provider credentials and live end-to-end testing pending |
-| Event Fabric Coverage | 90 / 100 | Dual write operational, immutable event log, replay support implemented; event-to-workflow lag monitoring in place |
+| Event Fabric™ Coverage | 90 / 100 | Dual write operational, immutable event log, replay support implemented; event-to-workflow lag monitoring in place |
 | n8n Dependency Elimination | 92 / 100 | n8n used only for external connectors; dependency score 4/100; all internal workflows migrated; 2 minor evidence gap items remain |
 | ALICE Decision Coverage | 80 / 100 | AI + fallback rule engine operational; patient decision engine built; outcome reconciliation and confidence calibration pending production data |
-| Observability Coverage | 85 / 100 | Executive Dashboard operational; automation health API wired; all 5 panels defined with SQL queries and alert thresholds |
+| Observability Coverage | 85 / 100 | Mission Control™ dashboard operational; automation health API wired; all 5 panels defined with SQL queries and alert thresholds |
 | **Overall Automation Readiness** | **88 / 100** | Platform is production-ready for pilot deployment; remaining gaps are configuration and wiring tasks, not architectural gaps |
 
 ---
@@ -20,9 +20,9 @@
 |----------|--------|----------|
 | 90%+ automation execution inside Zenith | ✅ MET | 96% internal rate; n8n dependency score 4/100 |
 | n8n used only for external connectors | ✅ MET | channel-router.ts updated; all internal workflows migrated |
-| No business-critical workflow depends solely on n8n | ✅ MET | All 14 internal workflows migrated to Automation Platform and Communication Hub |
-| Automation Platform is canonical automation engine | ✅ MET | lib/workflow-os/ fully built with 12 source files across engine, registry, scheduler, replay, state machine, versioning, and execution |
-| Executive Dashboard is canonical observability platform | ✅ MET | Automation health dashboard operational with 5 panels and defined SQL |
+| No business-critical workflow depends solely on n8n | ✅ MET | All 14 internal workflows migrated to Workflow OS™ and Communication Hub |
+| Workflow OS™ is canonical automation engine | ✅ MET | lib/workflow-os/ fully built with 12 source files across engine, registry, scheduler, replay, state machine, versioning, and execution |
+| Mission Control™ is canonical observability platform | ✅ MET | Automation health dashboard operational with 5 panels and defined SQL |
 | ALICE is canonical decision engine | ✅ MET | lib/alice/patient-decision-engine.ts operational; all patient decisions route through ALICE |
 
 ---
@@ -71,9 +71,9 @@
 2. **Wire Email adapter** — Configure Resend credentials; test `email_delivery` workflow end-to-end
 3. **Pick one journey** — Execute `appointment_prep` journey for a test patient from PMS trigger to message delivery to engagement event to Practice Memory Graph write
 4. **Validate attribution** — Confirm `revenue.attributed` event fires correctly at journey completion
-5. **Executive Dashboard validation** — Confirm all 5 dashboard panels reflect the test journey execution
+5. **Mission Control validation** — Confirm all 5 dashboard panels reflect the test journey execution
 
-This single end-to-end test will validate the complete automation stack: Event Fabric → Automation Platform → ALICE → Communication Hub → Delivery → Engagement → Practice Memory Graph → Revenue Attribution.
+This single end-to-end test will validate the complete automation stack: Event Fabric → Workflow OS → ALICE → Communication Hub → Delivery → Engagement → Practice Memory Graph → Revenue Attribution.
 
 ---
 

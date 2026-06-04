@@ -26,7 +26,7 @@ Conclusion: Zenith has enough architecture and operational surfaces. The blocker
 | Stripe Revenue Flow | PASS | WARN | WARN | FAIL | Payment/invoice tables and link engine exist; link URL is local app URL, not certified Stripe live Checkout/Payment Link. |
 | Evidence OS | PASS | PASS | WARN | FAIL | Evidence producers and coverage exist; population automation is not proven across every workflow. |
 | Executive Visibility | PASS | PASS | PASS | WARN | Executive/Product/CS/Agency CRM read live tables; many tables may be empty until pilot data lands. |
-| AI Decision Traceability | PASS | WARN | WARN | FAIL | Trace persistence helper exists; not proven as mandatory write-through from every recommendation path. |
+| ALICE Traceability | PASS | WARN | WARN | FAIL | Trace persistence helper exists; not proven as mandatory write-through from every recommendation path. |
 
 ## Path 1 - Lead Capture
 
@@ -168,7 +168,7 @@ Pilot Test:
 
 1. Send real SMS, email, and WhatsApp test messages to approved test recipients.
 2. Persist delivery status, failure state, and evidence.
-3. Verify delivery appears in Executive Dashboard and Evidence OS.
+3. Verify delivery appears in Mission Control and Evidence OS.
 
 ## Path 6 - Treatment Acceptance
 
@@ -351,7 +351,7 @@ Phase 4: Revenue Workflow
 
 Phase 5: Proof Layer
 
-- Verify evidence rows, revenue attribution, ALICE trace, Executive Center, Customer Success, Agency CRM, and Executive Dashboard all reflect the same event chain.
+- Verify evidence rows, revenue attribution, ALICE trace, Executive Center, Customer Success, Agency CRM, and Mission Control all reflect the same event chain.
 
 ## Go / No-Go Recommendation
 

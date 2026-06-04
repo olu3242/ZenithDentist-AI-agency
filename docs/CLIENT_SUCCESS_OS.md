@@ -1,4 +1,4 @@
-# Client Success OS
+# Client Success OS™
 
 > Repeatable, measurable deployment framework for dental practice onboarding.
 

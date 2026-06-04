@@ -20,7 +20,7 @@ ALICE
   -> Coordinates specialized agents
 
 Specialized Agents
-  -> Execute through Event Fabric, Automation Platform, Runtime OS, Knowledge OS
+  -> Execute through Event Fabric, Workflow OS, Runtime OS, Knowledge OS
 ```
 
 ## Communication Rule
@@ -28,7 +28,7 @@ Specialized Agents
 Agents do not directly couple to each other. They communicate through:
 
 - Event Fabric
-- Automation Platform
+- Workflow OS
 - Runtime OS
 - Knowledge OS
 

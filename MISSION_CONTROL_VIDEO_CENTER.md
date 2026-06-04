@@ -1,4 +1,4 @@
-# Executive Dashboard Video Center
+# Mission Control Video Center
 
 Implemented route:
 
@@ -34,6 +34,6 @@ Implemented route:
 - Treatment Acceptance Accelerator
 - Video Attribution Engine
 - Provider Video Library
-- Video Revenue Intelligence
+- ALICE Video Intelligence
 
 The page uses the shared portal shell/grid system and reads from live video intelligence tables when Supabase service credentials are configured. It also presents a clear configuration notice when live service credentials or migrations are unavailable.

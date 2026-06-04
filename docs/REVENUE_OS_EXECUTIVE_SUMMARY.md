@@ -55,7 +55,7 @@ Revenue At Risk is visible from **Day 7**. The first dollar of attribution is ty
 
 ---
 
-## Practice Owner KPIs (Executive Dashboard Dashboard)
+## Practice Owner KPIs (Mission Control Dashboard)
 
 | KPI | Description | Update Frequency |
 |----|-------------|-----------------|

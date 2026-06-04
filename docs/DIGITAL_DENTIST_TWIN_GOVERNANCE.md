@@ -155,7 +155,7 @@ When a patient withdraws DDT consent:
 
 Patient complaints about DDT content are handled as:
 
-1. Complaint received (Executive Dashboard or external channel).
+1. Complaint received (Mission Control or external channel).
 2. Immediate suspension of the specific message type pending review.
 3. Content review within 1 business day.
 4. If content standard violation found: template suspended, dentist notified.

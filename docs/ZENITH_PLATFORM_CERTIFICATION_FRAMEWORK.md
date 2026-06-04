@@ -1,4 +1,4 @@
-# Zenith Patient OS — Platform Certification Framework
+# Zenith Patient OS™ — Platform Certification Framework
 
 **Classification:** Canonical Governance — Certification Authority
 **Overall Score:** 85 / 100
@@ -32,7 +32,7 @@ The Zenith Platform Certification Framework is the authoritative scoring system 
 | # | Dimension | Current Score | Target | Blocker? | Owner |
 |---|-----------|:------------:|:------:|:--------:|-------|
 | 1 | Platform Readiness | 90 | 95 | No | Engineering Lead |
-| 2 | Automation Readiness | 88 | 95 | No | Automation Platform Owner |
+| 2 | Automation Readiness | 88 | 95 | No | Workflow OS Owner |
 | 3 | AI Readiness | 80 | 90 | No | ALICE Owner |
 | 4 | Revenue Readiness | 82 | 90 | No | Revenue Engine Owner |
 | 5 | Growth Readiness | 78 | 85 | No | Growth Score Owner |
@@ -62,7 +62,7 @@ The Zenith Platform Certification Framework is the authoritative scoring system 
 | 4 | Supabase RLS policies active on all tenant tables | ✅ | org_id scoping on all tables |
 | 5 | Authentication middleware on all protected routes | ✅ | x-organization-id + auth middleware |
 | 6 | Event Fabric dual-write operational | ✅ | lib/event-fabric immutable log |
-| 7 | Automation Platform engine executing tasks | ✅ | lib/workflow-os/workflow-engine.ts |
+| 7 | Workflow OS engine executing tasks | ✅ | lib/workflow-os/workflow-engine.ts |
 | 8 | Error boundaries and fallback handling | ✅ | Agent fallback + ALICE fallback |
 | 9 | Deployment pipeline verified | 🟡 | Vercel deploy — verify after credential push |
 | 10 | Load testing completed | 🔴 | Pending — not yet run |
@@ -73,11 +73,11 @@ The Zenith Platform Certification Framework is the authoritative scoring system 
 
 ## Dimension 2: Automation Readiness (88/100)
 
-**Definition:** Automation Platform, agents, and journeys are capable of autonomous execution.
+**Definition:** Workflow OS, agents, and journeys are capable of autonomous execution.
 
 | # | Checklist Item | Status | Evidence |
 |---|---------------|--------|---------|
-| 1 | Automation Platform engine running | ✅ | lib/workflow-os/workflow-engine.ts |
+| 1 | Workflow OS engine running | ✅ | lib/workflow-os/workflow-engine.ts |
 | 2 | All standard journeys registered | ✅ | lib/workflow-os/workflow-registry.ts |
 | 3 | All 7 agents registered in agent_registry | ✅ | agent_registry table |
 | 4 | Agent task queue processing | ✅ | agent_tasks table + execution |
@@ -101,9 +101,9 @@ The Zenith Platform Certification Framework is the authoritative scoring system 
 | 1 | ALICE patient decision engine operational | ✅ | lib/alice/patient-decision-engine |
 | 2 | Patient influence scores computing | ✅ | patient_influence_scores table populated |
 | 3 | Script Intelligence generating personalised content | ✅ | lib/script-engine |
-| 4 | AI Revenue Intelligence recommendations surfaced in Command Center | ✅ | alice_patient_decisions table |
+| 4 | ALICE recommendations surfaced in Command Center | ✅ | alice_patient_decisions table |
 | 5 | Confidence scores attached to all recommendations | ✅ | confidence_score field |
-| 6 | Agent tasks generated from AI Revenue Intelligence recommendations | ✅ | agent_tasks linked to alice decisions |
+| 6 | Agent tasks generated from ALICE recommendations | ✅ | agent_tasks linked to alice decisions |
 | 7 | ALICE fallback rate monitored | 🟡 | Monitoring present; baseline not yet established |
 | 8 | Outcome reconciliation (recommendation → revenue) | 🔴 | Pending — Phase 5 task |
 | 9 | Practice Memory Graph learning from outcomes | 🟡 | Foundation complete; learning loop pending |

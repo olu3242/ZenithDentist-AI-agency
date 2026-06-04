@@ -8,6 +8,7 @@ import "server-only";
 import { createServiceClient } from "@/lib/supabase/server";
 import { getTenantData } from "@/lib/data/tenants";
 import { parseRole, type ZenithRole } from "@/lib/rbac/roles";
+import type { Json } from "@/lib/database.types";
 
 export interface ResolvedTenant {
   organizationId: string;
@@ -62,12 +63,12 @@ export async function resolveTenantById(
   if (userId) {
     const { data: member } = await supabase
       .from("organization_members")
-      .select("role")
+      .select("role, permissions")
       .eq("organization_id", organizationId)
       .eq("user_id", userId)
       .maybeSingle();
     if (member?.role) {
-      membershipRole = parseRole(member.role as string);
+      membershipRole = resolveMembershipRole(member.role as string, member.permissions as Json);
     }
   }
 
@@ -102,12 +103,12 @@ export async function resolveTenantBySlug(
   if (userId) {
     const { data: member } = await supabase
       .from("organization_members")
-      .select("role")
+      .select("role, permissions")
       .eq("organization_id", org.id)
       .eq("user_id", userId)
       .maybeSingle();
     if (member?.role) {
-      membershipRole = parseRole(member.role as string);
+      membershipRole = resolveMembershipRole(member.role as string, member.permissions as Json);
     }
   }
 
@@ -120,4 +121,13 @@ export async function resolveTenantBySlug(
     membershipRole,
     planTier: "starter",
   };
+}
+
+function resolveMembershipRole(role: string, permissions: Json): ZenithRole {
+  const platformRole = permissions && typeof permissions === "object" && !Array.isArray(permissions)
+    ? permissions.platform_role
+    : null;
+
+  if (typeof platformRole === "string") return parseRole(platformRole);
+  return parseRole(role);
 }

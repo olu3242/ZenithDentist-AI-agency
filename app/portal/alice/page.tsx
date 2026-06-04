@@ -14,7 +14,7 @@ export default async function PortalAlicePage() {
 
   return (
     <DashboardContainer>
-      <PortalHeader title="AI Revenue Intelligence" subtitle="Executive operational strategy, risk forecasting, and revenue optimization reasoning." />
+      <PortalHeader title="ALICE Operational Intelligence" subtitle="Executive operational strategy, risk forecasting, and revenue optimization reasoning." />
       <DashboardGrid className="xl:grid-cols-[1.3fr_.7fr]">
         <AliceResponseCard response={response} />
         <AIConfidenceCard confidence={state.confidence} />

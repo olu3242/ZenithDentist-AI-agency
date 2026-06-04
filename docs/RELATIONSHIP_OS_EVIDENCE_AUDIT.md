@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-| Capability | Automation Platform Integration | Evidence Layer | Executive Dashboard Visibility | ALICE Visibility | Tenant Isolation | Auditability | Status |
+| Capability | Workflow OS Integration | Evidence Layer | Mission Control Visibility | ALICE Visibility | Tenant Isolation | Auditability | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Family Intelligence | Missing | Missing | Missing | Missing | Missing | Missing | Fail |
 | Retention Intelligence | Partial | Missing | Partial | Partial | Partial | Missing | Partial |

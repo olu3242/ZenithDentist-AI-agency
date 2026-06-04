@@ -1,8 +1,8 @@
-# Practice Intelligence OS
+# Practice Intelligence OS™
 
 ## Overview
 
-Practice Intelligence OS aggregates patient, provider, and practice behavioral data into structured intelligence snapshots. It is the analytical backbone of the Zenith Patient OS platform — transforming raw interaction records into actionable intelligence consumed by ALICE, the Growth Score, and Executive Dashboard.
+Practice Intelligence OS™ aggregates patient, provider, and practice behavioral data into structured intelligence snapshots. It is the analytical backbone of the Zenith Patient OS™ platform — transforming raw interaction records into actionable intelligence consumed by ALICE™, the Growth Score™, and Mission Control™.
 
 Unlike a CRM that tracks records, Practice Intelligence OS tracks **behavior and patterns**. It answers: who are the highest-opportunity patients, which providers drive the best outcomes, and what does the practice need to do next to grow.
 

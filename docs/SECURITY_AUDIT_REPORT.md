@@ -66,7 +66,7 @@ All authenticated routes are protected by middleware before any page renders.
 ## IP Protection
 
 The following internal systems are NOT exposed on the public website:
-- ✅ Automation Platform — requires authentication, /workflow-os protected
+- ✅ Workflow OS — requires authentication, /workflow-os protected
 - ✅ Event Fabric — no public API exposure
 - ✅ Recovery Orchestrator — internal only
 - ✅ Automation Registry — protected routes only

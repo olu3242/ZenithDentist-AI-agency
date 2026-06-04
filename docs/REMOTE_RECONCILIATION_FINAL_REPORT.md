@@ -18,7 +18,7 @@ Evidence-only scoring:
 - Revenue Integrity: 25/100
 - Analytics Integrity: 45/100
 - ALICE Integrity: 45/100
-- Executive Dashboard Integrity: 35/100
+- Mission Control Integrity: 35/100
 - Replay Readiness: 20/100
 - Backup Readiness: 0/100
 - Cutover Readiness: 0/100

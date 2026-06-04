@@ -19,7 +19,7 @@ Workflows can now be launched from:
 - Revenue Command Center
 - Growth Command Center
 - Operations Command Center
-- AI Revenue Intelligence recommendations
+- ALICE recommendations
 - Automation Center
 
 ## Behavior

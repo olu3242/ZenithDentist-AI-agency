@@ -1,4 +1,4 @@
-# AI Decision Traceability Certification
+# ALICE Traceability Certification
 
 Status: PARTIAL
 

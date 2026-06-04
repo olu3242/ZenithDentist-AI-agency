@@ -191,11 +191,11 @@ Retention policies defined in ZENITH_PLATFORM_GOVERNANCE.md. Automated enforceme
 | On-call rotation | To be scheduled |
 | Runbooks | In progress |
 
-### 6.2 Automation Platform Governance
+### 6.2 Workflow OS Governance
 
 | Item | Status |
 |------|--------|
-| All 8 Automation Platform components required | Policy active |
+| All 8 Workflow OS components required | Policy active |
 | Workflow Registry requirement | Policy active |
 | DLQ management process | Documented |
 | Replay capability | Implemented |

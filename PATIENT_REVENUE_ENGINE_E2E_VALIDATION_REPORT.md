@@ -1,4 +1,4 @@
-# Revenue Recovery System E2E Validation Report
+# Patient Revenue Engine E2E Validation Report
 
 Generated: 2026-06-01
 
@@ -13,7 +13,7 @@ Install PRE
 -> Recover Revenue
 -> Generate Events
 -> Update Analytics
--> Update Executive Dashboard
+-> Update Mission Control
 -> Update ALICE
 -> Generate ROI Report
 -> Update Client Success Dashboard
@@ -31,7 +31,7 @@ Install PRE
 | Recover Revenue | PARTIAL | Revenue workflows exist: unpaid invoice, failed payment, ROI calculations. Live revenue recovery not executed. |
 | Generate Events | VERIFIED IN CODE | `executeWorkflow()` calls `emitAutomationEvent()` and `publishEvent()`. |
 | Update Analytics | VERIFIED IN CODE | `analyticsProjector()` consumes event fabric, traces, workflow analytics, automation registry. |
-| Update Executive Dashboard | VERIFIED IN CODE | Executive Dashboard consumes runtime health, event fabric, dental intelligence, ALICE, executive reporting. |
+| Update Mission Control | VERIFIED IN CODE | Mission Control consumes runtime health, event fabric, dental intelligence, ALICE, executive reporting. |
 | Update ALICE | VERIFIED IN CODE | ALICE consumes `analyticsProjector()`. |
 | Generate ROI Report | VERIFIED IN CODE | ROI funnel persists `roi_calculations`; `/admin/roi` and portal reports render ROI/revenue data. |
 | Update Client Success Dashboard | VERIFIED IN CODE | `/client-operations` consumes client ops, runtime, provider, dental intelligence, executive report data. |
@@ -55,7 +55,7 @@ Result: PASS.
 - Execute Deploy PRE against production Supabase.
 - Run at least one PRE workflow from Automation Center.
 - Confirm `automation_events`, `automation_traces`, and `runtime_event_fabric_events` rows appear for the tenant.
-- Confirm Executive Dashboard, ALICE, ROI, reports, and Client Success pages update from those live rows.
+- Confirm Mission Control, ALICE, ROI, reports, and Client Success pages update from those live rows.
 
 ## E2E Status
 

@@ -17,7 +17,7 @@ export default async function RuntimeOSPage() {
     <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
       <div className="space-y-6">
         <header>
-          <p className="brand-kicker">Zenith Pros Runtime Center</p>
+          <p className="brand-kicker">Zenith PROS Runtime Center</p>
           <h1 className="mt-2 text-4xl font-black text-ink">Runtime OS</h1>
           <p className="mt-2 max-w-3xl text-base font-semibold text-muted">
             Automation health, trace execution, provider pressure, dead letters, and recovery readiness.

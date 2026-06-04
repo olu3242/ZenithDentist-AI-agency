@@ -13,7 +13,7 @@ Primary files:
 
 ## Telemetry States
 
-Automation Platform and runtime tracing support:
+Workflow OS and runtime tracing support:
 
 - Started
 - Running

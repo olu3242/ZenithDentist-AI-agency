@@ -38,10 +38,10 @@
 
 | Fix | File |
 |-----|------|
-| "ALICE has routed the lead to Executive Dashboard" | app/actions.ts |
-| "Executive Dashboard lead routing" | components/public/audit-preview.tsx |
-| "Executive Dashboard routing" (form) | components/public/roi-funnel-form.tsx |
-| "Executive Dashboard Results" | components/public/roi-funnel-form.tsx |
+| "ALICE has routed the lead to Mission Control" | app/actions.ts |
+| "Mission Control lead routing" | components/public/audit-preview.tsx |
+| "Mission Control routing" (form) | components/public/roi-funnel-form.tsx |
+| "Mission Control Results" | components/public/roi-funnel-form.tsx |
 
 ### New Infrastructure
 
@@ -87,7 +87,7 @@
 | Lead status → "booked" | ✅ |
 | booking_confirmed event logged | ✅ |
 | Lead appears in admin dashboard | ✅ |
-| Executive Dashboard pipeline updated | ✅ |
+| Mission Control pipeline updated | ✅ |
 
 **Zero broken steps. Zero dead ends. Zero mock data in path.**
 

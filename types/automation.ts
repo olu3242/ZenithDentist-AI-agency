@@ -12,6 +12,7 @@ export type AutomationDomain =
   | "lead_operations"
   | "treatment"
   | "insurance"
+  | "implementation"
   | "patient_influence"
   | "ai";
 

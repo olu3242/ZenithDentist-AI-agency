@@ -11,7 +11,7 @@ The Compliance Agent is the platform's automated HIPAA and operational complianc
 ## Responsibilities
 
 1. Monitor patient communication consent coverage
-2. Audit Automation Platform execution health and failure rates
+2. Audit Workflow OS execution health and failure rates
 3. Verify avatar consent for Digital Dentist Twin usage
 4. Track opt-out compliance across all communication channels
 5. Monitor audit trail completeness
@@ -132,7 +132,7 @@ Thresholds:
 | Level     | Condition                                 | Action                              |
 |-----------|-------------------------------------------|-------------------------------------|
 | INFO      | Compliance score 90+, minor notes         | Log only                            |
-| WARNING   | Score 75–89 or specific pattern breach    | Executive Dashboard notification        |
+| WARNING   | Score 75–89 or specific pattern breach    | Mission Control notification        |
 | ALERT     | Score 60–74 or active violation           | ALICE escalation + practice manager |
 | CRITICAL  | Score < 60 or active HIPAA violation      | Immediate practice owner alert      |
 
@@ -159,13 +159,13 @@ Compliance Agent reports to ALICE:
 - Trend: consent coverage over time
 - Workflow health from compliance perspective (different from operational health)
 
-ALICE surfaces compliance status in Executive Dashboard with color-coded indicators.
+ALICE surfaces compliance status in Mission Control dashboard with color-coded indicators.
 
 ---
 
-## Compliance Dashboard (Executive Dashboard)
+## Compliance Dashboard (Mission Control)
 
-Compliance Agent feeds the Compliance panel in Executive Dashboard:
+Compliance Agent feeds the Compliance panel in Mission Control:
 - Audit Readiness Score (gauge)
 - Consent Coverage Rate (%)
 - Open Violations (count)

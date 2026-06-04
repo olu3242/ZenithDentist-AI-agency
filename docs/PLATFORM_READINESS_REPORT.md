@@ -13,7 +13,7 @@
 | Database Health | 95% | 17/18 tables certified (profiles not queried — intentional) |
 | Workflow Coverage | 90% | Recovery, DLQ, replay, escalation all operational |
 | Analytics Coverage | 100% | All 9 admin metrics from real DB queries |
-| Dashboard Coverage | 100% | Admin + Executive Dashboard panels all real data |
+| Dashboard Coverage | 100% | Admin + Mission Control panels all real data |
 | Revenue Pipeline Coverage | 100% | Full CTA → assessment → audit → booking → opportunity |
 | Security Score | 98% | All routes protected, RLS enabled, tokens enforced |
 | Performance Score | 95% | Build clean, smoke 9/9, bundle < 200kB per page |
@@ -54,7 +54,7 @@
 | No P0 gaps | ✅ |
 | No mock production data | ✅ |
 | Calendly pipeline verified | ✅ |
-| Executive Dashboard verified | ✅ |
+| Mission Control verified | ✅ |
 | LIZ verified | ✅ |
 | Event Fabric verified | ✅ |
 | Database certified | ✅ |

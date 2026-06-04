@@ -15,7 +15,7 @@ Business impact:
 
 - Moves Zenith beyond reminders into measurable patient influence.
 - Creates a proprietary wedge around treatment acceptance, membership, reviews, referrals, retention, and revenue attribution.
-- Gives Executive Dashboard a direct surface for video engagement and revenue influence.
+- Gives Mission Control a direct surface for video engagement and revenue influence.
 
 Current go-live note:
 

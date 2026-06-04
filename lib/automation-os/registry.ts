@@ -220,7 +220,7 @@ export async function executeRegisteredAutomation(workflowId: string) {
       startedAt,
       status: "completed",
       triggerSource: "automation_center_manual_execute",
-      outcomeSummary: `Workflow ${workflowId} executed through Automation Platform with correlation ${result.correlationId}.`,
+      outcomeSummary: `Workflow ${workflowId} executed through Workflow OS with correlation ${result.correlationId}.`,
       traceId: trace?.trace_id ?? null
     });
     return result;

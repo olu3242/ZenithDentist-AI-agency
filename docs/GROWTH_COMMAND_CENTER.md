@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-The Growth Command Center is the primary practice health dashboard in Executive Dashboard. It provides dental practice owners, practice managers, and agency administrators with a real-time view of practice growth performance, ALICE intelligence summaries, and actionable growth recommendations.
+The Growth Command Center is the primary practice health dashboard in Mission Control. It provides dental practice owners, practice managers, and agency administrators with a real-time view of practice growth performance, ALICE intelligence summaries, and actionable growth recommendations.
 
 ---
 
@@ -218,6 +218,6 @@ Growth Command Center supports multiple time windows:
 | Dimension Breakdown | `growth_scores.dimensions` | Event-driven |
 | Trend Chart | `growth_scores` (time series) | On load |
 | ALICE Summary | `alice_patient_decisions` | Nightly + on-demand |
-| Engine Status | Automation Platform runtime | Real-time |
+| Engine Status | Workflow OS runtime | Real-time |
 | Opportunities | `alice_patient_decisions` | Nightly |
 | Benchmarks | Aggregate analytics | Daily |

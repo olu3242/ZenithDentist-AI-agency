@@ -8,7 +8,7 @@ Go-live gates:
 | --- | ---: | --- |
 | Evidence Coverage | >=95% | Enforced by certification engine |
 | Revenue Attribution | >=90% | Enforced by certification engine |
-| AI Decision Traceability | >=95% | Enforced by certification engine |
+| ALICE Traceability | >=95% | Enforced by certification engine |
 | Incident Coverage | >=95% | Enforced by certification engine |
 | Recovery Coverage | >=95% | Enforced by certification engine |
 | SLA Coverage | >=95% | Enforced by certification engine |

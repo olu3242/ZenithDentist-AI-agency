@@ -43,7 +43,7 @@ export function ZenithLogo({
       {iconOnly ? null : (
         <span className="min-w-0 leading-none">
           <strong className={cn("block truncate text-lg font-black uppercase leading-none tracking-normal", textClassName)}>
-            {brandConfig.shortName} <span className="text-[color:var(--brand-primary)]">{brandConfig.productAcronym}</span>
+            {brandConfig.shortName} <span className="text-[color:var(--brand-primary)]">{brandConfig.productAcronym}™</span>
           </strong>
           {subtitle ? (
             <small className={cn("mt-1 block truncate font-mono text-[9px] font-semibold uppercase leading-tight tracking-[0.22em]", mutedClassName)}>

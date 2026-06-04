@@ -35,7 +35,7 @@ The landing page does not fully communicate:
 - Patient Revenue Operating System as the umbrella
 - Revenue Playbooks
 - ALICE
-- Executive Dashboard
+- Mission Control
 - PMS Integration
 - Competitive differentiation against reminder tools, generic CRMs, and PMS-native reminders
 
@@ -46,8 +46,8 @@ The landing page does not fully communicate:
 
 ## Required Direct Answer
 
-Does the landing page accurately communicate Revenue Recovery System, PROS, Revenue Playbooks, ALICE, Executive Dashboard, PMS Integration, ROI Promise, and Competitive Differentiation?
+Does the landing page accurately communicate Patient Revenue Engine, PROS, Revenue Playbooks, ALICE, Mission Control, PMS Integration, ROI Promise, and Competitive Differentiation?
 
 PARTIAL.
 
-It communicates Revenue Recovery System and ROI promise. It does not sufficiently communicate PROS, Revenue Playbooks, ALICE, Executive Dashboard, PMS Integration, or differentiation.
+It communicates Patient Revenue Engine and ROI promise. It does not sufficiently communicate PROS, Revenue Playbooks, ALICE, Mission Control, PMS Integration, or differentiation.

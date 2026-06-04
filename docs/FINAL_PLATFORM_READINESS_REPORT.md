@@ -4,12 +4,12 @@
 
 | Area | Score | Status |
 | --- | ---: | --- |
-| Automation Platform | 90 | PASS |
+| Workflow OS | 90 | PASS |
 | ALICE | 88 | PASS |
 | RBAC | 82 | PASS WITH LIVE VALIDATION REQUIRED |
 | Tenant Isolation | 78 | LIVE RLS VALIDATION REQUIRED |
 | Revenue Engine | 92 | PASS |
-| Executive Dashboard | 88 | PASS |
+| Mission Control | 88 | PASS |
 | PMS Operations | 86 | PASS |
 | Revenue Opportunity Assessment | 94 | PASS |
 | Frontend / Backend | 84 | PASS WITH LIVE VALIDATION REQUIRED |

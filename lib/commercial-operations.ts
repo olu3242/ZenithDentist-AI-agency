@@ -71,7 +71,7 @@ export const managedServiceTiers: CommercialServiceTier[] = [
     name: "Enterprise",
     supportModel: "Named success lead, escalation path, and leadership operating reviews",
     sla: "Four business hour response for critical issues",
-    implementationModel: "Multi-location rollout with governance, analytics, and Executive Dashboard",
+    implementationModel: "Multi-location rollout with governance, analytics, and Mission Control",
     optimizationServices: ["Executive operating cadence", "Cross-location benchmarking", "Custom managed services"]
   }
 ];
@@ -199,7 +199,7 @@ export function buildBillingFramework() {
 
 export function buildSalesEnablementSystem() {
   return {
-    demoEnvironment: "Pilot tenant with PMS sample data, six playbooks, ALICE summaries, and Executive Dashboard health",
+    demoEnvironment: "Pilot tenant with PMS sample data, six playbooks, ALICE summaries, and Mission Control health",
     roiCalculator: "Uses recovered, generated, protected revenue and operational hours saved",
     caseStudyGenerator: "Turns baseline, current metrics, and attribution into proof narrative",
     proposalGenerator: "Combines audit findings, ROI projection, implementation plan, and service tier",
@@ -351,7 +351,7 @@ function evidenceForImplementationStage(stage: typeof implementationStages[numbe
     Installation: ["automation registry active", "workflow templates configured"],
     Testing: ["workflow execution", "runtime trace", "analytics projection"],
     "Go-Live": ["customer approval", "monitoring active", "executive report schedule"],
-    Optimization: ["health score", "ROI trend", "AI Revenue Intelligence recommendations"]
+    Optimization: ["health score", "ROI trend", "ALICE recommendations"]
   };
   return evidence[stage];
 }

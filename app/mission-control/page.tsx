@@ -105,9 +105,9 @@ export default async function MissionControlPage() {
         </aside>
         <section className="min-w-0 space-y-6">
           <header className="rounded border border-line bg-white p-5 shadow-sm">
-            <p className="brand-kicker">{t("kicker")}</p>
-            <h1 className="mt-2 text-4xl font-black text-ink">{t("title")}</h1>
-            <p className="mt-2 max-w-4xl text-base font-semibold text-muted">{t("subtitle")}</p>
+            <p className="brand-kicker">Zenith PROS Mission Control</p>
+            <h1 className="mt-2 text-4xl font-black text-ink">Mission Control</h1>
+            <p className="mt-2 max-w-4xl text-base font-semibold text-muted">Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring.</p>
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
           <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />

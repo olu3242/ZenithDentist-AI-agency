@@ -138,14 +138,14 @@ Every 5 minutes per installed integration:
    → if consecutive_failures >= 3: status = "degraded"
    → if consecutive_failures >= 6: status = "down"
 5. Update integration_health row
-6. If status changed to "down": alert Executive Dashboard
+6. If status changed to "down": alert Mission Control
 ```
 
 ---
 
-## Executive Dashboard Integration Panel
+## Mission Control Integration Panel
 
-The Integration Command Center in Executive Dashboard displays:
+The Integration Command Center in Mission Control displays:
 - All installed integrations with current health status
 - Last synced timestamp and sync count
 - Error counts with drill-down to integration_events

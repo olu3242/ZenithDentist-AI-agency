@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Revenue Attribution Engine tracks how Zenith platform activities — videos watched, journeys completed, workflows executed, AI Revenue Intelligence recommendations acted upon — connect to realized revenue. It consists of three overlapping attribution chains and a long-term memory layer.
+The Revenue Attribution Engine tracks how Zenith platform activities — videos watched, journeys completed, workflows executed, ALICE recommendations acted upon — connect to realized revenue. It consists of three overlapping attribution chains and a long-term memory layer.
 
 ## Video Attribution Chain
 

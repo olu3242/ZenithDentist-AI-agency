@@ -11,7 +11,7 @@ Date: 2026-06-02
 - SLA Management Center: `/internal/sla`
 - Debug & Recovery Center: `/internal/debug`
 - Evidence OS: `/internal/evidence`
-- AI Decision Traceability Center: `/internal/alice-traceability`
+- ALICE Traceability Center: `/internal/alice-traceability`
 - Revenue Attribution Engine: `/internal/revenue-attribution`
 - Customer Success OS: `/internal/customer-success`
 - Agency CRM: `/internal/agency-crm`

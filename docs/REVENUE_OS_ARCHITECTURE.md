@@ -1,8 +1,8 @@
-# Revenue OS Architecture
+# Revenue OS™ Architecture
 
 ## Overview
 
-Revenue OS is the financial intelligence layer of the Zenith platform. It transforms raw practice data into actionable revenue opportunities, forecasts, and attribution records — enabling dental practices to find, recover, and grow revenue with AI-driven automation.
+Revenue OS™ is the financial intelligence layer of the Zenith platform. It transforms raw practice data into actionable revenue opportunities, forecasts, and attribution records — enabling dental practices to find, recover, and grow revenue with AI-driven automation.
 
 **Primary commercial value proposition:** Zenith identifies revenue dental practices are losing, forecasts what they will earn, and automates the systems to recover it.
 

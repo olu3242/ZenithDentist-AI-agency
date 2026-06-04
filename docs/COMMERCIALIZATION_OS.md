@@ -1,14 +1,14 @@
-# Commercialization OS
+# Commercialization OS™
 
 ## Overview
 
-Commercialization OS is Zenith's operating model for how the platform sells, onboards, expands, and retains dental practice clients. It transforms a founder-led sales-and-onboarding process into a systematized, repeatable machine that can scale without the founder being personally involved in every deal.
+Commercialization OS™ is Zenith's operating model for how the platform sells, onboards, expands, and retains dental practice clients. It transforms a founder-led sales-and-onboarding process into a systematized, repeatable machine that can scale without the founder being personally involved in every deal.
 
 **Goal:** Every step from prospect discovery through renewal and expansion is documented, tooled, and measurable.
 
 ---
 
-## 9 Components of Commercialization OS
+## 9 Components of Commercialization OS™
 
 | # | Component | Description | Primary Document |
 |---|-----------|-------------|-----------------|

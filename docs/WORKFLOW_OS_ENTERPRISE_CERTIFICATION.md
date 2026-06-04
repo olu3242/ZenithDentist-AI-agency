@@ -1,8 +1,8 @@
-# Automation Platform Enterprise Certification
+# Workflow OS Enterprise Certification
 
 ## Scope
 
-Validated the existing canonical Automation Platform and extended it with enterprise governance artifacts without creating a second workflow engine.
+Validated the existing canonical Workflow OS and extended it with enterprise governance artifacts without creating a second workflow engine.
 
 ## Implemented
 
@@ -19,7 +19,7 @@ Validated the existing canonical Automation Platform and extended it with enterp
 | ROI attribution | PASS | `workflow_roi_metrics`, `lib/revenue-playbooks/index.ts` |
 | Marketplace | PASS | Canonical automation registry exposed as governed workflow inventory |
 
-## Executive Dashboard Centers
+## Mission Control Centers
 
 The governance adapter defines:
 
@@ -30,7 +30,7 @@ The governance adapter defines:
 - Workflow Sandbox
 - Workflow Marketplace
 
-These centers are derived from the existing Automation Platform registry, versioning module, runtime health, and revenue playbook attribution path.
+These centers are derived from the existing Workflow OS registry, versioning module, runtime health, and revenue playbook attribution path.
 
 ## Decision
 

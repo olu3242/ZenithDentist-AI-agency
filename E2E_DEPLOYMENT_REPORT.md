@@ -23,7 +23,7 @@ Required before production certification:
 
 - Add Playwright to dev dependencies.
 - Add a staging-aware Playwright config.
-- Cover login, onboarding, assessment submit, LIZ actions, AI Revenue Intelligence recommendations, workflow launch, report generation, and role dashboards.
+- Cover login, onboarding, assessment submit, LIZ actions, ALICE recommendations, workflow launch, report generation, and role dashboards.
 - Run against the protected staging URL with the correct Vercel/staging auth strategy.
 
 ## Staging E2E
@@ -46,7 +46,7 @@ Vercel deployment state: READY
 
 Deployment URL:
 
-`https://zenithprosai.com`
+`https://zenith-dentist-automation-250o1ef8a-eduradiusllc.vercel.app`
 
 Deployment ID:
 

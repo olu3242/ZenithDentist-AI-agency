@@ -23,7 +23,7 @@ revenue_attribution_records   ←  Revenue credited to video (source='video')
         ↓ publishes to
 Event Fabric → video_roi_updated
         ↓ visible in
-Executive Dashboard → Video Performance Panel
+Mission Control → Video Performance Panel
 Digital Twin OS → Practice Twin (video dimension)
 ```
 
@@ -160,7 +160,7 @@ Video Journey Engine integrates with the platform via:
 | /api/mission-control | Video performance panel pulls from video_engagement_os |
 | /api/digital-twin | Digital Twin reads video engagement for practice twin |
 
-No dedicated `/api/video-journey` route in Phase 12 — delivery is triggered via Automation Platform journey engine. A dedicated route is a candidate for Phase 13.
+No dedicated `/api/video-journey` route in Phase 12 — delivery is triggered via Workflow OS journey engine. A dedicated route is a candidate for Phase 13.
 
 ---
 

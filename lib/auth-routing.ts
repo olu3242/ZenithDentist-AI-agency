@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 
-export type ZenithRole = "practice_owner" | "staff" | "agency_admin" | "super_admin";
+export type ZenithRole = "practice_owner" | "staff" | "agency_admin" | "platform_admin" | "super_admin";
 export type DatabaseOrganizationRole = "owner" | "admin" | "practice_manager" | "front_desk" | "analyst" | "executive_readonly";
 
 const roleAliases: Record<string, ZenithRole> = {
@@ -15,12 +15,18 @@ const roleAliases: Record<string, ZenithRole> = {
   admin: "agency_admin",
   agency_admin: "agency_admin",
   agencyadmin: "agency_admin",
+  platform_admin: "platform_admin",
+  platformadmin: "platform_admin",
   super_admin: "super_admin",
   superadmin: "super_admin",
-  platform_owner: "super_admin",
-  platformowner: "super_admin",
+  platform_owner: "platform_admin",
+  platformowner: "platform_admin",
   internal: "super_admin"
 };
+
+export function isPlatformAdminRole(role: ZenithRole | null | undefined) {
+  return role === "platform_admin" || role === "agency_admin" || role === "super_admin";
+}
 
 export const protectedRoutePrefixes = [
   "/admin",
@@ -52,6 +58,7 @@ export function getDefaultPortalForRole(role: ZenithRole) {
       return "/dashboard";
     case "agency_admin":
       return "/admin";
+    case "platform_admin":
     case "super_admin":
       return "/mission-control";
   }
@@ -62,7 +69,7 @@ export function isProtectedPath(pathname: string) {
 }
 
 export function roleCanAccessPath(role: ZenithRole, pathname: string) {
-  if (role === "super_admin") return true;
+  if (role === "super_admin" || role === "platform_admin") return true;
   if (pathname === "/portal-select") return true;
   if (pathname === "/onboarding" || pathname.startsWith("/onboarding/")) return true;
 
@@ -124,6 +131,7 @@ export function roleLabel(role: ZenithRole) {
     practice_owner: "Practice Owner",
     staff: "Staff",
     agency_admin: "Agency Admin",
+    platform_admin: "Platform Admin",
     super_admin: "Super Admin"
   }[role];
 }

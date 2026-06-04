@@ -4,7 +4,7 @@ Generated: 2026-06-01
 
 ## Scope
 
-Audited frontend surfaces under `app/` and reusable components under `components/` for wiring to Supabase, server actions, API routes, Executive Dashboard, Revenue Engine, PMS, ALICE, and analytics modules.
+Audited frontend surfaces under `app/` and reusable components under `components/` for wiring to Supabase, server actions, API routes, Mission Control, Revenue Engine, PMS, ALICE, and analytics modules.
 
 ## Summary
 
@@ -15,10 +15,10 @@ Audited frontend surfaces under `app/` and reusable components under `components
 | Public FAQ analytics | REAL DATA | `components/public/faq.tsx` posts to `/api/analytics/faq`; route writes `faq_interactions` and outreach events. |
 | Dashboard | REAL DATA | `app/dashboard/page.tsx` reads `getAdminDashboardData()`, `getRuntimeHealthState()`, `getAutomationOSState()`, `getTenantData()`. |
 | Portal dashboard | REAL DATA with generated fallback | `app/portal/dashboard/page.tsx` reads `getPortalData()` and `getTenantData()`; empty metrics create empty states, insights can be generated from real metrics/events. |
-| Executive Dashboard | REAL DATA | `app/mission-control/page.tsx` aggregates runtime, provider, incidents, governance, replay, event fabric, tenant, ALICE, and productization modules. |
+| Mission Control | REAL DATA | `app/mission-control/page.tsx` aggregates runtime, provider, incidents, governance, replay, event fabric, tenant, ALICE, and productization modules. |
 | Admin dashboards | REAL DATA | Admin pages use `getAdminDashboardData()`. |
 | ALICE APIs | REAL DATA / MODULE DATA | `/api/alice/*` routes call ALICE or runtime modules; provider behavior depends on env. |
-| Executive Dashboard APIs | REAL DATA / MODULE DATA | `/api/mission-control/*` routes call runtime, governance, cloud, replay, and productization modules. |
+| Mission Control APIs | REAL DATA / MODULE DATA | `/api/mission-control/*` routes call runtime, governance, cloud, replay, and productization modules. |
 | PMS API | REAL DATA PATH EXISTS | `/api/opendental/sync` exists and routes to PMS module. Required `/dashboard/pms/*` UI routes do not exist. |
 | Internal pages | REAL DATA / MODULE DATA | Internal pages generally call runtime, tenant, analytics, AI, or platform modules. |
 | GTM command center | REAL DATA with derived data | Uses `getBusinessGrowthState()` from lead/client ops data. |
@@ -27,10 +27,10 @@ Audited frontend surfaces under `app/` and reusable components under `components
 
 | Component Group | Classification | Evidence |
 | --- | --- | --- |
-| `components/public/roi-funnel-form.tsx` | REAL DATA | Server action, Supabase, email, Executive Dashboard attribution. |
-| `components/public/pros-landing.tsx` | MIXED | Hero stats are backend-fed; gallery, role workspace, and some Executive Dashboard preview copy remain static/demo. |
+| `components/public/roi-funnel-form.tsx` | REAL DATA | Server action, Supabase, email, Mission Control attribution. |
+| `components/public/pros-landing.tsx` | MIXED | Hero stats are backend-fed; gallery, role workspace, and some Mission Control preview copy remain static/demo. |
 | `components/public/audit-preview.tsx` | STATIC DATA + REAL CTA | Uses projected value from ROI assessment but descriptive bullets are static. |
-| `components/mission-control/*` | REAL DATA | Props are populated from runtime/Executive Dashboard modules in `app/mission-control/page.tsx`. |
+| `components/mission-control/*` | REAL DATA | Props are populated from runtime/Mission Control modules in `app/mission-control/page.tsx`. |
 | `components/portal/*` | REAL DATA | Props come from `getPortalData()`, `getTenantData()`, and health modules. |
 | `components/admin/*` | REAL DATA | Props come from Supabase lead/ROI/audit/booking data. |
 | `components/gtm/*` | REAL DATA | Props come from `getBusinessGrowthState()`. |

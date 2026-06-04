@@ -1,7 +1,7 @@
-# Automation Platform Governance
+# Workflow OS™ Governance
 
 **Document Type:** Canonical Governance Reference
-**Platform:** Zenith Patient OS
+**Platform:** Zenith Patient OS™
 **Last Updated:** 2026-06-02
 **Status:** ACTIVE — governs all automation workflows
 
@@ -9,9 +9,9 @@
 
 ## 1. Governing Principle
 
-> **No automation may execute outside Automation Platform.**
+> **No automation may execute outside Workflow OS™.**
 
-Every automated action in the Zenith Patient OS platform — whether sending a message, triggering an ALICE decision, updating a score, or recording revenue — must be orchestrated through the Automation Platform. Direct database mutations, side-effect API calls, or background jobs that bypass Automation Platform are prohibited in production.
+Every automated action in the Zenith Patient OS™ platform — whether sending a message, triggering an ALICE decision, updating a score, or recording revenue — must be orchestrated through the Workflow OS™. Direct database mutations, side-effect API calls, or background jobs that bypass Workflow OS are prohibited in production.
 
 This principle ensures:
 - Every patient-facing action has a complete audit trail
@@ -142,14 +142,14 @@ Every workflow execution is recorded in `workflow_executions`. This table is app
 
 ## 8. Patient OS Standard Workflows
 
-The following workflows are canonical to the Patient OS and must be implemented, tested, and active before client go-live:
+The following workflows are canonical to the Patient OS™ and must be implemented, tested, and active before client go-live:
 
 ### 8.1 welcome_patient
 | Field | Value |
 |---|---|
 | Trigger | `patient.profile.created` event |
 | Condition | `patient.status == 'active'` |
-| Action | Send welcome sequence via Digital Dentist Twin; create journey record |
+| Action | Send welcome sequence via Digital Dentist Twin™; create journey record |
 | Priority | NORMAL |
 
 ### 8.2 post_visit_checkin
@@ -181,7 +181,7 @@ The following workflows are canonical to the Patient OS and must be implemented,
 |---|---|
 | Trigger | `appointment.completed` event + 24h delay |
 | Condition | `patient.influence.review_probability > 60` |
-| Action | Send review request via Digital Dentist Twin |
+| Action | Send review request via Digital Dentist Twin™ |
 | Priority | NORMAL |
 
 ### 8.6 referral_ask

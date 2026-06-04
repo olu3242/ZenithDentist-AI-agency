@@ -32,7 +32,7 @@ Without remote CLI access, gap analysis is performed against:
 
 ---
 
-### ✅ Revenue Recovery System — COMPLETE
+### ✅ Patient Revenue Engine — COMPLETE
 
 **Required:** leads, ROI calculations, audits, bookings, recall, treatment plans  
 **Present in migrations:**
@@ -52,7 +52,7 @@ Without remote CLI access, gap analysis is performed against:
 
 ---
 
-### ✅ Automation Platform — COMPLETE
+### ✅ Workflow OS — COMPLETE
 
 **Required:** workflow execution, automation registry, dead letter queue, recovery  
 **Present in migrations:**
@@ -124,7 +124,7 @@ Without remote CLI access, gap analysis is performed against:
 
 ---
 
-### ✅ Executive Dashboard — COMPLETE
+### ✅ Mission Control — COMPLETE
 
 **Required:** operational health, incidents, metrics, dead letter management  
 **Present in migrations:**

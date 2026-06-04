@@ -1,4 +1,4 @@
-# Revenue Recovery System Installation Report
+# Patient Revenue Engine Installation Report
 
 Generated: 2026-06-01
 
@@ -8,7 +8,7 @@ Canonical product:
 
 - File: `lib/patient-revenue-engine.ts`
 - ID: `patient_revenue_engine`
-- Name: `Revenue Recovery System`
+- Name: `Patient Revenue Engine`
 - Version: `1.0.0`
 
 ## Marketplace Product

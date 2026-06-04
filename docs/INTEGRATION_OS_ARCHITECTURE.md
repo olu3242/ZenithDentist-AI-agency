@@ -149,7 +149,7 @@ Health checks run every 5 minutes per installed integration. See `INTEGRATION_HE
 
 ## n8n Boundary
 
-**n8n handles only external connectors** — webhooks from third-party systems that do not have a direct API integration path. All internal automation logic runs via Automation Platform within the platform. Integration OS manages all external API connections directly.
+**n8n handles only external connectors** — webhooks from third-party systems that do not have a direct API integration path. All internal automation logic runs via Workflow OS within the platform. Integration OS manages all external API connections directly.
 
 ---
 

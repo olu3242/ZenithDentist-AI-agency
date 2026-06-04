@@ -4,19 +4,19 @@ Date: 2026-06-01
 
 ## Scope
 
-Specialist: Executive Dashboard & Dashboard Architect
+Specialist: Mission Control & Dashboard Architect
 
 ## Evidence Reviewed
 
 - Legacy dashboard: `zenith-ai-dashboard.html`
 - Portal dashboard: `app/portal/dashboard/page.tsx`
-- Executive Dashboard: `app/mission-control/page.tsx`
+- Mission Control: `app/mission-control/page.tsx`
 - Reports: `app/portal/reports/page.tsx`
 - Revenue dashboard: `app/portal/revenue/page.tsx`
 
 ## Legacy vs Current
 
-Current platform exceeds the legacy dashboard in runtime intelligence, AI insights, benchmark panels, revenue trends, Executive Dashboard, and executive reporting.
+Current platform exceeds the legacy dashboard in runtime intelligence, AI insights, benchmark panels, revenue trends, Mission Control, and executive reporting.
 
 ## Practice Owner Question
 
@@ -40,10 +40,10 @@ Can Zenith support the practice from this dashboard?
 
 YES, MOSTLY.
 
-Executive Dashboard provides runtime health, replay, provider health, dependency issues, governance, incidents, ALICE copilot, memory, and executive reports. Support is strong from the Zenith side.
+Mission Control provides runtime health, replay, provider health, dependency issues, governance, incidents, ALICE copilot, memory, and executive reports. Support is strong from the Zenith side.
 
 ## Decision
 
 DASHBOARD READINESS: PARTIAL.
 
-Executive Dashboard is strong. Practice-facing operations dashboard needs PMS portal and patient workflow workbench harmonization.
+Mission Control is strong. Practice-facing operations dashboard needs PMS portal and patient workflow workbench harmonization.

@@ -13,4 +13,4 @@ Conversion profile types:
 
 Each profile records readiness score, preferred channel, best CTA, best timing, expected revenue impact, confidence score, and metadata.
 
-Executive Dashboard surfaces readiness, conversion, attribution, and revenue influence through `/portal/video`.
+Mission Control surfaces readiness, conversion, attribution, and revenue influence through `/portal/video`.

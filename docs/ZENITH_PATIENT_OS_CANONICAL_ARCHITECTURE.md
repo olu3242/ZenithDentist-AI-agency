@@ -18,10 +18,10 @@ The platform is structured as five vertically integrated layers:
 
 | Layer | Name | Responsibility |
 |-------|------|----------------|
-| L1 | Experience Layer | Patient portal, staff dashboards, Executive Dashboard UI |
+| L1 | Experience Layer | Patient portal, staff dashboards, Mission Control UI |
 | L2 | Application Layer | Growth engines, journey orchestration, recall, membership, referral |
 | L3 | Intelligence Layer | ALICE, Patient Influence Engine, Treatment Intelligence, Growth Score |
-| L4 | Orchestration Layer | Automation Platform, Event Fabric, Audit Trail, DLQ, Replay |
+| L4 | Orchestration Layer | Workflow OS, Event Fabric, Audit Trail, DLQ, Replay |
 | L5 | Data Layer | Supabase Postgres, RLS, multi-tenant schema, Practice Memory Graph |
 
 ### Layer Dependency Rules
@@ -85,7 +85,7 @@ Every database table includes `organization_id` on every row. Row-Level Security
 All platform actions produce immutable domain events. Events are dual-written to:
 
 1. `runtime_event_fabric_events` — real-time processing stream
-2. `mission_control_events` — Executive Dashboard analytics and audit
+2. `mission_control_events` — Mission Control analytics and audit
 
 ### Event Schema (canonical)
 

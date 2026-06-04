@@ -14,7 +14,7 @@
 | Recovery Orchestrator | ✅ OPERATIONAL | 6 action types, DB-persisted |
 | Replay Engine | ✅ OPERATIONAL | lib/runtime/replay-engine.ts |
 | Recovery Metrics | ✅ OPERATIONAL | workflow_recovery_metrics table |
-| Recovery UI | ✅ OPERATIONAL | Executive Dashboard dead-letter explorer |
+| Recovery UI | ✅ OPERATIONAL | Mission Control dead-letter explorer |
 | Escalation Path | ✅ OPERATIONAL | escalate action → manual review |
 
 ---

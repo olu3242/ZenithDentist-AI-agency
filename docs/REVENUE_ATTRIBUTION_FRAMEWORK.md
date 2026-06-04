@@ -114,7 +114,7 @@ Revenue Event Detected (PMS signal or platform event)
   → Write to revenue_attribution_records
   → Emit revenue_attributed event to Event Fabric
   → Update Growth Score (revenue_growth dimension)
-  → Update Executive Dashboard Revenue Dashboard
+  → Update Mission Control Revenue Dashboard
 ```
 
 ---
@@ -156,7 +156,7 @@ Platform ROI = (Platform-Attributed Revenue - Platform Cost) / Platform Cost × 
 
 ## 9. Attribution Reporting
 
-### Executive Dashboard Dashboards
+### Mission Control Dashboards
 
 - **Revenue Attribution Summary** — Total attributed revenue by source, confidence distribution
 - **Engine Performance** — Per-engine conversion rates and revenue
@@ -178,7 +178,7 @@ Platform ROI = (Platform-Attributed Revenue - Platform Cost) / Platform Cost × 
 
 When practices dispute attribution:
 
-1. Practice flags revenue event in Executive Dashboard.
+1. Practice flags revenue event in Mission Control.
 2. Platform generates full attribution audit trail.
 3. Data Governor reviews within 5 business days.
 4. If dispute upheld: attribution record updated with `disputed: true` and corrected source.

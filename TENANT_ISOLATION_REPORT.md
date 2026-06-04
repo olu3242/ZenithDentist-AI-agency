@@ -24,7 +24,7 @@ Date: 2026-06-01
 | Tenant-scoped dashboard reads | Improved | `/dashboard` now calls `getAdminDashboardData(tenantData.tenant.organizationId)` |
 | Tenant-scoped runtime reads | Improved | `automation_traces` filtered by `organization_id`; dead letters filtered by tenant trace IDs |
 | RLS enforcement | Partial | Core repair tables have RLS; several legacy operational tables still use service-role-only policies |
-| Executive Dashboard filtering | Partial | Most runtime modules call `getTenantData()` and filter by org; remaining derived components should be reviewed during live tenant QA |
+| Mission Control filtering | Partial | Most runtime modules call `getTenantData()` and filter by org; remaining derived components should be reviewed during live tenant QA |
 
 ## Remaining Risks
 

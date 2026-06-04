@@ -139,11 +139,11 @@ Sequence stops immediately upon appointment booking.
 
 ---
 
-## Integration with Automation Platform
+## Integration with Workflow OS
 
-The agent does not send communications directly. It creates `agent_tasks` which are picked up by Automation Platform:
+The agent does not send communications directly. It creates `agent_tasks` which are picked up by Workflow OS:
 1. Task created: `{ type: "treatment_followup", channel: "video", patientId: "..." }`
-2. Automation Platform triggers Digital Dentist Twin pipeline
+2. Workflow OS triggers Digital Dentist Twin pipeline
 3. Video generated and delivered via Communication Hub
 4. Engagement event published to Event Fabric
 5. ALICE learns from outcome via `recordLearningSignal`

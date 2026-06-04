@@ -49,7 +49,7 @@ export async function persistAliceTrace(input: {
       organization_id: input.organizationId,
       alice_decision_id: decision.id,
       confidence_score: input.confidence,
-      confidence_reason: input.reasoning[0] ?? "AI confidence recorded."
+      confidence_reason: input.reasoning[0] ?? "ALICE confidence recorded."
     }),
     input.outcome ? client.from("alice_outcomes").insert({
       organization_id: input.organizationId,

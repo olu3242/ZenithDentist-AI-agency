@@ -2,6 +2,7 @@ import "server-only";
 
 import { getTenantData } from "@/lib/data/tenants";
 import { createServiceClient } from "@/lib/supabase/server";
+import { getImplementationIntelligenceState, type ImplementationIntelligenceState } from "@/lib/implementation-intelligence";
 
 export type ImplementationPhase = "signed" | "discovery" | "configuration" | "integration" | "testing" | "training" | "go_live" | "optimization" | "completed";
 export type ImplementationSection = "implementations" | "onboarding" | "integrations-readiness" | "training" | "adoption" | "go-live" | "client-playbooks";
@@ -189,7 +190,7 @@ export const clientOperatingPlaybookTemplates: OperatingPlaybookTemplate[] = [
     operatingItem("day_1_activation", "verify_systems", "sms_sending_active", "SMS Sending Active", "implementation_owner", 1, "COMMUNICATION_EVENT"),
     operatingItem("day_1_activation", "verify_systems", "stripe_active", "Stripe Active", "billing", 1, "PAYMENT_EVENT"),
     operatingItem("day_1_activation", "verify_systems", "alice_active", "ALICE Active", "implementation_owner", 1, "ALICE_EVENT"),
-    operatingItem("day_1_activation", "verify_systems", "mission_control_active", "Executive Dashboard Active", "operations", 1, "CERTIFICATION_EVENT"),
+    operatingItem("day_1_activation", "verify_systems", "mission_control_active", "Mission Control Active", "operations", 1, "CERTIFICATION_EVENT"),
     operatingItem("day_1_activation", "verify_workflows", "appointment_reminders_active", "Appointment Reminders Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
     operatingItem("day_1_activation", "verify_workflows", "recall_workflow_active", "Recall Workflow Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
     operatingItem("day_1_activation", "verify_workflows", "review_workflow_active", "Review Workflow Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
@@ -221,7 +222,7 @@ export const clientOperatingPlaybookTemplates: OperatingPlaybookTemplate[] = [
     operatingItem("thirty_day_success_review", "risks", "missing_data", "Missing Data", "operations", 30, "EVIDENCE_EVENT"),
     operatingItem("thirty_day_success_review", "risks", "integration_issues", "Integration Issues", "operations", 30, "INCIDENT_EVENT")
   ]),
-  playbook("sixty_day_optimization", "60 Day Optimization", "optimized", "60_day", "Tune workflows, AI Revenue Intelligence recommendations, forecasting, and ROI.", ["KPI Progress Reviewed", "ROI Reviewed", "Forecast Accuracy Reviewed"], [
+  playbook("sixty_day_optimization", "60 Day Optimization", "optimized", "60_day", "Tune workflows, ALICE recommendations, forecasting, and ROI.", ["KPI Progress Reviewed", "ROI Reviewed", "Forecast Accuracy Reviewed"], [
     operatingItem("sixty_day_optimization", "workflow_optimization", "recall_optimization", "Recall Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
     operatingItem("sixty_day_optimization", "workflow_optimization", "review_optimization", "Review Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
     operatingItem("sixty_day_optimization", "workflow_optimization", "treatment_acceptance_optimization", "Treatment Acceptance Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
@@ -300,6 +301,7 @@ export interface ClientImplementationState {
   health: Array<{ id: string; projectId: string; healthScore: number; riskScore: number; expansionScore: number }>;
   reviews: Array<{ id: string; projectId: string; type: string; status: string; scheduledAt: string }>;
   operatingPlaybooks: Array<{ id: string; projectId: string; playbookKey: string; label: string; stage: string; section: string; owner: string; ownerRole: string; dueDate: string; status: string; evidenceType: string; evidenceStatus: string; completedAt: string }>;
+  implementationIntelligence: ImplementationIntelligenceState;
   blueprints: typeof implementationBlueprints;
   checklistTemplates: typeof implementationChecklistTemplates;
   operatingPlaybookTemplates: OperatingPlaybookTemplate[];
@@ -309,8 +311,9 @@ export async function getClientImplementationState(): Promise<ClientImplementati
   const tenant = await getTenantData();
   const organizationId = tenant.tenant.organizationId ?? tenant.organization.id;
   const supabase = createServiceClient();
+  const implementationIntelligence = await getImplementationIntelligenceState();
 
-  if (!supabase) return buildState(false);
+  if (!supabase) return buildState(false, {}, implementationIntelligence);
   const client = supabase as any;
   const [
     projectsResult,
@@ -347,7 +350,7 @@ export async function getClientImplementationState(): Promise<ClientImplementati
     health: healthResult.data ?? [],
     reviews: reviewsResult.data ?? [],
     operatingPlaybooks: operatingPlaybooksResult.data ?? []
-  });
+  }, implementationIntelligence);
 }
 
 export async function createImplementationProjectFromContract(input: {
@@ -387,7 +390,7 @@ export async function createImplementationProjectFromContract(input: {
   return { ok: true, projectId };
 }
 
-function buildState(configured: boolean, rows: Record<string, any[]> = {}): ClientImplementationState {
+function buildState(configured: boolean, rows: Record<string, any[]> = {}, implementationIntelligence?: ImplementationIntelligenceState): ClientImplementationState {
   const projects = (rows.projects ?? []).map(project => ({
     id: project.id,
     clientName: project.client_name,
@@ -425,9 +428,24 @@ function buildState(configured: boolean, rows: Record<string, any[]> = {}): Clie
     health: (rows.health ?? []).map(item => ({ id: item.id, projectId: item.implementation_project_id, healthScore: Number(item.health_score ?? 0), riskScore: Number(item.risk_score ?? 0), expansionScore: Number(item.expansion_score ?? 0) })),
     reviews: (rows.reviews ?? []).map(item => ({ id: item.id, projectId: item.implementation_project_id, type: item.review_type, status: item.status, scheduledAt: item.scheduled_at })),
     operatingPlaybooks: (rows.operatingPlaybooks ?? []).map(item => ({ id: item.id, projectId: item.implementation_project_id, playbookKey: item.playbook_key, label: item.label, stage: item.stage, section: item.section, owner: item.owner ?? "Unassigned", ownerRole: item.owner_role ?? "customer_success", dueDate: item.due_date ?? "Unscheduled", status: item.status, evidenceType: item.evidence_type ?? "Not required", evidenceStatus: item.evidence_status ?? "required", completedAt: item.completion_timestamp ?? "Open" })),
+    implementationIntelligence: implementationIntelligence ?? emptyImplementationIntelligence(),
     blueprints: implementationBlueprints,
     checklistTemplates: implementationChecklistTemplates,
     operatingPlaybookTemplates: clientOperatingPlaybookTemplates
+  };
+}
+
+function emptyImplementationIntelligence(): ImplementationIntelligenceState {
+  return {
+    configured: false,
+    generatedAt: new Date().toISOString(),
+    commandCenter: { completed: 0, inProgress: 0, blocked: 0, readinessScore: 0, implementationScore: 0, potentialRevenue: 0, recoveredRevenue: 0 },
+    scores: { practiceHealth: 0, revenueHealth: 0, growth: 0, risk: 0 },
+    chevron: [],
+    revenueRecovery: { totalLeaks: 0, topCategory: "None", potentialRevenue: 0, recoveredRevenue: 0, topOpportunities: [] },
+    pmsReadiness: { supportedVendors: [], assessedVendors: [], averageReadiness: 0, openPlans: 0 },
+    aliceAdvisor: { topActions: [], topRisks: [], topOpportunities: [] },
+    workflowRegistrations: []
   };
 }
 
@@ -517,7 +535,7 @@ function buildOperatingPlaybookTemplateRows(organizationId: string) {
     cadence: playbook.cadence,
     objective: playbook.objective,
     success_metrics: playbook.successMetrics,
-    required_destinations: ["Executive Command Center", "Customer Success OS", "Agency CRM", "Evidence OS", "Executive Dashboard"]
+    required_destinations: ["Executive Command Center", "Customer Success OS", "Agency CRM", "Evidence OS", "Mission Control"]
   }));
 }
 

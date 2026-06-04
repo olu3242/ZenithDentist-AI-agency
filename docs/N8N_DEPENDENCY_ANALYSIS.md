@@ -62,7 +62,7 @@ None of these retain any Zenith business logic, patient journey state, or revenu
 
 ## What Makes a Workflow "Internal" vs "External"
 
-### Internal (owned by Automation Platform)
+### Internal (owned by Workflow OS™)
 
 - Business logic execution
 - Patient journey orchestration (new_patient, appointment_prep, treatment_education, etc.)

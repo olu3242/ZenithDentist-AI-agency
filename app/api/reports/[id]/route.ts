@@ -12,12 +12,13 @@ type RouteContext = {
 };
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: RouteContext
 ) {
   const { id } = await params;
-  const { tenant } = await getTenantData();
-  const data = await getPortalData(tenant.organizationId);
+
+  const data = await getPortalData();
+
   const report =
     data.reports.find((item) => item.id === id) ??
     buildExecutiveReport(data);

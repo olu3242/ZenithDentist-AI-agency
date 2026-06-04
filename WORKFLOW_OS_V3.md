@@ -1,4 +1,4 @@
-# Automation Platform V3
+# Workflow OS V3
 
 ## Status
 
@@ -13,7 +13,7 @@ Primary modules:
 
 ## Purpose
 
-Automation Platform is the product-agnostic execution layer for every automation, task, agent action, and recovery playbook.
+Workflow OS is the product-agnostic execution layer for every automation, task, agent action, and recovery playbook.
 
 ## V3 Contracts
 
@@ -38,4 +38,4 @@ Automation Platform is the product-agnostic execution layer for every automation
 
 ## Reusability
 
-The same Automation Platform can power Zenith, Owambe OS, EduRadius, FinClarity, Oasis Go, and future products by changing workflow definitions and tenant policies, not the execution engine.
+The same Workflow OS can power Zenith, Owambe OS, EduRadius, FinClarity, Oasis Go, and future products by changing workflow definitions and tenant policies, not the execution engine.

@@ -9,12 +9,12 @@
 | Touch and keyboard support | PASS | Native range inputs |
 | Real-time calculations | PASS | `calculateRevenueProjection` via React watch/memo |
 | No Calculate button | PASS | Results update on slider interaction |
-| Executive Dashboard results panel | PASS | Live KPI feed and sticky results panel |
+| Mission Control results panel | PASS | Live KPI feed and sticky results panel |
 | Practice Health Score | PASS | `projection.practiceHealthScore` |
-| AI Revenue Intelligence recommendations | PASS | `buildAliceRevenueOpportunityReport` |
+| ALICE recommendations | PASS | `buildAliceRevenueOpportunityReport` |
 | Lead capture after value | PASS | Gate opens after interaction or unlock CTA |
 | Persist `roi_assessments` | PASS | Migration + `createLeadFunnel` insert |
-| Executive Dashboard lead | PASS | Existing lead funnel creates `leads` record |
+| Mission Control lead | PASS | Existing lead funnel creates `leads` record |
 
 ## Inputs
 

@@ -1,4 +1,4 @@
-# Automation Platform — Canonical Specification
+# Workflow OS — Canonical Specification
 
 **Version:** 2.0  
 **Status:** Canonical  
@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-The Automation Platform is the execution backbone of the ZenithDentist platform. Every automated action — recall outreach, membership renewal, referral follow-up, ALICE intervention — is expressed as a Automation Platform workflow. This document defines the canonical structure, lifecycle, and operational requirements for all workflows.
+The Workflow OS is the execution backbone of the ZenithDentist platform. Every automated action — recall outreach, membership renewal, referral follow-up, ALICE intervention — is expressed as a Workflow OS workflow. This document defines the canonical structure, lifecycle, and operational requirements for all workflows.
 
 ---
 
@@ -64,7 +64,7 @@ PENDING → TRIGGERED → CONDITION_CHECK → EXECUTING → COMPLETED
 | `event` | Platform event from Event Fabric | `patient.appointment.completed` |
 | `schedule` | Cron-based time trigger | Daily 9 AM recall sweep |
 | `signal` | External signal from PMS integration | New appointment booked |
-| `manual` | Staff-initiated from Executive Dashboard | Manual recall trigger |
+| `manual` | Staff-initiated from Mission Control | Manual recall trigger |
 | `threshold` | Metric crosses a threshold | Growth Score drops below 40 |
 | `chain` | Output of another workflow | Post-recall follow-up |
 
@@ -120,7 +120,7 @@ Actions are executed sequentially. Each step can be configured with its own retr
 | `update_record` | Write to a platform table |
 | `call_intelligence` | Invoke ALICE or a scoring engine |
 | `emit_event` | Publish an event to Event Fabric |
-| `notify_staff` | Send Executive Dashboard notification |
+| `notify_staff` | Send Mission Control notification |
 | `wait` | Pause execution for a duration |
 | `branch` | Conditional branch based on runtime data |
 
@@ -213,7 +213,7 @@ Applied after retry exhaustion:
 
 ### DLQ Management
 
-- DLQ items appear in Executive Dashboard's Operations Center.
+- DLQ items appear in Mission Control's Operations Center.
 - Staff may replay, discard, or manually resolve DLQ items.
 - DLQ items older than 7 days are escalated to Operations Lead.
 

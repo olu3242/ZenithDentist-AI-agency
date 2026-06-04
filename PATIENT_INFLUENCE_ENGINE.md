@@ -1,6 +1,6 @@
 # Patient Influence Engine
 
-The Patient Influence Engine moves Zenith beyond reminders by using education, timing, behavioral signals, and AI Revenue Intelligence recommendations to influence patient decisions.
+The Patient Influence Engine moves Zenith beyond reminders by using education, timing, behavioral signals, and ALICE recommendations to influence patient decisions.
 
 Primary influence goals:
 
@@ -14,4 +14,4 @@ Primary influence goals:
 - Revenue recovery
 - Revenue protection
 
-Every influence journey is tied to a Automation Platform blueprint and a measurable outcome.
+Every influence journey is tied to a Workflow OS blueprint and a measurable outcome.

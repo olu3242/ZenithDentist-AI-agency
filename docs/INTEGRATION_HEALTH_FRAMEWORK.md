@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Integration Health Framework provides continuous monitoring of all installed integrations. Every integration installation is health-checked on a 5-minute cadence, with automatic status classification, alert escalation, and Executive Dashboard visibility.
+The Integration Health Framework provides continuous monitoring of all installed integrations. Every integration installation is health-checked on a 5-minute cadence, with automatic status classification, alert escalation, and Mission Control visibility.
 
 ---
 
@@ -78,7 +78,7 @@ Additionally:
 
 | Threshold               | Value  | Alert Triggered                         |
 |-------------------------|--------|-----------------------------------------|
-| consecutive_failures    | 3      | Status → "down", Executive Dashboard alert  |
+| consecutive_failures    | 3      | Status → "down", Mission Control alert  |
 | avg_latency_ms (warn)   | 5,000  | Status → "degraded"                     |
 | avg_latency_ms (down)   | 15,000 | Status → "down"                         |
 | No sync in 24 hours     | —      | Stale integration warning               |
@@ -102,7 +102,7 @@ Additionally:
 
 When `consecutive_failures >= 6`:
 1. Integration status set to `disabled` in `integration_installations`
-2. Executive Dashboard: Critical alert — "Integration auto-disabled: {name}"
+2. Mission Control: Critical alert — "Integration auto-disabled: {name}"
 3. Practice manager email notification (when email enabled)
 4. Integration must be manually re-enabled after credential verification
 
@@ -110,7 +110,7 @@ Auto-disable prevents runaway error accumulation and protects sync counters.
 
 ---
 
-## Executive Dashboard Integration Command Center
+## Mission Control Integration Command Center
 
 Located at `/mission-control/integrations`:
 

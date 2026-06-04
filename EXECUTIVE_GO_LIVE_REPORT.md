@@ -12,10 +12,10 @@ Recommendation: HOLD GENERAL AVAILABILITY AND PUBLIC LAUNCH UNTIL LIVE EVIDENCE 
 
 Zenith now has a production evidence framework:
 
-- AI Revenue Intelligence recommendations can be traced.
+- ALICE recommendations can be traced.
 - Workflow executions can be audited.
 - Revenue attribution can be recorded.
-- Executive Dashboard actions can link to evidence and outcomes.
+- Mission Control actions can link to evidence and outcomes.
 - PMS connectors can be certified per tenant.
 - Forecast runs can be measured.
 - Reports can be traced to source records.

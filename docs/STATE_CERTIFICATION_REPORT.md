@@ -9,7 +9,7 @@ Generated: 2026-06-01
 - Empty states
 - Retry states
 - Offline states
-- Branded Zenith Pros loaders
+- Branded Zenith PROS loaders
 
 ## Evidence
 
@@ -20,7 +20,7 @@ Generated: 2026-06-01
 | Landing loading | PASS | Root loader covers landing. |
 | Dashboard loading/error | PASS | `app/dashboard/loading.tsx`, `app/dashboard/error.tsx`. |
 | PMS loading/error | PASS | `app/dashboard/pms/loading.tsx`, `app/dashboard/pms/error.tsx`. |
-| Executive Dashboard loading/error | PASS | `app/mission-control/loading.tsx`, `app/mission-control/error.tsx`. |
+| Mission Control loading/error | PASS | `app/mission-control/loading.tsx`, `app/mission-control/error.tsx`. |
 | Revenue Center loading/error | PASS | `app/portal/revenue/loading.tsx`, `app/portal/revenue/error.tsx`. |
 | ALICE loading/error | PASS | `app/portal/alice/loading.tsx`, `app/portal/alice/error.tsx`. |
 | Settings loading/error | PASS | `app/settings/loading.tsx`, `app/settings/error.tsx`. |

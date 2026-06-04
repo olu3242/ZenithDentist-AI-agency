@@ -5,7 +5,7 @@ ALICE V3 is grounded through `lib/alice/knowledge/index.ts`. This is a knowledge
 | Domain | Certification | Sources |
 | --- | --- | --- |
 | Platform | CERTIFIED | `lib/analytics-projector.ts`, `lib/patient-revenue-engine.ts`, `app/mission-control/page.tsx` |
-| Executive Dashboard | CERTIFIED | `app/mission-control/page.tsx`, `components/mission-control/*` |
+| Mission Control | CERTIFIED | `app/mission-control/page.tsx`, `components/mission-control/*` |
 | Revenue | CERTIFIED | `lib/roi.ts`, `lib/revenue-playbooks/index.ts`, `lib/data/leads.ts` |
 | Workflow Governance | CERTIFIED | `lib/workflow-os/*`, governance migration |
 | PMS Operations | CERTIFIED | `lib/pms-operations.ts`, `app/dashboard/pms/*` |

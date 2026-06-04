@@ -14,7 +14,7 @@ Implemented in `buildSalesEnablementSystem`.
 
 ## System Definition
 
-- Demo Environment: pilot tenant with PMS sample data, six playbooks, ALICE summaries, and Executive Dashboard health
+- Demo Environment: pilot tenant with PMS sample data, six playbooks, ALICE summaries, and Mission Control health
 - ROI Calculator: recovered, generated, protected revenue and operational hours saved
 - Case Study Generator: baseline, current metrics, and attribution proof narrative
 - Proposal Generator: audit findings, ROI projection, implementation plan, and service tier

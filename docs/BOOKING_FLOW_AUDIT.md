@@ -27,7 +27,7 @@ Webhook: trackOutreachEvent(booking_confirmed)
      ↓
 Lead visible in admin dashboard as "booked"
      ↓
-Executive Dashboard pipeline shows updated status
+Mission Control pipeline shows updated status
 ```
 
 ---
@@ -79,7 +79,7 @@ After booking confirmed:
 2. `leads` table: status = "booked", notes updated
 3. `outreach_events`: booking_confirmed event
 4. Admin dashboard: lead appears in "Booked" column
-5. Executive Dashboard: getAdminDashboardData() returns updated lead
+5. Mission Control: getAdminDashboardData() returns updated lead
 
 ---
 

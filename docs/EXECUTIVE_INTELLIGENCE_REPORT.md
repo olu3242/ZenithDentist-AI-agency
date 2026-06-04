@@ -22,11 +22,11 @@ ALICE Core (lib/alice/index.ts + recommendation-engine.ts + knowledge-graph.ts)
         ↓ extended by
 executive-briefing.ts + knowledge-evolution.ts
         ↓ reads from (6 parallel)
-Revenue OS, Automation Platform, Commercial OS, Digital Twin, Video Engagement, Patient Data
+Revenue OS, Workflow OS, Commercial OS, Digital Twin, Video Engagement, Patient Data
         ↓ writes to
 alice_executive_briefings, alice_knowledge_versions, alice_recommendation_feedback
         ↓ publishes to
-Event Fabric → Executive Dashboard
+Event Fabric → Mission Control
         ↓ API exposed via
 GET/POST /api/alice/executive-briefing
 ```
@@ -102,7 +102,7 @@ type ExecutiveBriefing = {
   opportunities: Opportunity[]                 // Top revenue opportunities
   risks: Risk[]                               // Detected risks with severity
   forecasts: Forecast[]                       // 30/60/90-day revenue forecasts
-  recommendations: Recommendation[]           // Prioritized AI Revenue Intelligence recommendations
+  recommendations: Recommendation[]           // Prioritized ALICE recommendations
   priorityActions: PriorityAction[]           // Top 3 immediate actions
   projectedImpact: ProjectedImpact            // Combined revenue impact estimate
   dataFreshness: Record<string, string>       // Timestamp per data source
@@ -223,7 +223,7 @@ type ProjectedImpact = {
 
 ---
 
-## 10. Executive Dashboard Integration
+## 10. Mission Control Integration
 
 | Panel | Data Source | Refresh |
 |---|---|---|

@@ -2,7 +2,7 @@ import { ZenithTokens } from "@/lib/brand/tokens";
 import { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 export const brandConfig = {
-  name: "Zenith Pros",
+  name: "ZENITH PROS",
   legalName: LEGAL_ENTITY.legalName,
   brandName: LEGAL_ENTITY.brandName,
   dbaName: LEGAL_ENTITY.dbaName,
@@ -13,8 +13,9 @@ export const brandConfig = {
   shortName: "ZENITH",
   productName: "Patient Revenue Operating System",
   productAcronym: "PROS",
+  trademark: "Patient Revenue Operating System™",
   tagline: "Recover revenue. Fill chairs. Grow production.",
-  descriptor: "Patient Revenue Operating System",
+  descriptor: "Patient Revenue Operating System™",
   productTagline: "Dental revenue operations platform",
   logoMark: "Z",
   personality: [

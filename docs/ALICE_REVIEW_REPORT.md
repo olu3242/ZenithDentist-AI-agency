@@ -25,7 +25,7 @@ Implemented:
 - Automation risks
 - Recommendations
 - Enterprise coordination context
-- Executive Dashboard ALICE copilot
+- Mission Control ALICE copilot
 
 ## Grounding
 

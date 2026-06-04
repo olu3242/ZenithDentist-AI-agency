@@ -31,7 +31,7 @@ Route handler:
        WHERE lead_id = leadId
   7. Publish Event Fabric: calendly_booking_created
      ↓
-Lead appears in Executive Dashboard as "booked"
+Lead appears in Mission Control as "booked"
 Pipeline opportunity advances to booking_created stage
 ```
 
@@ -163,4 +163,4 @@ POST /api/calendly/events — accepts valid Calendly payload ✓ 200
 6. Verify `leads.status = "booked"`
 7. Verify `opportunities.stage = "booking_created"`
 8. Verify `outreach_events` row with `event_type = "calendly_booking_created"`
-9. Lead appears in Executive Dashboard admin as "booked"
+9. Lead appears in Mission Control admin as "booked"

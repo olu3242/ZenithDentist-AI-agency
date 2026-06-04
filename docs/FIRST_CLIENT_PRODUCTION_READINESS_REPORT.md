@@ -35,7 +35,7 @@ Zenith Dentist AI is **READY FOR FIRST PAYING PILOT CLIENT** on an Open Dental p
 | `billing_customers` table | `supabase/migrations/202606030001_billing_customers.sql` | Stripe customer state persisted |
 | `upsertBillingCustomer()` | `lib/stripe/operations.ts` | Subscription lifecycle tracking |
 | Revenue attribution fix | `lib/enterprise-operations.ts` table name corrected | All 4 engines now write `revenue_attribution_records` |
-| Runtime fabric event on activation | Stripe webhook publishes to Executive Dashboard | Activation visible in real-time |
+| Runtime fabric event on activation | Stripe webhook publishes to Mission Control | Activation visible in real-time |
 
 ---
 

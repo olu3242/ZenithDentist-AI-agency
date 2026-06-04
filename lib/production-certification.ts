@@ -119,8 +119,8 @@ export async function getProductionCertificationState(): Promise<ProductionCerti
       metric("Revenue Recovery Ledger", revenueRows.length ? "Live" : "Schema ready", revenueRows.length ? "certified" : "pilot", "Ledger is available once workflows write attribution records.")
     ],
     missionControlProof: [
-      metric("Mission Events", missionRows.length, missionRows.length ? "certified" : "pilot", "Executive Dashboard card evidence events."),
-      metric("Runtime Health", `${runtime.scores.reliabilityScore}%`, runtime.scores.reliabilityScore >= 80 ? "certified" : "pilot", "Runtime health backing Executive Dashboard status."),
+      metric("Mission Events", missionRows.length, missionRows.length ? "certified" : "pilot", "Mission Control card evidence events."),
+      metric("Runtime Health", `${runtime.scores.reliabilityScore}%`, runtime.scores.reliabilityScore >= 80 ? "certified" : "pilot", "Runtime health backing Mission Control status."),
       metric("Replay Candidates", runtime.deadLetters.length, runtime.deadLetters.length ? "pilot" : "certified", "Dead-letter events requiring recovery proof.")
     ],
     connectorCertification: connectorMetrics(connectorRows, cloud.providerCoverage),

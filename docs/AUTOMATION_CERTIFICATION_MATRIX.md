@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-| Automation | Workflow Exists | Trigger Exists | Evidence Exists | Executive Dashboard Visibility | AI Decision Traceability | Revenue Attribution | n8n Callback Verification | Status |
+| Automation | Workflow Exists | Trigger Exists | Evidence Exists | Mission Control Visibility | ALICE Traceability | Revenue Attribution | n8n Callback Verification | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Recall Recovery | Yes | Yes | Missing | Partial | Missing | Missing | Missing | Partial |
 | No Show Prevention | Yes | Yes | Missing | Partial | Missing | Missing | Missing | Partial |

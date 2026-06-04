@@ -2,7 +2,7 @@
 
 ## Overview
 
-Practice Benchmarking compares a Zenith-connected practice against anonymized network-wide averages across 5 core performance metrics. Benchmarks surface as percentile scores, trend indicators, and radar chart data used in the Executive Dashboard and ALICE's revenue context.
+Practice Benchmarking compares a Zenith-connected practice against anonymized network-wide averages across 5 core performance metrics. Benchmarks surface as percentile scores, trend indicators, and radar chart data used in the Mission Control dashboard and ALICE's revenue context.
 
 ---
 
@@ -204,7 +204,7 @@ ORDER BY metric_name, snapshot_date DESC;
 
 ## Radar Chart Data
 
-The Executive Dashboard renders a 6-axis radar chart comparing the practice vs the network:
+The Mission Control dashboard renders a 6-axis radar chart comparing the practice vs the network:
 
 ```typescript
 // Radar data shape — 6 axes

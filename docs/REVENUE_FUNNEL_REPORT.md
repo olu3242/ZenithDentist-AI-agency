@@ -45,7 +45,7 @@ Calendly fires POST /api/calendly/events webhook
   → opportunities.stage = "booking_created"
   → Event Fabric: calendly_booking_created
      ↓
-Lead visible in admin Executive Dashboard as "booked"
+Lead visible in admin Mission Control as "booked"
 Pipeline value and revenue recovery metrics update
 ```
 
@@ -125,4 +125,4 @@ Content-Disposition: attachment (browser downloads automatically).
 ✅ Complete attribution (source, session, UTM, lead ID, assessment ID)  
 ✅ Audit generated and downloadable  
 ✅ Opportunity record created automatically  
-✅ Executive reporting visibility via Executive Dashboard  
+✅ Executive reporting visibility via Mission Control  

@@ -60,7 +60,7 @@ export function getWorkflowGovernanceState() {
       status: workflows.every(workflow => workflow.slaMinutes > 0) ? "operational" : "watch",
       score: workflows.every(workflow => workflow.slaMinutes > 0) ? 92 : 68,
       source: "workflow_definitions.sla_minutes",
-      summary: "Every canonical workflow exposes an SLA target for Executive Dashboard monitoring."
+      summary: "Every canonical workflow exposes an SLA target for Mission Control monitoring."
     },
     {
       id: "workflow-sandbox",
@@ -76,7 +76,7 @@ export function getWorkflowGovernanceState() {
       status: "operational",
       score: 88,
       source: "lib/automation/registry.ts",
-      summary: "Marketplace inventory is the existing automation registry exposed as governed Automation Platform packages."
+      summary: "Marketplace inventory is the existing automation registry exposed as governed Workflow OS packages."
     }
   ];
 

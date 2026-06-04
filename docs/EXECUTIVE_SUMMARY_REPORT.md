@@ -16,10 +16,10 @@ The platform is **pilot-ready**. Five credentials are pending for live delivery 
 
 | System | Role | Phase Introduced |
 |---|---|---|
-| Automation Platform | Canonical automation brain — all journey orchestration | Phase 7 |
+| Workflow OS | Canonical automation brain — all journey orchestration | Phase 7 |
 | ALICE | Canonical intelligence brain — recommendations + intelligence | Phase 8 |
 | Event Fabric | Canonical nervous system — all cross-system events | Phase 7 |
-| Executive Dashboard | Canonical executive visibility — all dashboards | Phase 7 |
+| Mission Control | Canonical executive visibility — all dashboards | Phase 7 |
 | Revenue OS | Revenue intelligence — opportunities, forecasts, attribution | Phase 8 |
 | Commercialization OS | Commercial enablement — content, collateral | Phase 9 |
 | Smart Video Journey Engine | Video-driven patient communication | Phase 10 |
@@ -104,9 +104,9 @@ ALICE's executive layer detects and reports on:
 
 ---
 
-## Executive Dashboard — 35 Panels
+## Mission Control — 35 Panels
 
-Executive Dashboard is the single command center. Phase 12 added 16 new panels:
+Mission Control is the single command center. Phase 12 added 16 new panels:
 
 | Category | New Panels | Total Panels |
 |---|---|---|

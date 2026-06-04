@@ -1,11 +1,4 @@
 import "server-only";
-
-export { getPipelineSummary } from "@/lib/revenue-os/pipeline-engine";
-export type { Deal, DealStage, PipelineSummary } from "@/lib/revenue-os/pipeline-engine";
-
-export { getRevenueForecast } from "@/lib/revenue-os/forecast-engine";
-export type { RevenueForecast as PipelineRevenueForecast } from "@/lib/revenue-os/forecast-engine";
-
 import { createServiceClient } from "@/lib/supabase/server";
 import { publishRuntimeFabricEvent } from "@/lib/runtime/event-fabric";
 

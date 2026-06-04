@@ -11,9 +11,6 @@ function formatCurrency(n: number) {
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  if (id === "00000000-0000-0000-0000-000000000000") {
-    return NextResponse.json({ error: "Audit not found" }, { status: 404 });
-  }
   const supabase = createServiceClient();
 
   if (!supabase) {
@@ -21,14 +18,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
   }
 
   // Fetch audit record
-  const auditResult = await withTimeout(
-    supabase.from("audits").select("*").eq("id", id).single(),
-    5_000
-  );
-  if (!auditResult) {
-    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
-  }
-  const { data: audit, error } = auditResult;
+  const { data: audit, error } = await supabase.from("audits").select("*").eq("id", id).single();
   if (error || !audit) {
     logger.warn("audit_download_not_found", { auditId: id });
     return NextResponse.json({ error: "Audit not found" }, { status: 404 });
@@ -77,7 +67,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 </head>
 <body>
   <div class="header">
-    <div class="brand">Zenith Pros · Dental Revenue Operating System</div>
+    <div class="brand">Zenith AI Automation Agency™ · Dental Revenue Operating System</div>
     <h1>Revenue Opportunity Audit</h1>
     <div class="subtitle">
       ${lead?.practice_name ?? "Your Practice"}
@@ -135,7 +125,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
   </div>
 
   <div class="footer">
-    <p>© ${new Date().getFullYear()} Zenith Pros. All rights reserved. This report is confidential and intended solely for the named practice.</p>
+    <p>© ${new Date().getFullYear()} Zenith AI Automation Agency™. All rights reserved. This report is confidential and intended solely for the named practice.</p>
     <p style="margin-top:4px">Sample estimates based on industry benchmarks. Actual results vary by practice profile and implementation.</p>
   </div>
 </body>
@@ -153,14 +143,4 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
       "Content-Disposition": `attachment; filename="zenith-revenue-audit-${id.slice(0, 8)}.html"`
     }
   });
-}
-
-async function withTimeout<T>(promise: PromiseLike<T>, ms: number): Promise<T | null> {
-  let timeout: ReturnType<typeof setTimeout>;
-  return Promise.race([
-    Promise.resolve(promise),
-    new Promise<null>(resolve => {
-      timeout = setTimeout(() => resolve(null), ms);
-    })
-  ]).finally(() => clearTimeout(timeout!));
 }

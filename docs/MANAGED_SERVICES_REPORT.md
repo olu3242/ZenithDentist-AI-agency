@@ -11,7 +11,7 @@ Implemented in `managedServiceTiers`.
 | Starter | Email support and monthly operating review | Two business day response | Guided launch for one practice and two core playbooks |
 | Growth | Priority email and biweekly success review | One business day response | Managed launch for one to three locations and four playbooks |
 | Professional | Dedicated success owner and monthly executive reporting | Same business day for production-impacting issues | Managed implementation with PMS/data mapping and all playbooks |
-| Enterprise | Named success lead and leadership reviews | Four business hour response for critical issues | Multi-location rollout with governance, analytics, and Executive Dashboard |
+| Enterprise | Named success lead and leadership reviews | Four business hour response for critical issues | Multi-location rollout with governance, analytics, and Mission Control |
 
 ## Optimization Services
 

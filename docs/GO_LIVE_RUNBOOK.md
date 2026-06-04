@@ -1,4 +1,4 @@
-# Zenith Patient OS — Go-Live Runbook
+# Zenith Patient OS™ — Go-Live Runbook
 
 > Operational runbook for launching a pilot practice. Follow each step in sequence. Do not skip verification checks.
 
@@ -47,7 +47,7 @@ ELEVENLABS_API_KEY=...
 
 # Application
 NEXTAUTH_SECRET=...
-NEXTAUTH_URL=https://zenithprosai.com
+NEXTAUTH_URL=https://app.zenithdentist.ai
 ```
 
 ### 2. Deploy to Production
@@ -63,7 +63,7 @@ CI/CD pipeline runs:
 
 **Verify deployment**:
 ```bash
-curl -s https://zenithprosai.com/api/health | jq .
+curl -s https://app.zenithdentist.ai/api/health | jq .
 # Expected: { "status": "ok", "db": "connected" }
 ```
 
@@ -326,7 +326,7 @@ Confirm:
 - `journey_health.steps_delivered_mtd >= 1`
 - `journey_health.steps_failed = 0`
 
-### Step 4: Check AI Revenue Intelligence recommendations
+### Step 4: Check ALICE Recommendations
 
 ```
 GET /api/agents/recommendations?organizationId=org_uuid&status=pending
@@ -412,13 +412,13 @@ If score < 60, review the lowest-scoring dimension and address it.
 |------|---------|-----------------|
 | CSM | Account CSM | Health score yellow 48h+ |
 | Engineering | #zenith-ops Slack | Integration failures, API errors |
-| Zenith Admin | alerts@zenithprosai.com | Data integrity issues, security concerns |
+| Zenith Admin | admin@zenithdentist.ai | Data integrity issues, security concerns |
 
 ---
 
 ## Related Documents
 
-- `docs/PILOT_OPERATIONS_OS.md` — Executive Dashboard overview
+- `docs/PILOT_OPERATIONS_OS.md` — Mission Control overview
 - `docs/DIGITAL_DENTIST_TWIN_PROVISIONING.md` — Detailed twin setup
 - `docs/30_DAY_ACTIVATION_PLAN.md` — Complete day-by-day timeline
 - `docs/PILOT_REVENUE_VALIDATION.md` — Revenue validation queries

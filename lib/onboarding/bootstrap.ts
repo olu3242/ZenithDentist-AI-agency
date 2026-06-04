@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { createServerAuthClient, createServiceClient } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 import { getSupabaseRestUrl } from "@/lib/external-diagnostics";
-import { getDefaultPortalForRole, type ZenithRole } from "@/lib/auth-routing";
+import { getDefaultPortalForRole, isPlatformAdminRole, type ZenithRole } from "@/lib/auth-routing";
 import type { Database, Json, OrganizationRole } from "@/lib/database.types";
 import { logger } from "@/lib/logger";
 import {
@@ -71,7 +71,7 @@ export async function getBootstrapState() {
   }
 
   const [admins, organizations] = await Promise.all([
-    supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "super_admin"),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).in("role", ["super_admin", "platform_admin"]),
     supabase.from("organizations").select("id", { count: "exact", head: true })
   ]);
 
@@ -287,6 +287,11 @@ export async function bootstrapUser(input: BootstrapInput): Promise<BootstrapRes
     userId,
     organizationId: organization.organizationId
   });
+  await setApprovedAccessCookies({
+    role,
+    userId,
+    organizationId: organization.organizationId
+  });
 
   return {
     ok: true,
@@ -345,10 +350,8 @@ export async function resolveAuthenticatedBootstrapUser(userId: string): Promise
   }
 
   const role = profile?.role ?? "practice_owner";
-  const requiresClientApproval = role !== "super_admin" && role !== "agency_admin";
-  const accessDecision = requiresClientApproval
-    ? await evaluateClientAccessByEmail(profile?.email ?? email)
-    : { allowed: true, reason: "internal_role", organizationId: profile?.default_organization_id ?? null };
+  const requiresClientApproval = !isPlatformAdminRole(role);
+  const accessDecision = await evaluateClientAccessByEmail(profile?.email ?? email);
 
   if (!accessDecision.allowed) {
     await clearBootstrapCookies();
@@ -383,13 +386,11 @@ export async function resolveAuthenticatedBootstrapUser(userId: string): Promise
   });
 
   if (!recovered.ok) return recovered;
-  if (requiresClientApproval) {
-    await setApprovedAccessCookies({
-      role: recovered.role!,
-      userId: recovered.userId!,
-      organizationId: recovered.organizationId!
-    });
-  }
+  await setApprovedAccessCookies({
+    role: recovered.role!,
+    userId: recovered.userId!,
+    organizationId: recovered.organizationId!
+  });
 
   logger.info("auth_login_recovery_audit", {
     userId,
@@ -699,6 +700,11 @@ export async function completeOnboarding(): Promise<BootstrapResult> {
     userId: context.userId,
     organizationId: context.organizationId
   });
+  await setApprovedAccessCookies({
+    role: context.role,
+    userId: context.userId,
+    organizationId: context.organizationId
+  });
 
   return {
     ok: true,
@@ -802,12 +808,16 @@ export async function setBootstrapCookies(input: { role: ZenithRole; userId: str
 
   const token = input.role === "super_admin"
     ? env.INTERNAL_ACCESS_TOKEN
-    : input.role === "agency_admin"
+    : input.role === "platform_admin"
+      ? env.INTERNAL_ACCESS_TOKEN
+      : input.role === "agency_admin"
       ? env.ADMIN_ACCESS_TOKEN
       : env.PORTAL_ACCESS_TOKEN;
   const cookieName = input.role === "super_admin"
     ? "zenith_internal_token"
-    : input.role === "agency_admin"
+    : input.role === "platform_admin"
+      ? "zenith_internal_token"
+      : input.role === "agency_admin"
       ? "zenith_admin_token"
       : "zenith_portal_token";
 

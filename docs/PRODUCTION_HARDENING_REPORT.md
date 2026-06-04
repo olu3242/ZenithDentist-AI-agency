@@ -13,7 +13,7 @@
 |----------|------|-------|
 | Global | app/error.tsx | All unhandled errors |
 | Admin | app/admin/error.tsx | Admin dashboard |
-| Executive Dashboard | app/mission-control/error.tsx | Executive Dashboard page |
+| Mission Control | app/mission-control/error.tsx | Mission Control page |
 | Dashboard | app/dashboard/error.tsx | Client dashboard |
 | Settings | app/settings/error.tsx | Settings pages |
 | PMS | app/dashboard/pms/error.tsx | PMS integration |

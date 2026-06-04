@@ -11,7 +11,7 @@ The landing page has been partially wired to backend summary data while preservi
 | Section | API Calls | Data Adapter | Loading State | Error State | Empty State | Classification |
 | --- | --- | --- | --- | --- | --- | --- |
 | Hero Dashboard | Server-fed via `app/page.tsx` | `getAdminDashboardData()`, `getRuntimeHealthState()` | Root loader only | Root error only | Pending text for health score | REAL DATA |
-| Executive Dashboard Preview | Client route probe buttons | `/api/mission-control/*`, `/api/alice/recommendations`, `/api/enterprise/integrations` | Inline loading JSON | Inline fetch catch | Idle JSON | PARTIALLY WIRED |
+| Mission Control Preview | Client route probe buttons | `/api/mission-control/*`, `/api/alice/recommendations`, `/api/enterprise/integrations` | Inline loading JSON | Inline fetch catch | Idle JSON | PARTIALLY WIRED |
 | Revenue Center | No direct API call | Local slider model | None | None | N/A | STATIC DATA |
 | ALICE | No direct API call in section | Static public explanation | None | None | N/A | STATIC DATA |
 | PMS Operations Center | No direct API call in section | Local PMS selection state | None | None | N/A | STATIC DATA |

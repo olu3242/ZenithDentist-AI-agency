@@ -29,7 +29,7 @@ Practice Owner login:
 | --- | --- |
 | Revenue Recovery | Revenue, reports, forecasting, simulations |
 | Patient Recovery | Patients, recall, reviews, retention |
-| Automation ROI | Automation Platform, Runtime OS, Automation Center |
+| Automation ROI | Workflow OS, Runtime OS, Automation Center |
 | Locations | Location benchmarking and operations |
 
 ## Design Rule

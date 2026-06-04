@@ -12,6 +12,7 @@ export type AliceKnowledgeDomain =
   | "installation"
   | "configuration"
   | "playbooks"
+  | "implementation_intelligence"
   | "rbac"
   | "tenant_isolation";
 
@@ -29,20 +30,20 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
   {
     domain: "platform",
     version: "3.0.0",
-    owner: "AI Revenue Intelligence Layer",
+    owner: "ALICE Operational Intelligence Layer",
     sources: ["lib/analytics-projector.ts", "lib/patient-revenue-engine.ts", "app/mission-control/page.tsx"],
     capabilities: ["platform awareness", "change awareness", "operational scoring"],
     certification: "certified",
-    summary: "ALICE understands Zenith Pros as one Patient Revenue Operating System composed of Executive Dashboard, Automation Platform, PMS Operations, Revenue Playbooks, and analytics projection."
+    summary: "ALICE understands Zenith PROS as one Patient Revenue Operating System composed of Mission Control, Workflow OS, PMS Operations, Revenue Playbooks, and analytics projection."
   },
   {
     domain: "mission_control",
     version: "3.0.0",
-    owner: "Executive Dashboard",
+    owner: "Mission Control",
     sources: ["app/mission-control/page.tsx", "components/mission-control/*"],
     capabilities: ["executive scorecard", "risk routing", "workflow advisory"],
     certification: "certified",
-    summary: "Executive Dashboard remains the executive operating surface for runtime, workflow, PMS, revenue, and ALICE intelligence."
+    summary: "Mission Control remains the executive operating surface for runtime, workflow, PMS, revenue, and ALICE intelligence."
   },
   {
     domain: "revenue",
@@ -56,11 +57,25 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
   {
     domain: "workflow_governance",
     version: "3.0.0",
-    owner: "Automation Platform",
+    owner: "Workflow OS",
     sources: ["lib/workflow-os/*", "supabase/migrations/20260601170000_workflow_os_enterprise_governance.sql"],
     capabilities: ["version awareness", "approval awareness", "SLA awareness", "ROI awareness"],
     certification: "certified",
-    summary: "Workflow governance extends the canonical Automation Platform with versioning, approval, sandbox, SLA, audit, dependency, marketplace, and ROI metadata."
+    summary: "Workflow governance extends the canonical Workflow OS with versioning, approval, sandbox, SLA, audit, dependency, marketplace, and ROI metadata."
+  },
+  {
+    domain: "implementation_intelligence",
+    version: "1.0.0",
+    owner: "Client Success OS",
+    sources: [
+      "lib/implementation-intelligence.ts",
+      "lib/client-implementation-os.ts",
+      "supabase/migrations/20260701000000_implementation_intelligence_layer.sql",
+      "lib/automation/registry.ts"
+    ],
+    capabilities: ["baseline scoring", "revenue leak detection", "PMS readiness", "activation guidance", "go-live certification"],
+    certification: "partial",
+    summary: "ALICE grounds Implementation Advisor recommendations in baseline snapshots, implementation scores, revenue leaks, PMS readiness, workflow configurations, patient segments, and go-live certification evidence."
   },
   {
     domain: "pms_operations",

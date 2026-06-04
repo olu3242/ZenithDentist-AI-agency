@@ -144,7 +144,7 @@ Growth Agent monitors:
 ```
 ALICE Growth Score Rules:
   IF composite_score drops > 10 points week-over-week:
-    → Immediate alert in Executive Dashboard
+    → Immediate alert in Mission Control
     → Growth Agent generates analysis report
     
   IF composite_score < 40:
@@ -163,7 +163,7 @@ ALICE Growth Score Rules:
 Growth Agent operates closely with ALICE:
 - ALICE provides cross-dimensional pattern recognition
 - Growth Agent focuses on actionable dimension-specific recommendations
-- Joint output: practice growth roadmap in Executive Dashboard
+- Joint output: practice growth roadmap in Mission Control
 - Growth data feeds ALICE's operational context for all other agents
 
 ---

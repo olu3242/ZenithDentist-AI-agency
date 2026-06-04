@@ -11,12 +11,12 @@ import { getTenantData } from "@/lib/data/tenants";
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";
 
 export default async function PortalReviewsPage() {
-  const [tenantData, runtime, automationOS] = await Promise.all([
+  const [data, tenantData, runtime, automationOS] = await Promise.all([
+    getPortalData(),
     getTenantData(),
     getRuntimeHealthState(),
     getAutomationOSState()
   ]);
-  const data = await getPortalData(tenantData.tenant.organizationId);
   const admin = await getAdminDashboardData(tenantData.tenant.organizationId ?? undefined);
   const latest = data.metrics[0];
   const conversion = latest ? Math.round((latest.reviews_generated / Math.max(1, latest.review_requests_sent)) * 100) : 0;
@@ -29,7 +29,7 @@ export default async function PortalReviewsPage() {
           { label: "Review Score", workflowId: "review_request_due", value: `${conversion}%`, detail: "Review request to generated review conversion" },
           { label: "Referral Performance", workflowId: "referral_growth", value: latest?.reviews_generated ?? 0, detail: "Promoter and reputation momentum proxy" },
           { label: "Lead Funnel", workflowId: "lead_created", value: admin.leads.length, detail: "Assessment and lead records ready for nurture" },
-          { label: "Conversion Metrics", workflowId: "alice_growth_agent", value: `${conversion}%`, detail: "AI Revenue Intelligence prioritization signal" }
+          { label: "Conversion Metrics", workflowId: "alice_growth_agent", value: `${conversion}%`, detail: "ALICE growth agent prioritization signal" }
         ]}
         actions={buildUniversalActions("growth")}
         tenantData={tenantData}

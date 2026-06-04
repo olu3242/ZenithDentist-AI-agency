@@ -47,7 +47,7 @@ That explains the separate login/profile issue after service-role recovery.
 
 ## Why Runtime OS Is Not The Root Cause
 
-Runtime trace and workflow execution are started after the lead, ROI calculation, and audit are inserted. The code now catches side-effect failures so Runtime OS, Automation Platform, or Event Fabric failures do not block lead capture.
+Runtime trace and workflow execution are started after the lead, ROI calculation, and audit are inserted. The code now catches side-effect failures so Runtime OS, Workflow OS, or Event Fabric failures do not block lead capture.
 
 ## Broken Previous Behavior
 

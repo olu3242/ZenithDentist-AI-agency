@@ -72,7 +72,7 @@
 │                                                                          │
 │  ┌─────────────────────────────────┐  ┌─────────────────────────────┐   │
 │  │                                 │  │ [LIZ Card 1]                │   │
-│  │  Your Revenue Recovery Advisor │  │ Opportunity: 127 patients   │   │
+│  │  Your Revenue Recovery Advisor™ │  │ Opportunity: 127 patients   │   │
 │  │                                 │  │ Estimate: $18,400           │   │
 │  │  LIZ continuously analyzes      │  ├─────────────────────────────┤   │
 │  │  opportunities and surfaces     │  │ [LIZ Card 2]                │   │
@@ -164,7 +164,7 @@
 │  Contact        Patient Retention  Blog               location           │
 │                 Recall Recovery    FAQs                                  │
 │                                                                          │
-│  Zenith Pros  ·  Dental Revenue Recovery Platform                       │
+│  Zenith AI Automation Agency™  ·  Dental Revenue Recovery Platform       │
 │  Privacy Policy  ·  Terms  ·  © 2025 EduRadius LLC                      │
 └──────────────────────────────────────────────────────────────────────────┘
 ```

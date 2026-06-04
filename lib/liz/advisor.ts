@@ -105,10 +105,10 @@ function responseForIntent(intent: LizIntent): LizResponseV2 {
 
   if (intent === "enterprise") {
     return {
-      message: "For DSOs and multi-location groups, Zenith supports portfolio health, benchmarking, governance, Executive Dashboard, and implementation playbooks.",
+      message: "For DSOs and multi-location groups, Zenith supports portfolio health, benchmarking, governance, Mission Control, and implementation playbooks.",
       actions: [
         action("enterprise-consult", "Enterprise Consultation", "Route to enterprise sales.", "/#book", "enterprise", "primary"),
-        action("open-mission-control", "View Executive Dashboard", "Review the operating model.", "/mission-control", "navigation", "outline")
+        action("open-mission-control", "View Mission Control", "Review the operating model.", "/mission-control", "navigation", "outline")
       ],
       escalation: { type: "enterprise" }
     };
@@ -127,7 +127,7 @@ function responseForIntent(intent: LizIntent): LizResponseV2 {
 
   if (intent === "video") {
     return {
-      message: "Smart Video Journeys use patient context, treatment readiness, behavioral signals, and AI Revenue Intelligence recommendations to influence attendance, treatment acceptance, reviews, referrals, and revenue attribution.",
+      message: "Smart Video Journeys use patient context, treatment readiness, behavioral signals, and ALICE recommendations to influence attendance, treatment acceptance, reviews, referrals, and revenue attribution.",
       actions: [
         action("open-video", "Open Video Intelligence", "Review patient video journeys.", "/portal/video", "navigation", "primary"),
         workflowAction("launch-treatment-video", "Launch Treatment Video Journey", "Use education and financing guidance to improve acceptance.", "treatment_acceptance_journey"),

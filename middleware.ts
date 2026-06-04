@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getDefaultPortalForRole, isProtectedPath, roleCanAccessPath, roleFromRequest } from "@/lib/auth-routing";
+import { getDefaultPortalForRole, isPlatformAdminRole, isProtectedPath, roleCanAccessPath, roleFromRequest } from "@/lib/auth-routing";
 import { applySecurityHeaders, failedAuthResponse, rateLimit } from "@/lib/security-edge";
 import { defaultLocale, isSupportedLocale } from "@/lib/i18n/config";
 
@@ -32,17 +32,16 @@ export function middleware(request: NextRequest) {
       token: request.cookies.get("zenith_admin_token")?.value ?? request.headers.get("x-admin-token")
     }
   ];
+
   const hasConfiguredProtection = tokenCandidates.some(candidate => candidate.configuredToken);
   if (!hasConfiguredProtection) {
     const role = roleFromRequest(request, null);
-    const accessGate = requireApprovedClientAccess(request, role);
+    const accessGate = requireApprovedClientAccess(request, role, pathname);
     if (accessGate) return withLocaleResponse(applySecurityHeaders(accessGate), localeRoute.locale);
-    if (role && !pathname.startsWith("/api/") && !roleCanAccessPath(role, pathname)) {
-      const url = request.nextUrl.clone();
-      url.pathname = getDefaultPortalForRole(role);
-      url.search = "";
-      return withLocaleResponse(applySecurityHeaders(NextResponse.redirect(url)), localeRoute.locale);
-    }
+
+    const routeGate = requireRoleRouteAccess(request, role, pathname);
+    if (routeGate) return withLocaleResponse(applySecurityHeaders(routeGate), localeRoute.locale);
+
     if (!request.cookies.get("zenith_user_id")?.value) return withLocaleResponse(failedAuthResponse(request), localeRoute.locale);
     return withLocaleResponse(applySecurityHeaders(nextLocalized(request, localeRoute)), localeRoute.locale);
   }
@@ -50,20 +49,12 @@ export function middleware(request: NextRequest) {
   const authenticated = tokenCandidates.find(candidate => candidate.configuredToken && candidate.token === candidate.configuredToken);
   if (authenticated) {
     const role = roleFromRequest(request, authenticated.scope);
-    const accessGate = requireApprovedClientAccess(request, role);
+    const accessGate = requireApprovedClientAccess(request, role, pathname);
     if (accessGate) return withLocaleResponse(applySecurityHeaders(accessGate), localeRoute.locale);
-    if (role && !pathname.startsWith("/api/") && !roleCanAccessPath(role, pathname)) {
-      const url = request.nextUrl.clone();
-      url.pathname = getDefaultPortalForRole(role);
-      url.search = "";
-      logAuthDecision(request, {
-        userId: request.cookies.get("zenith_user_id")?.value ?? request.headers.get("x-zenith-user-id"),
-        profileRole: request.cookies.get("zenith_role")?.value ?? request.headers.get("x-zenith-role") ?? role,
-        organizationId: request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id"),
-        redirectTarget: url.pathname
-      });
-      return withLocaleResponse(applySecurityHeaders(NextResponse.redirect(url)), localeRoute.locale);
-    }
+
+    const routeGate = requireRoleRouteAccess(request, role, pathname);
+    if (routeGate) return withLocaleResponse(applySecurityHeaders(routeGate), localeRoute.locale);
+
     logAuthDecision(request, {
       userId: request.cookies.get("zenith_user_id")?.value ?? request.headers.get("x-zenith-user-id"),
       profileRole: request.cookies.get("zenith_role")?.value ?? request.headers.get("x-zenith-role") ?? role,
@@ -124,10 +115,24 @@ function withLocaleResponse(response: NextResponse, locale: string) {
   return response;
 }
 
-function requireApprovedClientAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>) {
-  const pathname = request.nextUrl.pathname;
+function requireRoleRouteAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>, pathname: string) {
+  if (!role || pathname.startsWith("/api/") || roleCanAccessPath(role, pathname)) return null;
+
+  const url = request.nextUrl.clone();
+  url.pathname = getDefaultPortalForRole(role);
+  url.search = "";
+  logAuthDecision(request, {
+    userId: request.cookies.get("zenith_user_id")?.value ?? request.headers.get("x-zenith-user-id"),
+    profileRole: request.cookies.get("zenith_role")?.value ?? request.headers.get("x-zenith-role") ?? role,
+    organizationId: request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id"),
+    redirectTarget: url.pathname
+  });
+  return NextResponse.redirect(url);
+}
+
+function requireApprovedClientAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>, pathname: string) {
   if (!requiresClientApproval(pathname)) return null;
-  if (role === "super_admin" || role === "agency_admin") return null;
+  if (isPlatformAdminRole(role)) return null;
 
   const userId = request.cookies.get("zenith_user_id")?.value ?? request.headers.get("x-zenith-user-id");
   const organizationId = request.cookies.get("zenith_organization_id")?.value ?? request.headers.get("x-zenith-organization-id");
@@ -177,7 +182,7 @@ function isProtectedApiPath(pathname: string) {
     "/api/gtm-command-center",
     "/api/mission-control",
     "/api/opendental",
-    "/api/reports",
+    "/api/reports"
   ].some(prefix => pathname.startsWith(prefix));
 }
 

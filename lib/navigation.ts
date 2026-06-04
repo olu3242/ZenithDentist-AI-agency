@@ -166,10 +166,14 @@ export function navForRole(role: ZenithRole) {
       roles: [role],
       icon: iconForDomain(item.domain)
     })),
-    admin: adminNavItems.filter(item => item.roles.includes(role)),
-    portal: portalNavItems.filter(item => item.roles.includes(role)),
-    internal: internalNavItems.filter(item => item.roles.includes(role))
+    admin: adminNavItems.filter(item => navItemAllowsRole(item, role)),
+    portal: portalNavItems.filter(item => navItemAllowsRole(item, role)),
+    internal: internalNavItems.filter(item => navItemAllowsRole(item, role))
   };
+}
+
+function navItemAllowsRole(item: NavItem, role: ZenithRole) {
+  return item.roles.includes(role) || (role === "platform_admin" && item.roles.includes("super_admin"));
 }
 
 function iconForDomain(domain: MissionDomain) {

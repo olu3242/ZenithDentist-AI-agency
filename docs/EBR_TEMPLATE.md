@@ -1,6 +1,6 @@
 # Executive Business Review (EBR) Template
 
-> Monthly review structure for Zenith Patient OS pilot practices.
+> Monthly review structure for Zenith Patient OS™ pilot practices.
 
 ---
 

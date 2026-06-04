@@ -18,7 +18,7 @@ Existing ROI surfaces remain authoritative:
 
 - Admin ROI dashboard: `/admin/roi`
 - Portal revenue dashboard: `/portal/revenue`
-- Executive Dashboard analytics projection: `analyticsProjector`
+- Mission Control analytics projection: `analyticsProjector`
 
 ## Status
 

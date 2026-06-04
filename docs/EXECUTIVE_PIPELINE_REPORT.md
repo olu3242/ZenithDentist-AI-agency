@@ -22,7 +22,7 @@ The Zenith Revenue Conversion Pipeline connects every visitor touchpoint from ho
 | **Opportunity** | Auto-created post-assessment | `opportunities` (stage: assessment_submitted) | — |
 | **Audit Review** | AuditPreview unlocked | — | — |
 | **Booking** | Calendly webhook | `bookings` (+ assessment_id), `opportunities` (stage: booking_created) | `calendly_booking_created` |
-| **Executive Dashboard** | Admin dashboard | — (reads all tables) | — |
+| **Mission Control** | Admin dashboard | — (reads all tables) | — |
 
 ---
 
@@ -63,7 +63,7 @@ The Zenith Revenue Conversion Pipeline connects every visitor touchpoint from ho
 
 ---
 
-## Executive Dashboard Metrics
+## Mission Control Metrics
 
 The admin dashboard now displays 8 pipeline metrics:
 
@@ -144,6 +144,6 @@ Delivered as `Content-Disposition: attachment` — browser saves immediately.
 ✅ Audit generated automatically and available for download  
 ✅ Opportunity record created and stage-tracked automatically  
 ✅ Calendly booking linked to lead AND assessment record  
-✅ 8-metric Executive Dashboard revenue dashboard  
+✅ 8-metric Mission Control revenue dashboard  
 ✅ Event Fabric coverage for all 5 funnel events  
 ✅ Zero TypeScript errors, zero ESLint warnings  

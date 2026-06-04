@@ -149,7 +149,7 @@ ALICE monitors:
 
 ## ALICE Integration
 
-ALICE surfaces membership intelligence in Executive Dashboard:
+ALICE surfaces membership intelligence in Mission Control:
 - Membership health score (active / at-risk / churned distribution)
 - 30/14/7-day churn risk queue
 - Monthly enrollment rate vs. cancellation rate

@@ -1,6 +1,6 @@
 # Journey Scheduler Architecture
 
-> Wiring `journey_step_definitions.delay_days` to real-time execution via the Automation Platform.
+> Wiring `journey_step_definitions.delay_days` to real-time execution via the Workflow OS.
 
 ---
 
@@ -73,7 +73,7 @@ ORDER BY scheduled_for ASC
 
 ---
 
-## Integration with Automation Platform
+## Integration with Workflow OS
 
 The scheduler integrates with `lib/workflow-os/execution/execution-scheduler.ts` for delayed and recurring job management.
 
@@ -93,7 +93,7 @@ await scheduleWorkflow({
 })
 ```
 
-The Automation Platform manages the queue, persistence, and DLQ — the journey scheduler does not need to maintain its own timer infrastructure.
+The Workflow OS manages the queue, persistence, and DLQ — the journey scheduler does not need to maintain its own timer infrastructure.
 
 ---
 
@@ -114,12 +114,12 @@ Events are emitted via the Event Fabric (`lib/event-fabric/`) and consumed by:
 
 ## Retry Policy
 
-Failed steps use the Automation Platform Dead Letter Queue (DLQ):
+Failed steps use the Workflow OS Dead Letter Queue (DLQ):
 
 | Retry # | Delay | Action |
 |---------|-------|--------|
-| 1 | 5 minutes | Retry via Automation Platform |
-| 2 | 30 minutes | Retry via Automation Platform |
+| 1 | 5 minutes | Retry via Workflow OS |
+| 2 | 30 minutes | Retry via Workflow OS |
 | 3 | 2 hours | Final attempt |
 | > 3 | — | Mark `status = 'failed'`, alert CSM via agent_recommendations |
 
@@ -191,7 +191,7 @@ POST /api/pilot
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| `scheduled_steps_due > 0` at Day 7+ | executeScheduledSteps not running | Trigger manually or check Automation Platform cron |
+| `scheduled_steps_due > 0` at Day 7+ | executeScheduledSteps not running | Trigger manually or check Workflow OS cron |
 | All steps status = 'pending' | Communications not configured | Add Twilio/Resend credentials |
 | Steps delivered but no engagement | Patient phone/email incorrect | Verify PMS sync data quality |
 | Steps stuck in 'failed' | Provider API key invalid | Rotate key, clear DLQ |
@@ -200,6 +200,6 @@ POST /api/pilot
 
 ## Related Documents
 
-- `docs/PILOT_OPERATIONS_OS.md` — Executive Dashboard overview
+- `docs/PILOT_OPERATIONS_OS.md` — Mission Control overview
 - `docs/GO_LIVE_RUNBOOK.md` — Day 3 and Day 7 journey activation steps
 - `docs/30_DAY_ACTIVATION_PLAN.md` — Day 6–10 journey activation timeline

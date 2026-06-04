@@ -38,7 +38,7 @@ export const agentWorkforce: WorkforceAgent[] = [
     purpose: "Recover lost production.",
     responsibilities: ["Recall recovery", "No-show recovery", "Treatment recovery", "Revenue forecasting", "Revenue opportunity detection"],
     outputs: ["Revenue recovered", "Revenue at risk", "Recovery recommendations"],
-    operatingSystems: ["Automation Platform", "Runtime OS", "Decision OS", "Revenue Command Center"],
+    operatingSystems: ["Workflow OS", "Runtime OS", "Decision OS", "Revenue Command Center"],
     defaultAutonomyLevel: 2
   },
   {
@@ -47,7 +47,7 @@ export const agentWorkforce: WorkforceAgent[] = [
     purpose: "Grow the practice.",
     responsibilities: ["Review generation", "Referral growth", "Lead nurturing", "Campaign optimization", "Reputation monitoring"],
     outputs: ["New patients", "Reviews", "Referrals"],
-    operatingSystems: ["Automation Platform", "Knowledge OS", "Simulation OS", "Growth Command Center"],
+    operatingSystems: ["Workflow OS", "Knowledge OS", "Simulation OS", "Growth Command Center"],
     defaultAutonomyLevel: 2
   },
   {
@@ -56,7 +56,7 @@ export const agentWorkforce: WorkforceAgent[] = [
     purpose: "Optimize daily operations.",
     responsibilities: ["Schedule optimization", "Capacity balancing", "Resource allocation", "Workflow monitoring"],
     outputs: ["Utilization", "Efficiency", "Operational score"],
-    operatingSystems: ["Runtime OS", "Automation Platform", "Simulation OS", "Operations Command Center"],
+    operatingSystems: ["Runtime OS", "Workflow OS", "Simulation OS", "Operations Command Center"],
     defaultAutonomyLevel: 2
   },
   {
@@ -65,7 +65,7 @@ export const agentWorkforce: WorkforceAgent[] = [
     purpose: "Improve retention.",
     responsibilities: ["Patient lifecycle management", "Recall tracking", "Reactivation", "Communication orchestration"],
     outputs: ["Retention", "Reactivation", "Patient engagement"],
-    operatingSystems: ["Automation Platform", "Knowledge OS", "Patient Lifecycle Engine"],
+    operatingSystems: ["Workflow OS", "Knowledge OS", "Patient Lifecycle Engine"],
     defaultAutonomyLevel: 2
   },
   {
@@ -101,7 +101,7 @@ export const agentWorkforce: WorkforceAgent[] = [
     purpose: "Self-healing.",
     responsibilities: ["Detect failures", "Retry operations", "Failover services", "Verify recovery"],
     outputs: ["Recovery rate", "Incident resolution"],
-    operatingSystems: ["Self-Healing OS", "Recovery OS", "Runtime OS", "Automation Platform"],
+    operatingSystems: ["Self-Healing OS", "Recovery OS", "Runtime OS", "Workflow OS"],
     defaultAutonomyLevel: 3
   }
 ];
@@ -117,7 +117,7 @@ export const personaAgentMap: Record<WorkforcePersona, WorkforceAgentKey[]> = {
 export const aliceChiefIntelligenceModel: AliceChiefIntelligenceModel = {
   title: "ALICE Chief Operating Intelligence",
   responsibilities: ["Coordinate agents", "Prioritize actions", "Resolve conflicts", "Simulate outcomes", "Learn from results"],
-  communicationRules: ["Agents communicate through Event Fabric", "Automation Platform launches execution", "Runtime OS verifies execution", "Knowledge OS grounds recommendations", "No direct agent coupling"],
+  communicationRules: ["Agents communicate through Event Fabric", "Workflow OS launches execution", "Runtime OS verifies execution", "Knowledge OS grounds recommendations", "No direct agent coupling"],
   conflictResolution: ["Compliance Agent can block unsafe actions", "Recovery Agent can override routine timing during incidents", "ALICE resolves revenue vs capacity conflicts through simulation", "Human approval is required above tenant autonomy threshold"]
 };
 
@@ -132,6 +132,6 @@ export function getAgentWorkforceState() {
     personaAgentMap,
     alice: aliceChiefIntelligenceModel,
     autonomyModes,
-    communicationBackbone: ["Event Fabric", "Automation Platform", "Runtime OS", "Knowledge OS"]
+    communicationBackbone: ["Event Fabric", "Workflow OS", "Runtime OS", "Knowledge OS"]
   };
 }

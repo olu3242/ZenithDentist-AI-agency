@@ -8,7 +8,7 @@ Conditional recommendation: GO for controlled pilot or staging certification wit
 
 ## Why
 
-The application compiles, lints, builds, and passes the existing smoke harness. Core systems exist for assessment, LIZ actions, onboarding, tenancy, Automation Platform, and reporting. However, not every customer-facing claim has complete live production proof across UI, API, database persistence, workflow execution, telemetry, reporting, permissions, and error handling.
+The application compiles, lints, builds, and passes the existing smoke harness. Core systems exist for assessment, LIZ actions, onboarding, tenancy, Workflow OS, and reporting. However, not every customer-facing claim has complete live production proof across UI, API, database persistence, workflow execution, telemetry, reporting, permissions, and error handling.
 
 ## Passed Validation
 
@@ -21,13 +21,13 @@ The application compiles, lints, builds, and passes the existing smoke harness. 
 
 - Revenue Assessment submission and ROI calculation.
 - LIZ clickable actions, escalation tracking, and workflow launch path.
-- Automation Platform execution entry point and runtime tracing path.
+- Workflow OS execution entry point and runtime tracing path.
 - Onboarding and organization provisioning architecture.
 
 ## Not Yet Fully Certified
 
 - ALICE recommendation lineage for every generated recommendation.
-- Executive Dashboard action-level browser E2E proof.
+- Mission Control action-level browser E2E proof.
 - Revenue playbook outcome attribution per workflow.
 - Forecast generation and accuracy reconciliation in production.
 - PMS provider connectivity and recovery proof.
@@ -42,7 +42,7 @@ The application compiles, lints, builds, and passes the existing smoke harness. 
 4. Verify PMS sync against at least one real provider sandbox or production pilot.
 5. Ensure every dashboard metric displays lineage to a table, query, and timestamp.
 6. Replace or label generated fallback reports as demo/fallback until a persisted report exists.
-7. Add API smoke checks for `/api/roi-assessment`, `/api/liz/chat`, `/api/liz/action`, `/api/reports/[id]`, Executive Dashboard APIs, and PMS sync.
+7. Add API smoke checks for `/api/roi-assessment`, `/api/liz/chat`, `/api/liz/action`, `/api/reports/[id]`, Mission Control APIs, and PMS sync.
 8. Run browser E2E certification for signup, login, reset password, onboarding completion, and dashboard redirects.
 
 ## Claim Governance

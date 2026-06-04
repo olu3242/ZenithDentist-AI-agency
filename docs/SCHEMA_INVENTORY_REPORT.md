@@ -21,12 +21,12 @@
 | Module | Tables |
 |--------|--------|
 | Organizations / Tenancy | 8 |
-| Revenue Recovery System | 12 |
-| Automation Platform | 12 |
+| Patient Revenue Engine | 12 |
+| Workflow OS | 12 |
 | ALICE Intelligence | 22 |
 | Revenue Attribution | 11 |
 | Communications / Video | 15 |
-| Executive Dashboard | 12 |
+| Mission Control | 12 |
 | GTM / Sales | 9 |
 | Client Success | 6 |
 | Recovery / DLQ | 5 |

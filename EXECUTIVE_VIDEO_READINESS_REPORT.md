@@ -9,7 +9,7 @@ Implemented:
 - Video Engagement Score
 - Relationship Health Score
 - PMS journey classification helper
-- Automation Platform video blueprints
+- Workflow OS video blueprints
 - Video Intelligence Center at `/portal/video`
 - LIZ video actions and knowledge grounding
 - Migration manifest governance
@@ -22,4 +22,4 @@ Remaining production requirements:
 - Configure Vercel/Supabase environment variables.
 - Wire n8n delivery callbacks.
 - Verify PMS event ingestion.
-- Execute each journey and prove workflow execution, evidence record, delivery record, engagement record, Executive Dashboard record, ALICE trace, and revenue attribution.
+- Execute each journey and prove workflow execution, evidence record, delivery record, engagement record, Mission Control record, ALICE trace, and revenue attribution.

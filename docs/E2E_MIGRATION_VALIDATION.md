@@ -4,7 +4,7 @@ Date: 2026-06-01
 
 ## Required Trace
 
-Patient Created -> Appointment Created -> Playbook Triggered -> Workflow Executed -> Runtime Executed -> Revenue Attribution Created -> Analytics Updated -> ALICE Consumed -> Executive Dashboard Updated
+Patient Created -> Appointment Created -> Playbook Triggered -> Workflow Executed -> Runtime Executed -> Revenue Attribution Created -> Analytics Updated -> ALICE Consumed -> Mission Control Updated
 
 ## Validation Result
 

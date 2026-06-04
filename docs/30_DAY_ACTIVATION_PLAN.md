@@ -1,6 +1,6 @@
-# 30-Day Activation Plan
+# 30-Day Activation Plan™
 
-> Day-by-day activation guide for launching a pilot practice on the Zenith Patient OS.
+> Day-by-day activation guide for launching a pilot practice on the Zenith Patient OS™.
 
 ---
 
@@ -146,7 +146,7 @@ WHERE organization_id = $1;
 | Task | Owner | Check |
 |------|-------|-------|
 | Run ALICE recommendation cycle | CSM | POST /api/agents/run { action: "generate_recommendations" } |
-| Review AI Revenue Intelligence recommendations | CSM | GET /api/agents/recommendations?status=pending |
+| Review ALICE recommendations | CSM | GET /api/agents/recommendations?status=pending |
 | Present top 3 recommendations to practice owner | CSM | Manual review session |
 
 **Target**: `alice_patient_decisions.count >= 5` with `status = 'pending'`

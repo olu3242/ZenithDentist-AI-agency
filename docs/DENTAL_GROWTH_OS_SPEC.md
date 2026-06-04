@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-The Dental Growth OS is the collection of automated growth engines that drive measurable revenue outcomes for dental practices. Each engine targets a specific growth lever, operates autonomously via the Automation Platform, and contributes to the overall Growth Score.
+The Dental Growth OS is the collection of automated growth engines that drive measurable revenue outcomes for dental practices. Each engine targets a specific growth lever, operates autonomously via the Workflow OS, and contributes to the overall Growth Score.
 
 ---
 
@@ -26,7 +26,7 @@ Growth Score (0-100)
 ```
 
 All engines:
-- Are orchestrated by Automation Platform
+- Are orchestrated by Workflow OS
 - Write results to their dedicated tracking tables
 - Emit events to the Event Fabric
 - Consume ALICE decisions for personalization
@@ -237,7 +237,7 @@ Growth Score is recomputed within 5 minutes of any dimension-affecting event.
 
 ## 12. Growth OS Dashboard
 
-Available in Executive Dashboard → Growth Command Center:
+Available in Mission Control → Growth Command Center:
 
 | Panel | Content |
 |-------|---------|

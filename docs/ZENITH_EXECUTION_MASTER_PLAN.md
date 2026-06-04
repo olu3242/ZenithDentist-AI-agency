@@ -1,4 +1,4 @@
-# Zenith Patient OS — Execution Master Plan
+# Zenith Patient OS™ — Execution Master Plan
 
 **Classification:** Canonical Governance — Execution Authority
 **Status:** ACTIVE — Architecture FROZEN, focus shifts to execution
@@ -9,7 +9,7 @@
 
 ## Governing Principle
 
-The Zenith Patient OS architecture is **frozen**. All 35+ DB tables are created. All 28+ lib modules are implemented. All 20+ API routes are live. All 7 agents are registered and operational. The platform is complete.
+The Zenith Patient OS™ architecture is **frozen**. All 35+ DB tables are created. All 28+ lib modules are implemented. All 20+ API routes are live. All 7 agents are registered and operational. The platform is complete.
 
 The mission now is: **execution, integration, adoption, and revenue validation**.
 
@@ -35,14 +35,14 @@ The mission now is: **execution, integration, adoption, and revenue validation**
 
 | Component | Lib Module(s) | Status |
 |-----------|--------------|--------|
-| Digital Dentist Twin | lib/digital-dentist-twin, lib/avatar-studio, lib/voice-studio | ✅ |
-| Patient Influence Engine | lib/patient-influence, lib/treatment-intelligence, lib/channel-optimization | ✅ |
-| Automation Platform | lib/workflow-os (10 files) | ✅ |
-| Revenue Recovery System | lib/revenue-engine (4 engine files) | ✅ |
-| Executive Dashboard | app/api/mission-control | ✅ |
-| Script Intelligence Engine | lib/script-engine | ✅ |
-| Journey Library | lib/journey-library | ✅ |
-| Patient Portal | lib/patient-portal | ✅ |
+| Digital Dentist Twin™ | lib/digital-dentist-twin, lib/avatar-studio, lib/voice-studio | ✅ |
+| Patient Influence Engine™ | lib/patient-influence, lib/treatment-intelligence, lib/channel-optimization | ✅ |
+| Workflow OS™ | lib/workflow-os (10 files) | ✅ |
+| Patient Revenue Engine™ | lib/revenue-engine (4 engine files) | ✅ |
+| Mission Control™ | app/api/mission-control | ✅ |
+| Script Intelligence Engine™ | lib/script-engine | ✅ |
+| Journey Library™ | lib/journey-library | ✅ |
+| Patient Portal™ | lib/patient-portal | ✅ |
 | Event Fabric | lib/event-fabric | ✅ |
 | ALICE Foundation | lib/alice/patient-decision-engine | ✅ |
 
@@ -59,7 +59,7 @@ The mission now is: **execution, integration, adoption, and revenue validation**
 
 | Integration | Adapter | Status |
 |-------------|---------|--------|
-| Integration OS core | lib/integration-os | ✅ |
+| Integration OS™ core | lib/integration-os | ✅ |
 | OpenDental PMS normalisation | lib/adapters/opendental-adapter.ts | ✅ |
 | Google Calendar adapter | lib/adapters/google-calendar-adapter.ts | ✅ |
 | Stripe payment integration | lib/stripe | ✅ |
@@ -77,7 +77,7 @@ The mission now is: **execution, integration, adoption, and revenue validation**
 
 ## Phase 3 — COMPLETE: AI Agent Layer
 
-**Objective:** Deploy all seven specialised AI agents capable of receiving AI Revenue Intelligence recommendations and executing them through Automation Platform.
+**Objective:** Deploy all seven specialised AI agents capable of receiving ALICE recommendations and executing them through Workflow OS.
 
 ### Deliverables
 
@@ -91,7 +91,7 @@ The mission now is: **execution, integration, adoption, and revenue validation**
 | Growth Agent | lib/agents/growth-agent.ts | Growth score monitoring, dimension-specific campaigns | ✅ |
 | Compliance Agent | lib/agents/compliance-agent.ts | HIPAA compliance monitoring, consent verification | ✅ |
 
-**Phase 3 gate criteria:** All 7 agents registered in `agent_registry`, capable of receiving tasks via `agent_tasks`, and executing through Automation Platform.
+**Phase 3 gate criteria:** All 7 agents registered in `agent_registry`, capable of receiving tasks via `agent_tasks`, and executing through Workflow OS.
 **Gate status:** PASSED ✅
 
 ---
@@ -104,7 +104,7 @@ The mission now is: **execution, integration, adoption, and revenue validation**
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Practice Memory Graph | ✅ Foundation complete | lib/practice-memory — core memory recording operational |
+| Practice Memory Graph™ | ✅ Foundation complete | lib/practice-memory — core memory recording operational |
 | Advanced ALICE | ✅ Foundational operational | lib/ai-os, lib/alice — patient decisions live; cross-practice learning pending |
 | Treatment Acceptance Prediction | ✅ Operational | Influence score + intent model running |
 | Revenue Forecasting | 🟡 PARTIAL | Forecast model in practice_intelligence_snapshots; reconciliation with actuals pending |
@@ -165,11 +165,11 @@ Pre-Launch:
 Go-Live:
   [ ] First patient assigned to welcome_patient journey
   [ ] Journey delivery confirmed (SMS + email delivered)
-  [ ] AI Revenue Intelligence recommendations generated for test patient
+  [ ] ALICE recommendations generated for test patient
   [ ] Revenue attribution record created after test booking
   [ ] Growth Score computed for test practice
   [ ] Command Center panels displaying real data
-  [ ] Executive Dashboard showing live workflow executions
+  [ ] Mission Control showing live workflow executions
 
 Post-Launch (30 days):
   [ ] Journey scheduler wired (delay_days → execution-scheduler.ts)
@@ -196,7 +196,7 @@ Post-Launch (30 days):
 
 ## Architecture Freeze Policy
 
-As of 2026-06-02, the Zenith Patient OS architecture is **frozen**. This means:
+As of 2026-06-02, the Zenith Patient OS™ architecture is **frozen**. This means:
 
 1. No new DB tables may be created without a formal Architecture Change Request (ACR)
 2. No new lib modules may be created without an ACR

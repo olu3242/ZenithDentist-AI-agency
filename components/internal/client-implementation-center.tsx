@@ -1,4 +1,4 @@
-import { Activity, BookOpenCheck, CalendarCheck, CheckCircle2, ClipboardCheck, GraduationCap, PlugZap, Rocket, ShieldCheck, Users } from "lucide-react";
+import { Activity, BookOpenCheck, CalendarCheck, CheckCircle2, ChevronRight, ClipboardCheck, GraduationCap, PlugZap, Rocket, ShieldCheck, Sparkles, Users, Wallet } from "lucide-react";
 import type { ClientImplementationState, ImplementationSection } from "@/lib/client-implementation-os";
 
 export function ClientImplementationCenter({ state, section }: { state: ClientImplementationState; section: ImplementationSection }) {
@@ -36,8 +36,42 @@ function ImplementationCommand({ state }: { state: ClientImplementationState }) 
         ["Blocked Clients", state.executiveMetrics.blockedClients],
         ["Go-Live Success", `${state.executiveMetrics.goLiveSuccessRate}%`],
         ["Capacity", state.executiveMetrics.implementationCapacity],
-        ["Forecast", state.executiveMetrics.implementationForecast]
+        ["Forecast", state.executiveMetrics.implementationForecast],
+        ["Readiness Score", `${state.implementationIntelligence.commandCenter.readinessScore}%`],
+        ["Revenue Potential", money(state.implementationIntelligence.commandCenter.potentialRevenue)]
       ]} />
+      <ImplementationProgress state={state} />
+      <div className="grid gap-6 xl:grid-cols-3">
+        <Panel title="Implementation Readiness" icon={ShieldCheck}>
+          <Rows rows={[
+            ["Completed", state.implementationIntelligence.commandCenter.completed],
+            ["In Progress", state.implementationIntelligence.commandCenter.inProgress],
+            ["Blocked", state.implementationIntelligence.commandCenter.blocked],
+            ["Implementation Score", `${state.implementationIntelligence.commandCenter.implementationScore}%`],
+            ["Practice Health", `${state.implementationIntelligence.scores.practiceHealth}%`],
+            ["Growth Score", `${state.implementationIntelligence.scores.growth}%`]
+          ]} empty="Implementation readiness has not been measured yet." />
+        </Panel>
+        <Panel title="Revenue Recovery Center" icon={Wallet}>
+          <Rows rows={[
+            ["Potential Revenue", money(state.implementationIntelligence.revenueRecovery.potentialRevenue)],
+            ["Recovered Revenue", money(state.implementationIntelligence.revenueRecovery.recoveredRevenue)],
+            ["Open Leaks", state.implementationIntelligence.revenueRecovery.totalLeaks],
+            ["Top Category", state.implementationIntelligence.revenueRecovery.topCategory],
+            ...state.implementationIntelligence.revenueRecovery.topOpportunities.map(item => [item.title, money(item.potentialRevenue), `Rank ${item.priorityRank}`, `${item.confidenceScore}% confidence`])
+          ]} empty="Revenue leak detection has not produced opportunities yet." />
+        </Panel>
+        <Panel title="Implementation Advisor" icon={Sparkles}>
+          <Rows rows={[
+            ...state.implementationIntelligence.aliceAdvisor.topActions.map(item => ["Action", item]),
+            ...state.implementationIntelligence.aliceAdvisor.topRisks.map(item => ["Risk", item]),
+            ...state.implementationIntelligence.aliceAdvisor.topOpportunities.map(item => ["Opportunity", item])
+          ]} empty="ALICE implementation recommendations are not available yet." />
+        </Panel>
+      </div>
+      <Panel title="Workflow OS Registration" icon={Activity}>
+        <Rows rows={state.implementationIntelligence.workflowRegistrations.map(item => [item.id, item.stage, item.trigger, item.outputs.join(", ")])} empty="Implementation workflows are not registered." />
+      </Panel>
       <Panel title="Implementation Portfolio" icon={Rocket}>
         <div className="grid gap-3">
           {state.projects.length ? state.projects.map(project => (
@@ -56,6 +90,26 @@ function ImplementationCommand({ state }: { state: ClientImplementationState }) 
         </div>
       </Panel>
     </>
+  );
+}
+
+function ImplementationProgress({ state }: { state: ClientImplementationState }) {
+  return (
+    <section className="rounded border border-line bg-white p-4 shadow-sm">
+      <div className="grid gap-2 xl:grid-cols-6">
+        {state.implementationIntelligence.chevron.map((step, index) => (
+          <article key={step.key} className="relative rounded border border-line bg-paper p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-black uppercase tracking-wider text-muted">{statusGlyph(step.status)} {step.label}</span>
+              {index < state.implementationIntelligence.chevron.length - 1 ? <ChevronRight className="hidden h-4 w-4 text-muted xl:block" /> : null}
+            </div>
+            <strong className="mt-2 block text-2xl font-black text-ink">{step.completion}%</strong>
+            <p className="mt-2 text-xs font-bold text-muted">{step.nextAction}</p>
+            {step.blockingIssues.length ? <p className="mt-2 text-xs font-black text-rust">{step.blockingIssues[0]}</p> : null}
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -122,7 +176,7 @@ function Adoption({ state }: { state: ClientImplementationState }) {
         ["Expansion Signals", state.health.filter(item => item.expansionScore >= 75).length]
       ]} />
       <Panel title="Adoption Intelligence" icon={Activity}>
-        <Rows rows={state.adoption.map(item => [`Score ${item.score}`, item.classification, `${item.workflowUsage} workflow uses`, `${item.aliceUsage} AI Revenue Intelligence uses`])} empty="No adoption measurements are persisted yet." />
+        <Rows rows={state.adoption.map(item => [`Score ${item.score}`, item.classification, `${item.workflowUsage} workflow uses`, `${item.aliceUsage} ALICE uses`])} empty="No adoption measurements are persisted yet." />
       </Panel>
       <Panel title="Client Health Rollups" icon={Users}>
         <Rows rows={state.health.map(item => [`Health ${item.healthScore}`, `Risk ${item.riskScore}`, `Expansion ${item.expansionScore}`])} empty="No client health rollups are persisted yet." />
@@ -188,9 +242,9 @@ function ClientPlaybooks({ state }: { state: ClientImplementationState }) {
         <Rows rows={[
           ["Health Score > 80", "Customer Success OS", "monthly review"],
           ["Adoption Score > 75", "Adoption Engine", "monthly review"],
-          ["Workflow Usage > 70%", "Automation Platform", "monthly review"],
+          ["Workflow Usage > 70%", "Workflow OS", "monthly review"],
           ["Revenue Attribution Active", "Evidence OS", "monthly review"],
-          ["No Critical Incidents", "Executive Dashboard", "continuous"],
+          ["No Critical Incidents", "Mission Control", "continuous"],
           ["SLA Compliance > 95%", "SLA Center", "continuous"]
         ]} empty="Healthy client criteria are unavailable." />
       </Panel>
@@ -223,7 +277,7 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: typeof Ch
   );
 }
 
-function Rows({ rows, empty }: { rows: string[][]; empty: string }) {
+function Rows({ rows, empty }: { rows: Array<Array<string | number>>; empty: string }) {
   return <div className="grid gap-3">{rows.length ? rows.map(row => <Row key={row.join(":")} columns={row} />) : <Empty label={empty} />}</div>;
 }
 
@@ -243,6 +297,17 @@ function average(values: number[]) {
   return values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : 0;
 }
 
+function money(value: number) {
+  return `$${Math.round(value).toLocaleString()}`;
+}
+
+function statusGlyph(status: string) {
+  if (status === "complete") return "✓";
+  if (status === "in_progress") return "→";
+  if (status === "blocked") return "!";
+  return "○";
+}
+
 const titles: Record<ImplementationSection, string> = {
   implementations: "Implementation Command Center",
   onboarding: "Client Onboarding Engine",
@@ -258,7 +323,7 @@ const subtitles: Record<ImplementationSection, string> = {
   onboarding: "Automate practice information, provider data, locations, Google, PMS, Stripe, Calendly, email, and SMS readiness.",
   "integrations-readiness": "Verify Open Dental, Stripe, Google, Meta, Calendly, email, SMS, and WhatsApp connection posture.",
   training: "Assign and certify role-based training for practice owners, office managers, front desk teams, and providers.",
-  adoption: "Measure login frequency, workflow usage, AI Revenue Intelligence usage, revenue dashboard usage, video usage, and treatment acceptance adoption.",
+  adoption: "Measure login frequency, workflow usage, ALICE usage, revenue dashboard usage, video usage, and treatment acceptance adoption.",
   "go-live": "Enforce integration, workflow, template, training, and testing gates before client go-live.",
   "client-playbooks": "Standardize Day 1 activation, week 1 validation, success reviews, optimization, incident response, renewal, and expansion procedures."
 };

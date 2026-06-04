@@ -6,7 +6,7 @@ Implemented as persona-specific recommendation arrays in `lib/personas.ts` and r
 
 ## Recommendation Model
 
-AI Revenue Intelligence recommendations are now attached to the persona, not the page. This makes recommendations role-aware even when users drill into the same underlying workflow or report.
+ALICE recommendations are now attached to the persona, not the page. This makes recommendations role-aware even when users drill into the same underlying workflow or report.
 
 ## Persona Recommendation Themes
 
@@ -31,4 +31,4 @@ ALICE appears in:
 
 ## Guardrail
 
-AI Revenue Intelligence recommendations must be grounded in the persona mission and the current operating domain. Generic recommendations are considered incomplete.
+ALICE recommendations must be grounded in the persona mission and the current operating domain. Generic recommendations are considered incomplete.

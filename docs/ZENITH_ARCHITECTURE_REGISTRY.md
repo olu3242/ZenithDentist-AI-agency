@@ -1,4 +1,4 @@
-# Zenith Patient OS — Architecture Registry
+# Zenith Patient OS™ — Architecture Registry
 
 **Classification:** Canonical Platform Registry
 **Status:** FROZEN — Architecture locked as of 2026-06-02
@@ -148,7 +148,7 @@ All routes under `app/api/`. Authentication via `x-organization-id` header unles
 | /api/internal | GET, POST | Service role | Internal platform operations |
 | /api/journeys | GET, POST | Yes | Journey assignment and management |
 | /api/membership | GET, POST, PUT | Yes | Membership management |
-| /api/mission-control | GET | Yes | Executive Dashboard data |
+| /api/mission-control | GET | Yes | Mission Control dashboard data |
 | /api/opendental | GET, POST | Yes | OpenDental PMS sync |
 | /api/patient-influence | GET, POST | Yes | Patient influence scoring |
 | /api/patient-portal | GET, PUT | Patient auth | Patient portal data |
@@ -172,7 +172,7 @@ All Event Fabric events, organised by domain. Events are immutable once written.
 |-------|---------|----------|
 | `patient.created` | Patient registration | ALICE, Journey Library |
 | `patient.updated` | Patient profile update | ALICE, Influence Engine |
-| `patient.enrolled` | Journey enrollment | Automation Platform, ALICE |
+| `patient.enrolled` | Journey enrollment | Workflow OS, ALICE |
 | `patient.influence.scored` | Influence Engine | ALICE, Command Center |
 | `patient.intent.changed` | Influence Engine | ALICE, Treatment Coordinator Agent |
 | `patient.churn.risk.flagged` | ALICE | Recall Agent, Practice Memory |
@@ -180,10 +180,10 @@ All Event Fabric events, organised by domain. Events are immutable once written.
 ### Workflow Domain
 | Event | Emitter | Consumers |
 |-------|---------|----------|
-| `workflow.execution.started` | Automation Platform | Audit log, Command Center |
-| `workflow.execution.completed` | Automation Platform | Revenue Attribution, ALICE |
-| `workflow.execution.failed` | Automation Platform | Alert system, Command Center |
-| `workflow.step.completed` | Automation Platform | Next step scheduler, Event Fabric |
+| `workflow.execution.started` | Workflow OS | Audit log, Command Center |
+| `workflow.execution.completed` | Workflow OS | Revenue Attribution, ALICE |
+| `workflow.execution.failed` | Workflow OS | Alert system, Command Center |
+| `workflow.step.completed` | Workflow OS | Next step scheduler, Event Fabric |
 
 ### ALICE Domain
 | Event | Emitter | Consumers |
@@ -195,7 +195,7 @@ All Event Fabric events, organised by domain. Events are immutable once written.
 ### Agent Domain
 | Event | Emitter | Consumers |
 |-------|---------|----------|
-| `agent.task.created` | Agent OS | Automation Platform, agent runner |
+| `agent.task.created` | Agent OS | Workflow OS, agent runner |
 | `agent.task.completed` | Agent runner | Revenue Attribution, ALICE |
 | `agent.recommendation.created` | Agent | ALICE, Command Center |
 
@@ -212,7 +212,7 @@ All Event Fabric events, organised by domain. Events are immutable once written.
 | `growth.score.computed` | Growth Score Engine | Command Center, ALICE |
 | `review.requested` | Reputation Engine | Reputation tracking |
 | `review.received` | Reputation Engine | Growth Score, Command Center |
-| `recall.triggered` | Recall Engine | Automation Platform, Recall Agent |
+| `recall.triggered` | Recall Engine | Workflow OS, Recall Agent |
 | `recall.booked` | Recall Engine | Revenue Attribution, Growth Score |
 | `referral.converted` | Referral Engine | Revenue Attribution, Growth Score |
 | `membership.enrolled` | Membership Engine | Revenue Attribution, Growth Score |
@@ -220,7 +220,7 @@ All Event Fabric events, organised by domain. Events are immutable once written.
 ### Integration Domain
 | Event | Emitter | Consumers |
 |-------|---------|----------|
-| `integration.sync.completed` | Integration OS | Event Fabric, Automation Platform |
+| `integration.sync.completed` | Integration OS | Event Fabric, Workflow OS |
 | `integration.health.changed` | Integration OS | Command Center, alert system |
 | `communication.delivered` | Communication Hub | Event Fabric, attribution |
 | `communication.failed` | Communication Hub | Alert system, retry queue |

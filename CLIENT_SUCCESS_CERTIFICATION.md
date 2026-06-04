@@ -12,5 +12,5 @@ Status: PARTIALLY CERTIFIED
 
 ## Go-Live Requirements
 
-- Generate executive success summaries from revenue attribution, adoption metrics, support activity, and AI Revenue Intelligence recommendations.
+- Generate executive success summaries from revenue attribution, adoption metrics, support activity, and ALICE recommendations.
 - Automate renewal readiness once sufficient customer success history is available.

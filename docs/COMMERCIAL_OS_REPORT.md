@@ -21,7 +21,7 @@ Commercial OS (lib/commercial-os/index.ts)
         ↓ publishes to
 Event Fabric (lib/runtime/event-fabric.ts)
         ↓ visible in
-Executive Dashboard → Commercial OS Dashboard
+Mission Control → Commercial OS Dashboard
 ```
 
 ---
@@ -39,8 +39,8 @@ Three packages are seeded at migration time in `commercial_packages`:
 **Package Features:**
 
 - **Revenue Recovery Starter:** Recall automation, treatment follow-up, basic reporting, 2 journey types
-- **Growth Automation Suite:** All Starter features + referral engine, review automation, video journeys, 5 journey types, AI Revenue Intelligence recommendations
-- **Zenith Operational OS:** All Suite features + Digital Twin OS, Commercial OS pipeline, ALICE Executive Briefing, Workflow Recovery, Executive Dashboard full access, dedicated CSM
+- **Growth Automation Suite:** All Starter features + referral engine, review automation, video journeys, 5 journey types, ALICE recommendations
+- **Zenith Operational OS:** All Suite features + Digital Twin OS, Commercial OS pipeline, ALICE Executive Briefing, Workflow Recovery, Mission Control full access, dedicated CSM
 
 ---
 
@@ -217,9 +217,9 @@ Lead → Discovery → Assessment → Proposal → Negotiation → Won / Lost
 
 | System | Integration |
 |---|---|
-| Executive Dashboard | Commercial OS Dashboard panel reads /api/commercial-os |
+| Mission Control | Commercial OS Dashboard panel reads /api/commercial-os |
 | Event Fabric | All state transitions publish events |
-| Automation Platform | Subscription activation triggers onboarding journey |
+| Workflow OS | Subscription activation triggers onboarding journey |
 | ALICE | Executive briefing includes commercial pipeline metrics |
 | Digital Twin | Assessment stage uses simulateRevenueTwin() for ROI modeling |
 

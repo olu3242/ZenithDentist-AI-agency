@@ -60,7 +60,7 @@ Contact
 - Platform (engineering-centric)
 - Screens (internal UI term)
 - Intelligence (exposes AI architecture)
-- Executive Dashboard (internal operational)
+- Mission Control (internal operational)
 - PMS Ops (developer term)
 - Route Probe button (developer tool)
 - Login/Signup/Dashboard (authenticated — move to /login directly if needed)

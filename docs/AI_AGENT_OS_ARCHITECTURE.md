@@ -4,7 +4,7 @@
 
 The AI Agent OS is the autonomous operations layer of the Zenith platform. It consists of ALICE (Chief Intelligence Officer) as the central orchestrator and 7 specialized domain agents that execute practice operations under ALICE's coordination.
 
-**Key design principle:** ALICE observes, predicts, and recommends. Agents execute domain-specific actions within defined governance boundaries. No agent bypasses ALICE coordination or Automation Platform governance.
+**Key design principle:** ALICE observes, predicts, and recommends. Agents execute domain-specific actions within defined governance boundaries. No agent bypasses ALICE coordination or Workflow OS governance.
 
 ---
 
@@ -76,7 +76,7 @@ agent_recommendations (pending)
 ALICE reviews recommendation
      │
      ▼
-Action executed (Automation Platform, Communication Hub, etc.)
+Action executed (Workflow OS, Communication Hub, etc.)
      │
      ▼
 agent_recommendations.status = "actioned"
@@ -152,7 +152,7 @@ Audit log of all significant agent actions and ALICE insights.
 ## ALICE Coordination Layer
 
 `coordinateAgents(organizationId)` — called periodically (or on-demand) to:
-1. Build full operational context from Automation Platform + Event Fabric
+1. Build full operational context from Workflow OS + Event Fabric
 2. Retrieve agent memory snapshots
 3. Generate top insights and log to `agent_events`
 4. Return `AgentCoordinationResult` with operational score and health summary
@@ -166,7 +166,7 @@ Audit log of all significant agent actions and ALICE insights.
 `logAgentInsight(agentId, organizationId, title, summary, confidence)` — every significant AI insight is persisted to `agent_events`. This provides:
 - Full audit trail of agent intelligence
 - Input data for agent learning module
-- Dashboard data for Executive Dashboard Agent Center
+- Dashboard data for Mission Control Agent Center
 
 ---
 
@@ -190,5 +190,5 @@ Defined in `agent-governance.ts`:
 | workflow_replay            | Any agent       | Automatic        |
 | escalate_to_staff          | Any agent       | Automatic        |
 | suspend_workflow           | ALICE only      | Requires reason  |
-| modify_tenant_data         | Never directly  | Via Automation Platform  |
+| modify_tenant_data         | Never directly  | Via Workflow OS  |
 | bypass_audit_trail         | Never           | Prohibited       |

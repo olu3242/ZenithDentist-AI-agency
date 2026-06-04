@@ -13,10 +13,10 @@ Reviewed legacy Zenith assets against current PROS implementation.
 - Legacy PRD: `zenith-ai-prd.html`
 - Current product definition: `lib/patient-revenue-engine.ts`
 - Revenue playbooks: `lib/revenue-playbooks/index.ts`
-- Automation Platform: `lib/workflow-os/*`
+- Workflow OS: `lib/workflow-os/*`
 - Runtime OS and Event Fabric: `lib/runtime/*`, `lib/event-fabric/index.ts`
 - Analytics and ALICE: `lib/analytics-projector.ts`, `lib/alice.ts`
-- Executive Dashboard: `app/mission-control/page.tsx`
+- Mission Control: `app/mission-control/page.tsx`
 - Migration governance: `docs/MIGRATION_GOVERNANCE.md`
 - Migration certification: `docs/MIGRATION_CERTIFICATION_REPORT.md`
 
@@ -26,9 +26,9 @@ PARTIAL.
 
 Coherent areas:
 
-- PROS has explicit domains: Revenue Playbooks, Automation Platform, Runtime OS, Event Fabric, Analytics, ALICE, Executive Dashboard, Pilot Operations, Commercial Operations, and Migration Governance.
+- PROS has explicit domains: Revenue Playbooks, Workflow OS, Runtime OS, Event Fabric, Analytics, ALICE, Mission Control, Pilot Operations, Commercial Operations, and Migration Governance.
 - `analyticsProjector` defines a canonical path from runtime event fabric, traces, workflow analytics, automation registry, and analytics projection.
-- Executive Dashboard composes runtime health, provider health, event fabric, ALICE, governance, replay, and executive reporting.
+- Mission Control composes runtime health, provider health, event fabric, ALICE, governance, replay, and executive reporting.
 
 Architecture concerns:
 
@@ -43,7 +43,7 @@ YES.
 Evidence:
 
 - Runtime/execution concepts appear in multiple tables and modules.
-- Legacy Revenue Recovery System terms coexist with newer PROS terms.
+- Legacy Patient Revenue Engine terms coexist with newer PROS terms.
 - PMS integration appears as adapter framework plus enterprise integration page, but not as a complete PMS portal.
 
 ## Is There Drift?
@@ -63,7 +63,7 @@ PARTIAL.
 Production-grade evidence:
 
 - Build, typecheck, smoke, E2E invariant, and migration governance validation pass locally.
-- Executive Dashboard and ALICE are well-developed in code.
+- Mission Control and ALICE are well-developed in code.
 - Commercial and pilot operating models exist.
 
 Production blockers:

@@ -87,11 +87,11 @@ function ProductOwner({ state }: { state: EnterpriseOperationsState }) {
       <HealthGrid state={state} />
       <Panel title="Feature Adoption" icon={BarChart3}>
         <KpiGrid metrics={[
-          ["Automation Platform", state.kpis.automationExecutions],
-          ["Executive Dashboard", state.events.length],
+          ["Workflow OS", state.kpis.automationExecutions],
+          ["Mission Control", state.events.length],
           ["Video Intelligence", state.evidence.find(item => item.label === "video_evidence")?.count ?? 0],
           ["Revenue OS", money(state.revenue.totalAttributed)],
-          ["AI Revenue Intelligence", state.alice.recommendations],
+          ["ALICE", state.alice.recommendations],
           ["Customer Success", state.customerSuccess.clients],
           ["Readiness Index", `${state.certification.readinessIndex}/100`]
         ]} />
@@ -203,7 +203,7 @@ function Certification({ state }: { state: EnterpriseOperationsState }) {
 
 function Forecasts({ state }: { state: EnterpriseOperationsState }) {
   return (
-    <Panel title="Executive Forecasting" icon={Brain}>
+    <Panel title="ALICE Executive Forecasting" icon={Brain}>
       <List items={[
         `Churn risk: ${state.customerSuccess.atRisk} account signal(s)`,
         `Expansion opportunity: ${state.customerSuccess.expansionCandidates} candidate(s)`,
@@ -291,7 +291,7 @@ const titles: Record<EnterpriseOpsSection, string> = {
   sla: "SLA Management Center",
   debug: "Debug & Recovery Center",
   evidence: "Evidence OS",
-  "alice-traceability": "AI Decision Traceability Center",
+  "alice-traceability": "ALICE Traceability Center",
   "revenue-attribution": "Revenue Attribution Engine",
   "customer-success": "Customer Success OS",
   "agency-crm": "Agency CRM",
@@ -302,13 +302,13 @@ const subtitles: Record<EnterpriseOpsSection, string> = {
   executive: "Agency-wide executive oversight across practices, revenue, automation, AI, incidents, and SLA compliance.",
   "product-owner": "Operate Zenith itself through platform health, feature adoption, roadmap posture, and tenant analytics.",
   noc: "Real-time operational command center for runtime, integrations, AI, database, and delivery health.",
-  incidents: "Open, assign, escalate, recover, close, and analyze incidents across Runtime OS and Executive Dashboard.",
+  incidents: "Open, assign, escalate, recover, close, and analyze incidents across Runtime OS and Mission Control.",
   sla: "Track availability, response, resolution, recovery, error budgets, and SLA compliance by organization.",
   debug: "Detect, classify, recover, validate, and close system failures with traceable recovery actions.",
-  evidence: "Evidence explorer for automation, workflow, revenue, patient journey, relationship, video, AI Revenue Intelligence, LIZ, and compliance proof.",
-  "alice-traceability": "Decision registry, recommendation timeline, outcome tracking, and confidence analytics for AI Revenue Intelligence.",
+  evidence: "Evidence explorer for automation, workflow, revenue, patient journey, relationship, video, ALICE, LIZ, and compliance proof.",
+  "alice-traceability": "Decision registry, recommendation timeline, outcome tracking, and confidence analytics for ALICE.",
   "revenue-attribution": "Revenue journey tracker across campaign, workflow, appointment, treatment, membership, and video attribution.",
   "customer-success": "Health, adoption, expansion, churn, renewal, and engagement posture for managed practices.",
   "agency-crm": "Pipeline, clients, contracts, renewals, expansions, opportunities, MRR, ARR, and at-risk accounts.",
-  certification: "Evidence, revenue attribution, AI Revenue Intelligence, incident, recovery, and SLA coverage gates for production certification."
+  certification: "Evidence, revenue attribution, ALICE, incident, recovery, and SLA coverage gates for production certification."
 };

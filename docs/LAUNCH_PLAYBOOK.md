@@ -23,7 +23,7 @@
 
 **Morning:**
 - Confirm homepage loads (Zenith Revenue OS aesthetic)
-- Submit test assessment → verify audit generation → verify Calendly URL attribution → verify Executive Dashboard shows the lead
+- Submit test assessment → verify audit generation → verify Calendly URL attribution → verify Mission Control shows the lead
 - Verify admin email notification received
 
 **Afternoon:**
@@ -49,7 +49,7 @@
 ## First Assessment Received: Playbook
 
 1. Lead notification fires (email via Resend)
-2. Review lead in Executive Dashboard (`/admin`)
+2. Review lead in Mission Control (`/admin`)
 3. Confirm audit quality (download the report)
 4. If booking not yet scheduled: send personalized follow-up within 2 hours referencing their specific numbers
 5. Strategy session booked → prep using Discovery Guide
@@ -63,7 +63,7 @@
 3. Follow up within 48 hours
 4. Close → send agreement + invoice
 5. Receive payment → trigger onboarding (see CLIENT_ONBOARDING_REPORT.md)
-6. Tag as `won` in Executive Dashboard
+6. Tag as `won` in Mission Control
 7. Begin 30-day success measurement
 
 ---
