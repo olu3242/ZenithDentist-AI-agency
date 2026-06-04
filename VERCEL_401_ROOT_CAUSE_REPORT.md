@@ -21,7 +21,7 @@ Evidence:
 
 ## Audited Production URL
 
-`https://zenith-dentist-ai-agency-48tc9jxvi-taxbuddyng.vercel.app`
+`https://zenithprosai.com`
 
 Production deployment metadata:
 

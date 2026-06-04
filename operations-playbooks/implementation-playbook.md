@@ -190,7 +190,7 @@ VALUES (
 
 Trigger initial sync:
 ```bash
-curl -X POST https://app.zenith-ai.com/api/opendental/sync \
+curl -X POST https://zenithprosai.com/api/opendental/sync \
   -H "Content-Type: application/json" \
   -d '{"organization_id": "<ORG_ID>"}'
 ```
@@ -207,7 +207,7 @@ import { sendAuditEmails } from "@/lib/email";
 // Send a test email to the admin
 ```
 
-Check that both the practice admin and `ops@zenith-ai.com` receive the email. Delivery latency should be < 2 minutes.
+Check that both the practice admin and `implementation@zenithprosai.com` receive the email. Delivery latency should be < 2 minutes.
 
 ### 4.3 Google Business Profile (Growth/Enterprise)
 
@@ -333,7 +333,7 @@ curl /api/mission-control/state -H "x-internal-token: <token>"
 ### Test 6: Email Delivery
 Send a test recall email and verify:
 - Email received within 2 minutes
-- `from` address shows `Zenith AI Automation Agency <audit@zenith-ai.com>`
+- `from` address shows `Zenith Pros <alerts@zenithprosai.com>`
 
 ---
 

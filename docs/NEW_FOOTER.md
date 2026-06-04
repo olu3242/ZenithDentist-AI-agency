@@ -4,7 +4,7 @@
 
 ```
 COMPANY          SOLUTIONS              RESOURCES          CONTACT
-About            Revenue Recovery       Assessment         hello@zenith.dental
+About            Revenue Recovery       Assessment         hello@zenithprosai.com
 Case Studies     Treatment Acceptance   Growth Report      (555) 555-0000
 Contact          Patient Retention      Blog               [City, State]
                  Recall Recovery        FAQs

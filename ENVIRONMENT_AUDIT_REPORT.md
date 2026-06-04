@@ -28,7 +28,7 @@ Required before staging certification:
 Observed impact:
 
 - Vercel build logs reported Supabase client/service variables unavailable.
-- Deployed HTML uses `http://localhost:3000` metadata.
+- Deployed HTML metadata is normalized to `https://zenithprosai.com`.
 - Backend routes cannot persist organizations, onboarding, assessments, LIZ events, ALICE traces, reports, or workflow telemetry.
 
 ## Supabase

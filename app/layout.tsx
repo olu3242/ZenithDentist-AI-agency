@@ -19,27 +19,30 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+  metadataBase: new URL("https://zenithprosai.com"),
   title: {
-    default: `${brandConfig.name} | ${brandConfig.trademark}`,
+    default: "Zenith Pros",
     template: `%s | ${brandConfig.name}`
   },
-  description:
-    "Recover missed revenue, reduce no-shows, automate recall, and turn dental operations into a measurable revenue engine.",
+  description: "Patient Revenue Operating System",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png"
+  },
   openGraph: {
-    title: brandConfig.name,
-    description:
-      "A production-grade operational revenue intelligence platform for dental practices.",
-    url: env.NEXT_PUBLIC_SITE_URL,
+    title: "ZENITH PROS™",
+    description: "Patient Revenue Operating System™",
+    url: "https://zenithprosai.com",
     siteName: brandConfig.name,
-    images: [{ url: "/og", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "ZENITH PROS - Patient Revenue Operating System" }],
     locale: "en_US",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: brandConfig.name,
-    description: "Recover missed revenue and automate dental patient operations."
+    title: "ZENITH PROS™",
+    description: "Patient Revenue Operating System™",
+    images: ["/twitter-image.png"]
   },
   alternates: {
     canonical: "/"

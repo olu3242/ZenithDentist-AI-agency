@@ -54,7 +54,7 @@ RLS is enabled on all tables. Current policies only allow service-role access, w
 3. Set production environment variables.
 4. Run the Supabase migration.
 5. Deploy.
-6. Configure Calendly event delivery to `https://YOUR_DOMAIN/api/calendly/events`.
+6. Configure Calendly event delivery to `https://zenithprosai.com/api/calendly/events`.
 
 ## Validation
 

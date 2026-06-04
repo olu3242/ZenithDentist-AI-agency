@@ -47,7 +47,7 @@ ELEVENLABS_API_KEY=...
 
 # Application
 NEXTAUTH_SECRET=...
-NEXTAUTH_URL=https://app.zenithdentist.ai
+NEXTAUTH_URL=https://zenithprosai.com
 ```
 
 ### 2. Deploy to Production
@@ -63,7 +63,7 @@ CI/CD pipeline runs:
 
 **Verify deployment**:
 ```bash
-curl -s https://app.zenithdentist.ai/api/health | jq .
+curl -s https://zenithprosai.com/api/health | jq .
 # Expected: { "status": "ok", "db": "connected" }
 ```
 
@@ -412,7 +412,7 @@ If score < 60, review the lowest-scoring dimension and address it.
 |------|---------|-----------------|
 | CSM | Account CSM | Health score yellow 48h+ |
 | Engineering | #zenith-ops Slack | Integration failures, API errors |
-| Zenith Admin | admin@zenithdentist.ai | Data integrity issues, security concerns |
+| Zenith Admin | alerts@zenithprosai.com | Data integrity issues, security concerns |
 
 ---
 

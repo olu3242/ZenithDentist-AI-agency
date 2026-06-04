@@ -35,14 +35,14 @@ export async function sendAuditEmails(result: FunnelResult, localization: Locali
 
   await Promise.all([
     resend.emails.send({
-      from: `${brandConfig.name} <audit@zenith-ai.com>`,
+      from: `${brandConfig.name} <alerts@zenithprosai.com>`,
       to: result.lead.email,
       subject,
       html
     }),
     resend.emails.send({
-      from: `${brandConfig.name} <ops@zenith-ai.com>`,
-      to: "ops@zenith-ai.com",
+      from: `${brandConfig.name} <alerts@zenithprosai.com>`,
+      to: "implementation@zenithprosai.com",
       subject: `New FREE Revenue Assessment: ${result.lead.practice_name}`,
       html: `
         <h1>Mission Control Lead Created</h1>

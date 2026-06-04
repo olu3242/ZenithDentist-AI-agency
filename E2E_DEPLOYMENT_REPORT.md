@@ -46,7 +46,7 @@ Vercel deployment state: READY
 
 Deployment URL:
 
-`https://zenith-dentist-automation-250o1ef8a-eduradiusllc.vercel.app`
+`https://zenithprosai.com`
 
 Deployment ID:
 

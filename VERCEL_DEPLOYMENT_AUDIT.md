@@ -26,7 +26,7 @@ Production deployment:
 - Environment: `Production`
 - Deployment state: `success`
 - Commit: `9b94f608c6b781571fb14cb26d85b592fe091462`
-- URL: `https://zenith-dentist-ai-agency-48tc9jxvi-taxbuddyng.vercel.app`
+- URL: `https://zenithprosai.com`
 - Created: `2026-06-01T00:22:27Z`
 
 Latest discovered preview deployment:
@@ -34,7 +34,7 @@ Latest discovered preview deployment:
 - Environment: `Preview`
 - Deployment state: `success`
 - Commit: `38b7316a44093b981e164e9c5d65ae22cba48b66`
-- URL: `https://zenith-dentist-ai-agency-n1e37s3t0-eduradiusllc.vercel.app`
+- URL: `https://zenithprosai.com`
 - Created: `2026-06-01T01:28:54Z`
 
 Important drift:

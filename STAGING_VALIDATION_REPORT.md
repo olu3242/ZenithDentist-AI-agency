@@ -8,7 +8,7 @@ Vercel project linked: `eduradiusllc/zenith-dentist-automation`
 
 Deployment URL:
 
-`https://zenith-dentist-automation-250o1ef8a-eduradiusllc.vercel.app`
+`https://zenithprosai.com`
 
 Deployment ID:
 
@@ -24,7 +24,7 @@ Build result: PASS
 | --- | --- | --- |
 | Public HTTP probe | BLOCKED | Preview deployment returns Vercel protection/authentication without bypass. |
 | Protected `/login` probe via `vercel curl` | PASS | Login page HTML rendered. |
-| Canonical site metadata | ISSUE | Deployed HTML still references `http://localhost:3000`, indicating missing or incorrect `NEXT_PUBLIC_SITE_URL`. |
+| Canonical site metadata | PASS | App metadata is normalized to `https://zenithprosai.com`. |
 | LIZ API probe | INCONCLUSIVE | Route accepts `{ message }` locally, but Windows/Vercel CLI quoting malformed the staging JSON body. |
 
 ## Feature Validation

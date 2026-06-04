@@ -13,9 +13,9 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
-    name: "Zenith AI Automation Agency",
-    description: "Dental practice revenue recovery — identify and recover lost revenue through intelligent patient engagement, recall recovery, and treatment acceptance.",
-    url: "https://zenith.dental",
+    name: "Zenith Pros",
+    description: "Patient Revenue Operating System for dental practice revenue recovery, intelligent patient engagement, recall recovery, and treatment acceptance.",
+    url: "https://zenithprosai.com",
     areaServed: "US",
     medicalSpecialty: "Dentistry"
   };

@@ -1,13 +1,13 @@
 import { ZenithTokens } from "@/lib/brand/tokens";
 
 export const brandConfig = {
-  name: "ZENITH AI AUTOMATION AGENCY",
+  name: "Zenith Pros",
   shortName: "ZENITH",
-  tagline: "Automate. Scale. Dominate.",
-  descriptor: "AI Automation Agency",
-  productTagline: "Patient Revenue Engine",
+  tagline: "Patient Revenue Operating System",
+  descriptor: "Patient Revenue Operating System",
+  productTagline: "Patient Revenue Operating System",
   productAcronym: "PROS",
-  trademark: "Zenith AI Automation Agency™",
+  trademark: "Zenith Pros™",
   logoMark: "Z",
   personality: [
     "Enterprise",

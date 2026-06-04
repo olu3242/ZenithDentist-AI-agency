@@ -20,7 +20,7 @@ This playbook covers the end-to-end process for onboarding a new dental practice
 
 ### Steps
 
-1. **Audit submission reviewed.** The lead submits the Zenith ROI audit form. Resend (LIVE) fires two emails: one to the prospect with projected monthly recovery figures, one to `ops@zenith-ai.com` for internal review. Confirm both arrive within 5 minutes.
+1. **Audit submission reviewed.** The lead submits the Zenith ROI audit form. Resend (LIVE) fires two emails: one to the prospect with projected monthly recovery figures, one to `implementation@zenithprosai.com` for internal review. Confirm both arrive within 5 minutes.
 
 2. **Calendly booking confirmed.** Prospect books a demo via the Calendly integration. Verify the event appears in `/api/calendly/events`. If not, check `CALENDLY_API_KEY` environment variable.
 

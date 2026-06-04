@@ -122,7 +122,7 @@ export default function PrivacyPage() {
             <p>
               For privacy-related inquiries:{" "}
               <a className="font-bold text-teal" href="mailto:privacy@zenithprosai.com">
-                privacy@zenithaiautomation.com
+                privacy@zenithprosai.com
               </a>
             </p>
             <p>&copy; 2026 {LEGAL_ENTITY.legalName}. All Rights Reserved.</p>

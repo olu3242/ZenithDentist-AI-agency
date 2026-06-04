@@ -772,7 +772,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Contact</p>
               <div className="mt-4 space-y-3 text-sm font-semibold text-white/50">
-                <p>hello@zenith.dental</p>
+                <p>hello@zenithprosai.com</p>
                 <p>Dental Revenue Recovery Platform</p>
               </div>
             </div>

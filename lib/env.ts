@@ -13,7 +13,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_GA_ID: optionalString,
   NEXT_PUBLIC_META_PIXEL_ID: optionalString,
   NEXT_PUBLIC_LINKEDIN_PARTNER_ID: optionalString,
-  CALENDLY_URL: z.string().url().default("https://calendly.com/your-team/revenue-audit"),
+  CALENDLY_URL: z.string().url().default("https://zenithprosai.com/assessment"),
   ADMIN_ACCESS_TOKEN: z.string().min(12).optional(),
   PORTAL_ACCESS_TOKEN: z.string().min(12).optional(),
   INTERNAL_ACCESS_TOKEN: z.string().min(12).optional(),
@@ -21,7 +21,7 @@ const envSchema = z.object({
   AI_PROVIDER: z.enum(["local", "openai", "anthropic"]).default("local"),
   OPENAI_API_KEY: optionalString,
   ANTHROPIC_API_KEY: optionalString,
-  NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000")
+  NEXT_PUBLIC_SITE_URL: z.string().url().default("https://zenithprosai.com")
 });
 
 export const env = envSchema.parse(process.env);
