@@ -12,7 +12,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS implementation_projects (
     id                   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id      uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-    client_account_id    uuid REFERENCES client_accounts(id) ON DELETE SET NULL,
+    client_account_id    uuid,
     project_name         text NOT NULL,
     phase                text NOT NULL DEFAULT 'signed',
                          -- 'signed','discovery','configuration','integration','testing','training','go_live','optimization','completed'

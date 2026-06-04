@@ -91,6 +91,31 @@ create table if not exists public.decision_journeys (
   updated_at timestamptz not null default now()
 );
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'decision_journeys' AND column_name = 'journey_type'
+  ) THEN
+    ALTER TABLE public.decision_journeys
+      ADD COLUMN journey_type text DEFAULT 'new_patient';
+    UPDATE public.decision_journeys
+      SET journey_type = 'new_patient'
+      WHERE journey_type IS NULL;
+    ALTER TABLE public.decision_journeys
+      ALTER COLUMN journey_type SET NOT NULL;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'decision_journeys_journey_type_check'
+  ) THEN
+    ALTER TABLE public.decision_journeys
+      ADD CONSTRAINT decision_journeys_journey_type_check
+      CHECK (journey_type in ('new_patient', 'cleaning', 'root_canal', 'implant', 'orthodontic', 'treatment_acceptance', 'recall_recovery', 'membership_enrollment', 'review_conversion', 'referral_conversion', 'financing_conversion'));
+  END IF;
+END $$;
+
 create table if not exists public.journey_steps (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
@@ -255,60 +280,88 @@ alter table public.conversion_profiles enable row level security;
 alter table public.journey_outcomes enable row level security;
 alter table public.video_attribution_records enable row level security;
 
+drop policy if exists "video_categories_members_read" on public.video_categories;
 create policy "video_categories_members_read" on public.video_categories for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_categories.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "provider_video_profiles_members_read" on public.provider_video_profiles;
 create policy "provider_video_profiles_members_read" on public.provider_video_profiles for select using (
   exists (select 1 from public.organization_members om where om.organization_id = provider_video_profiles.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_library_members_read" on public.video_library;
 create policy "video_library_members_read" on public.video_library for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_library.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_templates_members_read" on public.video_templates;
 create policy "video_templates_members_read" on public.video_templates for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_templates.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_campaigns_members_read" on public.video_campaigns;
 create policy "video_campaigns_members_read" on public.video_campaigns for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_campaigns.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "decision_journeys_members_read" on public.decision_journeys;
 create policy "decision_journeys_members_read" on public.decision_journeys for select using (
   exists (select 1 from public.organization_members om where om.organization_id = decision_journeys.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "journey_steps_members_read" on public.journey_steps;
 create policy "journey_steps_members_read" on public.journey_steps for select using (
   exists (select 1 from public.organization_members om where om.organization_id = journey_steps.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_deliveries_members_read" on public.video_deliveries;
 create policy "video_deliveries_members_read" on public.video_deliveries for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_deliveries.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_engagement_events_members_read" on public.video_engagement_events;
 create policy "video_engagement_events_members_read" on public.video_engagement_events for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_engagement_events.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "behavioral_signals_members_read" on public.behavioral_signals;
 create policy "behavioral_signals_members_read" on public.behavioral_signals for select using (
   exists (select 1 from public.organization_members om where om.organization_id = behavioral_signals.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "engagement_patterns_members_read" on public.engagement_patterns;
 create policy "engagement_patterns_members_read" on public.engagement_patterns for select using (
   exists (select 1 from public.organization_members om where om.organization_id = engagement_patterns.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "conversion_profiles_members_read" on public.conversion_profiles;
 create policy "conversion_profiles_members_read" on public.conversion_profiles for select using (
   exists (select 1 from public.organization_members om where om.organization_id = conversion_profiles.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "journey_outcomes_members_read" on public.journey_outcomes;
 create policy "journey_outcomes_members_read" on public.journey_outcomes for select using (
   exists (select 1 from public.organization_members om where om.organization_id = journey_outcomes.organization_id and om.user_id = auth.uid())
 );
+drop policy if exists "video_attribution_records_members_read" on public.video_attribution_records;
 create policy "video_attribution_records_members_read" on public.video_attribution_records for select using (
   exists (select 1 from public.organization_members om where om.organization_id = video_attribution_records.organization_id and om.user_id = auth.uid())
 );
 
+drop policy if exists "video_categories_service_all" on public.video_categories;
 create policy "video_categories_service_all" on public.video_categories for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "provider_video_profiles_service_all" on public.provider_video_profiles;
 create policy "provider_video_profiles_service_all" on public.provider_video_profiles for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_library_service_all" on public.video_library;
 create policy "video_library_service_all" on public.video_library for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_templates_service_all" on public.video_templates;
 create policy "video_templates_service_all" on public.video_templates for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_campaigns_service_all" on public.video_campaigns;
 create policy "video_campaigns_service_all" on public.video_campaigns for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "decision_journeys_service_all" on public.decision_journeys;
 create policy "decision_journeys_service_all" on public.decision_journeys for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "journey_steps_service_all" on public.journey_steps;
 create policy "journey_steps_service_all" on public.journey_steps for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_deliveries_service_all" on public.video_deliveries;
 create policy "video_deliveries_service_all" on public.video_deliveries for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_engagement_events_service_all" on public.video_engagement_events;
 create policy "video_engagement_events_service_all" on public.video_engagement_events for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "behavioral_signals_service_all" on public.behavioral_signals;
 create policy "behavioral_signals_service_all" on public.behavioral_signals for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "engagement_patterns_service_all" on public.engagement_patterns;
 create policy "engagement_patterns_service_all" on public.engagement_patterns for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "conversion_profiles_service_all" on public.conversion_profiles;
 create policy "conversion_profiles_service_all" on public.conversion_profiles for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "journey_outcomes_service_all" on public.journey_outcomes;
 create policy "journey_outcomes_service_all" on public.journey_outcomes for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+drop policy if exists "video_attribution_records_service_all" on public.video_attribution_records;
 create policy "video_attribution_records_service_all" on public.video_attribution_records for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');

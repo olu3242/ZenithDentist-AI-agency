@@ -112,14 +112,7 @@ CREATE TABLE IF NOT EXISTS recall_tracking (
   organization_id       uuid NOT NULL REFERENCES organizations(id),
   patient_external_id   text NOT NULL,
   last_visit_date       date,
-  months_overdue        int GENERATED ALWAYS AS (
-    CASE
-      WHEN last_visit_date IS NULL THEN NULL
-      ELSE GREATEST(0,
-        (EXTRACT(EPOCH FROM (now() - (last_visit_date + interval '6 months'))) / 2592000)::int
-      )
-    END
-  ) STORED,
+  months_overdue        int,
   outreach_count        int DEFAULT 0,
   last_outreach_at      timestamptz,
   status                text DEFAULT 'overdue', -- 'overdue', 'contacted', 'scheduled', 'recovered', 'lost'

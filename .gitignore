@@ -10,3 +10,23 @@ tsconfig.tsbuildinfo
 
 .vercel
 .claude/
+# Supabase investigation artifacts
+supabase_db_push*.txt
+supabase_db_dump*.txt
+supabase_*dump*.sql
+supabase_schema_dump.txt
+remote_public_schema.sql
+supabase_view_check.txt
+tmp_supabase_check.py
+merge-conflicts-backup.patch
+
+# Certification / reconciliation reports
+*_REPORT.md
+*_CERTIFICATION.md
+*_PLAN.md
+*_INVENTORY.md
+*_REVIEW.md
+
+# Local validation artifacts
+*_output.txt
+*_retry*.txt

@@ -46,6 +46,17 @@ create table if not exists public.membership_attributions (id uuid primary key d
 create table if not exists public.video_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, video_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
 
 create table if not exists public.client_health_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, health_score integer not null default 0, risk_level text not null default 'medium', alice_classification text, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'client_health_scores' AND column_name = 'measured_at'
+  ) THEN
+    ALTER TABLE public.client_health_scores
+      ADD COLUMN measured_at timestamptz NOT NULL DEFAULT now();
+  END IF;
+END $$;
 create table if not exists public.adoption_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, feature_key text not null, adoption_score integer not null default 0, usage_count integer not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
 create table if not exists public.engagement_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, engagement_score integer not null default 0, active_users integer not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
 create table if not exists public.expansion_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, expansion_score integer not null default 0, opportunity_value numeric(12,2) not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
