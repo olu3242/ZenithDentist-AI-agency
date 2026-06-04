@@ -3,6 +3,46 @@
 
 create table if not exists public.implementation_projects (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_name text not null, package_key text not null, implementation_owner text, current_phase text not null default 'signed', go_live_date date, risk_level text not null default 'normal', completion_percent integer not null default 0, status text not null default 'active', signed_at timestamptz, created_at timestamptz not null default now(), updated_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
 create table if not exists public.implementation_tasks (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, implementation_project_id uuid references public.implementation_projects(id) on delete cascade, checklist_item_key text, task_type text not null, title text not null, owner text, owner_role text, status text not null default 'not_started', due_date date, evidence_type text, evidence_record_id uuid, evidence_status text not null default 'not_required', go_live_requirement boolean not null default false, completed_at timestamptz, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+alter table public.implementation_projects
+  add column if not exists client_name text,
+  add column if not exists package_key text,
+  add column if not exists implementation_owner text,
+  add column if not exists current_phase text not null default 'signed',
+  add column if not exists go_live_date date,
+  add column if not exists risk_level text not null default 'normal',
+  add column if not exists completion_percent integer not null default 0,
+  add column if not exists status text not null default 'active',
+  add column if not exists signed_at timestamptz,
+  add column if not exists updated_at timestamptz not null default now();
+
+alter table public.implementation_tasks
+  add column if not exists implementation_project_id uuid,
+  add column if not exists checklist_item_key text,
+  add column if not exists task_type text,
+  add column if not exists title text,
+  add column if not exists owner text,
+  add column if not exists owner_role text,
+  add column if not exists due_date date,
+  add column if not exists evidence_type text,
+  add column if not exists evidence_record_id uuid,
+  add column if not exists evidence_status text not null default 'not_required',
+  add column if not exists go_live_requirement boolean not null default false,
+  add column if not exists metadata jsonb not null default '{}'::jsonb;
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'implementation_tasks'
+      and column_name = 'project_id'
+  ) then
+    execute 'update public.implementation_tasks set implementation_project_id = project_id where implementation_project_id is null';
+  end if;
+end $$;
+
 create table if not exists public.implementation_blueprints (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, blueprint_key text not null, name text not null, package_key text not null, required_integrations text[] not null default '{}', required_data text[] not null default '{}', required_training text[] not null default '{}', required_workflows text[] not null default '{}', success_criteria text[] not null default '{}', created_at timestamptz not null default now(), updated_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb, unique (organization_id, blueprint_key));
 create table if not exists public.implementation_checklist_templates (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, item_key text not null, stage text not null, section text not null, label text not null, task_type text not null default 'onboarding', default_owner_role text not null default 'implementation_owner', default_due_offset_days integer not null default 7, evidence_type text, go_live_requirement boolean not null default false, required boolean not null default true, sort_order integer not null default 0, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb, unique (organization_id, item_key));
 create table if not exists public.client_onboarding_items (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, implementation_project_id uuid references public.implementation_projects(id) on delete cascade, implementation_task_id uuid references public.implementation_tasks(id) on delete set null, item_key text not null, stage text not null default 'onboarding', section text not null default 'general', category text not null, label text not null, owner text, owner_role text not null default 'implementation_owner', due_date date, evidence_type text, evidence_record_id uuid, evidence_status text not null default 'required', go_live_requirement boolean not null default false, certification_gate text, sort_order integer not null default 0, required boolean not null default true, status text not null default 'not_started', completed_at timestamptz, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb, unique (implementation_project_id, item_key));
