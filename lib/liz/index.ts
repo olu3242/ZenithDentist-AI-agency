@@ -1,5 +1,6 @@
 import "server-only";
 
+
 import { randomUUID } from "crypto";
 import { getIntelligenceProvider } from "@/lib/ai/provider";
 import { calculatePracticeHealth } from "@/lib/health";
@@ -455,3 +456,12 @@ export async function scoreLead(organizationId: string): Promise<number> {
   const raw = healthComponent + automationComponent + recallComponent + revenueComponent;
   return Math.round(Math.min(100, Math.max(0, raw)));
 }
+
+export { getLizAdvisorResponse, lizMessageSchema } from "@/lib/liz/advisor";
+export type { LizAction, LizAdvisorResponse, LizConversationOutcome, LizEscalationPath, LizIntent, LizResponseV2 } from "@/lib/liz/advisor";
+export { buildLizKnowledgeBase, lizFaqLibrary, retrieveLizKnowledge } from "@/lib/liz/knowledge";
+export type { LizKnowledgeRecord, LizKnowledgeSource } from "@/lib/liz/knowledge";
+export { eventTypeForAction, trackLizTelemetry } from "@/lib/liz/telemetry";
+export type { LizTelemetryEventType, LizTelemetryInput } from "@/lib/liz/telemetry";
+
+

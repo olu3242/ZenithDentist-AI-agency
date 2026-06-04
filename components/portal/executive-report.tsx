@@ -27,6 +27,14 @@ export function ExecutiveReport({ report }: { report: Report }) {
         <ReportStat label="Reviews Generated" value={String(metrics.reviewsGenerated ?? 0)} />
         <ReportStat label="Admin Hours Saved" value={String(metrics.adminHoursSaved ?? 0)} />
       </div>
+      <div className="mt-5 rounded border border-line bg-paper p-4 text-sm font-semibold text-muted">
+        <p className="text-xs font-black uppercase tracking-wider text-muted">Report traceability</p>
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          <span>Generated From: reports, operational_metrics, recommendations</span>
+          <span>Trace ID: report-{report.id}</span>
+          <span>Generation Time: {new Date(report.generated_at).toLocaleString()}</span>
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import type { OperationalMetric } from "@/lib/data/operations";
+import { brandConfig } from "@/lib/brand";
 
 export function PerformanceHeatmap({ metrics }: { metrics: OperationalMetric[] }) {
   const rows = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -17,7 +18,7 @@ export function PerformanceHeatmap({ metrics }: { metrics: OperationalMetric[] }
                 <div
                   key={slot}
                   className="rounded p-3 text-center text-xs font-black"
-                  style={{ background: `rgba(23,127,117,${0.12 + intensity / 16})`, color: intensity > 5 ? "white" : "#18212f" }}
+                  style={{ background: `color-mix(in srgb, ${brandConfig.colors.secondary} ${(12 + intensity * 6)}%, white)`, color: intensity > 5 ? "white" : brandConfig.colors.foreground }}
                 >
                   {slot}
                 </div>

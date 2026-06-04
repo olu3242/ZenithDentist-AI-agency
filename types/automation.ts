@@ -11,7 +11,9 @@ export type AutomationDomain =
   | "mission_control"
   | "lead_operations"
   | "treatment"
-  | "insurance";
+  | "insurance"
+  | "patient_influence"
+  | "ai";
 
 export type AutomationCoverageClassification =
   | "COMPLETE"

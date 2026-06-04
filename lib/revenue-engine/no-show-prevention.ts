@@ -43,6 +43,7 @@ export async function triggerNoShowPrevention(
     },
   });
 
+
   // Record execution in workflow_executions for revenue attribution
   try {
     const supabase = createServiceClient();
@@ -56,6 +57,28 @@ export async function triggerNoShowPrevention(
       });
     }
   } catch { /* non-blocking */ }
+
+  // Non-blocking revenue attribution record
+  (async () => {
+    try {
+      const supabase = createServiceClient();
+      if (!supabase) return;
+      const today = new Date();
+      const periodStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10);
+      const periodEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().slice(0, 10);
+      await (supabase as any).from("revenue_attribution_records").insert({
+        organization_id: payload.organizationId,
+        workflow_execution_id: null,
+        attribution_type: "no_show_prevention",
+        attributed_revenue: 0,
+        confidence_score: 0.85,
+        period_start: periodStart,
+        period_end: periodEnd,
+      });
+    } catch {}
+  })();
+
+
   return { eventId: result.eventId, correlationId: result.correlationId };
 }
 
@@ -88,3 +111,4 @@ export async function getNoShowMetrics(
 
   return { totalAppointments, noShows, noShowRate, preventedNoShows, estimatedRevenueProtected };
 }
+

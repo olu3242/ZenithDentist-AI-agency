@@ -1,22 +1,31 @@
 import {
   Activity,
+  AlertTriangle,
   BarChart3,
+  BookOpenCheck,
   Brain,
+  BriefcaseBusiness,
   Building2,
   CalendarCheck,
   ClipboardCheck,
   ClipboardList,
+  Clock,
   CloudCog,
   DatabaseZap,
+  DollarSign,
   FileText,
   Gauge,
   GitBranch,
+  GraduationCap,
   HeartPulse,
+  KeyRound,
   LayoutDashboard,
   Network,
+  PlayCircle,
   PlugZap,
   Radar,
   RefreshCw,
+  Rocket,
   Settings,
   ShieldCheck,
   SlidersHorizontal,
@@ -29,6 +38,7 @@ import {
   Store
 } from "lucide-react";
 import type { ZenithRole } from "@/lib/auth-routing";
+import { getPersonaNavigationForRole, type MissionDomain } from "@/lib/personas";
 
 export interface NavItem {
   href: string;
@@ -40,6 +50,11 @@ export interface NavItem {
 
 export const appNavItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", description: "Staff KPI and executive operations dashboard", roles: ["staff", "agency_admin", "super_admin"], icon: BarChart3 },
+  { href: "/dashboard/front-desk", label: "Front Desk", description: "Front desk patient and appointment operations", roles: ["staff", "agency_admin", "super_admin"], icon: CalendarCheck },
+  { href: "/dashboard/provider", label: "Provider", description: "Provider revenue and treatment operations", roles: ["staff", "agency_admin", "super_admin"], icon: HeartPulse },
+  { href: "/dashboard/office-manager", label: "Office Manager", description: "Office manager workflow and PMS operations", roles: ["staff", "agency_admin", "super_admin"], icon: ClipboardCheck },
+  { href: "/dashboard/practice-owner", label: "Practice Owner", description: "Practice owner executive revenue dashboard", roles: ["practice_owner", "agency_admin", "super_admin"], icon: TrendingUp },
+  { href: "/dashboard/pms", label: "PMS Ops", description: "Canonical PMS Operations Center", roles: ["staff", "agency_admin", "super_admin"], icon: PlugZap },
   { href: "/onboarding", label: "Onboarding", description: "First-user setup, organization activation, and portal handoff", roles: ["practice_owner", "staff", "agency_admin", "super_admin"], icon: ClipboardCheck },
   { href: "/portal", label: "Client Portal", description: "Practice owner revenue intelligence portal", roles: ["practice_owner", "super_admin"], icon: Gauge },
   { href: "/portal/onboarding", label: "Onboarding", description: "Practice launch and PMS readiness", roles: ["practice_owner", "staff", "super_admin"], icon: ClipboardCheck },
@@ -50,6 +65,27 @@ export const appNavItems: NavItem[] = [
   { href: "/automation-marketplace", label: "Marketplace", description: "Install and manage dental automation packs", roles: ["practice_owner", "agency_admin", "super_admin"], icon: Store },
   { href: "/automation-center", label: "Automation Center", description: "Execute, pause, resume and observe automations", roles: ["practice_owner", "staff", "agency_admin", "super_admin"], icon: Workflow },
   { href: "/internal", label: "Internal Ops", description: "Internal platform operations workspace", roles: ["super_admin"], icon: Building2 },
+  { href: "/internal/executive", label: "Executive", description: "Agency-wide executive command center", roles: ["super_admin"], icon: ShieldCheck },
+  { href: "/internal/product-owner", label: "Product Owner", description: "Platform health, adoption, roadmap and release operations", roles: ["super_admin"], icon: Gauge },
+  { href: "/internal/noc", label: "NOC", description: "Enterprise live operations and event feed", roles: ["super_admin"], icon: Activity },
+  { href: "/internal/incidents", label: "Incidents", description: "Incident management, root cause and recovery tracking", roles: ["super_admin"], icon: AlertTriangle },
+  { href: "/internal/sla", label: "SLA", description: "Client SLA, error budget and compliance center", roles: ["super_admin"], icon: Clock },
+  { href: "/internal/debug", label: "Debug", description: "Debug and recovery center", roles: ["super_admin"], icon: DatabaseZap },
+  { href: "/internal/evidence", label: "Evidence", description: "Enterprise evidence explorer", roles: ["super_admin"], icon: ClipboardCheck },
+  { href: "/internal/certification", label: "Certification", description: "Enterprise go-live gates and readiness index", roles: ["super_admin"], icon: ShieldCheck },
+  { href: "/internal/alice-traceability", label: "ALICE Trace", description: "ALICE decision traceability and outcomes", roles: ["super_admin"], icon: Brain },
+  { href: "/internal/revenue-attribution", label: "Attribution", description: "Revenue attribution journey tracker", roles: ["super_admin"], icon: Wallet },
+  { href: "/internal/customer-success", label: "Customer Success", description: "Client health, adoption, churn and expansion", roles: ["super_admin"], icon: HeartPulse },
+  { href: "/internal/agency-crm", label: "Agency CRM", description: "Pipeline, clients, renewals and opportunities", roles: ["super_admin"], icon: BriefcaseBusiness },
+  { href: "/internal/implementations", label: "Implementations", description: "Client implementation command center", roles: ["super_admin"], icon: Rocket },
+  { href: "/internal/onboarding", label: "Client Onboarding", description: "Automated onboarding tasks and progress", roles: ["super_admin"], icon: ClipboardCheck },
+  { href: "/internal/integrations-readiness", label: "Integration Readiness", description: "Implementation integration connection gates", roles: ["super_admin"], icon: PlugZap },
+  { href: "/internal/training", label: "Training OS", description: "Role-based client training and certification", roles: ["super_admin"], icon: GraduationCap },
+  { href: "/internal/adoption", label: "Adoption", description: "Client adoption, usage and expansion signals", roles: ["super_admin"], icon: Activity },
+  { href: "/internal/go-live", label: "Go Live", description: "Go-live certification and success review automation", roles: ["super_admin"], icon: CalendarCheck },
+  { href: "/internal/client-playbooks", label: "Client Playbooks", description: "Post-go-live operating playbooks and success procedures", roles: ["super_admin"], icon: BookOpenCheck },
+  { href: "/internal/commercial-lockdown", label: "Commercial Lockdown", description: "Pricing, payment gates, scope control and revenue visibility", roles: ["super_admin"], icon: DollarSign },
+  { href: "/internal/client-approvals", label: "Client Approvals", description: "Approve, suspend, revoke, activate and invite client platform users", roles: ["super_admin"], icon: KeyRound },
   { href: "/settings", label: "Settings", description: "Organization, user and routing preferences", roles: ["practice_owner", "staff", "agency_admin", "super_admin"], icon: Settings }
 ];
 
@@ -76,6 +112,7 @@ export const portalNavItems: NavItem[] = [
   { href: "/portal/recall", label: "Recall", description: "Recall recovery pipeline", roles: ["practice_owner", "super_admin"], icon: RefreshCw },
   { href: "/portal/locations", label: "Locations", description: "Multi-location performance", roles: ["practice_owner", "super_admin"], icon: Building2 },
   { href: "/portal/reports", label: "Reports", description: "Executive reporting", roles: ["practice_owner", "super_admin"], icon: FileText },
+  { href: "/portal/video", label: "Video Intelligence", description: "Video Engagement OS, patient journeys, attention scores and attribution", roles: ["practice_owner", "super_admin"], icon: PlayCircle },
   { href: "/portal/simulations", label: "Simulations", description: "Operational scenario modeling", roles: ["practice_owner", "super_admin"], icon: SlidersHorizontal }
 ];
 
@@ -96,6 +133,7 @@ export const internalNavItems: NavItem[] = [
   { href: "/internal/integrations", label: "PMS", description: "PMS integrations", roles: ["super_admin"], icon: PlugZap },
   { href: "/internal/governance", label: "Governance", description: "Governance controls", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/platform", label: "Platform", description: "Platform readiness", roles: ["super_admin"], icon: ShieldCheck },
+  { href: "/internal/production-certification", label: "Certification", description: "Production evidence, claim governance, connector proof, and role workspace certification", roles: ["super_admin"], icon: ShieldCheck },
   { href: "/internal/ai", label: "ALICE", description: "AI operations", roles: ["super_admin"], icon: Brain },
   { href: "/internal/playbooks", label: "Playbooks", description: "Operational playbooks", roles: ["super_admin"], icon: GitBranch },
   { href: "/internal/operations", label: "Operations", description: "Operations center", roles: ["super_admin"], icon: Activity },
@@ -105,6 +143,15 @@ export const internalNavItems: NavItem[] = [
   { href: "/internal/benchmarks", label: "Benchmarks", description: "Benchmarks and cohorts", roles: ["super_admin"], icon: BarChart3 },
   { href: "/internal/revenue", label: "Revenue", description: "Revenue intelligence", roles: ["super_admin"], icon: Wallet },
   { href: "/internal/platform-metrics", label: "Platform Metrics", description: "Platform KPIs", roles: ["super_admin"], icon: Gauge },
+  { href: "/internal/implementations", label: "Implementations", description: "Client implementation command center", roles: ["super_admin"], icon: Rocket },
+  { href: "/internal/onboarding", label: "Client Onboarding", description: "Automated onboarding tasks", roles: ["super_admin"], icon: ClipboardCheck },
+  { href: "/internal/integrations-readiness", label: "Readiness", description: "Integration readiness gates", roles: ["super_admin"], icon: PlugZap },
+  { href: "/internal/training", label: "Training", description: "Client training OS", roles: ["super_admin"], icon: GraduationCap },
+  { href: "/internal/adoption", label: "Adoption", description: "Adoption and health signals", roles: ["super_admin"], icon: Activity },
+  { href: "/internal/go-live", label: "Go Live", description: "Go-live certification", roles: ["super_admin"], icon: CalendarCheck },
+  { href: "/internal/client-playbooks", label: "Client Playbooks", description: "Post-go-live client operating playbooks", roles: ["super_admin"], icon: BookOpenCheck },
+  { href: "/internal/commercial-lockdown", label: "Commercial", description: "Payment gates and commercial controls", roles: ["super_admin"], icon: DollarSign },
+  { href: "/internal/client-approvals", label: "Client Approvals", description: "Access approval, suspension, revocation and invitation controls", roles: ["super_admin"], icon: KeyRound },
   { href: "/lead-operations", label: "Lead Ops", description: "Lead operations workspace", roles: ["agency_admin", "super_admin"], icon: GitBranch },
   { href: "/client-operations", label: "Client Ops", description: "Client delivery operations", roles: ["agency_admin", "super_admin"], icon: Users },
   { href: "/gtm-command-center", label: "GTM Command", description: "Growth and delivery command center", roles: ["agency_admin", "super_admin"], icon: Target }
@@ -112,9 +159,26 @@ export const internalNavItems: NavItem[] = [
 
 export function navForRole(role: ZenithRole) {
   return {
-    primary: appNavItems.filter(item => item.roles.includes(role)),
+    primary: getPersonaNavigationForRole(role).map(item => ({
+      href: item.href,
+      label: item.label,
+      description: item.description,
+      roles: [role],
+      icon: iconForDomain(item.domain)
+    })),
     admin: adminNavItems.filter(item => item.roles.includes(role)),
     portal: portalNavItems.filter(item => item.roles.includes(role)),
     internal: internalNavItems.filter(item => item.roles.includes(role))
   };
+}
+
+function iconForDomain(domain: MissionDomain) {
+  return {
+    automation: Workflow,
+    enterprise: Building2,
+    operations: ClipboardCheck,
+    patients: HeartPulse,
+    platform: ShieldCheck,
+    revenue: TrendingUp
+  }[domain];
 }

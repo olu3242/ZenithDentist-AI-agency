@@ -83,3 +83,86 @@ function safeCompare(expected: string, actual: string) {
   const actualBuffer = Buffer.from(actual);
   return expectedBuffer.length === actualBuffer.length && timingSafeEqual(expectedBuffer, actualBuffer);
 }
+
+/**
+ * Upsert billing customer record linked to a Stripe customer.
+ */
+export async function upsertBillingCustomer(opts: {
+  stripeCustomerId: string;
+  email: string;
+  name?: string;
+  organizationId?: string;
+  clientAccountId?: string;
+  stripeSubscriptionId?: string;
+  subscriptionStatus?: string;
+  currentPeriodEnd?: Date;
+}): Promise<void> {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+  await (supabase as any).from("billing_customers").upsert({
+    stripe_customer_id: opts.stripeCustomerId,
+    email: opts.email,
+    name: opts.name,
+    organization_id: opts.organizationId ?? null,
+    client_account_id: opts.clientAccountId ?? null,
+    stripe_subscription_id: opts.stripeSubscriptionId ?? null,
+    subscription_status: opts.subscriptionStatus ?? "inactive",
+    current_period_end: opts.currentPeriodEnd?.toISOString() ?? null,
+  }, { onConflict: "stripe_customer_id" });
+}
+
+/**
+ * Auto-activate a client account after payment success.
+ * Finds the client_account by email extracted from the Stripe event,
+ * sets setup_fee_paid + subscription_active + approved_for_access, and
+ * ensures the email is in authorized_domains.
+ */
+export async function activateClientFromPayment(opts: {
+  email: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+}): Promise<{ activated: boolean; clientAccountId?: string; organizationId?: string }> {
+  const supabase = createServiceClient();
+  if (!supabase) return { activated: false };
+
+  const client = supabase as any;
+  const email = opts.email.trim().toLowerCase();
+
+  // Find existing client account
+  const { data: account } = await client
+    .from("client_accounts")
+    .select("id, organization_id, approved_for_access, subscription_active")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (!account) return { activated: false };
+
+  const updates: Record<string, unknown> = {
+    setup_fee_paid: true,
+    subscription_active: true,
+    approved_for_access: true,
+    implementation_started: true,
+    status: "active",
+  };
+  if (opts.stripeCustomerId) updates.stripe_customer_id = opts.stripeCustomerId;
+  if (opts.stripeSubscriptionId) updates.stripe_subscription_id = opts.stripeSubscriptionId;
+
+  await client.from("client_accounts").update(updates).eq("id", account.id);
+
+  // Ensure email is authorized for OAuth
+  await client.from("authorized_domains").upsert(
+    { value: email, value_type: "email", status: "active", organization_id: account.organization_id ?? null },
+    { onConflict: "value,value_type" }
+  );
+
+  // Record billing event
+  await client.from("billing_events").insert({
+    organization_id: account.organization_id ?? null,
+    event_type: "client_activated_from_payment",
+    provider_event_id: `activation_${account.id}`,
+    status: "processed",
+    payload: { email, stripeCustomerId: opts.stripeCustomerId },
+  }).catch(() => {});
+
+  return { activated: true, clientAccountId: account.id, organizationId: account.organization_id };
+}

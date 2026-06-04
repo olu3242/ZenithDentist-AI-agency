@@ -1,0 +1,181 @@
+-- Enterprise Operations & Evidence OS
+-- Canonical additive governance layer for agency operations, evidence, traceability, attribution, SLA, incident, debug, customer success, and agency CRM.
+
+create table if not exists public.incidents (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, severity text not null default 'P3 Medium', status text not null default 'open', title text not null, summary text, source text not null default 'enterprise_operations', trace_id text, correlation_id text, opened_at timestamptz not null default now(), closed_at timestamptz, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.incident_events (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, incident_id uuid references public.incidents(id) on delete cascade, event_type text not null, actor text, outcome text, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.incident_assignments (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, incident_id uuid references public.incidents(id) on delete cascade, assigned_to text not null, assigned_by text, status text not null default 'assigned', assigned_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.incident_root_causes (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, incident_id uuid references public.incidents(id) on delete cascade, category text not null, root_cause text not null, confidence integer not null default 0, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.incident_recoveries (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, incident_id uuid references public.incidents(id) on delete cascade, recovery_action text not null, status text not null default 'planned', validated boolean not null default false, recovered_at timestamptz, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.incident_timelines (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, incident_id uuid references public.incidents(id) on delete cascade, label text not null, detail text, actor text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.client_slas (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, sla_type text not null, target_percent numeric(5,2) not null default 99.00, response_minutes integer not null default 60, resolution_minutes integer not null default 240, recovery_minutes integer not null default 120, status text not null default 'active', created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.sla_events (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_sla_id uuid references public.client_slas(id) on delete set null, event_type text not null, measured_value numeric(10,2), target_value numeric(10,2), trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.sla_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, score_date date not null default current_date, availability_score integer not null default 0, response_score integer not null default 0, resolution_score integer not null default 0, recovery_score integer not null default 0, compliance_percent numeric(5,2) not null default 0, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.sla_violations (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_sla_id uuid references public.client_slas(id) on delete set null, violation_type text not null, severity text not null default 'P3 Medium', status text not null default 'open', occurred_at timestamptz not null default now(), resolved_at timestamptz, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.sla_breaches (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_sla_id uuid references public.client_slas(id) on delete set null, breach_type text not null, error_budget_consumed numeric(8,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.sla_forecasts (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, forecast_type text not null, forecast_percent numeric(5,2) not null default 0, risk_level text not null default 'medium', forecast_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.system_failures (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, failure_type text not null, source text not null, status text not null default 'open', severity text not null default 'P3 Medium', trace_id text, correlation_id text, detected_at timestamptz not null default now(), resolved_at timestamptz, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.debug_events (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, system_failure_id uuid references public.system_failures(id) on delete set null, event_type text not null, detail text, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.recovery_actions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, system_failure_id uuid references public.system_failures(id) on delete set null, action_type text not null, status text not null default 'planned', actor text not null default 'recovery_os', validated boolean not null default false, started_at timestamptz not null default now(), completed_at timestamptz, metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.failure_patterns (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, pattern_key text not null, failure_type text not null, frequency integer not null default 0, confidence integer not null default 0, recommended_recovery text, detected_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.recovery_results (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, recovery_action_id uuid references public.recovery_actions(id) on delete set null, outcome text not null, verification_status text not null default 'pending', recovery_minutes integer not null default 0, completed_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.automation_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.workflow_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.revenue_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, revenue_amount numeric(12,2) not null default 0, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.patient_journey_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.relationship_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.video_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.alice_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.liz_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.compliance_evidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, correlation_id text, patient_id text, actor text, source text not null, action text not null, reason text, outcome text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.alice_decisions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, trace_id text not null, decision_type text not null, recommendation text not null, confidence integer not null default 0, inputs jsonb not null default '{}'::jsonb, reasoning text, outcome text, business_impact text, decided_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.alice_recommendations (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, alice_decision_id uuid references public.alice_decisions(id) on delete set null, recommendation text not null, recommended_action text not null, confidence integer not null default 0, status text not null default 'open', created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.alice_reasoning (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, alice_decision_id uuid references public.alice_decisions(id) on delete cascade, reasoning_step text not null, evidence jsonb not null default '{}'::jsonb, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.alice_outcomes (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, alice_decision_id uuid references public.alice_decisions(id) on delete set null, outcome text not null, impact_value numeric(12,2) not null default 0, verified boolean not null default false, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.alice_confidence (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, alice_decision_id uuid references public.alice_decisions(id) on delete set null, confidence_score integer not null default 0, confidence_reason text, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.revenue_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, attribution_type text not null, workflow_id text, patient_id text, revenue_amount numeric(12,2) not null default 0, revenue_influenced numeric(12,2) not null default 0, evidence_id uuid, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.campaign_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, campaign_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.workflow_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, workflow_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.appointment_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, appointment_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.treatment_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, treatment_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.membership_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, membership_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.video_attributions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, video_id text not null, patient_id text, revenue_amount numeric(12,2) not null default 0, trace_id text, occurred_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.client_health_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, health_score integer not null default 0, risk_level text not null default 'medium', alice_classification text, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'client_health_scores' AND column_name = 'measured_at'
+  ) THEN
+    ALTER TABLE public.client_health_scores
+      ADD COLUMN measured_at timestamptz NOT NULL DEFAULT now();
+  END IF;
+END $$;
+create table if not exists public.adoption_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, feature_key text not null, adoption_score integer not null default 0, usage_count integer not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.engagement_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, engagement_score integer not null default 0, active_users integer not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.expansion_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, expansion_score integer not null default 0, opportunity_value numeric(12,2) not null default 0, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.churn_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, churn_score integer not null default 0, churn_reason text, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.renewal_scores (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, renewal_score integer not null default 0, renewal_date date, measured_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create table if not exists public.prospects (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, name text not null, stage text not null default 'prospect', value numeric(12,2) not null default 0, owner text, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.clients (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, name text not null, status text not null default 'active', mrr numeric(12,2) not null default 0, arr numeric(12,2) not null default 0, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.contracts (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_id uuid references public.clients(id) on delete set null, contract_status text not null default 'draft', start_date date, end_date date, contract_value numeric(12,2) not null default 0, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.renewals (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_id uuid references public.clients(id) on delete set null, renewal_status text not null default 'upcoming', renewal_value numeric(12,2) not null default 0, renewal_date date, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.expansions (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, client_id uuid references public.clients(id) on delete set null, expansion_type text not null, expansion_value numeric(12,2) not null default 0, stage text not null default 'identified', created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.opportunities (id uuid primary key default gen_random_uuid(), organization_id uuid not null references public.organizations(id) on delete cascade, opportunity_type text not null, stage text not null default 'open', value numeric(12,2) not null default 0, probability numeric(5,2) not null default 0, expected_close date, created_at timestamptz not null default now(), metadata jsonb not null default '{}'::jsonb);
+
+create index if not exists idx_incidents_org_status on public.incidents(organization_id, status);
+create index if not exists idx_client_slas_org on public.client_slas(organization_id);
+create index if not exists idx_system_failures_org_status on public.system_failures(organization_id, status);
+create index if not exists idx_alice_decisions_org_trace on public.alice_decisions(organization_id, trace_id);
+create index if not exists idx_revenue_attributions_org_type on public.revenue_attributions(organization_id, attribution_type);
+create index if not exists idx_client_health_scores_org on public.client_health_scores(organization_id, measured_at desc);
+create index if not exists idx_clients_org_status on public.clients(organization_id, status);
+
+alter table public.incidents enable row level security;
+alter table public.incident_events enable row level security;
+alter table public.incident_assignments enable row level security;
+alter table public.incident_root_causes enable row level security;
+alter table public.incident_recoveries enable row level security;
+alter table public.incident_timelines enable row level security;
+alter table public.client_slas enable row level security;
+alter table public.sla_events enable row level security;
+alter table public.sla_scores enable row level security;
+alter table public.sla_violations enable row level security;
+alter table public.sla_breaches enable row level security;
+alter table public.sla_forecasts enable row level security;
+alter table public.system_failures enable row level security;
+alter table public.debug_events enable row level security;
+alter table public.recovery_actions enable row level security;
+alter table public.failure_patterns enable row level security;
+alter table public.recovery_results enable row level security;
+alter table public.automation_evidence enable row level security;
+alter table public.workflow_evidence enable row level security;
+alter table public.revenue_evidence enable row level security;
+alter table public.patient_journey_evidence enable row level security;
+alter table public.relationship_evidence enable row level security;
+alter table public.video_evidence enable row level security;
+alter table public.alice_evidence enable row level security;
+alter table public.liz_evidence enable row level security;
+alter table public.compliance_evidence enable row level security;
+alter table public.alice_decisions enable row level security;
+alter table public.alice_recommendations enable row level security;
+alter table public.alice_reasoning enable row level security;
+alter table public.alice_outcomes enable row level security;
+alter table public.alice_confidence enable row level security;
+alter table public.revenue_attributions enable row level security;
+alter table public.campaign_attributions enable row level security;
+alter table public.workflow_attributions enable row level security;
+alter table public.appointment_attributions enable row level security;
+alter table public.treatment_attributions enable row level security;
+alter table public.membership_attributions enable row level security;
+alter table public.video_attributions enable row level security;
+alter table public.client_health_scores enable row level security;
+alter table public.adoption_scores enable row level security;
+alter table public.engagement_scores enable row level security;
+alter table public.expansion_scores enable row level security;
+alter table public.churn_scores enable row level security;
+alter table public.renewal_scores enable row level security;
+alter table public.prospects enable row level security;
+alter table public.clients enable row level security;
+alter table public.contracts enable row level security;
+alter table public.renewals enable row level security;
+alter table public.expansions enable row level security;
+alter table public.opportunities enable row level security;
+
+create policy "incidents_service_all" on public.incidents for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "incident_events_service_all" on public.incident_events for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "incident_assignments_service_all" on public.incident_assignments for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "incident_root_causes_service_all" on public.incident_root_causes for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "incident_recoveries_service_all" on public.incident_recoveries for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "incident_timelines_service_all" on public.incident_timelines for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "client_slas_service_all" on public.client_slas for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "sla_events_service_all" on public.sla_events for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "sla_scores_service_all" on public.sla_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "sla_violations_service_all" on public.sla_violations for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "sla_breaches_service_all" on public.sla_breaches for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "sla_forecasts_service_all" on public.sla_forecasts for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "system_failures_service_all" on public.system_failures for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "debug_events_service_all" on public.debug_events for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "recovery_actions_service_all" on public.recovery_actions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "failure_patterns_service_all" on public.failure_patterns for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "recovery_results_service_all" on public.recovery_results for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "automation_evidence_service_all" on public.automation_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "workflow_evidence_service_all" on public.workflow_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "revenue_evidence_service_all" on public.revenue_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "patient_journey_evidence_service_all" on public.patient_journey_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "relationship_evidence_service_all" on public.relationship_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "video_evidence_service_all" on public.video_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_evidence_service_all" on public.alice_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "liz_evidence_service_all" on public.liz_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "compliance_evidence_service_all" on public.compliance_evidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_decisions_service_all" on public.alice_decisions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_recommendations_service_all" on public.alice_recommendations for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_reasoning_service_all" on public.alice_reasoning for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_outcomes_service_all" on public.alice_outcomes for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "alice_confidence_service_all" on public.alice_confidence for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "revenue_attributions_service_all" on public.revenue_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "campaign_attributions_service_all" on public.campaign_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "workflow_attributions_service_all" on public.workflow_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "appointment_attributions_service_all" on public.appointment_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "treatment_attributions_service_all" on public.treatment_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "membership_attributions_service_all" on public.membership_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "video_attributions_service_all" on public.video_attributions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "client_health_scores_service_all" on public.client_health_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "adoption_scores_service_all" on public.adoption_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "engagement_scores_service_all" on public.engagement_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "expansion_scores_service_all" on public.expansion_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "churn_scores_service_all" on public.churn_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "renewal_scores_service_all" on public.renewal_scores for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "prospects_service_all" on public.prospects for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "clients_service_all" on public.clients for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "contracts_service_all" on public.contracts for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "renewals_service_all" on public.renewals for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "expansions_service_all" on public.expansions for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+create policy "opportunities_service_all" on public.opportunities for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');

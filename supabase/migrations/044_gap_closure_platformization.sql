@@ -29,7 +29,7 @@ create table public.recovery_orchestration_runs (
   completed_at timestamptz
 );
 
-create table public.tenant_onboarding_runs (
+create table if not exists public.tenant_onboarding_runs (
   id uuid primary key default gen_random_uuid(),
   organization_id text not null,
   onboarding_key text not null,
@@ -96,6 +96,7 @@ alter table public.operational_usage_meters enable row level security;
 
 create policy "service_role_all_runtime_event_fabric_events" on public.runtime_event_fabric_events for all using (auth.role() = 'service_role');
 create policy "service_role_all_recovery_orchestration_runs" on public.recovery_orchestration_runs for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_tenant_onboarding_runs" on public.tenant_onboarding_runs;
 create policy "service_role_all_tenant_onboarding_runs" on public.tenant_onboarding_runs for all using (auth.role() = 'service_role');
 create policy "service_role_all_operational_extensions" on public.operational_extensions for all using (auth.role() = 'service_role');
 create policy "service_role_all_operational_api_keys" on public.operational_api_keys for all using (auth.role() = 'service_role');

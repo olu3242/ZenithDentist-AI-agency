@@ -1,4 +1,5 @@
 import type { EnterpriseCloudState } from "@/lib/enterprise-cloud";
+import { brandConfig } from "@/lib/brand";
 import { Fragment } from "react";
 
 export function OrganizationalHeatmap({ state }: { state: EnterpriseCloudState }) {
@@ -19,7 +20,7 @@ export function OrganizationalHeatmap({ state }: { state: EnterpriseCloudState }
                 {metrics.map((metric, index) => {
                   const value = Math.max(48, Math.min(94, state.enterpriseScore - rowIndex * 8 + index * 3));
                   return (
-                    <div key={`${location}-${metric}`} className="rounded p-3 text-center text-sm font-black text-white" style={{ backgroundColor: value > 80 ? "#177f75" : value > 66 ? "#2f6fbd" : "#b65b3a" }}>
+                    <div key={`${location}-${metric}`} className="rounded p-3 text-center text-sm font-black text-white" style={{ backgroundColor: value > 80 ? brandConfig.colors.secondary : value > 66 ? brandConfig.colors.primary : brandConfig.colors.warning }}>
                       {value}
                     </div>
                   );

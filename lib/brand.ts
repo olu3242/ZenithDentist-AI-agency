@@ -6,6 +6,8 @@ export const brandConfig = {
   tagline: "Automate. Scale. Dominate.",
   descriptor: "AI Automation Agency",
   productTagline: "Patient Revenue Engine",
+  productAcronym: "PROS",
+  trademark: "Zenith AI Automation Agency™",
   logoMark: "Z",
   personality: [
     "Enterprise",

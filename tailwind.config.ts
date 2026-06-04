@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#0B1020",
+        ink: "#0A0F1C",
         muted: "#64748B",
         paper: "#F1F5F9",
         line: "#E2E8F0",
@@ -19,16 +19,16 @@ const config: Config = {
         rust: "#EF4444",
         gold: "#F59E0B",
         green: "#22C55E",
-        blue: "#2563EB",
-        primary: "#2563EB",
-        secondary: "#06B6D4",
-        accent: "#14B8A6",
+        blue: "#0EA5E9",
+        primary: "#0EA5E9",
+        secondary: "#14B8A6",
+        accent: "#38BDF8",
         background: "#F8FAFC",
         foreground: "#0F172A",
         border: "#E2E8F0",
         surface: "#F1F5F9",
         card: "#FFFFFF",
-        navy: "#0B1020",
+        navy: "#0A0F1C",
         danger: "#EF4444",
         warning: "#F59E0B"
       },

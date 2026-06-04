@@ -7,6 +7,7 @@ import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalReveal } from "@/components/portal/portal-motion";
 import { RevenueTrendChart } from "@/components/portal/revenue-trend-chart";
 import { WorkflowVisualizer } from "@/components/portal/workflow-visualizer";
+import { DashboardContainer, DashboardGrid } from "@/components/portal/dashboard-grid";
 import { generateOperationalInsights, getPortalData } from "@/lib/data/operations";
 import { BenchmarkPanel } from "@/components/tenant/benchmark-panel";
 import { HealthScoreCard } from "@/components/tenant/health-score-card";
@@ -26,7 +27,7 @@ export default async function PortalPage() {
 
   return (
     <PortalReveal>
-      <div className="space-y-6">
+      <DashboardContainer>
         <PortalHeader
           title="AI Operations Command Center"
           subtitle="A client-facing revenue intelligence portal showing what Zenith AI Automation Agency is operating, optimizing, and recovering."
@@ -35,25 +36,25 @@ export default async function PortalPage() {
           <SubscriptionBadge plan={tenantData.organization.active_plan} />
           <span className="text-sm font-bold text-muted">{tenantData.organization.onboarding_status.replace("_", " ")} onboarding</span>
         </div>
-        <div className="grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
+        <DashboardGrid className="xl:grid-cols-[.8fr_1.2fr]">
           <OrganizationSwitcher organization={tenantData.organization} locations={tenantData.locations} />
           <HealthScoreCard score={health} />
-        </div>
+        </DashboardGrid>
         <OperationalScorecard data={data} />
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
+        <DashboardGrid className="xl:grid-cols-[1.2fr_.8fr]">
           <RevenueTrendChart metrics={data.metrics} />
           <NotificationCenter notifications={data.notifications} />
-        </div>
+        </DashboardGrid>
         <AIInsightsPanel insights={insights} />
         <BenchmarkPanel benchmark={tenantData.benchmarks[0]} />
         <LocationDashboard locations={tenantData.locations} metrics={data.metrics} />
         <UsageMeter usage={tenantData.usage[0]} plan={activePlan} />
         <AutomationHealthPanel events={data.automationEvents} />
-        <div className="grid gap-6 xl:grid-cols-[1.1fr_.9fr]">
+        <DashboardGrid className="xl:grid-cols-[1.1fr_.9fr]">
           <WorkflowVisualizer events={data.automationEvents} />
           <OperationalFeed events={data.automationEvents} />
-        </div>
-      </div>
+        </DashboardGrid>
+      </DashboardContainer>
     </PortalReveal>
   );
 }

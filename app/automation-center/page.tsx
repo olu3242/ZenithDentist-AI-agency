@@ -1,11 +1,12 @@
 import { AppShell } from "@/components/app/app-shell";
 import { MetricCard } from "@/components/metric-card";
 import { executeAutomationAction, pauseAutomationAction, resumeAutomationAction } from "@/app/automation-center/actions";
+import { SubmitButton } from "@/components/auth/submit-button";
 import { getAutomationOSState } from "@/lib/automation-os/registry";
 import { getTenantData } from "@/lib/data/tenants";
 import { getCurrentZenithRole } from "@/lib/server-auth";
 
-export default async function AutomationCenterPage({ searchParams }: { searchParams?: Promise<{ status?: string }> }) {
+export default async function AutomationCenterPage({ searchParams }: { searchParams?: Promise<{ status?: string; error?: string }> }) {
   const [params, tenantData, role, state] = await Promise.all([
     searchParams,
     getTenantData(),
@@ -27,6 +28,7 @@ export default async function AutomationCenterPage({ searchParams }: { searchPar
             Active automations, failed automations, queued installs, health, execution history, and performance from live runtime traces.
           </p>
           {params?.status ? <p className="mt-4 rounded border border-green/30 bg-green/10 p-3 text-sm font-bold text-green">Automation {params.status}.</p> : null}
+          {params?.error ? <p className="mt-4 rounded border border-rust/30 bg-rust/10 p-3 text-sm font-bold text-rust">Automation action failed: {params.error}.</p> : null}
         </header>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -55,15 +57,15 @@ export default async function AutomationCenterPage({ searchParams }: { searchPar
                   <div className="flex flex-wrap gap-2">
                     <form action={executeAutomationAction}>
                       <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                      <button className="min-h-9 rounded bg-primary px-3 text-xs font-black text-white" type="submit">Execute</button>
+                      <SubmitButton className="min-h-9 px-3 text-xs" pendingText="Executing...">Execute</SubmitButton>
                     </form>
                     <form action={pauseAutomationAction}>
                       <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                      <button className="min-h-9 rounded border border-border bg-card px-3 text-xs font-black text-muted" type="submit">Pause</button>
+                      <SubmitButton className="min-h-9 border border-border bg-card px-3 text-xs text-muted hover:bg-paper" pendingText="Pausing...">Pause</SubmitButton>
                     </form>
                     <form action={resumeAutomationAction}>
                       <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                      <button className="min-h-9 rounded bg-success px-3 text-xs font-black text-white" type="submit">Resume</button>
+                      <SubmitButton className="min-h-9 bg-success px-3 text-xs hover:bg-success/90" pendingText="Resuming...">Resume</SubmitButton>
                     </form>
                   </div>
                 </article>

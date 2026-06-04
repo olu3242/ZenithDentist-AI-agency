@@ -1,9 +1,23 @@
-create type organization_role as enum ('owner', 'admin', 'practice_manager', 'front_desk', 'analyst', 'executive_readonly');
-create type organization_type as enum ('single_practice', 'multi_location', 'dso', 'enterprise');
-create type onboarding_status as enum ('not_started', 'baseline', 'workflows', 'review', 'live');
-create type subscription_plan_key as enum ('starter', 'growth', 'enterprise');
+do $$
+begin
+  if not exists (select 1 from pg_type where typname = 'organization_role') then
+    create type organization_role as enum ('owner', 'admin', 'practice_manager', 'front_desk', 'analyst', 'executive_readonly');
+  end if;
+  
+  if not exists (select 1 from pg_type where typname = 'organization_type') then
+    create type organization_type as enum ('single_practice', 'multi_location', 'dso', 'enterprise');
+  end if;
+  
+  if not exists (select 1 from pg_type where typname = 'onboarding_status') then
+    create type onboarding_status as enum ('not_started', 'baseline', 'workflows', 'review', 'live');
+  end if;
+  
+  if not exists (select 1 from pg_type where typname = 'subscription_plan_key') then
+    create type subscription_plan_key as enum ('starter', 'growth', 'enterprise');
+  end if;
+end $$;
 
-create table public.organizations (
+create table if not exists public.organizations (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   name text not null,
@@ -18,7 +32,7 @@ create table public.organizations (
   primary_location_id uuid
 );
 
-create table public.organization_members (
+create table if not exists public.organization_members (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   user_id uuid,
@@ -29,7 +43,7 @@ create table public.organization_members (
   accepted_at timestamptz
 );
 
-create table public.locations (
+create table if not exists public.locations (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   created_at timestamptz not null default now(),
@@ -44,10 +58,13 @@ create table public.locations (
 );
 
 alter table public.organizations
+  drop constraint if exists fk_organizations_primary_location;
+
+alter table public.organizations
   add constraint fk_organizations_primary_location
   foreign key (primary_location_id) references public.locations(id) on delete set null;
 
-create table public.user_roles (
+create table if not exists public.user_roles (
   id uuid primary key default gen_random_uuid(),
   role organization_role not null unique,
   description text not null,
@@ -55,7 +72,7 @@ create table public.user_roles (
   created_at timestamptz not null default now()
 );
 
-create table public.subscription_plans (
+create table if not exists public.subscription_plans (
   id uuid primary key default gen_random_uuid(),
   plan_key subscription_plan_key not null unique,
   name text not null,
@@ -68,7 +85,7 @@ create table public.subscription_plans (
   created_at timestamptz not null default now()
 );
 
-create table public.usage_metrics (
+create table if not exists public.usage_metrics (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations(id) on delete cascade,
   location_id uuid references public.locations(id) on delete set null,
@@ -83,7 +100,7 @@ create table public.usage_metrics (
   unique (organization_id, location_id, metric_month)
 );
 
-create table public.benchmark_snapshots (
+create table if not exists public.benchmark_snapshots (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid references public.organizations(id) on delete cascade,
   location_id uuid references public.locations(id) on delete cascade,
@@ -111,13 +128,13 @@ alter table public.recommendations add column if not exists organization_id uuid
 alter table public.reports add column if not exists organization_id uuid references public.organizations(id) on delete set null;
 alter table public.notifications add column if not exists organization_id uuid references public.organizations(id) on delete set null;
 
-create index idx_organizations_slug on public.organizations(slug);
-create index idx_org_members_org_role on public.organization_members(organization_id, role);
-create index idx_locations_org on public.locations(organization_id);
-create index idx_usage_org_month on public.usage_metrics(organization_id, metric_month desc);
-create index idx_benchmarks_org_date on public.benchmark_snapshots(organization_id, benchmark_date desc);
-create index idx_operational_metrics_org_location on public.operational_metrics(organization_id, location_id, metric_date desc);
-create index idx_automation_events_org_location on public.automation_events(organization_id, location_id, created_at desc);
+create index if not exists idx_organizations_slug on public.organizations(slug);
+create index if not exists idx_org_members_org_role on public.organization_members(organization_id, role);
+create index if not exists idx_locations_org on public.locations(organization_id);
+create index if not exists idx_usage_org_month on public.usage_metrics(organization_id, metric_month desc);
+create index if not exists idx_benchmarks_org_date on public.benchmark_snapshots(organization_id, benchmark_date desc);
+create index if not exists idx_operational_metrics_org_location on public.operational_metrics(organization_id, location_id, metric_date desc);
+create index if not exists idx_automation_events_org_location on public.automation_events(organization_id, location_id, created_at desc);
 
 alter table public.organizations enable row level security;
 alter table public.organization_members enable row level security;
@@ -127,12 +144,19 @@ alter table public.subscription_plans enable row level security;
 alter table public.usage_metrics enable row level security;
 alter table public.benchmark_snapshots enable row level security;
 
+drop policy if exists "service_role_all_organizations" on public.organizations;
 create policy "service_role_all_organizations" on public.organizations for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_organization_members" on public.organization_members;
 create policy "service_role_all_organization_members" on public.organization_members for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_locations" on public.locations;
 create policy "service_role_all_locations" on public.locations for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_user_roles" on public.user_roles;
 create policy "service_role_all_user_roles" on public.user_roles for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_subscription_plans" on public.subscription_plans;
 create policy "service_role_all_subscription_plans" on public.subscription_plans for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_usage_metrics" on public.usage_metrics;
 create policy "service_role_all_usage_metrics" on public.usage_metrics for all using (auth.role() = 'service_role');
+drop policy if exists "service_role_all_benchmark_snapshots" on public.benchmark_snapshots;
 create policy "service_role_all_benchmark_snapshots" on public.benchmark_snapshots for all using (auth.role() = 'service_role');
 
 insert into public.subscription_plans (plan_key, name, price_monthly, included_locations, included_usage, features)

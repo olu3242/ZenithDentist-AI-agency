@@ -1,7 +1,7 @@
 create table if not exists public.automation_queue (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid references public.organizations(id) on delete cascade,
-  automation_event_id uuid references public.automation_events(id) on delete set null,
+  automation_event_id uuid,
   workflow_id text not null,
   status text not null default 'queued',
   idempotency_key text not null unique,
@@ -93,7 +93,7 @@ create table if not exists public.usage_counters (
 create table if not exists public.analytics_events (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid references public.organizations(id) on delete set null,
-  lead_id uuid references public.leads(id) on delete set null,
+  lead_id uuid,
   event_name text not null,
   destination text not null default 'internal',
   attribution jsonb not null default '{}'::jsonb,

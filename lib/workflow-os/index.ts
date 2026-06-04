@@ -46,6 +46,10 @@ export type { WorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";
 export { dispatchScheduledRun, getDefaultSchedulePlan } from "@/lib/workflow-os/workflow-scheduler";
 export type { ScheduledWorkflowRun, SchedulerDispatchResult } from "@/lib/workflow-os/workflow-scheduler";
 
+// Governance
+export { getWorkflowGovernanceState } from "@/lib/workflow-os/workflow-governance";
+export type { GovernanceCenterId, WorkflowGovernanceCenter } from "@/lib/workflow-os/workflow-governance";
+
 // Execution Fabric
 export { coordinateExecution } from "@/lib/workflow-os/execution/execution-engine";
 export type { CoordinatedExecutionRequest, CoordinatedExecutionResult } from "@/lib/workflow-os/execution/execution-engine";

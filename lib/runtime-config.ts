@@ -31,7 +31,7 @@ export function validateRuntimeConfig() {
 export function getRuntimeDiagnostics(): RuntimeDiagnostics {
   const serverSupabaseMissing = missing({
     NEXT_PUBLIC_SUPABASE_URL: env.NEXT_PUBLIC_SUPABASE_URL,
-    SUPABASE_SECRET_KEY: env.SUPABASE_SECRET_KEY ?? env.SUPABASE_SERVICE_ROLE_KEY
+    SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY
   });
   const browserSupabaseMissing = missing({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: env.NEXT_PUBLIC_SUPABASE_ANON_KEY

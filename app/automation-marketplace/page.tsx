@@ -1,11 +1,13 @@
 import { AppShell } from "@/components/app/app-shell";
 import { MetricCard } from "@/components/metric-card";
+import { SubmitButton } from "@/components/auth/submit-button";
 import { getAutomationOSState } from "@/lib/automation-os/registry";
 import { getTenantData } from "@/lib/data/tenants";
 import { getCurrentZenithRole } from "@/lib/server-auth";
-import { disableAutomationAction, enableAutomationAction, installAutomationAction } from "@/app/automation-marketplace/actions";
+import { deployPatientRevenueEngineAction, disableAutomationAction, enableAutomationAction, installAutomationAction, installPatientRevenueEngineAction } from "@/app/automation-marketplace/actions";
+import { PATIENT_REVENUE_ENGINE_PRODUCT } from "@/lib/patient-revenue-engine";
 
-export default async function AutomationMarketplacePage({ searchParams }: { searchParams?: Promise<{ status?: string }> }) {
+export default async function AutomationMarketplacePage({ searchParams }: { searchParams?: Promise<{ status?: string; error?: string }> }) {
   const [params, tenantData, role, state] = await Promise.all([
     searchParams,
     getTenantData(),
@@ -23,7 +25,26 @@ export default async function AutomationMarketplacePage({ searchParams }: { sear
             Install, enable, disable, configure, and version registered dental automation packs for this organization.
           </p>
           {params?.status ? <p className="mt-4 rounded border border-green/30 bg-green/10 p-3 text-sm font-bold text-green">Automation {params.status}.</p> : null}
+          {params?.error ? <p className="mt-4 rounded border border-rust/30 bg-rust/10 p-3 text-sm font-bold text-rust">Automation action failed: {params.error}.</p> : null}
         </header>
+
+        <section className="rounded border border-border bg-card p-5 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-primary">Marketplace Product</p>
+              <h2 className="mt-2 text-2xl font-black text-foreground">{PATIENT_REVENUE_ENGINE_PRODUCT.name}</h2>
+              <p className="mt-2 max-w-3xl text-sm font-semibold text-muted">{PATIENT_REVENUE_ENGINE_PRODUCT.description}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <form action={installPatientRevenueEngineAction}>
+                <SubmitButton pendingText="Installing PRE...">Install PRE</SubmitButton>
+              </form>
+              <form action={deployPatientRevenueEngineAction}>
+                <SubmitButton className="bg-success hover:bg-success/90" pendingText="Deploying PRE...">Deploy PRE</SubmitButton>
+              </form>
+            </div>
+          </div>
+        </section>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Catalog automations" value={state.registry.length} detail="Registry-backed packs" tone="primary" />
@@ -56,15 +77,15 @@ export default async function AutomationMarketplacePage({ searchParams }: { sear
               <div className="mt-5 flex flex-wrap gap-2">
                 <form action={installAutomationAction}>
                   <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                  <button className="min-h-9 rounded bg-primary px-3 text-xs font-black text-white" type="submit">Install</button>
+                  <SubmitButton className="min-h-9 px-3 text-xs" pendingText="Installing...">Install</SubmitButton>
                 </form>
                 <form action={enableAutomationAction}>
                   <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                  <button className="min-h-9 rounded bg-success px-3 text-xs font-black text-white" type="submit">Enable</button>
+                  <SubmitButton className="min-h-9 bg-success px-3 text-xs hover:bg-success/90" pendingText="Enabling...">Enable</SubmitButton>
                 </form>
                 <form action={disableAutomationAction}>
                   <input type="hidden" name="workflowId" value={automation.workflow_id} />
-                  <button className="min-h-9 rounded border border-border bg-card px-3 text-xs font-black text-muted" type="submit">Disable</button>
+                  <SubmitButton className="min-h-9 border border-border bg-card px-3 text-xs text-muted hover:bg-paper" pendingText="Disabling...">Disable</SubmitButton>
                 </form>
               </div>
             </article>

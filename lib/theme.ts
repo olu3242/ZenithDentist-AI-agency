@@ -35,7 +35,17 @@ export const themeConfig = {
     "--brand-text": ZenithTokens.colors.foreground,
     "--brand-muted": ZenithTokens.colors.muted,
     "--brand-border": ZenithTokens.colors.border,
-    "--brand-sidebar": ZenithTokens.colors.navy
+    "--brand-sidebar": ZenithTokens.colors.navy,
+    "--brand-sidebar-elevated": ZenithTokens.colors.navyElevated,
+    "--brand-slate": ZenithTokens.colors.slate,
+    "--brand-slate-hover": ZenithTokens.colors.slateHover,
+    "--brand-inverse-text": ZenithTokens.colors.inverseText,
+    "--brand-inverse-muted": ZenithTokens.colors.inverseMuted,
+    "--brand-gradient-primary": ZenithTokens.gradients.primary,
+    "--brand-gradient-sidebar": ZenithTokens.gradients.sidebar,
+    "--brand-gradient-hero": ZenithTokens.gradients.hero,
+    "--brand-gradient-signal": ZenithTokens.gradients.signal,
+    "--brand-glow": ZenithTokens.elevation.glow
   }
 } as const;
 

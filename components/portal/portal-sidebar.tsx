@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
 import { Bell, BarChart3, Gauge, HeartPulse, RefreshCw, Settings, Star, FileText, Building2, ClipboardCheck, Brain, ShieldCheck, SlidersHorizontal, CloudCog, Network, Radar, DatabaseZap } from "lucide-react";
-import { GlobalBrandLogo } from "@/components/branding/GlobalBrandLogo";
-import type { NavItem } from "@/components/brand/brand-sidebar";
+import type { LucideIcon } from "lucide-react";
+import { ZenithLogo } from "@/components/branding/ZenithLogo";
+
+type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const nav: NavItem[] = [
   { href: "/portal",               label: "Overview",      icon: Gauge },
@@ -31,7 +33,7 @@ export function PortalSidebar({ unread }: { unread: number }) {
   );
   return (
     <aside className="border-r border-white/10 bg-ink p-5 text-white lg:min-h-screen">
-      <GlobalBrandLogo href="/portal" subtitle="Healthcare cloud" mutedClassName="text-white/55" />
+      <ZenithLogo href="/portal" subtitle="PMS Portal" mutedClassName="text-white/55" textClassName="text-white" />
       <div className="mt-6 flex items-center justify-between rounded border border-white/10 bg-white/8 p-3">
         <span className="text-sm font-bold text-white/75">Notifications</span>
         <span className="inline-flex items-center gap-1 rounded-full bg-teal px-2 py-1 text-xs font-black">

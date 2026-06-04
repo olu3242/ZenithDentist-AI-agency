@@ -1,5 +1,6 @@
 import { MetricCard } from "@/components/metric-card";
 import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
+import { LEGAL_ENTITY } from "@/lib/legal-entity";
 import { getLeadOperationsState, outreachStages } from "@/lib/lead-operations";
 
 export default async function LeadOperationsPage() {
@@ -9,9 +10,9 @@ export default async function LeadOperationsPage() {
       <RealtimeRefresh />
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
-          <p className="text-xs font-black uppercase tracking-wider text-accent">Zenith AI Automation Agency</p>
-          <h1 className="mt-2 text-4xl font-black text-[#F8FAFC]">Lead Operations</h1>
-          <p className="mt-2 max-w-3xl text-base font-semibold text-muted">Dental client acquisition, prospect management, reply/book rates, campaign visibility, and revenue-focused personalization.</p>
+          <p className="text-xs font-black uppercase tracking-wider text-teal">{LEGAL_ENTITY.brandName}</p>
+          <h1 className="mt-2 text-4xl font-black text-ink">Lead Operations</h1>
+          <p className="mt-2 max-w-3xl text-base font-semibold text-muted">Operated by {LEGAL_ENTITY.legalName}. Dental client acquisition, prospect management, reply/book rates, campaign visibility, and revenue-focused personalization.</p>
         </header>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Prospects" value={state.metrics.prospects} detail="Lead records" tone="accent" />

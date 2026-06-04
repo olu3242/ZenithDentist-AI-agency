@@ -2,9 +2,12 @@ import { z } from "zod";
 
 export const roiInputSchema = z.object({
   chairs: z.coerce.number().int().min(1).max(200),
+  providers: z.coerce.number().int().min(1).max(200).optional(),
   monthlyAppointments: z.coerce.number().int().min(1).max(20000),
   avgAppointmentValue: z.coerce.number().min(50).max(20000),
   noShowRate: z.coerce.number().min(0).max(80),
+  treatmentAcceptanceRate: z.coerce.number().min(0).max(100).optional(),
+  recallRate: z.coerce.number().min(0).max(100).optional(),
   recallPatientsLost: z.coerce.number().min(0).max(1000),
   adminHoursPerDay: z.coerce.number().min(0).max(24)
 });

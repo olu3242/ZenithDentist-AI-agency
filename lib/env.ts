@@ -26,8 +26,27 @@ const envSchema = z.object({
 
 export const env = envSchema.parse(process.env);
 
+const jwtLike = (value: string | undefined) => Boolean(value && value.startsWith("eyJ") && value.split(".").length === 3);
+
+function jwtRole(value: string | undefined) {
+  if (!jwtLike(value)) return undefined;
+  try {
+    const payload = value!.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = Buffer.from(payload, "base64").toString("utf8");
+    return JSON.parse(decoded).role as string | undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const modernSecretLike = (value: string | undefined) => Boolean(value && value.startsWith("sb_secret_"));
+
 export const hasSupabaseServerEnv = Boolean(
-  env.NEXT_PUBLIC_SUPABASE_URL && (env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_ROLE_KEY)
+  env.NEXT_PUBLIC_SUPABASE_URL && (
+    jwtRole(env.SUPABASE_SERVICE_ROLE_KEY) === "service_role" ||
+    modernSecretLike(env.SUPABASE_SERVICE_ROLE_KEY) ||
+    modernSecretLike(env.SUPABASE_SECRET_KEY)
+  )
 );
 
 export const hasSupabaseBrowserEnv = Boolean(

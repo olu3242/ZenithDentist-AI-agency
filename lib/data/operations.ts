@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { getTenantData } from "@/lib/data/tenants";
 import type { Database } from "@/lib/database.types";
 
 export type AutomationEvent = Database["public"]["Tables"]["automation_events"]["Row"];

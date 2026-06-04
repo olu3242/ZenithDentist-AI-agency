@@ -11,7 +11,12 @@ export type OutreachEventType =
   | "email_sent"
   | "cta_clicked"
   | "faq_interaction"
-  | "funnel_abandoned";
+  | "funnel_abandoned"
+  | "assessment_started"
+  | "assessment_completed"
+  | "audit_generated"
+  | "calendly_booking_created"
+  | "opportunity_created";
 export type AutomationEventStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
 export type NotificationSeverity = "info" | "success" | "warning" | "critical";
 export type ReportPeriod = "weekly" | "monthly";
@@ -97,6 +102,9 @@ export type GtmPipelineStage =
   | "case_study_candidate"
   | "referral_opportunity";
 export type ClientSuccessStatus = "healthy" | "watch" | "at_risk" | "expansion_ready";
+export type ClientAccountStatus = "lead" | "proposal" | "contract_pending" | "payment_pending" | "approved" | "active" | "suspended" | "cancelled";
+export type AuthorizedAccessValueType = "email" | "domain";
+export type AuthorizedAccessStatus = "active" | "suspended" | "revoked";
 
 export interface Database {
   public: {
@@ -160,6 +168,165 @@ export interface Database {
           role: OrganizationRole;
         };
         Update: Partial<Database["public"]["Tables"]["organization_members"]["Row"]>;
+        Relationships: [];
+      };
+      client_accounts: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          email: string;
+          full_name: string | null;
+          practice_name: string | null;
+          status: ClientAccountStatus;
+          package_type: string;
+          contract_signed: boolean;
+          setup_fee_paid: boolean;
+          implementation_started: boolean;
+          approved_for_access: boolean;
+          subscription_active: boolean;
+          approved_by: string | null;
+          approved_at: string | null;
+          suspended_at: string | null;
+          revoked_at: string | null;
+          invitation_sent_at: string | null;
+          created_at: string;
+          updated_at: string;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["client_accounts"]["Row"]> & {
+          email: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["client_accounts"]["Row"]>;
+        Relationships: [];
+      };
+      authorized_domains: {
+        Row: {
+          id: string;
+          organization_id: string | null;
+          value: string;
+          value_type: AuthorizedAccessValueType;
+          status: AuthorizedAccessStatus;
+          approved_by: string | null;
+          approved_at: string | null;
+          created_at: string;
+          metadata: Json;
+        };
+        Insert: Partial<Database["public"]["Tables"]["authorized_domains"]["Row"]> & {
+          value: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["authorized_domains"]["Row"]>;
+        Relationships: [];
+      };
+      onboarding_states: {
+        Row: {
+          id: string;
+          organization_id: string;
+          user_id: string | null;
+          status: string;
+          current_step: string;
+          completed_steps: Json;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["onboarding_states"]["Row"]> & {
+          organization_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["onboarding_states"]["Row"]>;
+        Relationships: [];
+      };
+      storefronts: {
+        Row: {
+          id: string;
+          organization_id: string;
+          slug: string;
+          name: string;
+          status: string;
+          settings: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["storefronts"]["Row"]> & {
+          organization_id: string;
+          slug: string;
+          name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["storefronts"]["Row"]>;
+        Relationships: [];
+      };
+      products: {
+        Row: {
+          id: string;
+          organization_id: string;
+          storefront_id: string | null;
+          name: string;
+          sku: string | null;
+          price_cents: number;
+          currency: string;
+          status: string;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["products"]["Row"]> & {
+          organization_id: string;
+          name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["products"]["Row"]>;
+        Relationships: [];
+      };
+      orders: {
+        Row: {
+          id: string;
+          organization_id: string;
+          storefront_id: string | null;
+          customer_email: string | null;
+          status: string;
+          total_cents: number;
+          currency: string;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["orders"]["Row"]> & {
+          organization_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["orders"]["Row"]>;
+        Relationships: [];
+      };
+      workflow_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          workflow_run_id: string | null;
+          event_type: string;
+          status: string;
+          payload: Json;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["workflow_events"]["Row"]> & {
+          organization_id: string;
+          event_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["workflow_events"]["Row"]>;
+        Relationships: [];
+      };
+      platform_events: {
+        Row: {
+          id: string;
+          organization_id: string;
+          idempotency_key: string;
+          event_type: string;
+          payload: Json;
+          replayed_at: string | null;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["platform_events"]["Row"]> & {
+          organization_id: string;
+          idempotency_key: string;
+          event_type: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["platform_events"]["Row"]>;
         Relationships: [];
       };
       locations: {
@@ -1663,6 +1830,11 @@ export interface Database {
           monthly_revenue_loss: number;
           yearly_revenue_loss: number;
           recoverable_revenue: number;
+          revenue_recovery_opportunity: number | null;
+          recall_opportunity: number | null;
+          treatment_opportunity: number | null;
+          chair_fill_opportunity: number | null;
+          practice_health_score: number | null;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["roi_calculations"]["Row"], "id" | "created_at">;
@@ -1677,6 +1849,8 @@ export interface Database {
           audit_summary: string;
           recommendations: Json;
           projected_recovery: number;
+          alice_report: Json | null;
+          ninety_day_snapshot: Json | null;
           generated_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["audits"]["Row"], "id" | "generated_at">;

@@ -1,36 +1,56 @@
 import { formatCurrency } from "@/lib/utils";
 import { BookingFlow } from "@/components/public/booking-flow";
+import { Button } from "@/components/ui/button";
 
 export function AuditPreview({
   projectedRecovery,
   calendlyUrl,
-  leadId
+  leadId,
+  reportId,
+  assessmentId
 }: {
   projectedRecovery?: number;
   calendlyUrl: string;
   leadId?: string;
+  reportId?: string;
+  assessmentId?: string;
 }) {
+  const reportReady = Boolean(leadId && reportId);
+
   return (
-    <section id="audit" className="rounded border border-card bg-white p-6 shadow-card">
-      <p className="text-xs font-black uppercase tracking-wider text-accent">Audit preview</p>
-      <h3 className="mt-3 text-3xl font-black">Operational revenue recovery plan</h3>
+    <section id="audit" className="rounded border border-line bg-white p-6 shadow-soft">
+      <p className="text-xs font-black uppercase tracking-wider text-teal">FREE Revenue Opportunity Report</p>
+      <h3 className="mt-3 text-3xl font-black">Revenue recovery plan</h3>
       <p className="mt-3 text-muted">
-        Once the calculator is submitted, Zenith generates a structured audit with projected recovery, operational drag,
-        recall gaps, and reminder priorities.
+        Once the assessment is submitted, Zenith generates a structured report with revenue recovery estimate,
+        practice health score, top leaks, recommended playbooks, and a 90-day opportunity snapshot.
       </p>
-      <div className="mt-5 rounded bg-background p-5">
-        <span className="text-sm font-bold text-muted">Projected monthly recovery</span>
-        <strong className="mt-2 block text-4xl font-black text-success">
+      <div className="mt-5 rounded bg-paper p-5">
+        <span className="text-sm font-bold text-muted">Revenue recovery estimate</span>
+        <strong className="mt-2 block text-4xl font-black text-green">
           {projectedRecovery ? formatCurrency(projectedRecovery) : "Pending calculation"}
         </strong>
       </div>
       <ul className="mt-5 grid gap-3 text-sm text-muted">
-        <li>Confirmation stack across 48hr, 24hr, and 2hr windows</li>
-        <li>Recall segmentation for 90, 180, and 365 day lapsed patients</li>
-        <li>Admin workload recovery and front desk capacity plan</li>
+        <li>$1,500 consulting value delivered free before implementation</li>
+        <li>Recall, treatment acceptance, and chair fill opportunity breakdown</li>
+        <li>Personalized strategy session preparation with your growth advisor</li>
       </ul>
       <div className="mt-6">
-        <BookingFlow calendlyUrl={calendlyUrl} leadId={leadId} />
+        {reportReady ? (
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" variant="secondary">
+              <a href={`/api/audit/${reportId}/download`}>
+                Download Audit Report
+              </a>
+            </Button>
+            <BookingFlow calendlyUrl={calendlyUrl} leadId={leadId} assessmentId={assessmentId} />
+          </div>
+        ) : (
+          <p className="rounded border border-line bg-surface p-3 text-sm font-bold text-muted">
+            Complete the assessment to unlock your downloadable report and strategy session.
+          </p>
+        )}
       </div>
     </section>
   );

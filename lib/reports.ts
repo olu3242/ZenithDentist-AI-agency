@@ -1,4 +1,5 @@
 import type { Report } from "@/lib/data/operations";
+import { brandConfig } from "@/lib/brand";
 import { formatCurrency } from "@/lib/utils";
 
 export function reportToHtml(report: Report) {
@@ -10,16 +11,21 @@ export function reportToHtml(report: Report) {
         <meta charset="utf-8">
         <title>${report.title}</title>
         <style>
-          body { font-family: Inter, Arial, sans-serif; color: #18212f; margin: 48px; }
-          .brand { color: #177f75; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+          body { font-family: Inter, Arial, sans-serif; color: ${brandConfig.colors.foreground}; margin: 48px; }
+          .report-header { border-bottom: 3px solid ${brandConfig.colors.primary}; margin-bottom: 28px; padding-bottom: 18px; }
+          .brand { color: ${brandConfig.colors.primary}; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+          .subtitle { color: ${brandConfig.colors.muted}; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
           h1 { font-size: 42px; line-height: 1.05; }
           .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-          .card { border: 1px solid #d9e0e7; border-radius: 8px; padding: 18px; }
-          .value { font-size: 30px; font-weight: 900; color: #177f75; }
+          .card { border: 1px solid ${brandConfig.colors.border}; border-radius: 8px; padding: 18px; }
+          .value { font-size: 30px; font-weight: 900; color: ${brandConfig.colors.secondary}; }
         </style>
       </head>
       <body>
-        <div class="brand">Zenith AI Automation Agency Executive Briefing</div>
+        <div class="report-header">
+          <div class="brand">${brandConfig.name} Executive Briefing</div>
+          <div class="subtitle">${brandConfig.trademark}</div>
+        </div>
         <h1>${report.title}</h1>
         <p>${report.summary}</p>
         <div class="grid">

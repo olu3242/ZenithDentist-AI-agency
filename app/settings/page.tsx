@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app/app-shell";
+import { ProfileLocaleSettings } from "@/components/i18n/profile-locale-settings";
 import { OrganizationSettings } from "@/components/tenant/organization-settings";
 import { PlanComparison } from "@/components/tenant/plan-comparison";
 import { UsageMeter } from "@/components/tenant/usage-meter";
@@ -22,6 +23,7 @@ export default async function SettingsPage() {
             Organization profile, usage, plan visibility, and role-aware portal preferences.
           </p>
         </header>
+        <ProfileLocaleSettings />
         <OrganizationSettings organization={tenantData.organization} />
         <UsageMeter usage={tenantData.usage[0]} plan={activePlan} />
         <PlanComparison plans={tenantData.plans} activePlan={tenantData.organization.active_plan} />

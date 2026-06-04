@@ -1,120 +1,55 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { googleLoginAction, loginAction } from "@/app/auth-actions";
+import { AuthCard, AuthError } from "@/components/auth/auth-card";
+import { SubmitButton } from "@/components/auth/submit-button";
+import { LocaleSwitcher } from "@/components/i18n/locale-switcher";
+import { normalizeLocale } from "@/lib/i18n/config";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.ok) {
-        setError(data.error ?? "Login failed. Please try again.");
-        return;
-      }
-
-      router.push("/portal");
-    } catch {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
+export default async function LoginPage({ searchParams }: { searchParams?: Promise<{ error?: string; reason?: string; email?: string }> }) {
+  const params = await searchParams;
+  const t = await getTranslations("auth");
+  const locale = normalizeLocale(await getLocale());
+  const info = params?.reason === "signed-out"
+    ? "You have been signed out."
+    : params?.reason === "password-updated"
+      ? "Password updated. Log in with your new credentials."
+      : params?.reason === "auth-required"
+        ? "Log in to access that portal."
+        : params?.reason === "existing-email"
+          ? "That email is already registered. Log in to continue, or reset your password if you do not remember it."
+        : undefined;
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0F172A" }}>
-      <div className="w-full max-w-md px-6 py-10 rounded-2xl shadow-xl" style={{ backgroundColor: "#1E293B" }}>
-        {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
-          <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-lg"
-            style={{ backgroundColor: "#2563EB" }}
-          >
-            Z
-          </div>
-          <span className="text-white font-semibold text-xl">Zenith AI</span>
-        </div>
-
-        <h1 className="text-white text-2xl font-bold mb-2">Sign in to your account</h1>
-        <p className="text-slate-400 text-sm mb-8">
-          Access your practice revenue intelligence portal.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1.5">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg text-white text-sm outline-none border border-slate-600 focus:border-blue-500 transition-colors"
-              style={{ backgroundColor: "#0F172A" }}
-              placeholder="you@practice.com"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1.5">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg text-white text-sm outline-none border border-slate-600 focus:border-blue-500 transition-colors"
-              style={{ backgroundColor: "#0F172A" }}
-              placeholder="••••••••"
-            />
-          </div>
-
-          {error && (
-            <div className="px-4 py-3 rounded-lg text-sm text-red-400 border border-red-800" style={{ backgroundColor: "#1a0f0f" }}>
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 rounded-lg text-white font-semibold text-sm transition-opacity disabled:opacity-60"
-            style={{ backgroundColor: "#2563EB" }}
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-slate-400">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-            Create one
-          </Link>
-        </p>
+    <AuthCard
+      title={t("loginTitle")}
+      subtitle={t("loginSubtitle")}
+      footer={<span>Need access? <Link className="font-black text-teal" href="/signup">{t("requestApproval")}</Link>. Forgot credentials? <Link className="font-black text-teal" href="/forgot-password">{t("resetAccess")}</Link>.</span>}
+    >
+      <div className="mb-4 flex justify-end">
+        <LocaleSwitcher currentLocale={locale} />
       </div>
-    </div>
+      <AuthError message={params?.error} />
+      {info ? <div className="mb-4 rounded border border-green/30 bg-green/10 p-3 text-sm font-bold text-green">{info}</div> : null}
+      {params?.reason === "existing-email" ? (
+        <Link href={`/forgot-password${params.email ? `?email=${encodeURIComponent(params.email)}` : ""}`} className="mb-4 inline-flex min-h-10 items-center justify-center rounded border border-line bg-surface px-4 text-sm font-black text-ink">
+          Send password reset instead
+        </Link>
+      ) : null}
+      <form action={loginAction} className="grid gap-4">
+        <label className="grid gap-1 text-sm font-bold text-ink">{t("email")}<input name="email" type="email" required autoComplete="email" defaultValue={params?.email ?? ""} className="rounded border border-line px-3 py-2" /></label>
+        <label className="grid gap-1 text-sm font-bold text-ink">{t("password")}<input name="password" type="password" required autoComplete="current-password" className="rounded border border-line px-3 py-2" /></label>
+        <SubmitButton pendingText={t("pending")}>{t("loginButton")}</SubmitButton>
+      </form>
+      <form action={googleLoginAction} className="mt-3 grid gap-2">
+        <label className="grid gap-1 text-sm font-bold text-ink">
+          {t("invitedEmail")}
+          <input name="email" type="email" required autoComplete="email" placeholder="your@email.com" defaultValue={params?.email ?? ""} className="rounded border border-line px-3 py-2" />
+        </label>
+        <SubmitButton pendingText="Verifying invitation..." className="w-full bg-white text-ink ring-1 ring-line hover:bg-paper">
+          {t("google")}
+        </SubmitButton>
+      </form>
+    </AuthCard>
   );
 }

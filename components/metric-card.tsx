@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 
+type MetricTone = "primary" | "secondary" | "accent" | "success" | "warning" | "danger" | "teal" | "rust" | "gold" | "green" | "blue";
+
 export function MetricCard({
   label,
   value,
@@ -9,7 +11,7 @@ export function MetricCard({
   label: string;
   value: string | number;
   detail: string;
-  tone?: "primary" | "secondary" | "accent" | "success" | "warning" | "danger";
+  tone?: MetricTone;
 }) {
   const toneClass: Record<string, string> = {
     primary:   "text-primary",
@@ -27,12 +29,10 @@ export function MetricCard({
   };
 
   return (
-    <article className="zenith-card">
-      <p className="text-xs font-black uppercase tracking-wider text-[#94A3B8]">{label}</p>
-      <strong className={cn("mt-3 block text-3xl font-black", toneClass[tone] ?? "text-primary")}>
-        {value}
-      </strong>
-      <span className="mt-2 block text-sm font-semibold text-[#94A3B8]">{detail}</span>
+    <article className="min-h-40 rounded border border-line bg-white p-5 shadow-sm">
+      <p className="text-xs font-black uppercase tracking-wider text-muted">{label}</p>
+      <strong className={cn("mt-3 block text-3xl font-black", toneClass[tone] ?? "text-primary")}>{value}</strong>
+      <span className="mt-2 block text-sm font-semibold text-muted">{detail}</span>
     </article>
   );
 }

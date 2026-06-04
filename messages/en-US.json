@@ -1,0 +1,109 @@
+{
+  "common": {
+    "locale": "Language",
+    "currency": "Currency",
+    "save": "Save",
+    "settings": "Settings",
+    "organization": "Organization",
+    "portalSelector": "Portal Selector",
+    "signOut": "Sign out"
+  },
+  "landing": {
+    "nav": {
+      "assessment": "Assessment",
+      "solutions": "Solutions",
+      "results": "Results",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "kicker": "Dental Revenue Operating System",
+    "headline": "Grow Predictably.",
+    "subtitle": "Zenith helps dental practices automate patient acquisition, recall recovery, treatment acceptance, and operational growth through AI-powered revenue intelligence.",
+    "primaryCta": "Start Free Revenue Assessment",
+    "demoCta": "Watch Platform Demo",
+    "assessmentTitle": "Discover Hidden Revenue Opportunities",
+    "assessmentBody": "Complete a short assessment and receive a personalized Practice Growth Report including your Revenue Opportunity Estimate, Patient Retention Analysis, and ALICE Recommendations.",
+    "finalCta": "Ready To Discover What Is Being Missed?",
+    "bookStrategy": "Book Strategy Session"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "loginSubtitle": "Approved clients and internal operators can resolve their Zenith profile and continue to the correct portal.",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Log In",
+    "pending": "Signing in...",
+    "google": "Continue with Google",
+    "invitedEmail": "Invited email",
+    "requestApproval": "Request approval",
+    "resetAccess": "Reset access"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "alicePriority": "ALICE priority",
+    "recoveredRevenue": "Recovered revenue",
+    "patients": "Patients",
+    "bookings": "Bookings"
+  },
+  "missionControl": {
+    "kicker": "Zenith PROS Mission Control",
+    "title": "Mission Control",
+    "subtitle": "Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring."
+  },
+  "workflowOS": {
+    "kicker": "Zenith PROS Workflow OS",
+    "title": "Workflow OS",
+    "subtitle": "Registered dental automations, execution analytics, replay posture, SLA pressure, and workflow health.",
+    "registeredWorkflows": "Registered workflows",
+    "operationalScore": "Operational score",
+    "replayQueue": "Replay queue",
+    "slaBreaches": "SLA breaches",
+    "registry": "Workflow Registry",
+    "healthy": "Healthy",
+    "review": "Review"
+  },
+  "patientRevenueEngine": {
+    "title": "Patient Revenue Engine",
+    "install": "Install Patient Revenue Engine",
+    "deploy": "Deploy Patient Revenue Engine",
+    "description": "Recover patient revenue through recall, reactivation, treatment acceptance, memberships, referrals, and reviews."
+  },
+  "clientSuccessOS": {
+    "title": "Client Success OS",
+    "implementation": "Implementation",
+    "adoption": "Adoption",
+    "goLive": "Go-live readiness"
+  },
+  "alice": {
+    "title": "ALICE Operational Intelligence",
+    "recommendation": "Recommendation",
+    "confidence": "Confidence",
+    "localizedBriefing": "ALICE is using {locale} language and {currency} financial context."
+  },
+  "roi": {
+    "title": "Live Revenue Opportunity Engine",
+    "subtitle": "Drag the sliders to watch revenue recovery, platform recommendations, and Practice Health Score update in real time.",
+    "monthlyAppointments": "Monthly Appointments",
+    "avgAppointmentValue": "Average Production Per Visit",
+    "noShowRate": "No Show Rate",
+    "treatmentAcceptanceRate": "Treatment Acceptance Rate",
+    "recallRate": "Recall Rate",
+    "providers": "Number of Providers",
+    "locations": "Number of Locations",
+    "recovery": "Recovery",
+    "recall": "Recall",
+    "treatment": "Treatment",
+    "chairFill": "Chair Fill",
+    "reviews": "Reviews",
+    "referrals": "Referrals"
+  },
+  "email": {
+    "auditSubject": "Your FREE Revenue Opportunity Assessment for {practiceName}",
+    "auditReady": "Your FREE Revenue Opportunity Report is ready",
+    "bookWalkthrough": "Book your implementation walkthrough to review the recommended Zenith PROS Revenue Playbooks."
+  },
+  "sms": {
+    "assessmentReady": "Your Zenith Revenue Opportunity Report is ready. Book your walkthrough when convenient.",
+    "bookingReminder": "Reminder: your Zenith strategy session is coming up."
+  }
+}

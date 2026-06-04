@@ -14,14 +14,40 @@ export type AutomationRegistryRecord = Database["public"]["Tables"]["automation_
 export const dentalAutomationLibrary = [
   { workflowId: "recall_due", category: "Patient Recall", pack: "Recall Automation" },
   { workflowId: "review_request_due", category: "Review Generation", pack: "Review Automation" },
+  { workflowId: "referral_growth", category: "Referral Growth", pack: "Referral Growth Automation" },
   { workflowId: "appointment_no_show", category: "Missed Appointment Recovery", pack: "Missed Appointment Automation" },
   { workflowId: "reactivation_candidate_detected", category: "Reactivate Dormant Patients", pack: "Patient Reactivation" },
+  { workflowId: "treatment_recovery", category: "Treatment Recovery", pack: "Treatment Recovery Automation" },
   { workflowId: "stale_patient_detected", category: "Treatment Plan Follow-Up", pack: "Treatment Follow-Up" },
+  { workflowId: "schedule_gap_fill", category: "Schedule Optimization", pack: "Schedule Gap Fill Automation" },
+  { workflowId: "recall_capacity_optimization", category: "Capacity Balancing", pack: "Recall Capacity Optimization" },
   { workflowId: "lead_created", category: "Lead Follow-Up", pack: "Lead Follow-Up" },
   { workflowId: "missed_call_detected", category: "Staff Notifications", pack: "Staff Notifications" },
   { workflowId: "unpaid_invoice_detected", category: "Insurance Verification", pack: "Insurance Follow-Up" },
   { workflowId: "failed_payment_detected", category: "Internal Operations", pack: "Membership Plan Nurture" },
-  { workflowId: "ai_followup_required", category: "Internal Operations", pack: "Post Treatment Check-In" }
+  { workflowId: "ai_followup_required", category: "Internal Operations", pack: "Post Treatment Check-In" },
+  { workflowId: "alice_revenue_opportunity_agent", category: "AI", pack: "Revenue Opportunity Agent" },
+  { workflowId: "alice_practice_health_agent", category: "AI", pack: "Practice Health Agent" },
+  { workflowId: "alice_growth_agent", category: "AI", pack: "Growth Agent" },
+  { workflowId: "welcome_patient", category: "Patient Influence", pack: "New Patient Video Journey" },
+  { workflowId: "cleaning_journey", category: "Patient Influence", pack: "Cleaning Video Journey" },
+  { workflowId: "treatment_acceptance_journey", category: "Patient Influence", pack: "Treatment Acceptance Video Journey" },
+  { workflowId: "membership_enrollment_journey", category: "Patient Influence", pack: "Membership Enrollment Video Journey" },
+  { workflowId: "review_request_video", category: "Patient Influence", pack: "Review Request Video Journey" },
+  { workflowId: "referral_request_video", category: "Patient Influence", pack: "Referral Request Video Journey" },
+  { workflowId: "patient_30_day_checkin", category: "Patient Influence", pack: "Patient 30 Day Video Check-In" },
+  { workflowId: "financing_journey", category: "Patient Influence", pack: "Financing Video Journey" },
+  { workflowId: "video_confirmation", category: "Patient Influence", pack: "Confirmation Video Journey" },
+  { workflowId: "video_reminder", category: "Patient Influence", pack: "Reminder Video Journey" },
+  { workflowId: "video_recall", category: "Patient Influence", pack: "Recall Video Journey" },
+  { workflowId: "video_reactivation", category: "Patient Influence", pack: "Reactivation Video Journey" },
+  { workflowId: "video_no_show_recovery", category: "Patient Influence", pack: "No Show Recovery Video Journey" },
+  { workflowId: "video_post_visit", category: "Patient Influence", pack: "Post Visit Recovery Video Journey" },
+  { workflowId: "video_review_request", category: "Patient Influence", pack: "Review Growth Video Journey" },
+  { workflowId: "video_referral_request", category: "Patient Influence", pack: "Referral Growth Video Journey" },
+  { workflowId: "video_membership", category: "Patient Influence", pack: "Membership Enrollment Video Journey" },
+  { workflowId: "video_treatment_acceptance", category: "Patient Influence", pack: "Treatment Acceptance Video Journey" },
+  { workflowId: "video_vip_loyalty", category: "Patient Influence", pack: "VIP Loyalty Video Journey" }
 ] as const;
 
 export interface AutomationPerformance {
@@ -166,6 +192,7 @@ export async function executeRegisteredAutomation(workflowId: string) {
   const tenantData = await getTenantData();
   const organizationId = tenantData.tenant.organizationId ?? tenantData.organization.id;
   const correlationId = randomUUID();
+  const startedAt = new Date();
   const trace = await startRuntimeTrace({
     workflowId,
     eventName: "automation_center_execute",
@@ -186,13 +213,62 @@ export async function executeRegisteredAutomation(workflowId: string) {
     });
     await completeRuntimeTrace(trace);
     await updateAutomationStatus(workflowId, "active");
+    await recordWorkflowExecutionEvidence({
+      workflowId,
+      organizationId,
+      executionId: result.executionId,
+      startedAt,
+      status: "completed",
+      triggerSource: "automation_center_manual_execute",
+      outcomeSummary: `Workflow ${workflowId} executed through Workflow OS with correlation ${result.correlationId}.`,
+      traceId: trace?.trace_id ?? null
+    });
     return result;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Automation execution failed";
     await failRuntimeTrace(trace, message, { workflowId, organizationId, correlationId });
     await updateAutomationStatus(workflowId, "failed");
+    await recordWorkflowExecutionEvidence({
+      workflowId,
+      organizationId,
+      startedAt,
+      status: "failed",
+      triggerSource: "automation_center_manual_execute",
+      outcomeSummary: message,
+      traceId: trace?.trace_id ?? null
+    });
     throw error;
   }
+}
+
+async function recordWorkflowExecutionEvidence(input: {
+  workflowId: string;
+  organizationId: string;
+  executionId?: string;
+  startedAt: Date;
+  status: "completed" | "failed";
+  triggerSource: string;
+  outcomeSummary: string;
+  traceId?: string | null;
+}) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+  const completedAt = new Date();
+  const payload = {
+    workflow_id: input.workflowId,
+    organization_id: input.organizationId,
+    execution_id: input.executionId ?? null,
+    started_at: input.startedAt.toISOString(),
+    completed_at: completedAt.toISOString(),
+    status: input.status,
+    duration_ms: completedAt.getTime() - input.startedAt.getTime(),
+    trigger_source: input.triggerSource,
+    affected_entities: [],
+    outcome_summary: input.outcomeSummary,
+    trace_id: input.traceId ?? null
+  };
+  const { error } = await (supabase as any).from("workflow_execution_evidence").insert(payload);
+  if (error) logger.warn("workflow_execution_evidence_write_failed", { workflowId: input.workflowId, error: error.message });
 }
 
 function emptyAutomationOSState(organizationId: string, configured: boolean): AutomationOSState {

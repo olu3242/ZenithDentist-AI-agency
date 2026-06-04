@@ -67,17 +67,18 @@ export function roleCanAccessPath(role: ZenithRole, pathname: string) {
   if (pathname === "/onboarding" || pathname.startsWith("/onboarding/")) return true;
 
   if (role === "practice_owner") {
-    return pathname === "/settings" || pathname.startsWith("/portal") || pathname.startsWith("/automation-marketplace") || pathname.startsWith("/automation-center");
+    return pathname === "/settings" || pathname === "/dashboard" || pathname.startsWith("/dashboard/") || pathname.startsWith("/portal") || pathname.startsWith("/automation-marketplace") || pathname.startsWith("/automation-center");
   }
 
   if (role === "staff") {
-    return pathname === "/dashboard" || pathname === "/settings" || pathname.startsWith("/portal/onboarding") || pathname.startsWith("/automation-center");
+    return pathname === "/dashboard" || pathname.startsWith("/dashboard/") || pathname === "/settings" || pathname.startsWith("/portal/onboarding") || pathname.startsWith("/automation-center");
   }
 
   return (
     pathname === "/admin" ||
     pathname.startsWith("/admin/") ||
     pathname === "/dashboard" ||
+    pathname.startsWith("/dashboard/") ||
     pathname === "/settings" ||
     pathname === "/automation-marketplace" ||
     pathname === "/automation-center" ||

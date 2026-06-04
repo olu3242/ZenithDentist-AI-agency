@@ -1,3 +1,4 @@
+import { brandConfig } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 export function GlobalBrandIcon({ className, title = "Zenith circuit Z" }: { className?: string; title?: string }) {
@@ -10,8 +11,8 @@ export function GlobalBrandIcon({ className, title = "Zenith circuit Z" }: { cla
     >
       <defs>
         <linearGradient id="zenith-mark-gradient" x1="8" x2="56" y1="10" y2="54" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#2563EB" />
-          <stop offset="1" stopColor="#06B6D4" />
+          <stop stopColor={brandConfig.colors.primary} />
+          <stop offset="1" stopColor={brandConfig.colors.secondary} />
         </linearGradient>
       </defs>
       <path
@@ -29,14 +30,14 @@ export function GlobalBrandIcon({ className, title = "Zenith circuit Z" }: { cla
         strokeLinecap="round"
         strokeWidth="2.5"
       />
-      <circle cx="16" cy="18" r="3" fill="#2563EB" />
-      <circle cx="50" cy="24" r="3" fill="#06B6D4" />
-      <circle cx="16" cy="32" r="3" fill="#2563EB" />
-      <circle cx="26" cy="43" r="3" fill="#06B6D4" />
-      <circle cx="54" cy="46" r="3" fill="#06B6D4" />
-      <circle cx="22" cy="56" r="2" fill="#2563EB" />
-      <circle cx="58" cy="56" r="2" fill="#06B6D4" />
-      <circle cx="10" cy="26" r="2" fill="#2563EB" />
+      <circle cx="16" cy="18" r="3" fill={brandConfig.colors.primary} />
+      <circle cx="50" cy="24" r="3" fill={brandConfig.colors.secondary} />
+      <circle cx="16" cy="32" r="3" fill={brandConfig.colors.primary} />
+      <circle cx="26" cy="43" r="3" fill={brandConfig.colors.secondary} />
+      <circle cx="54" cy="46" r="3" fill={brandConfig.colors.secondary} />
+      <circle cx="22" cy="56" r="2" fill={brandConfig.colors.primary} />
+      <circle cx="58" cy="56" r="2" fill={brandConfig.colors.secondary} />
+      <circle cx="10" cy="26" r="2" fill={brandConfig.colors.primary} />
     </svg>
   );
 }

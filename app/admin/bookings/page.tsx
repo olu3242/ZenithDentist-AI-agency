@@ -1,12 +1,12 @@
 import { CRMTable } from "@/components/admin/crm-table";
-import { Header } from "@/app/admin/page";
+import { AdminHeader } from "@/components/admin/admin-header";
 import { getAdminDashboardData } from "@/lib/data/leads";
 
 export default async function AdminBookingsPage() {
   const { bookings } = await getAdminDashboardData();
   return (
     <div className="space-y-6">
-      <Header title="Bookings" subtitle="Calendly handoffs, booking statuses, and operational notes." />
+      <AdminHeader title="Bookings" subtitle="Calendly handoffs, booking statuses, and operational notes." />
       <CRMTable
         columns={["Lead", "Calendly event", "Status", "Scheduled", "Notes"]}
         rows={bookings.map(booking => [
