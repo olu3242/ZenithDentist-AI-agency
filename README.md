@@ -11,7 +11,7 @@ Production Next.js scaffold plus archived static HTML artifacts for the Zenith A
 - `index.html` - archived functional local MVP from the prior phase.
 - `app.css` - application styling.
 - `app.js` - local data model and client-side workflows.
-- `zenith-ai-landing.html` - landing page for the Patient Revenue Engine offer.
+- `zenith-ai-landing.html` - landing page for the Revenue Recovery System offer.
 - `zenith-ai-dashboard.html` - practice dashboard and pipeline interface mockup.
 - `zenith-ai-prd.html` - product requirements document for the platform.
 

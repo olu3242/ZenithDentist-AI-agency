@@ -1,8 +1,8 @@
-# Mission Control — Video & Journey Dashboard
+# Executive Dashboard — Video & Journey Dashboard
 
 ## Overview
 
-The Mission Control Video Dashboard surfaces Digital Dentist Twin performance, journey progress, and script effectiveness metrics for practice administrators and Zenith operators.
+The Executive Dashboard Video Dashboard surfaces Digital Dentist Twin performance, journey progress, and script effectiveness metrics for practice administrators and Zenith operators.
 
 ## API Routes that Feed This Dashboard
 

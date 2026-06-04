@@ -27,7 +27,7 @@ export function OperationalGraph({ graph }: { graph: WorkflowGraph }) {
           <p className="text-xs font-black uppercase tracking-wider text-accent">Operational Runtime Graph</p>
           <h2 className="mt-1 text-2xl font-black">Connected execution topology</h2>
           <p className="mt-2 max-w-3xl text-sm font-semibold text-white/60">
-            Workflows, events, queues, providers, persistence, UI visibility, ALICE grounding, SLA states, replay paths, and dead-letter systems.
+            Workflows, events, queues, providers, persistence, UI visibility, AI grounding, SLA states, replay paths, and dead-letter systems.
           </p>
         </div>
         <div className="flex items-center gap-2">

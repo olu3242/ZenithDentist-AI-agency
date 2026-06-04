@@ -41,7 +41,7 @@ AI_PROVIDER=anthropic
 **Day 6–7: Team Onboarding**
 - Create team members in `profiles` table with appropriate roles (org_admin, provider, staff)
 - Verify `organization_members` rows with correct `role`
-- Grant Mission Control access (org_admin role required)
+- Grant Executive Dashboard access (org_admin role required)
 
 ---
 
@@ -76,7 +76,7 @@ triggerRecallRecovery("org-xxx", { patientId: "patient-xxx", recallType: "6-mont
 → verify executeWorkflow() returns executionId
 ```
 
-**Verify in Mission Control:**
+**Verify in Executive Dashboard:**
 - `automation-blueprint-table.tsx` — shows all 5 workflows as "active"
 - `runtime-health-dashboard.tsx` — operational score > 0
 - `sla-breach-panel.tsx` — no breaches
@@ -109,17 +109,17 @@ GET /api/dental/revenue-summary
 → verify appointmentsAttributed > 0
 ```
 
-**Mission Control Revenue Panels:**
+**Executive Dashboard Revenue Panels:**
 - `dental-intelligence-panel.tsx` — shows recall conversion rate
 - `executive-kpi-grid.tsx` — shows revenue attributed to date
 
 ---
 
-### Week 4: Mission Control Live
+### Week 4: Executive Dashboard Live
 
 **Objective:** All dashboards operational, ALICE insights active.
 
-**Mission Control Activation:**
+**Executive Dashboard Activation:**
 - Access `/mission-control` — requires org_admin role
 - Verify `getMissionControlState(orgId)` returns without error
 - All 21 data sources loading (check Network tab for parallel requests)
@@ -128,7 +128,7 @@ GET /api/dental/revenue-summary
 - Verify `ANTHROPIC_API_KEY` set
 - Call `generateRevenueAnalysis(orgId, { start, end })` — verify non-empty `topOpportunities`
 - Call `generateExecutiveSummary(orgId, "daily")` — verify non-empty `headline`
-- ALICE copilot panel shows in Mission Control
+- ALICE copilot panel shows in Executive Dashboard
 
 **Daily Operations:**
 - Review ALICE daily summary each morning
@@ -198,11 +198,11 @@ GET /api/dental/revenue-summary
 - [ ] PMS adapter selected and `testConnection()` passing
 - [ ] First user bootstrapped via `/signup`
 - [ ] Organization provisioned (`provisionOrganization()` completed)
-- [ ] Default 5 workflows installed and visible in Mission Control
+- [ ] Default 5 workflows installed and visible in Executive Dashboard
 - [ ] No-show prevention tested with sample appointment
 - [ ] Recall recovery tested with sample patient
 - [ ] Revenue attribution returning non-zero values
-- [ ] Mission Control `/mission-control` accessible
+- [ ] Executive Dashboard `/mission-control` accessible
 - [ ] ALICE revenue analysis returning `topOpportunities`
 - [ ] ALICE daily summary scheduled
 - [ ] No dead letters in `dead-letter-explorer.tsx`
@@ -220,7 +220,7 @@ Date: 2026-06-01
 - Connect PMS and verify sync health.
 - Capture baseline metrics.
 - Install six revenue playbooks.
-- Activate ALICE Daily Summary and Mission Control monitoring.
+- Activate ALICE Daily Summary and Executive Dashboard monitoring.
 - Run first weekly executive report.
 
 ## 60-Day Plan
@@ -228,7 +228,7 @@ Date: 2026-06-01
 - Review playbook health weekly.
 - Tune no-show, recall, and chair fill triggers against baseline.
 - Validate recovered, generated, and protected revenue attribution.
-- Review ALICE recommendations with practice leadership.
+- Review AI Revenue Intelligence recommendations with practice leadership.
 - Publish monthly executive report.
 
 ## 90-Day Plan
@@ -248,7 +248,7 @@ Date: 2026-06-01
 - Baseline captured
 - Six playbooks installed
 - ALICE advisor verified
-- Mission Control monitoring active
+- Executive Dashboard monitoring active
 - ROI formulas validated
 - Executive reporting cadence scheduled
 
@@ -259,7 +259,7 @@ Date: 2026-06-01
 - Attribution rules configured
 - Monitoring active
 - ALICE daily and weekly summaries available
-- Mission Control projection healthy
+- Executive Dashboard projection healthy
 - Customer success owner assigned
 - First executive report generated
 
@@ -269,7 +269,7 @@ Date: 2026-06-01
 - All six playbooks are installed.
 - Revenue attribution can answer by playbook, workflow, and patient journey.
 - ALICE produces actionable practice recommendations.
-- Mission Control reflects workflow health and revenue attribution.
+- Executive Dashboard reflects workflow health and revenue attribution.
 - ROI can be measured using pilot formulas.
 
 

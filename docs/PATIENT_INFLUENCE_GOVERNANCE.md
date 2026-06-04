@@ -1,7 +1,7 @@
-# Patient Influence Engine™ Governance
+# Patient Influence Engine Governance
 
 **Document Type:** Canonical Governance Reference
-**Platform:** Zenith Patient OS™
+**Platform:** Zenith Patient OS
 **Last Updated:** 2026-06-02
 **Status:** ACTIVE — governs all influence scoring
 
@@ -11,7 +11,7 @@
 
 > **All influence scores must be explainable. No black-box scoring.**
 
-The Patient Influence Engine™ assigns a composite score (0-100) to each patient across 7 dimensions. These scores drive ALICE recommendations, workflow triggers, and communication prioritization. Because scores directly affect patient communications, they must be:
+The Patient Influence Engine assigns a composite score (0-100) to each patient across 7 dimensions. These scores drive AI Revenue Intelligence recommendations, workflow triggers, and communication prioritization. Because scores directly affect patient communications, they must be:
 
 - **Traceable:** Every score must be computable from specific, retrievable input records
 - **Explainable:** Practice staff must be able to view the reason code for any score
@@ -113,7 +113,7 @@ Each dimension reads from specific, documented input sources:
 
 - **Each dimension:** 0 to 100 (integer)
 - **Overall composite:** 0 to 100 (computed from weighted sum)
-- **High-influence threshold:** 70 (patients at or above this threshold are prioritized for ALICE recommendations and automated workflows)
+- **High-influence threshold:** 70 (patients at or above this threshold are prioritized for AI Revenue Intelligence recommendations and automated workflows)
 - **Future:** High-influence threshold will be configurable per organization in a future release; 70 is the platform default
 
 ### Score Interpretation

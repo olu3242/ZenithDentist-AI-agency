@@ -27,7 +27,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams?: 
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded border border-border bg-card p-6 shadow-soft">
             <p className="text-xs font-black uppercase tracking-wider text-primary">PROS installation workflow</p>
-            <h1 className="mt-3 text-4xl font-black text-foreground">Finish activating Zenith PROS</h1>
+            <h1 className="mt-3 text-4xl font-black text-foreground">Finish activating Zenith Pros</h1>
             <p className="mt-3 text-base font-semibold leading-7 text-muted">
               Confirm the records created during signup, synchronize onboarding state, and hand off to the correct role-based portal.
             </p>

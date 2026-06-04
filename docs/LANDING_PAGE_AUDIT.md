@@ -1,4 +1,4 @@
-# Landing Page Audit — Zenith AI Automation Agency
+# Landing Page Audit — Zenith Pros
 
 ## CURRENT STATE SUMMARY
 
@@ -16,7 +16,7 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 | Leaks | REWRITE | Rename to "Revenue Leaks" — keep concept, improve label |
 | Playbooks | REWRITE | Rename to "Results" — outcome language |
 | Intelligence | MOVE TO INTERNAL | Exposes AI architecture name |
-| Mission Control | MOVE TO INTERNAL | Internal operational term |
+| Executive Dashboard | MOVE TO INTERNAL | Internal operational term |
 | PMS Ops | MOVE TO INTERNAL | Developer/operator term |
 | Assessment | KEEP | Primary conversion item |
 | Route Probe button | REMOVE | Developer tool, never for public |
@@ -31,11 +31,11 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 |---------|----------|--------|
 | Zenith logo | KEEP | Brand identity |
 | Background dental image | KEEP | Clinical credibility |
-| "Patient Revenue Operating System™" badge | REWRITE | Outcome language: remove trademark badge, keep concept |
+| "Patient Revenue Operating System" badge | REWRITE | Outcome language: remove brandName badge, keep concept |
 | H1: "Recover lost revenue. Reduce no-shows. Fill chairs. Grow production." | REWRITE | Simplify to 3-line emotional hook |
-| P: "Zenith PROS turns patient operations into a measurable revenue system: Revenue Playbooks, Practice Intelligence, Mission Control, Workflow OS, and PMS operations..." | REMOVE | Lists internal system names |
+| P: "Zenith Pros turns patient operations into a measurable revenue system: Revenue Playbooks, Practice Intelligence, Executive Dashboard, Automation Platform, and PMS operations..." | REMOVE | Lists internal system names |
 | CTAs: Get My Free Assessment + Watch Demo | KEEP | Good conversion anchors |
-| Mission Control Preview card (right col) | REMOVE | Shows "0 assessments", "0 revenue", runtime traces — destroys trust |
+| Executive Dashboard Preview card (right col) | REMOVE | Shows "0 assessments", "0 revenue", runtime traces — destroys trust |
 | Runtime stats, error counts, "Backend summary snapshot" label | REMOVE | Internal telemetry on public page |
 
 ---
@@ -53,7 +53,7 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 | Element | Decision | Reason |
 |---------|----------|--------|
 | Gallery mode switcher (Demo/Sandbox/Live) | REMOVE | Internal deployment concept |
-| Mission Control Command card | REMOVE | Shows dispatch logs, internal status labels |
+| Executive Dashboard Command card | REMOVE | Shows dispatch logs, internal status labels |
 | "Active Dispatch Log" | REMOVE | Internal architecture |
 | PMS Integration Translator card | REMOVE | Shows schema mapping, adapter fields, writeback logs |
 | "Schema compiler" badge | REMOVE | Developer language |
@@ -97,16 +97,16 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 | "A dental revenue advisor that speaks in actions, not dashboards" | KEEP | Strong positioning line |
 | Body referencing "backend runtime and analytics modules" | REWRITE | Internal language |
 | Bot icon labeled "Daily Performance Summary" | REWRITE | Rename card to "Revenue Recovery Advisor" |
-| "Mission Control should watch integration writeback latency before go-live" | REMOVE | Exposes internal architecture + "go-live" is agent language |
+| "Executive Dashboard should watch integration writeback latency before go-live" | REMOVE | Exposes internal architecture + "go-live" is agent language |
 | "sandbox copy is labeled where live data is unavailable" | REMOVE | Exposes internal state |
 | LIZ name | KEEP | Rename ALICE references to LIZ for public page |
 
 ---
 
-### Mission Control Section (`#mission-control`)
+### Executive Dashboard Section (`#mission-control`)
 | Element | Decision | Reason |
 |---------|----------|--------|
-| Entire section | MOVE TO INTERNAL | Mission Control is an authenticated experience only |
+| Entire section | MOVE TO INTERNAL | Executive Dashboard is an authenticated experience only |
 | Tabbed preview (revenue/runtime/operations/alice/executive) | MOVE TO INTERNAL | Exposes runtime scores, error counts, dispatch state |
 
 ---
@@ -146,9 +146,9 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 | Entire form | KEEP | Core conversion asset |
 | Sliders + live calculation | KEEP | Strong interactive hook |
 | Lead gate | KEEP | Proper progressive disclosure |
-| "Mission Control lead" language in gate banner | REWRITE | Replace with outcome language |
+| "Executive Dashboard lead" language in gate banner | REWRITE | Replace with outcome language |
 | "the platform has enough signal" | REWRITE | Replace with "Your practice profile is ready" |
-| LiveChart label "Mission Control Results" | REWRITE | Rename "Revenue Breakdown" |
+| LiveChart label "Executive Dashboard Results" | REWRITE | Rename "Revenue Breakdown" |
 | AuditPreview | KEEP | Conversion element |
 | MobileResultsPanel | KEEP | Mobile conversion |
 
@@ -160,7 +160,7 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 | 9-step list | KEEP | Buyer education |
 | Step detail panel | REWRITE | "tenant safety", "rollback path known", "evidence captured" → plain language |
 | "Owner assigned", "Evidence captured", "Rollback path known" | REWRITE | Internal governance language |
-| Section body mentioning "PMS handshake", "intelligence activation", "Mission Control" | REWRITE | Plain outcome language |
+| Section body mentioning "PMS handshake", "intelligence activation", "Executive Dashboard" | REWRITE | Plain outcome language |
 
 ---
 
@@ -217,5 +217,5 @@ The homepage (`app/page.tsx` → `components/public/pros-landing.tsx`) is a 843-
 - Current sections: 12
 - New sections: 9
 - Technical language instances removed: ~40
-- Components deleted: Route Probe Panel, Mission Control Preview (hero), Gallery mode switcher, PMS Ops section, Role Workspaces section, separate ROI sliders section
+- Components deleted: Route Probe Panel, Executive Dashboard Preview (hero), Gallery mode switcher, PMS Ops section, Role Workspaces section, separate ROI sliders section
 - Estimated content reduction: **68%**

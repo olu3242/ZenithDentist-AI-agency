@@ -66,7 +66,7 @@
 ### Week 3: Optimization (Days 15-21)
 | Day | Activity | Owner | System |
 |-----|----------|-------|--------|
-| 15 | Workflow performance review | CSM | Mission Control |
+| 15 | Workflow performance review | CSM | Executive Dashboard |
 | 16 | Lead conversion analysis | CSM | `analyticsProjector()` |
 | 17 | Identify expansion opportunities | CSM | `sales-intelligence-center` |
 | 18 | Marketplace extension install (if relevant) | Eng | `extension-runtime.ts` |

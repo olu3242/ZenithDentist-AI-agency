@@ -76,7 +76,7 @@ Not yet computed as a dedicated metric — available for future analytics enhanc
 
 ---
 
-## Mission Control Visibility
+## Executive Dashboard Visibility
 
 The admin CRM table (`/admin`) shows:
 - Practice name

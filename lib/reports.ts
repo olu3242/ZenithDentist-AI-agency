@@ -24,7 +24,7 @@ export function reportToHtml(report: Report) {
       <body>
         <div class="report-header">
           <div class="brand">${brandConfig.name} Executive Briefing</div>
-          <div class="subtitle">${brandConfig.trademark}</div>
+          <div class="subtitle">${brandConfig.brandName}</div>
         </div>
         <h1>${report.title}</h1>
         <p>${report.summary}</p>

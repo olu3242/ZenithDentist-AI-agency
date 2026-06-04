@@ -53,7 +53,7 @@ All events are persisted to `billing_events` table via `recordBillingEvent()` in
 
 **Migration:** `supabase/migrations/202606030001_billing_customers.sql` provisions the `billing_customers` table.
 
-**Runtime event publication:** On successful activation the webhook publishes a `stripe_activation_*` event to the runtime fabric for Mission Control visibility.
+**Runtime event publication:** On successful activation the webhook publishes a `stripe_activation_*` event to the runtime fabric for Executive Dashboard visibility.
 
 ### Remaining Manual Steps (Pilot)
 - Stripe webhook secret (`STRIPE_WEBHOOK_SECRET`) must be provisioned in production environment variables

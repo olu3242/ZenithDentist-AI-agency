@@ -1,6 +1,6 @@
 export const PATIENT_REVENUE_ENGINE_PRODUCT = {
   id: "patient_revenue_engine",
-  name: "Patient Revenue Engine",
+  name: "Revenue Recovery System",
   description: "Recover missed revenue through lead follow-up, recall recovery, no-show recovery, reactivation, reviews, and billing recovery.",
   version: "1.0.0",
   workflows: [
@@ -34,7 +34,7 @@ export const PATIENT_REVENUE_ENGINE_PRODUCT = {
     "Recover Revenue",
     "Generate Events",
     "Update Analytics",
-    "Update Mission Control",
+    "Update Executive Dashboard",
     "Update ALICE",
     "Generate ROI Report",
     "Update Client Success Dashboard"

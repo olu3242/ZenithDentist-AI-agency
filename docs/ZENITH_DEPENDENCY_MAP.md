@@ -1,4 +1,4 @@
-# Zenith Patient OS™ — Platform Dependency Map
+# Zenith Patient OS — Platform Dependency Map
 
 **Classification:** Canonical Platform Reference
 **Status:** FROZEN — reflects architecture as of 2026-06-02
@@ -25,24 +25,24 @@ Event Fabric (immutable dual-write)                                   │
   ─────────────────────────────────────────────────────────────────  │
         │                    │                    │                   │
         ▼                    ▼                    ▼                   │
-Patient Influence     Practice Memory       Workflow OS               │
-Engine™               Graph™                (canonical executor)      │
+Patient Influence     Practice Memory       Automation Platform               │
+Engine               Graph                (canonical executor)      │
 lib/patient-influence lib/practice-memory   lib/workflow-os           │
 lib/treatment-intel   lib/practice-intel          │                   │
 lib/channel-optim          │                      ▼                   │
-        │                  │              AI Agent OS™               │
+        │                  │              AI Agent OS               │
         │                  │              lib/agents (7 agents)      │
         ▼                  │                      │                   │
-ALICE™  ◄──────────────────┘                      │                   │
+ALICE  ◄──────────────────┘                      │                   │
 lib/alice/patient-decision-engine                 │                   │
 lib/ai-os                                         │                   │
         │                                         │                   │
         ▼                                         ▼                   │
-Script Intelligence Engine™          Communication Hub                │
+Script Intelligence Engine          Communication Hub                │
 lib/script-engine                    lib/communication-hub            │
         │                                         │                   │
         ▼                                         ▼                   │
-Digital Dentist Twin™           SMS / Email / Video delivery          │
+Digital Dentist Twin           SMS / Email / Video delivery          │
 lib/digital-dentist-twin        (Twilio / Resend / HeyGen)            │
 lib/avatar-studio                                 │                   │
 lib/voice-studio                                  ▼                   │
@@ -62,15 +62,15 @@ lib/voice-studio                                  ▼                   │
                                         lib/growth-score
                                                   │
                                                   ▼
-                                        Command Center™
-                                        (Mission Control + 6 panels)
+                                        Command Center
+                                        (Executive Dashboard + 6 panels)
 ```
 
 ### Key Dependency Rules
 
 1. **Integration OS is the only permitted inbound boundary** — No component queries external systems directly.
-2. **Workflow OS is the only executor** — No component delivers communications or executes actions outside Workflow OS.
-3. **ALICE never executes** — ALICE generates recommendations; agents and Workflow OS execute.
+2. **Automation Platform is the only executor** — No component delivers communications or executes actions outside Automation Platform.
+3. **ALICE never executes** — ALICE generates recommendations; agents and Automation Platform execute.
 4. **Event Fabric is the audit backbone** — Every significant state change emits an immutable event.
 5. **Revenue Attribution is the outcome signal** — Outcomes flow back to Practice Memory so ALICE learns.
 
@@ -85,13 +85,13 @@ For each major table: what feeds it and what reads it.
 | `patient_profiles` | Integration OS (PMS sync), patient registration | ALICE, Patient Influence Engine, all engines, Command Center |
 | `patient_influence_scores` | Patient Influence Engine (computed) | ALICE, Treatment Coordinator Agent, Channel Optimization, Command Center |
 | `alice_patient_decisions` | ALICE (generated) | AI Agent OS, Command Center, Revenue Attribution (outcome matching) |
-| `journey_enrollments` | Journey Library, Workflow OS | Workflow OS (step execution), Revenue Attribution |
-| `workflow_executions` | Workflow OS (runtime) | Command Center, Revenue Attribution, ALICE (outcome learning) |
+| `journey_enrollments` | Journey Library, Automation Platform | Automation Platform (step execution), Revenue Attribution |
+| `workflow_executions` | Automation Platform (runtime) | Command Center, Revenue Attribution, ALICE (outcome learning) |
 | `communication_events` | Communication Hub (delivery) | Command Center, Revenue Attribution, Growth Score |
 | `revenue_attribution_records` | Revenue Attribution Engine | Command Center, ALICE, Practice Memory |
 | `treatment_plans` | Integration OS (PMS sync) | Treatment Intelligence, ALICE, Revenue Attribution |
 | `agent_registry` | Platform setup (static) | AI Agent OS, Command Center |
-| `agent_tasks` | ALICE (recommendation → task), agents (self-task) | Agent runner (Workflow OS) |
+| `agent_tasks` | ALICE (recommendation → task), agents (self-task) | Agent runner (Automation Platform) |
 | `agent_executions` | Agent runner | Command Center, agent_metrics |
 | `agent_recommendations` | Agents (post-execution) | ALICE, Command Center |
 | `practice_memory_records` | Practice Memory Graph (ALICE writes) | ALICE (reads for context), Practice Intelligence |
@@ -129,7 +129,7 @@ Which events trigger which workflows and agents.
 | `referral.trigger` | ALICE recommendation | `referral_campaign` journey | Referral ask sequence begins |
 | `appointment.completed` | PMS sync | `review_campaign` journey | Post-visit review request |
 | `lead.created` | Lead sources, Integration OS | `new_patient_acquisition` journey | Lead nurture begins |
-| `workflow.execution.completed` | Workflow OS | Revenue Attribution Engine | Revenue record potentially created |
+| `workflow.execution.completed` | Automation Platform | Revenue Attribution Engine | Revenue record potentially created |
 | `alice.recommendation.created` | ALICE | Relevant agent (via agent_tasks) | Agent task queued |
 | `integration.health.changed` | Integration OS | Alert system | Command Center notified |
 | `growth.score.computed` | Growth Score Engine | ALICE analysis | Practice-level recommendations refreshed |
@@ -145,7 +145,7 @@ Components that MUST be operational before downstream components can function.
 ```
 Supabase (database) → everything depends on this
 Event Fabric → all state changes depend on this
-Workflow OS → all execution depends on this
+Automation Platform → all execution depends on this
 ```
 
 ### Tier 1 — Data Ingestion (must precede intelligence)
@@ -159,7 +159,7 @@ Patient Influence Engine → ALICE (needs influence scores to reason)
 ```
 ALICE → AI Agent OS (agents need ALICE decisions to action)
 Script Engine → Communication Hub (messages need scripts)
-Journey Library → Workflow OS (workflows need journey definitions)
+Journey Library → Automation Platform (workflows need journey definitions)
 ```
 
 ### Tier 3 — Delivery Layer (must precede patient-facing outcomes)
@@ -170,7 +170,7 @@ Digital Dentist Twin → Video delivery (needs HeyGen/Tavus credentials)
 
 ### Tier 4 — Attribution (must precede revenue validation)
 ```
-Workflow OS completion events → Revenue Attribution
+Automation Platform completion events → Revenue Attribution
 Revenue Attribution → Practice Memory (outcome learning)
 Practice Memory → ALICE improvement (closed learning loop)
 ```
@@ -182,7 +182,7 @@ Practice Memory → ALICE improvement (closed learning loop)
 3. Patient influence score computed
 4. ALICE generates welcome recommendation
 5. Journey enrollment created (welcome_patient)
-6. Workflow OS picks up journey
+6. Automation Platform picks up journey
 7. Script Engine generates personalised messages
 8. Communication Hub delivers (SMS + Email)
 9. Patient responds / books

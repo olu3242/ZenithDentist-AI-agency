@@ -192,7 +192,7 @@ This is a conservative estimate. True attribution would require:
 When a patient has not confirmed within 4 hours of T-24h reminder:
 1. Mark `escalation_needed = true` in event metadata
 2. Trigger outbound call attempt via configured VOIP integration
-3. If still no response at T-2h: notify front desk via Mission Control alert
+3. If still no response at T-2h: notify front desk via Executive Dashboard alert
 
 ---
 

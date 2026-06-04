@@ -22,7 +22,7 @@
 | `lib/alice/agents/` | revenue-analyst.ts, operations-analyst.ts, patient-journey-analyst.ts, executive-advisor.ts | 4 ALICE AI agents |
 | `lib/alice/` | commercial-intelligence.ts, operational-intelligence.ts | ALICE data aggregation layer |
 | `lib/analytics/` | projector.ts | Event Fabric → trace → analytics projection |
-| `lib/mission-control/` | index.ts, dental-revenue-center.ts, roi-intelligence-center.ts, sales-intelligence-center.ts | Mission Control aggregator |
+| `lib/mission-control/` | index.ts, dental-revenue-center.ts, roi-intelligence-center.ts, sales-intelligence-center.ts | Executive Dashboard aggregator |
 | `lib/errors/` | index.ts, error-codes.ts, error-types.ts, error-registry.ts, api-wrapper.ts, self-healing.ts | 40+ error codes, self-healing infrastructure |
 | `lib/alerting/` | index.ts | 6 alert categories, severity evaluation |
 | `lib/monitoring/` | index.ts, error-dashboard.ts | Operational health dashboard |
@@ -46,7 +46,7 @@
 | AI inference | `lib/ai/provider.ts::getIntelligenceProvider()` | LocalProvider → AnthropicProvider fallback chain |
 | Onboarding | `lib/onboarding/index.ts` + `lib/onboarding/bootstrap.ts` | 7-step OnboardingStep enum |
 | Organization provisioning | `lib/tenant/organization-provisioning.ts::provisionOrganization()` | 5-step provisioning |
-| Mission Control | `lib/mission-control/index.ts::getMissionControlState()` | 21 concurrent data sources |
+| Executive Dashboard | `lib/mission-control/index.ts::getMissionControlState()` | 21 concurrent data sources |
 
 ---
 
@@ -104,6 +104,6 @@ The following systems were **added in the PROS sprint** (migration 202606010001 
 | PMS sync | `lib/integrations/pms/registry.ts` | `getPMSAdapter()` |
 | AI inference | `lib/ai/provider.ts` | `getIntelligenceProvider()` |
 | Patient lifecycle | `lib/patient-journey/index.ts` | `transitionPatientState()` |
-| Mission Control | `lib/mission-control/index.ts` | `getMissionControlState()` |
+| Executive Dashboard | `lib/mission-control/index.ts` | `getMissionControlState()` |
 | Tenant isolation | `lib/tenant/tenant-enforcement.ts` | RLS + guard enforcement |
 | Observability | `lib/monitoring/index.ts` | `getOperationalHealthDashboard()` |

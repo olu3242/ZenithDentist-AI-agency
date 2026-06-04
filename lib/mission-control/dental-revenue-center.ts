@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Dental Revenue Center — Mission Control extension.
+ * Dental Revenue Center — Executive Dashboard extension.
  *
  * Aggregates practice health, revenue, recall, chair utilization, and
  * operational efficiency into a single state object for the dental portal.

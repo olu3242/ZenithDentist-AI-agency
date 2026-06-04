@@ -20,7 +20,7 @@ Do not schedule a production migration window until P0 blockers in `docs/MIGRATI
 ## Verification Steps
 
 - Apply migrations to empty environment.
-- Seed minimal organization, user, PMS integration, playbook, patient, appointment, runtime event, attribution, analytics, ALICE, and Mission Control data.
+- Seed minimal organization, user, PMS integration, playbook, patient, appointment, runtime event, attribution, analytics, ALICE, and Executive Dashboard data.
 - Execute smoke tests.
 - Execute E2E operational validation.
 - Verify RLS using tenant member and admin roles.
@@ -46,7 +46,7 @@ Do not schedule a production migration window until P0 blockers in `docs/MIGRATI
 - Confirm Event Fabric writes.
 - Confirm analytics projection.
 - Confirm ALICE report generation.
-- Confirm Mission Control state update.
+- Confirm Executive Dashboard state update.
 
 ## Success Criteria
 

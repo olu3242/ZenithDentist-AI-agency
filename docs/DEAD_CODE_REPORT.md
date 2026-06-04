@@ -12,9 +12,9 @@ Static grep/inventory review. No automated tree-shaking report was run.
 | --- | --- | --- |
 | `components/brand/*` | Legacy brand system overlaps with `lib/brand` and `components/branding` | Archive after import audit. |
 | `lib/stability.ts` | Overlaps with `lib/mission-control/index.ts` | Consolidate state consumers. |
-| `components/enterprise/*` | Many panels overlap Mission Control and internal views | Classify per route usage before removal. |
+| `components/enterprise/*` | Many panels overlap Executive Dashboard and internal views | Classify per route usage before removal. |
 | `components/autonomous/*` | Overlaps ALICE/runtime intelligence | Classify per route usage before removal. |
-| `app/internal/*` | Overlaps canonical Mission Control and portal surfaces | Archive unused internal routes only after access policy review. |
+| `app/internal/*` | Overlaps canonical Executive Dashboard and portal surfaces | Archive unused internal routes only after access policy review. |
 | Historical docs | Many sprint reports are superseded | Move to `docs/archive/` after approval. |
 | Mixed legacy migrations | Must remain frozen, not removed | Keep for replay history. |
 

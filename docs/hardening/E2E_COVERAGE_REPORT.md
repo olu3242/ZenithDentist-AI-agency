@@ -12,14 +12,14 @@
 |---------|------------|------------|--------------|---------|
 | Lead Funnel | UI → DB → Event → Analytics | ALICE push notification | Integration test | 80% |
 | ROI Audit | UI → API → DB → ALICE report | Auto-refresh | Integration test | 85% |
-| Discovery Sessions | UI → DB → Mission Control | API, Runtime, E2E chain | Unit test only | 35% |
+| Discovery Sessions | UI → DB → Executive Dashboard | API, Runtime, E2E chain | Unit test only | 35% |
 | Client Onboarding | DB → Workflow trace | UI, API, Analytics, E2E | Unit test only | 20% |
 | Workflow Execution | API → executeWorkflow → traces → Analytics | UI trigger | Integration test | 75% |
 | Marketplace Install | UI → API → DB → extension-runtime | ALICE awareness | Integration test | 70% |
 | Billing Lifecycle | API → DB → usage_metrics | UI, Runtime event, E2E | Unit test only | 30% |
 | Support Tickets | API → DB | Everything else | Unit test only | 20% |
-| Alerting | Dead letters → evaluateAlerts → Mission Control | UI, ALICE, E2E | Integration test | 55% |
-| Audit Logging | logAuditEvent → DB → API | UI, ALICE, Mission Control | Integration test | 50% |
+| Alerting | Dead letters → evaluateAlerts → Executive Dashboard | UI, ALICE, E2E | Integration test | 55% |
+| Audit Logging | logAuditEvent → DB → API | UI, ALICE, Executive Dashboard | Integration test | 50% |
 
 ---
 
@@ -38,7 +38,7 @@
 - Real-time ALICE notification when lead score changes
 - Funnel drop-off analytics (step-by-step conversion)
 
-**Test Approach:** Cypress E2E: fill lead form → verify DB record → verify event in fabric → verify Mission Control count increment
+**Test Approach:** Cypress E2E: fill lead form → verify DB record → verify event in fabric → verify Executive Dashboard count increment
 
 ---
 
@@ -49,7 +49,7 @@
 - `automation_traces` tracked for runtime attribution
 - `usage_metrics` feeds analytics
 - `generateAliceReport('roi_summary')` produces AI summary
-- `roi-intelligence-center.ts` in Mission Control
+- `roi-intelligence-center.ts` in Executive Dashboard
 
 **Missing:**
 - Auto-refresh (currently manual page reload)
@@ -63,7 +63,7 @@
 **Working:**
 - UI at `app/admin/discovery` renders session list
 - `discovery_sessions` table stores records
-- `sales-intelligence-center` reads for Mission Control
+- `sales-intelligence-center` reads for Executive Dashboard
 
 **Missing:**
 - `/api/discovery` API endpoint
@@ -85,7 +85,7 @@
 - API (`/api/onboarding`)
 - Analytics
 - ALICE
-- Mission Control surface
+- Executive Dashboard surface
 
 **Test Approach:** Only DB schema tests exist. Full E2E test requires UI + API first.
 
@@ -114,11 +114,11 @@
 - `installed_extensions` table updated
 - `extension-runtime.ts` activates extension
 - `publishEvent('extension_installed')` fires
-- Mission Control shows active extensions
+- Executive Dashboard shows active extensions
 
 **Missing:**
 - ALICE awareness of installed extensions
-- Extension health monitoring in Mission Control
+- Extension health monitoring in Executive Dashboard
 
 **Test Approach:** Integration: trigger install API → verify installed_extensions record → verify extension-runtime activation → verify event published
 
@@ -134,7 +134,7 @@
 - UI for billing management
 - `publishEvent` on billing state changes
 - ALICE billing awareness
-- Mission Control billing panel
+- Executive Dashboard billing panel
 
 **Test Approach:** Unit tests for billing API only. No E2E path yet.
 
@@ -150,7 +150,7 @@
 - Runtime events
 - Analytics
 - ALICE
-- Mission Control
+- Executive Dashboard
 
 **Test Approach:** API-level unit tests only. Highest gap of all 10 features.
 
@@ -168,7 +168,7 @@
 - Alert management UI
 - ALICE proactive alert warnings
 
-**Test Approach:** Integration: trigger dead letter → verify evaluateAlerts detects → verify Mission Control shows alert; needs alert management UI test
+**Test Approach:** Integration: trigger dead letter → verify evaluateAlerts detects → verify Executive Dashboard shows alert; needs alert management UI test
 
 ---
 
@@ -182,7 +182,7 @@
 **Missing:**
 - Audit UI (`app/audit`)
 - ALICE audit awareness
-- Mission Control audit panel
+- Executive Dashboard audit panel
 
 **Test Approach:** Integration: trigger user action → verify runtime_audit_timeline record → verify /api/audit/events returns it → verify traceLineage includes it
 

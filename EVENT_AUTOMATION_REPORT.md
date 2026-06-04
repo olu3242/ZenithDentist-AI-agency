@@ -2,7 +2,7 @@
 
 ## Connected Flow
 
-`lead_created -> Automation Registry -> Workflow OS -> Runtime OS -> Event Fabric`
+`lead_created -> Automation Registry -> Automation Platform -> Runtime OS -> Event Fabric`
 
 ## Status
 

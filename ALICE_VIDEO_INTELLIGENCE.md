@@ -1,4 +1,4 @@
-# ALICE Video Intelligence
+# Video Revenue Intelligence
 
 ALICE supports both Video Engagement OS optimization and the Smart Video Journey / Patient Influence model.
 

@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# Mission Control Report — PROS Sprint
+# Executive Dashboard Report — PROS Sprint
 **Generated:** 2026-06-01 (supersedes 2026-05-30 report)
 **Canonical Source:** `lib/mission-control/index.ts`, `components/mission-control/`, `app/mission-control/`
 
@@ -7,7 +7,7 @@
 
 ## Architecture Overview
 
-Mission Control is the operational control plane. It aggregates live data from Runtime Kernel, Workflow OS, AI OS, Recovery, Replay, and Tenant Context into a unified control surface. Every panel consumes live runtime data — no static metrics.
+Executive Dashboard is the operational control plane. It aggregates live data from Runtime Kernel, Automation Platform, AI OS, Recovery, Replay, and Tenant Context into a unified control surface. Every panel consumes live runtime data — no static metrics.
 
 ---
 
@@ -121,8 +121,8 @@ All sources loaded via `Promise.all()`:
 *Previous content preserved below:*
 ---
 =======
-# Mission Control Report
-**ZenithDentist AI — Mission Control Executive Command Center — Phase 12**
+# Executive Dashboard Report
+**ZenithDentist AI — Executive Dashboard Executive Command Center — Phase 12**
 **Date:** 2026-06-03 | **Platform Version:** 12.0.0
 >>>>>>> backup/pre-consolidation
 
@@ -131,7 +131,7 @@ All sources loaded via `Promise.all()`:
 ## 1. Overview
 
 <<<<<<< HEAD
-Mission Control is the operational control plane for Zenith AI — an internal-facing dashboard aggregating live runtime, workflow, AI, and recovery data into a single state object. It serves the `/mission-control` route, which requires the `zenith_internal_token` cookie or `x-internal-token` header for access.
+Executive Dashboard is the operational control plane for Zenith AI — an internal-facing dashboard aggregating live runtime, workflow, AI, and recovery data into a single state object. It serves the `/mission-control` route, which requires the `zenith_internal_token` cookie or `x-internal-token` header for access.
 
 The core state is assembled in `getMissionControlState()`, and three domain-specific centers extend it for dental, sales, and ROI use cases.
 
@@ -140,7 +140,7 @@ The core state is assembled in `getMissionControlState()`, and three domain-spec
 
 ---
 
-## 2. Core Mission Control (`index.ts`)
+## 2. Core Executive Dashboard (`index.ts`)
 
 ### `getMissionControlState(organizationId)` — 9 Data Sources
 
@@ -203,7 +203,7 @@ interface MissionControlState {
 
 ### Purpose
 
-Extends Mission Control with dental-domain KPIs. Added as part of MVP2. Does NOT replace `getMissionControlState` — is called in addition.
+Extends Executive Dashboard with dental-domain KPIs. Added as part of MVP2. Does NOT replace `getMissionControlState` — is called in addition.
 
 ### `getDentalRevenueCenterState(organizationId)` — 4 Data Sources
 
@@ -265,7 +265,7 @@ interface DentalRevenueCenterState {
 
 ### Purpose
 
-Surfaces pipeline funnel metrics and opportunity scoring for the GTM team within Mission Control. Added as part of MVP2.
+Surfaces pipeline funnel metrics and opportunity scoring for the GTM team within Executive Dashboard. Added as part of MVP2.
 
 ### `getSalesIntelligenceCenterState()` — 2 Data Sources
 
@@ -380,7 +380,7 @@ interface RoiIntelligenceCenterState {
 | Sales Intelligence | Extension | No (global) | Pipeline + Discovery sessions |
 | ROI Intelligence | Extension | Yes | ROI + Analytics |
 
-Seven of the nine core panels aggregate data globally (all tenants). This is a known architectural pattern for Mission Control — it is an internal tool. Customer-facing portals use separate tenant-scoped calls.
+Seven of the nine core panels aggregate data globally (all tenants). This is a known architectural pattern for Executive Dashboard — it is an internal tool. Customer-facing portals use separate tenant-scoped calls.
 
 ---
 
@@ -394,7 +394,7 @@ Seven of the nine core panels aggregate data globally (all tenants). This is a k
 | `review` value per event inconsistent ($150 in ROI center vs $300 in Discovery OS) | Medium | `roi-intelligence-center.ts`, `opportunity-scoring.ts` |
 | `getWorkflowAnalyticsSummary()` returns no data if zero executions recorded | Medium | Shared |
 =======
-Mission Control is the **single executive command center** for the ZenithDentist AI platform. All operational data, intelligence outputs, commercial metrics, and system health indicators surface through Mission Control panels. There are no alternative dashboards — every system routes visibility through this layer.
+Executive Dashboard is the **single executive command center** for the ZenithDentist AI platform. All operational data, intelligence outputs, commercial metrics, and system health indicators surface through Executive Dashboard panels. There are no alternative dashboards — every system routes visibility through this layer.
 
 Phase 12 added four new panels: Commercial OS Dashboard, Digital Twin Dashboard, ALICE Executive Briefing, and Workflow Recovery Center.
 
@@ -402,8 +402,8 @@ Phase 12 added four new panels: Commercial OS Dashboard, Digital Twin Dashboard,
 
 ## 2. Design Principles
 
-- **One namespace:** All panels exist under Mission Control — no parallel dashboards
-- **Read-only view:** Mission Control displays; it does not execute operations directly
+- **One namespace:** All panels exist under Executive Dashboard — no parallel dashboards
+- **Read-only view:** Executive Dashboard displays; it does not execute operations directly
 - **Event-driven updates:** All panels refresh from Event Fabric events, not polling
 - **Role-based access:** Panel visibility controlled by practice role (admin, doctor, staff, executive)
 - **War room mode:** Critical alerts trigger war room protocol visible across all panels
@@ -526,7 +526,7 @@ Phase 12 added four new panels: Commercial OS Dashboard, Digital Twin Dashboard,
 
 ---
 
-## 6. Event Fabric → Mission Control Routing
+## 6. Event Fabric → Executive Dashboard Routing
 
 All Event Fabric events dual-write to `mission_control_events`:
 
@@ -548,13 +548,13 @@ Critical events (risk detected, workflow failure, recovery triggered) additional
 
 | System | Enforcement |
 |---|---|
-| Commercial OS | No standalone Commercial dashboard; all data via Mission Control Commercial panels |
-| Digital Twin OS | No standalone Twin dashboard; all data via Mission Control Digital Twin panels |
-| ALICE Executive | No standalone ALICE dashboard; briefings visible in Mission Control ALICE panels |
-| Workflow Recovery | No standalone Recovery dashboard; all data via Mission Control Recovery panels |
-| Revenue OS | No standalone Revenue dashboard outside Mission Control |
+| Commercial OS | No standalone Commercial dashboard; all data via Executive Dashboard Commercial panels |
+| Digital Twin OS | No standalone Twin dashboard; all data via Executive Dashboard Digital Twin panels |
+| ALICE Executive | No standalone ALICE dashboard; briefings visible in Executive Dashboard ALICE panels |
+| Workflow Recovery | No standalone Recovery dashboard; all data via Executive Dashboard Recovery panels |
+| Revenue OS | No standalone Revenue dashboard outside Executive Dashboard |
 
-Any future system added to the platform must route its executive visibility through Mission Control panels. Standalone dashboards are prohibited.
+Any future system added to the platform must route its executive visibility through Executive Dashboard panels. Standalone dashboards are prohibited.
 
 ---
 
@@ -578,7 +578,7 @@ Triggered when any of these conditions are met:
 - 3+ simultaneous recovery events
 
 War room activates:
-1. War Room panel surfaces to top of Mission Control
+1. War Room panel surfaces to top of Executive Dashboard
 2. ALICE generates emergency executive briefing
 3. All critical alerts consolidated in single view
 4. CTO notification via configured webhook

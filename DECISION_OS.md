@@ -14,7 +14,7 @@ Decide what should happen.
 
 ## Inputs
 
-- Workflow OS
+- Automation Platform
 - Runtime OS
 - Knowledge OS
 - Simulation OS

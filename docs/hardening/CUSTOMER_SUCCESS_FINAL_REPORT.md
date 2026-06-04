@@ -107,7 +107,7 @@ Health Score (0-100) =
 - ALICE query log → engagement
 - `operational_incidents` → support volume
 
-**Published to:** Mission Control via `getMissionControlState(organizationId)`
+**Published to:** Executive Dashboard via `getMissionControlState(organizationId)`
 
 ---
 
@@ -138,7 +138,7 @@ Health Score (0-100) =
 | ROI audit completed | Day 14 | `roi_calculations` |
 | 3+ active workflows | Day 21 | `usage_metrics` |
 | 5+ features adopted | Day 45 | `usage_metrics` |
-| Mission Control daily use | Day 30 | `getMissionControlState` call log |
+| Executive Dashboard daily use | Day 30 | `getMissionControlState` call log |
 
 ### Adoption Recovery Plays
 
@@ -163,7 +163,7 @@ Health Score (0-100) =
 
 | Capability | Ready | Blocker |
 |-----------|-------|---------|
-| Platform access (Mission Control) | YES | — |
+| Platform access (Executive Dashboard) | YES | — |
 | Health score monitoring | YES | No real-time alerts yet |
 | Replay trigger capability | YES | Via `replayEvent()` |
 | ALICE report generation | YES | Via `generateAliceReport()` |

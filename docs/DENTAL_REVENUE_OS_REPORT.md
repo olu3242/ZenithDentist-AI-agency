@@ -8,12 +8,12 @@
 
 ## 1. Overview
 
-The Dental Revenue OS is a domain-specific automation layer built on top of Workflow OS. It exposes seven modules, each responsible for a distinct revenue or operational surface of a dental practice. Every module routes through `executeWorkflow()` — no automation runs outside the engine. Modules are located under `lib/dental-revenue-os/`.
+The Dental Revenue OS is a domain-specific automation layer built on top of Automation Platform. It exposes seven modules, each responsible for a distinct revenue or operational surface of a dental practice. Every module routes through `executeWorkflow()` — no automation runs outside the engine. Modules are located under `lib/dental-revenue-os/`.
 
 The system is designed around three layers:
 
-1. **Event publication** — `publishDentalEvent()` emits structured events to Event Fabric, which Mission Control and AI OS consume.
-2. **Workflow execution** — all patient-touching actions go through the Workflow OS state machine.
+1. **Event publication** — `publishDentalEvent()` emits structured events to Event Fabric, which Executive Dashboard and AI OS consume.
+2. **Workflow execution** — all patient-touching actions go through the Automation Platform state machine.
 3. **Telemetry persistence** — outcomes write to Supabase tables created in the `202605300001` migration.
 
 ---
@@ -120,7 +120,7 @@ interface ChairUtilizationSnapshot {
 
 **Scoring:** `chairScore = Math.min(100, Math.round(avgUtilization))`.
 
-**Fallback:** Mission Control's Dental Revenue Center uses `72` as an industry-baseline fallback when no snapshots exist.
+**Fallback:** Executive Dashboard's Dental Revenue Center uses `72` as an industry-baseline fallback when no snapshots exist.
 
 ---
 
@@ -195,7 +195,7 @@ Seven canonical event type constants are exported:
 
 ---
 
-## 5. Workflow OS Integration
+## 5. Automation Platform Integration
 
 Every patient-action function calls `executeWorkflow()` from `lib/workflow-os/workflow-engine.ts`:
 

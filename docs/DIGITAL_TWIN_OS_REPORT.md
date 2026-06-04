@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-Digital Twin OS is the **visibility and simulation layer** of the ZenithDentist AI platform. It is not a separate data platform — it reads entirely from existing Supabase tables populated by Revenue OS, Workflow OS, and ALICE. Its purpose is to create live digital representations of a practice and run forward simulations to project the impact of operational improvements.
+Digital Twin OS is the **visibility and simulation layer** of the ZenithDentist AI platform. It is not a separate data platform — it reads entirely from existing Supabase tables populated by Revenue OS, Automation Platform, and ALICE. Its purpose is to create live digital representations of a practice and run forward simulations to project the impact of operational improvements.
 
 **Design principle:** Digital Twin reads; it does not write to operational tables. All writes go to the 3 digital_twin_* snapshot/simulation tables.
 
@@ -15,13 +15,13 @@ Digital Twin OS is the **visibility and simulation layer** of the ZenithDentist 
 ## 2. Architecture
 
 ```
-Existing Tables (Revenue OS, Workflow OS, ALICE, Video)
+Existing Tables (Revenue OS, Automation Platform, ALICE, Video)
         ↓ read by
 Digital Twin OS (lib/digital-twin/index.ts)
         ↓ snapshots written to
 digital_twin_snapshots / digital_twin_simulations / digital_twin_forecast_accuracy
         ↓ events published to
-Event Fabric → Mission Control
+Event Fabric → Executive Dashboard
         ↓ API exposed via
 GET/POST /api/digital-twin
 ```
@@ -54,7 +54,7 @@ GET/POST /api/digital-twin
 | runSimulation | (practiceId, config: SimConfig) → SimResult | Executes simulation, writes to digital_twin_simulations |
 | recordForecastAccuracy | (practiceId, forecastId, actualValue) → void | Writes to digital_twin_forecast_accuracy |
 | getTwinHistory | (practiceId, twinType, days) → Snapshot[] | Returns historical snapshots for trend analysis |
-| getDashboard | (practiceId: string) → TwinDashboard | Aggregated view for Mission Control panel |
+| getDashboard | (practiceId: string) → TwinDashboard | Aggregated view for Executive Dashboard panel |
 
 ---
 
@@ -175,7 +175,7 @@ Returns ranked list of patients by influence score, enabling targeted outreach p
 
 | Query Param | Values | Returns |
 |---|---|---|
-| view | dashboard | Aggregated twin dashboard for Mission Control |
+| view | dashboard | Aggregated twin dashboard for Executive Dashboard |
 | view | practice | Full practice twin snapshot |
 | view | revenue | Revenue twin with opportunities |
 | view | workflow | Workflow twin with journey metrics |
@@ -205,9 +205,9 @@ Returns ranked list of patients by influence score, enabling targeted outreach p
 
 ---
 
-## 12. Mission Control Integration
+## 12. Executive Dashboard Integration
 
-Digital Twin OS powers two Mission Control panels:
+Digital Twin OS powers two Executive Dashboard panels:
 
 | Panel | Data Source | Refresh Cadence |
 |---|---|---|

@@ -1,4 +1,4 @@
-# Zenith Patient OS™ — Production Readiness Assessment
+# Zenith Patient OS — Production Readiness Assessment
 
 **Classification:** Canonical Readiness Authority
 **Assessment Date:** 2026-06-02
@@ -11,7 +11,7 @@
 
 > **READY FOR SUPERVISED PILOT — Maximum 2 clients before live provider integration is confirmed.**
 
-The Zenith Patient OS™ platform is architecturally complete, operationally verified, and cleared for supervised client pilots. All 35+ DB tables are provisioned. All 28+ lib modules are implemented. All 7 AI agents are registered and operational. The Workflow OS execution engine is running. ALICE is generating patient decisions. The Growth Score is computing across all 7 dimensions.
+The Zenith Patient OS platform is architecturally complete, operationally verified, and cleared for supervised client pilots. All 35+ DB tables are provisioned. All 28+ lib modules are implemented. All 7 AI agents are registered and operational. The Automation Platform execution engine is running. ALICE is generating patient decisions. The Growth Score is computing across all 7 dimensions.
 
 **Two constraints apply to the supervised pilot:**
 1. Communication delivery (SMS, email, video) requires provider credentials to be configured before any live patient-facing journey runs.
@@ -201,7 +201,7 @@ GET /api/growth-score?organizationId=<org-id>
 ---
 
 ### Journey Scheduler Wiring (Priority: HIGH)
-The `delay_days` field in journey step definitions is not yet wired to the `execution-scheduler.ts` in Workflow OS. Currently, delayed steps must be manually triggered.
+The `delay_days` field in journey step definitions is not yet wired to the `execution-scheduler.ts` in Automation Platform. Currently, delayed steps must be manually triggered.
 
 **Action:** Connect `journey_enrollments.next_step_at` to `lib/workflow-os/execution-scheduler.ts` so steps fire automatically at the scheduled time.
 
@@ -227,7 +227,7 @@ ALICE generates recommendations but does not yet track whether those recommendat
 | Component | Status | Blocker | Owner | Target Date |
 |-----------|--------|---------|-------|------------|
 | DB Layer (35+ tables) | ✅ OPERATIONAL | None | Engineering | Complete |
-| Workflow OS | ✅ OPERATIONAL | Scheduler wiring | Workflow OS Owner | Jun 2026 |
+| Automation Platform | ✅ OPERATIONAL | Scheduler wiring | Automation Platform Owner | Jun 2026 |
 | Event Fabric | ✅ OPERATIONAL | None | Engineering | Complete |
 | ALICE (recommendations) | ✅ OPERATIONAL | Outcome reconciliation | ALICE Owner | Jul 2026 |
 | AI Agents (7) | ✅ OPERATIONAL | None | Agent Owner | Complete |
@@ -269,7 +269,7 @@ First Week:
   [ ] ALICE generating recommendations
   [ ] Growth Score baseline established
   [ ] Command Center panels showing real data
-  [ ] ALICE Executive Briefing™ configured for daily delivery
+  [ ] ALICE Executive Briefing configured for daily delivery
 
 First Month:
   [ ] Journey scheduler automated (no manual step advancement)

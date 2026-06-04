@@ -8,7 +8,7 @@ Implemented in `runScaleReadinessSimulation`.
 
 ## Scale Bands
 
-| Practices | Tenant Isolation | Workflow Scaling | Analytics Scaling | ALICE Scaling | Mission Control Scaling |
+| Practices | Tenant Isolation | Workflow Scaling | Analytics Scaling | ALICE Scaling | Executive Dashboard Scaling |
 | --- | --- | --- | --- | --- | --- |
 | 10 | Pass | Pass | Aggregated metrics only | Pass | Pass |
 | 25 | Pass | Pass | Aggregated metrics only | Pass | Pass |

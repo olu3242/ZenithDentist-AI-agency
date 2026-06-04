@@ -2,7 +2,7 @@
 
 ## Converged Areas
 
-- Landing, auth, AppShell, portal, dashboard, admin, internal, Workflow OS, Runtime OS, and Mission Control now inherit the same global brand and theme providers.
+- Landing, auth, AppShell, portal, dashboard, admin, internal, Automation Platform, Runtime OS, and Executive Dashboard now inherit the same global brand and theme providers.
 - Navigation branding uses one circuit-Z logo system.
 - Loading states use the unified branded loader.
 - The visual language now matches the uploaded enterprise dashboard reference: light content workspace, white cards, deep navy sidebar, blue-cyan accents.

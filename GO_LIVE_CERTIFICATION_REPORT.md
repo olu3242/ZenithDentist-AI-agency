@@ -17,7 +17,7 @@ NO-GO.
 | RLS Coverage Complete | PARTIAL | Migrations include policies; production `pg_policies` not verified. |
 | Tenant Guards Complete | PARTIAL | Middleware improved; handlers still incomplete. |
 | Event Analytics Bridge Operational | PARTIAL | `publishEvent()` and `analyticsProjector()` exist; convergence incomplete. |
-| Mission Control Uses Live Data | PARTIAL | Compiles and consumes live modules; production data not verified. |
+| Executive Dashboard Uses Live Data | PARTIAL | Compiles and consumes live modules; production data not verified. |
 | ALICE Uses Live Data | PARTIAL | Consumes analytics projector; production grounding not e2e tested. |
 | Production Migrations Applied | UNKNOWN | Linked Supabase migration status not checked. |
 | Demo Tenant Created | MISSING | No verified Smile Dental Group seed. |

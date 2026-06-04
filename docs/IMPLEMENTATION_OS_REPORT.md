@@ -26,8 +26,8 @@ Implemented in `lib/commercial-operations.ts` as `buildImplementationWorkflow`.
 - Installation: automation registry active, workflow templates configured
 - Testing: workflow execution, runtime trace, analytics projection
 - Go-Live: customer approval, monitoring active, executive report schedule
-- Optimization: health score, ROI trend, ALICE recommendations
+- Optimization: health score, ROI trend, AI Revenue Intelligence recommendations
 
 ## Status
 
-Implementation OS is ready as a workflow framework over existing onboarding, PMS, playbook, Workflow OS, Runtime OS, analytics, ALICE, and reporting surfaces.
+Implementation OS is ready as a workflow framework over existing onboarding, PMS, playbook, Automation Platform, Runtime OS, analytics, ALICE, and reporting surfaces.

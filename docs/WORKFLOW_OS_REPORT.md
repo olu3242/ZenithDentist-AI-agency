@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# Workflow OS Report — PROS Sprint
+# Automation Platform Report — PROS Sprint
 **Generated:** 2026-06-01  
 **Canonical Source:** `lib/workflow-os/`
 
@@ -9,7 +9,7 @@
 
 **File:** `lib/workflow-os/workflow-registry.ts`
 
-The registry wraps the automation blueprint registry (`lib/automation/registry.ts`) and adds Workflow OS metadata.
+The registry wraps the automation blueprint registry (`lib/automation/registry.ts`) and adds Automation Platform metadata.
 
 Key functions:
 - `getAllWorkflows()` — returns all registered workflows as `WorkflowDefinition[]`
@@ -54,17 +54,17 @@ interface WorkflowExecutionRequest {
   initiatedBy?: "system" | "alice" | "operator" | "scheduler";
 }
 =======
-# Workflow OS Report
-**ZenithDentist AI — Workflow OS Canonical Automation Brain — Phase 12**
+# Automation Platform Report
+**ZenithDentist AI — Automation Platform Canonical Automation Brain — Phase 12**
 **Date:** 2026-06-03 | **Platform Version:** 12.0.0
 
 ---
 
 ## 1. Overview
 
-Workflow OS is the **canonical automation brain** of the ZenithDentist AI platform. Every automated patient communication, journey orchestration, trigger evaluation, A/B test, and ROI calculation runs through Workflow OS. No other system implements its own automation engine — all automation capabilities are provided by Workflow OS.
+Automation Platform is the **canonical automation brain** of the ZenithDentist AI platform. Every automated patient communication, journey orchestration, trigger evaluation, A/B test, and ROI calculation runs through Automation Platform. No other system implements its own automation engine — all automation capabilities are provided by Automation Platform.
 
-Phase 12 extended Workflow OS with the Workflow Recovery layer (`lib/workflow-recovery/`), which adds self-healing capabilities on top of the existing `health-monitor.ts` and `recovery-engine.ts` modules.
+Phase 12 extended Automation Platform with the Workflow Recovery layer (`lib/workflow-recovery/`), which adds self-healing capabilities on top of the existing `health-monitor.ts` and `recovery-engine.ts` modules.
 
 ---
 
@@ -315,7 +315,7 @@ Phase 12 added a commercial workflow that maps the full client acquisition lifec
 Lead → Discovery → Assessment → Proposal → Contract → Subscription → Onboarding → Success Monitoring
 ```
 
-| Stage | Workflow OS Role | Triggers |
+| Stage | Automation Platform Role | Triggers |
 |---|---|---|
 | Lead | Log practice as opportunity | Creates lead record in commercial_proposals |
 | Discovery | Schedule discovery call | Calendar invite automation |
@@ -330,7 +330,7 @@ Lead → Discovery → Assessment → Proposal → Contract → Subscription →
 
 ## 6. Workflow Recovery Integration
 
-`lib/workflow-recovery/index.ts` extends Workflow OS:
+`lib/workflow-recovery/index.ts` extends Automation Platform:
 
 | Recovery Function | Extends | Purpose |
 |---|---|---|
@@ -369,24 +369,24 @@ Lead → Discovery → Assessment → Proposal → Contract → Subscription →
 
 ---
 
-## 8. API + Mission Control Integration
+## 8. API + Executive Dashboard Integration
 
-Workflow OS does not have a standalone API route. Its data surfaces through:
+Automation Platform does not have a standalone API route. Its data surfaces through:
 
 | Integration | Route | Data Exposed |
 |---|---|---|
-| Mission Control Journey Panel | /api/mission-control?view=journeys | Journey completion rates, active journeys |
-| Mission Control Health Panel | /api/mission-control?view=health | Workflow health score, failure rates |
+| Executive Dashboard Journey Panel | /api/mission-control?view=journeys | Journey completion rates, active journeys |
+| Executive Dashboard Health Panel | /api/mission-control?view=health | Workflow health score, failure rates |
 | Workflow Recovery API | /api/workflow-recovery | Recovery events, actions, metrics |
 | Digital Twin | /api/digital-twin?view=workflow | Workflow twin snapshot |
 | ALICE Executive | /api/alice/executive-briefing | Workflow health in intelligence score |
 
 ---
 
-## 9. Workflow OS Governance
+## 9. Automation Platform Governance
 
-1. All automation must use Workflow OS — no ad-hoc automation in feature code
-2. All journeys must be one of 7 canonical types — no custom journey types without Workflow OS extension
+1. All automation must use Automation Platform — no ad-hoc automation in feature code
+2. All journeys must be one of 7 canonical types — no custom journey types without Automation Platform extension
 3. All delivery attempts must be logged via metrics-collector.ts
 4. All failures must publish to Event Fabric via event-publisher.ts
 5. Recovery must always attempt retry before escalation

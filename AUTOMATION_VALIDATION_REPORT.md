@@ -5,11 +5,11 @@ Status: READY FOR E2E PILOT CHECK
 Validated automation path:
 
 1. Trigger
-2. Workflow OS
+2. Automation Platform
 3. `publishEvent()`
 4. Runtime Event Fabric
 5. Analytics projection
-6. Mission Control and ALICE visibility
+6. Executive Dashboard and AI visibility
 
 Automations to certify:
 

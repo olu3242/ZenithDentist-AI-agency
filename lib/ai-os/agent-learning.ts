@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Agent Learning — captures feedback loops to improve ALICE recommendations.
+ * Agent Learning — captures feedback loops to improve AI Revenue Intelligence recommendations.
  * Tracks operator decisions and intervention outcomes.
  */
 

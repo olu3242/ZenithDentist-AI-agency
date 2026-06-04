@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Workflow Scheduler — top-level scheduling facade for Workflow OS.
+ * Workflow Scheduler — top-level scheduling facade for Automation Platform.
  *
  * Handles: cron-style trigger resolution, SLA-aware dispatch, and
  * AI-recommended scheduling adjustments from ALICE.
@@ -36,7 +36,7 @@ export interface SchedulerDispatchResult {
 }
 
 /**
- * Dispatch a scheduled workflow run through the Workflow OS router.
+ * Dispatch a scheduled workflow run through the Automation Platform router.
  * Every trigger goes through routeWorkflow → executeWorkflow — no bypasses.
  */
 export async function dispatchScheduledRun(

@@ -1,4 +1,4 @@
-# Zenith Command Center™ — Executive Operating Layer Specification
+# Zenith Command Center — Executive Operating Layer Specification
 
 **Classification:** Canonical Product Specification
 **Status:** OPERATIONAL
@@ -9,12 +9,12 @@
 
 ## Overview
 
-The Zenith Command Center™ is the single-pane-of-glass executive operating interface for everyone who runs, manages, or scales a dental practice on the Zenith Patient OS™ platform. It consolidates revenue intelligence, patient signals, growth metrics, operational health, and ALICE™ AI recommendations into six purpose-built panels.
+The Zenith Command Center is the single-pane-of-glass executive operating interface for everyone who runs, manages, or scales a dental practice on the Zenith Patient OS platform. It consolidates revenue intelligence, patient signals, growth metrics, operational health, and ALICE AI recommendations into six purpose-built panels.
 
 **Design principles:**
 - Every metric is real-time or near-real-time (≤ 5-minute lag)
 - Every metric links back to an underlying DB table or API endpoint
-- ALICE™ recommendations are always visible — no buried alerts
+- AI Revenue Intelligence recommendations are always visible — no buried alerts
 - Role-based access is enforced at the API layer
 - All data is scoped by `organization_id` (tenant isolation)
 
@@ -188,20 +188,20 @@ GET /api/workflows/executions  — workflow execution log
 ## Panel 5: AI Command Center
 
 ### Purpose
-Visibility into ALICE™ intelligence activity — pending recommendations, confidence distribution, agent activity, and top opportunities.
+Visibility into ALICE intelligence activity — pending recommendations, confidence distribution, agent activity, and top opportunities.
 
 ### Metrics
 
 | Metric | Definition | Source Table | Update Frequency |
 |--------|-----------|--------------|-----------------|
-| Pending ALICE Recommendations | Unactioned recommendations (status = pending) | `alice_patient_decisions` | Real-time |
+| Pending AI Revenue Intelligence recommendations | Unactioned recommendations (status = pending) | `alice_patient_decisions` | Real-time |
 | Avg Confidence Score | Mean confidence across pending recommendations | `alice_patient_decisions` | Real-time |
 | Decisions Actioned Today | Recommendations actioned since midnight | `alice_patient_decisions` (actioned_at MTD) | Real-time |
 | Fallback Rate | % of ALICE requests that fell back to rule-based logic | `alice_patient_decisions` (fallback = true) | Daily |
 | Agent Recommendations by Type | Count of recommendations by agent type | `agent_recommendations` | Daily |
 | Top Opportunity | Highest-confidence, highest-revenue ALICE recommendation | `alice_patient_decisions` (ranked) | Real-time |
 | Model Confidence Distribution | Histogram of confidence scores | `alice_patient_decisions` | Daily |
-| Recommendations This Week | Total ALICE recommendations generated this week | `alice_patient_decisions` | Real-time |
+| Recommendations This Week | Total AI Revenue Intelligence recommendations generated this week | `alice_patient_decisions` | Real-time |
 
 ### API Endpoints
 ```
@@ -218,7 +218,7 @@ GET /api/alice/decisions           — ALICE patient decision log
 
 ---
 
-## Panel 6: ALICE Executive Briefing™
+## Panel 6: ALICE Executive Briefing
 
 ### Purpose
 Daily auto-generated executive summary delivered to practice owners and managers. Synthesises the prior day's performance, surfaces risks, and presents prioritised actions.
@@ -226,7 +226,7 @@ Daily auto-generated executive summary delivered to practice owners and managers
 ### Briefing Structure
 
 ```
-ALICE EXECUTIVE BRIEFING™
+ALICE EXECUTIVE BRIEFING
 Generated: [timestamp] | Organisation: [practice name]
 ────────────────────────────────────────────────────────
 
@@ -274,7 +274,7 @@ TOP 5 PRIORITY ACTIONS (by revenue potential)
   5. [Action] → ...
 
 ────────────────────────────────────────────────────────
-ALICE™ | Chief Intelligence Officer | Zenith Patient OS™
+ALICE | Chief Intelligence Officer | Zenith Patient OS
 Confidence methodology: Bayesian + historical outcome weighting
 ```
 
@@ -305,7 +305,7 @@ All Command Center data queries MUST include `WHERE organization_id = :org_id`. 
 - Influence scores: daily computation, cached until next daily run
 - Growth Score: daily computation, cached until next daily run
 - Workflow health: real-time (no cache)
-- ALICE recommendations: real-time (no cache)
+- AI Revenue Intelligence recommendations: real-time (no cache)
 
 ### Error States
 - If a data source is unavailable, the panel shows last-known values with a staleness indicator

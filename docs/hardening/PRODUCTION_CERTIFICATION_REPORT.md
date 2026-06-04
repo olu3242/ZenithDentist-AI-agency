@@ -25,7 +25,7 @@
 | Database / RLS | 93/100 | CERTIFIED |
 | Event Fabric | 91/100 | CERTIFIED |
 | Workflow Runtime | 89/100 | CERTIFIED |
-| Mission Control | 85/100 | CERTIFIED |
+| Executive Dashboard | 85/100 | CERTIFIED |
 | Lineage | 84/100 | CERTIFIED |
 | Analytics Projector | 82/100 | CERTIFIED |
 | ALICE AI Layer | 78/100 | CONDITIONAL |
@@ -60,7 +60,7 @@ None identified post Batch 2.
 ### MEDIUM
 3. **ALICE lacks Event Fabric subscription** — ALICE reads stale data; cannot provide real-time operational warnings  
 4. **No time-series analytics** — analyticsProjector returns 30-day aggregates only; no trend charts for operators  
-5. **No real-time dashboard updates** — Mission Control requires manual refresh; no WebSocket/SSE  
+5. **No real-time dashboard updates** — Executive Dashboard requires manual refresh; no WebSocket/SSE  
 6. **Dead letter backfill edge case** — migration assumes all dead letters have trace_id; orphaned records may have NULL org_id  
 
 ### LOW

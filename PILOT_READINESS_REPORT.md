@@ -13,7 +13,7 @@ Pilot onboarding checklist:
 - Verify lead capture and ROI funnel.
 - Verify Event Fabric signals.
 - Verify ALICE insight grounding.
-- Confirm Mission Control visibility.
+- Confirm Executive Dashboard visibility.
 
 Required pilot automations:
 

@@ -10,10 +10,10 @@
 | Dimension | Score | Evidence |
 |-----------|-------|---------|
 | Revenue Operations | 82 | 6 engines implemented, attribution 7-bucket, API routes present |
-| Patient Revenue Engine™ | 80 | All 6 triggers functional; 4/6 still use emitAutomationEvent() not executeWorkflow() |
-| Workflow OS | 88 | executeWorkflow(), 11-state machine, 7-module execution kernel |
+| Revenue Recovery System | 80 | All 6 triggers functional; 4/6 still use emitAutomationEvent() not executeWorkflow() |
+| Automation Platform | 88 | executeWorkflow(), 11-state machine, 7-module execution kernel |
 | Runtime OS | 85 | trace-engine, replay-engine, dead letter, retry, execution logs |
-| Mission Control | 80 | 64 panels, 21 concurrent data sources, all centers functional |
+| Executive Dashboard | 80 | 64 panels, 21 concurrent data sources, all centers functional |
 | ALICE | 85 | 4 agents, Anthropic claude-haiku-4-5-20251001, LocalProvider fallback |
 | Analytics | 82 | analyticsProjector, 7-bucket attribution, 8 API routes |
 | Security | 85 | RLS on all tables, org_isolation policies, RBAC roles |
@@ -58,7 +58,7 @@ The platform has solid frontend-to-backend wiring and a complete event pipeline 
 | Backend Wiring | 74/100 | 37 API routes exist; all delegate to lib functions. None enforce auth or tenant guard. `/api/dental/metrics` passes `organizationId` to analytics but `getWorkflowAnalyticsSummary()` does not accept it — org scoping is ignored in that path. |
 | Data Integrity | 55/100 | Leads, ROI calculations, and audit records write to real tables. Workflow traces write correctly. OpenDental pilot returns an empty array. No RLS. Multi-tenant isolation is application-level only. |
 | Security | 5/100 | No Supabase Auth session layer. No JWT validation on any route. Tenant guard functions exist (`lib/tenant/tenant-guards.ts`) but are unused. Any caller can supply any `organizationId` and read or write that tenant's data. |
-| Observability | 72/100 | Runtime traces (`automation_traces`) write on every workflow execution. Event fabric writes to `runtime_event_fabric_events`. Mission Control aggregates both. Gap: analytics reads `automation_traces` but events are in `runtime_event_fabric_events` — they are never joined, so event-triggered metrics are invisible to analytics. |
+| Observability | 72/100 | Runtime traces (`automation_traces`) write on every workflow execution. Event fabric writes to `runtime_event_fabric_events`. Executive Dashboard aggregates both. Gap: analytics reads `automation_traces` but events are in `runtime_event_fabric_events` — they are never joined, so event-triggered metrics are invisible to analytics. |
 
 ---
 
@@ -216,7 +216,7 @@ Assuming a single-tenant deployment with Supabase credentials configured and no 
 
 1. Prospect lands on `app/page.tsx`, fills ROI funnel form — data persists to `leads`, `roi_calculations`, `audits` tables.
 2. Admin views leads at `/admin/leads`, audits at `/admin/audits` — live rows from Supabase.
-3. Mission Control at `/mission-control` shows live `operationalScore`, `reliabilityScore`, `traceCount` from `automation_traces`.
+3. Executive Dashboard at `/mission-control` shows live `operationalScore`, `reliabilityScore`, `traceCount` from `automation_traces`.
 4. Revenue recovery, chair utilization, and practice health workflows execute through `executeWorkflow()` and write traces.
 5. Marketplace blueprints can be installed and triggered via `/api/marketplace/dental` POST.
 6. ALICE at `/portal/alice` generates insights grounded in live `getWorkflowAnalyticsSummary()` and `getPortalData()`.
@@ -313,7 +313,7 @@ This report documents the production readiness status of the ZenithDentist AI pl
 | # | Item | Status | Notes |
 |---|---|---|---|
 | 11 | Revenue OS tables | READY | revenue_opportunities, attribution_records, forecasts |
-| 12 | Workflow OS tables | READY | journey records, mission_control_events |
+| 12 | Automation Platform tables | READY | journey records, mission_control_events |
 | 13 | Event Fabric tables | READY | runtime_event_fabric_events, mission_control_events |
 | 14 | Commercial OS tables | READY | packages (3 seeded), proposals, contracts, subscriptions |
 | 15 | Digital Twin tables | READY | snapshots, simulations, forecast_accuracy |
@@ -333,9 +333,9 @@ This report documents the production readiness status of the ZenithDentist AI pl
 | 24 | ALICE Executive Briefing | READY | lib/alice/executive-briefing.ts + knowledge-evolution.ts |
 | 25 | Workflow Recovery | READY | lib/workflow-recovery/index.ts implemented |
 | 26 | Smart Video Journey Engine | READY | lib/video-engagement-os.ts + video-intelligence.ts |
-| 27 | Mission Control | READY | All 35 panels implemented |
+| 27 | Executive Dashboard | READY | All 35 panels implemented |
 | 28 | Event Fabric | READY | publishRuntimeFabricEvent() + dual-write operational |
-| 29 | Workflow OS (11 files) | READY | All 11 modules implemented |
+| 29 | Automation Platform (11 files) | READY | All 11 modules implemented |
 | 30 | ALICE Core (5 files) | READY | All 5 core modules implemented |
 
 ### Security
@@ -352,10 +352,10 @@ This report documents the production readiness status of the ZenithDentist AI pl
 
 | # | Item | Status | Notes |
 |---|---|---|---|
-| 36 | All 10 milestone flags trackable | READY | pilot_milestones table + Mission Control panel |
-| 37 | War room dashboard live | READY | War room panel active in Mission Control |
+| 36 | All 10 milestone flags trackable | READY | pilot_milestones table + Executive Dashboard panel |
+| 37 | War room dashboard live | READY | War room panel active in Executive Dashboard |
 | 38 | CTO sign-off gate | PENDING | Awaiting CTO review before first practice |
-| 39 | First practice onboarding runbook | READY | Onboarding sequence in Workflow OS |
+| 39 | First practice onboarding runbook | READY | Onboarding sequence in Automation Platform |
 | 40 | Pilot success criteria defined | READY | See section 4 |
 
 ---
@@ -420,7 +420,7 @@ Three security issues identified and fixed prior to Phase 12 completion:
 
 | Limitation | Impact | Resolution Path |
 |---|---|---|
-| No dedicated /api/video-journey route | Video delivery triggered via Workflow OS only | Phase 13 candidate |
+| No dedicated /api/video-journey route | Video delivery triggered via Automation Platform only | Phase 13 candidate |
 | Simulation mode for external deliveries | Journeys planned but not delivered | Set 5 credentials |
 | Manual CTO sign-off required for first practice | Deployment gate | CTO review meeting |
 | ALICE retraining is manual trigger | Knowledge evolution requires human initiation | Phase 13: auto-retrain on feedback threshold |
@@ -437,7 +437,7 @@ Three security issues identified and fixed prior to Phase 12 completion:
 - [ ] CTO sign-off obtained
 - [ ] First practice account created in Supabase
 - [ ] Practice-specific ALICE knowledge version initialized
-- [ ] Pilot milestone tracking confirmed active in Mission Control
+- [ ] Pilot milestone tracking confirmed active in Executive Dashboard
 - [ ] War room alert recipients configured
 
 ---

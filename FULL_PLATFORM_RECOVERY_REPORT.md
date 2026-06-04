@@ -31,7 +31,7 @@ Coverage score: `44%`
 Highlights:
 
 - Core routes exist: `/`, `/login`, `/signup`, `/dashboard`, `/portal`, `/admin`, `/mission-control`, `/workflow-os`, `/runtime-os`, `/settings`.
-- Missing route groups include public product routes, root analytics/profile/automation, Workflow OS subroutes, Runtime OS subroutes, and `/alice/*` page routes.
+- Missing route groups include public product routes, root analytics/profile/automation, Automation Platform subroutes, Runtime OS subroutes, and `/alice/*` page routes.
 
 See `ROUTE_COVERAGE_REPORT.md`.
 
@@ -75,7 +75,7 @@ Fallback behavior keeps pages renderable but prevents production-grade live-data
 
 See `DASHBOARD_COVERAGE_REPORT.md`.
 
-## 5. Workflow OS Status
+## 5. Automation Platform Status
 
 Status: `PARTIAL / BLOCKED FOR E2E`
 
@@ -210,14 +210,14 @@ Several requested route and API paths do not exist in the repository.
 
 ## Final Answer
 
-Can Zenith onboard a brand-new dental practice, create a tenant, access dashboards, execute workflows, generate analytics, and operate Mission Control successfully?
+Can Zenith onboard a brand-new dental practice, create a tenant, access dashboards, execute workflows, generate analytics, and operate Executive Dashboard successfully?
 
 `NO`
 
 Evidence:
 
 - Brand-new tenant bootstrap requires Supabase public anon auth and admin/service role access; the anon key is missing and the service-role slot contains an anon key.
-- Dashboard and Mission Control compile but cannot be certified against live data.
+- Dashboard and Executive Dashboard compile but cannot be certified against live data.
 - Workflow and Runtime OS overview pages exist, but E2E persistence/replay validation is blocked.
 - ALICE APIs exist, but live grounding cannot be certified.
 - Tenant isolation exists structurally, but live RLS/cross-tenant tests are not certified.

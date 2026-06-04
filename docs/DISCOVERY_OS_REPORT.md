@@ -249,7 +249,7 @@ Note: `saveRoiProjection()` writes `day30_value`, `day60_value`, `day90_value`, 
 No dedicated admin UI exists for Discovery OS as of 2026-05-30. Discovery session data is accessible through:
 
 - **Sales Intelligence Center** (`lib/mission-control/sales-intelligence-center.ts`) — queries `discovery_sessions` count as `totalSessions` in the funnel view.
-- **Mission Control dashboard** — indirectly through pipeline funnel metrics.
+- **Executive Dashboard** — indirectly through pipeline funnel metrics.
 
 A form-based discovery intake (collecting the 11 `PracticeAssessmentInput` fields) is needed before a sales rep can run an opportunity score. This form is not yet implemented as a route.
 
@@ -262,7 +262,7 @@ A form-based discovery intake (collecting the 11 `PracticeAssessmentInput` field
 | Supabase | Connected | Session, score, projection persistence |
 | Offer Builder | Integrated | `scoreOpportunity()` output drives `generateProposal()` |
 | ROI Proof Engine | Integrated | `PracticeAssessmentInput` is the baseline input |
-| Mission Control | Integrated | `getSalesIntelligenceCenterState()` reads session count |
+| Executive Dashboard | Integrated | `getSalesIntelligenceCenterState()` reads session count |
 | OpenDental | MOCKED | PMS system field exists but data is not live |
 
 ---

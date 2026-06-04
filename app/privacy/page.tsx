@@ -3,8 +3,8 @@ import Link from "next/link";
 import { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Zenith AI Automation Agency",
-  description: "Privacy Policy for Zenith AI Automation Agency services provided by FinClarity Bookkeeping and Services LLC."
+  title: "Privacy Policy | Zenith Pros",
+  description: "Privacy Policy for Zenith Pros services provided by FinClarity Bookkeeping and Services LLC."
 };
 
 const sections = [
@@ -36,7 +36,7 @@ const sections = [
   {
     title: "3. COOKIES AND ANALYTICS",
     body: [
-      "We may use cookies and similar technologies to improve functionality, understand usage patterns, and enhance user experience."
+      "We use essential cookies to operate the site. Analytics and marketing cookies are only activated after consent. See the Cookie Policy for more detail."
     ]
   },
   {
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-background px-4 py-12 text-ink sm:px-6 lg:px-8">
       <article className="mx-auto max-w-4xl rounded border border-line bg-white p-6 shadow-soft sm:p-10">
         <Link href="/" className="text-sm font-black uppercase tracking-wider text-teal">
-          Zenith AI Automation Agency
+          Zenith Pros
         </Link>
         <h1 className="mt-5 text-4xl font-black tracking-tight text-ink">Privacy Policy</h1>
         <p className="mt-2 text-sm font-bold text-muted">Effective Date: January 1, 2026</p>
@@ -94,7 +94,11 @@ export default function PrivacyPage() {
           </p>
           <p>
             This Privacy Policy explains how we collect, use, disclose, and protect information when you access or use
-            Zenith AI Automation Agency websites, software, applications, and related services.
+            Zenith Pros websites, software, applications, and related services.
+          </p>
+          <p>
+            Cookie categories and consent options are described in our{" "}
+            <Link href="/cookies" className="font-bold text-teal hover:underline">Cookie Policy</Link>.
           </p>
         </div>
 

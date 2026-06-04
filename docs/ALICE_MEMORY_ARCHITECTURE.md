@@ -2,7 +2,7 @@
 
 ## Overview
 
-ALICE™ (AI Chief Intelligence Officer) maintains a multi-layer memory architecture that enables patient-specific decision-making informed by historical practice patterns. Memory is not transient — every recommendation ALICE makes is written back to the Practice Memory Graph, creating a self-improving learning loop.
+ALICE (AI Chief Intelligence Officer) maintains a multi-layer memory architecture that enables patient-specific decision-making informed by historical practice patterns. Memory is not transient — every recommendation ALICE makes is written back to the Practice Memory Graph, creating a self-improving learning loop.
 
 This document describes how ALICE reads, uses, and writes memory across its three memory layers.
 
@@ -26,7 +26,7 @@ Immediate memory is **not persisted** — it exists only for the duration of the
 Working memory is the set of `alice_patient_decisions` records with `status = 'pending'` for the organization. These represent decisions ALICE has made that have not yet been acted upon or dismissed by practice staff.
 
 - Queried via `getPendingPatientDecisions(orgId)`
-- Displayed in the ALICE Command Center in Mission Control
+- Displayed in the ALICE Command Center in Executive Dashboard
 - A patient may only have one pending decision at a time (subsequent decisions for the same patient update the existing pending record)
 - Working memory is cleared when a decision is `acted` or `dismissed`
 

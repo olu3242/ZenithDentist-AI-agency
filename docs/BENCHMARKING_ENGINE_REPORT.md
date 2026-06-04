@@ -155,7 +155,7 @@ export interface BenchmarkMetric {
 
 Benchmarks appear in:
 - `app/portal/` benchmarking section
-- Mission Control "Competitive Position" panel
+- Executive Dashboard "Competitive Position" panel
 - Weekly ALICE executive summary ("Your recall rate is 22% vs. 35% for top-quartile small practices")
 - Client success portal (CSM visibility into practice vs. peer group)
 

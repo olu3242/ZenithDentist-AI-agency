@@ -1,4 +1,4 @@
-# Mission Control Validation — PROS Sprint
+# Executive Dashboard Validation — PROS Sprint
 **Generated:** 2026-06-01  
 **Validation Scope:** Revenue Center, Workflow Center, Runtime Center, Recovery Center, Dead Letter Monitoring, Live Metrics
 
@@ -6,7 +6,7 @@
 
 ## Validation Method
 
-This validation assesses Mission Control operational readiness by verifying:
+This validation assesses Executive Dashboard operational readiness by verifying:
 1. Data aggregation functions are implemented and callable
 2. Panel components exist and import their data sources
 3. API routes return structured data
@@ -133,15 +133,15 @@ Alert behavior: `dead_letter_count > 0` triggers `workflow_failure` alert at `cr
 | Event Fabric | Request-scoped, 30-day window | Supabase query time |
 | ALICE Insights | On-demand LLM inference | 2–5 seconds |
 
-**All Mission Control data is live** (no TTL cache layer). Each `getMissionControlState()` call fires 21 parallel Supabase queries. There is no stale-while-revalidate, Redis cache, or in-memory cache layer.
+**All Executive Dashboard data is live** (no TTL cache layer). Each `getMissionControlState()` call fires 21 parallel Supabase queries. There is no stale-while-revalidate, Redis cache, or in-memory cache layer.
 
-**Implication:** At scale (high traffic Mission Control usage), this will put significant query pressure on Supabase. A caching layer with 30–60 second TTL is recommended for production.
+**Implication:** At scale (high traffic Executive Dashboard usage), this will put significant query pressure on Supabase. A caching layer with 30–60 second TTL is recommended for production.
 
 **Live Metrics Score: 70/100** (live is correct, but no push updates)
 
 ---
 
-## Overall Mission Control Readiness Score: 82/100
+## Overall Executive Dashboard Readiness Score: 82/100
 
 | Center | Score |
 |--------|-------|
@@ -152,4 +152,4 @@ Alert behavior: `dead_letter_count > 0` triggers `workflow_failure` alert at `cr
 | Dead Letter Monitoring | 85 |
 | Live Metrics | 70 |
 
-**Summary:** Mission Control is operationally functional. All 64 panel components exist. All data aggregation functions are implemented. The primary gap is the absence of push-based updates (WebSocket/SSE) and a caching layer for high-traffic scenarios.
+**Summary:** Executive Dashboard is operationally functional. All 64 panel components exist. All data aggregation functions are implemented. The primary gap is the absence of push-based updates (WebSocket/SSE) and a caching layer for high-traffic scenarios.

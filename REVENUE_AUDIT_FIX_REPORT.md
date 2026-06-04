@@ -72,5 +72,5 @@ Lead Create
 -> Save Audit
 -> Return Success
 -> Fire Runtime Trace Async
--> Log side-effect failure if Runtime OS, Workflow OS, Event Fabric, Analytics, or email is unavailable
+-> Log side-effect failure if Runtime OS, Automation Platform, Event Fabric, Analytics, or email is unavailable
 ```

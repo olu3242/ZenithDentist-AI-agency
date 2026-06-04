@@ -2,16 +2,16 @@
 
 ## Unified System
 
-Workflow OS -> ALICE -> Revenue Opportunity Assessment -> Mission Control -> Revenue Attribution Engine
+Automation Platform -> ALICE -> Revenue Opportunity Assessment -> Executive Dashboard -> Revenue Attribution Engine
 
 ## Certification
 
 | Layer | Status | Evidence |
 | --- | --- | --- |
-| Workflow OS | PASS | `lib/workflow-os/*`, governance migration |
+| Automation Platform | PASS | `lib/workflow-os/*`, governance migration |
 | ALICE | PASS | `lib/alice.ts`, `lib/alice/knowledge/index.ts` |
 | Revenue Opportunity Assessment | PASS | `components/public/roi-funnel-form.tsx`, `lib/roi.ts` |
-| Mission Control | PASS | `app/mission-control/page.tsx` |
+| Executive Dashboard | PASS | `app/mission-control/page.tsx` |
 | Revenue Attribution | PASS | `lib/revenue-playbooks/index.ts`, ROI/audit persistence |
 | PMS Operations | PASS | `/dashboard/pms/*` route family |
 | Practice Intelligence Model | PASS | Practice, workflow, revenue, PMS, AI health represented through existing modules and certification docs |

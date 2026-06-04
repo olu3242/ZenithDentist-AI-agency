@@ -25,7 +25,7 @@
 (These are the `DEFAULT_WORKFLOWS_FOR_NEW_PRACTICE` in `lib/onboarding/index.ts`)
 
 ### Dashboards
-- Mission Control: Revenue Center (no-show rate, recall conversion, review count)
+- Executive Dashboard: Revenue Center (no-show rate, recall conversion, review count)
 - `/api/dental/metrics` — practice-level KPIs
 - ALICE daily summary via `generateExecutiveSummary(orgId, "daily")`
 
@@ -71,7 +71,7 @@ All Tier 1 workflows, plus:
 - **ALICE Operations Analyst:** `generateOperationsAnalysis(orgId)` for workflow health score and automation coverage
 
 ### Dashboards
-- Mission Control: Full workflow center + runtime center
+- Executive Dashboard: Full workflow center + runtime center
 - `getWorkflowRuntimeHealth()` — per-workflow success rate
 - `getWorkflowAnalyticsSummary()` — top workflows by execution count
 - ALICE weekly briefing via `generateExecutiveSummary(orgId, "weekly")`
@@ -116,11 +116,11 @@ All Tier 1 + Tier 2 workflows, plus full suite:
 - **Tenant isolation:** RLS policies on all tables ensure location-scoped data access
 - **ALICE Executive Advisor:** Daily + weekly summaries for DSO leadership
 - **ALICE Patient Journey Analyst:** `generatePatientJourneyAnalysis()` for funnel drop-off by location
-- **Mission Control Enterprise:** `enterprise-usage-dashboard.tsx`, `tenant-intelligence-grid.tsx`
+- **Executive Dashboard Enterprise:** `enterprise-usage-dashboard.tsx`, `tenant-intelligence-grid.tsx`
 - **Governance center:** Trust score tracking across all locations
 
 ### Dashboards
-- Full 64-panel Mission Control
+- Full 64-panel Executive Dashboard
 - `getMissionControlState(orgId)` — 21 concurrent data sources
 - Revenue attribution by workflow and location
 - `workflow_revenue_attribution` view — cross-workflow revenue
@@ -162,9 +162,9 @@ All Tier 1 + Tier 2 workflows, plus full suite:
 | ALICE operations analyst | — | ✅ | ✅ |
 | ALICE patient journey analyst | — | — | ✅ |
 | Revenue attribution | ✅ | ✅ | ✅ |
-| Workflow OS | ✅ | ✅ | ✅ |
+| Automation Platform | ✅ | ✅ | ✅ |
 | Runtime tracing | ✅ | ✅ | ✅ |
-| Mission Control (basic) | ✅ | ✅ | ✅ |
-| Mission Control (full 64 panel) | — | — | ✅ |
+| Executive Dashboard (basic) | ✅ | ✅ | ✅ |
+| Executive Dashboard (full 64 panel) | — | — | ✅ |
 | Cross-location analytics | — | — | ✅ |
 | Enterprise tenant governance | — | — | ✅ |

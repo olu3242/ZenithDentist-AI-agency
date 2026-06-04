@@ -24,7 +24,7 @@ This playbook covers the end-to-end process for onboarding a new dental practice
 
 2. **Calendly booking confirmed.** Prospect books a demo via the Calendly integration. Verify the event appears in `/api/calendly/events`. If not, check `CALENDLY_API_KEY` environment variable.
 
-3. **Demo delivered.** Revenue Operations Manager delivers the demo against the prospect's audit data. Show Mission Control, ALICE, and at least one live workflow (recall_due recommended).
+3. **Demo delivered.** Revenue Operations Manager delivers the demo against the prospect's audit data. Show Executive Dashboard, ALICE, and at least one live workflow (recall_due recommended).
 
 4. **Proposal sent.** Generate a proposal using the prospect's projected recovery figure from the ROI audit. Clearly state the plan tier (Starter / Growth / Enterprise), monthly fee, and implementation timeline.
 
@@ -140,7 +140,7 @@ Collect: Google Business location ID. NOTE: Google Business integration is curre
 
 ### Required Workflows (All Tiers)
 
-Activate via the Workflow OS. For each workflow, verify it transitions to `executing` state:
+Activate via the Automation Platform. For each workflow, verify it transitions to `executing` state:
 
 | Workflow ID | Name | SLA | Dependency |
 |---|---|---|---|
@@ -172,7 +172,7 @@ Mark checklist items `c8` and `c9` as complete after each is verified live.
 **Session 1: Admin Training (45 min)**
 1. Portal navigation overview (10 min)
 2. Viewing active workflows and their status (10 min)
-3. Understanding ALICE recommendations — how to read and act on insights (10 min)
+3. Understanding AI Revenue Intelligence recommendations — how to read and act on insights (10 min)
 4. How to read the ROI dashboard and health score (10 min)
 5. Q&A (5 min)
 
@@ -203,8 +203,8 @@ The following checklist maps to `IMPLEMENTATION_CHECKLIST` in `lib/implementatio
 | c5 | First PMS sync completed | Yes | API: /opendental/sync returns 200 |
 | c6 | Resend email configured | Yes | Marketplace: Resend extension active |
 | c7 | Test email delivered | Yes | Email delivery confirmed |
-| c8 | Recall workflow activated | Yes | Workflow OS: recall_due state = executing |
-| c9 | Review workflow activated | Yes | Workflow OS: review_request_due active |
+| c8 | Recall workflow activated | Yes | Automation Platform: recall_due state = executing |
+| c9 | Review workflow activated | Yes | Automation Platform: review_request_due active |
 | c11 | Portal tour completed by admin | Yes | Portal: onboarding progress = 100% |
 | c12 | Current recall rate documented | Yes | ROI OS: baseline computed |
 | c13 | Health score ≥ 70 | Yes | Operations Core: customerHealth.overallScore |

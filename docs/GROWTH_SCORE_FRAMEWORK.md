@@ -1,8 +1,8 @@
-# Growth Score™ Framework
+# Growth Score Framework
 
 ## Overview
 
-Growth Score™ is a proprietary 0–100 score that measures the overall growth health of a dental practice. It is computed daily from seven weighted dimensions, each representing a distinct driver of sustainable practice growth. The score surfaces in Mission Control's Growth Command Center and feeds ALICE's `topOpportunity` recommendation.
+Growth Score is a 0-100 score that measures the overall growth health of a dental practice. It is computed daily from seven weighted dimensions, each representing a distinct driver of sustainable practice growth. The score surfaces in Executive Dashboard's Growth Command Center and feeds AI Revenue Intelligence recommendations.
 
 ---
 
@@ -46,7 +46,7 @@ All individual dimension scores are clamped to `[0, 100]` before weighting.
 | D | 35–49 | At Risk |
 | F | 0–34 | Critical |
 
-The grade and status label both surface in Mission Control's Growth Score panel alongside the numeric score.
+The grade and status label both surface in Executive Dashboard's Growth Score panel alongside the numeric score.
 
 ---
 
@@ -219,7 +219,7 @@ const topOpportunityRecommendations = {
 }
 ```
 
-The `topOpportunity` and `top_opportunity_recommendation` fields are written to the `growth_scores` record and displayed in Mission Control.
+The `topOpportunity` and `top_opportunity_recommendation` fields are written to the `growth_scores` record and displayed in Executive Dashboard.
 
 ---
 
@@ -287,7 +287,7 @@ ORDER BY score_date ASC
 
 ---
 
-## Alert Thresholds (Mission Control)
+## Alert Thresholds (Executive Dashboard)
 
 | Score Range | Alert Level | Display |
 |-------------|-------------|---------|

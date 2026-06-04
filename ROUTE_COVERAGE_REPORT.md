@@ -49,7 +49,7 @@ Route existence coverage: `44%`
 | `/admin/analytics` | YES | YES | Protected analytics admin. |
 | `/admin/platform` | NO | N/A | Missing route. |
 
-## Mission Control
+## Executive Dashboard
 
 | Route | Exists | Compiles | Expected Behavior |
 | --- | --- | --- | --- |
@@ -59,11 +59,11 @@ Route existence coverage: `44%`
 | `/internal/runtime` | NO | N/A | Missing route; `/internal/runtime-health` exists. |
 | `/internal/workflows` | NO | N/A | Missing route. |
 
-## Workflow OS
+## Automation Platform
 
 | Route | Exists | Compiles | Expected Behavior |
 | --- | --- | --- | --- |
-| `/workflow-os` | YES | YES | Protected Workflow OS overview. |
+| `/workflow-os` | YES | YES | Protected Automation Platform overview. |
 | `/workflow-os/executions` | NO | N/A | Missing route. |
 | `/workflow-os/replay` | NO | N/A | Missing route. |
 | `/workflow-os/registry` | NO | N/A | Missing route. |

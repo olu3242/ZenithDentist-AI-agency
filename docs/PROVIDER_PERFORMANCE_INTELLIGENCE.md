@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provider Performance Intelligence is a core Revenue OS module that tracks, benchmarks, and scores each clinical provider (dentist, hygienist, specialist) within a Zenith-connected practice. Performance data flows into ALICE recommendations, growth scoring, and executive KPI dashboards.
+Provider Performance Intelligence is a core Revenue OS module that tracks, benchmarks, and scores each clinical provider (dentist, hygienist, specialist) within a Zenith-connected practice. Performance data flows into AI Revenue Intelligence recommendations, growth scoring, and executive KPI dashboards.
 
 ---
 

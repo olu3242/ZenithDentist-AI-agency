@@ -7,7 +7,7 @@ export const brandConfig = {
   descriptor: "Patient Revenue Operating System",
   productTagline: "Patient Revenue Operating System",
   productAcronym: "PROS",
-  trademark: "Zenith Pros™",
+  brandName: "Zenith Pros",
   logoMark: "Z",
   personality: [
     "Enterprise",

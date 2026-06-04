@@ -36,7 +36,7 @@ Once those three conditions are met, the platform can accept a first paying cust
 | Lead capture and ROI funnel | `app/actions.ts:29` → `createLeadFunnel()` → Supabase `leads`, `roi_calculations`, `audits` |
 | Admin CRM (leads, audits, bookings, discovery) | `getAdminDashboardData()` reads all four tables live |
 | Dental Revenue OS (revenue recovery, recall, chair utilization, review growth, patient recovery) | 6 routes under `/api/dental/`; each calls the corresponding `lib/dental-revenue-os/` function |
-| Mission Control with live health scores | `getMissionControlState()` aggregates 9 async data sources |
+| Executive Dashboard with live health scores | `getMissionControlState()` aggregates 9 async data sources |
 | Workflow execution with tracing | `executeWorkflow()` + `startRuntimeTrace()` / `completeRuntimeTrace()` on every run |
 | Event fabric | 15 `publishEvent` call sites; all events written to `runtime_event_fabric_events` |
 | Marketplace blueprint install + trigger | `installExtension()` + `extensionTriggerWorkflow()` (fixed in this audit) |

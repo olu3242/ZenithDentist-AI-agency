@@ -47,7 +47,7 @@
 ### IP Protection Confirmed
 
 The public website does NOT expose:
-- ✅ Workflow OS internals
+- ✅ Automation Platform internals
 - ✅ Event Fabric architecture
 - ✅ Recovery Orchestrator details
 - ✅ ALICE internal name (LIZ used publicly)

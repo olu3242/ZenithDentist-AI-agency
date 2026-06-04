@@ -82,7 +82,7 @@ Respond with a JSON object with keys: observation, operationalInterpretation, re
 
   return {
     observation: aiContent.slice(0, 300) || `Current ${focus} signals show an operating score of ${health.overall} with no-show rate at ${latest?.no_show_rate ?? 8}%.`,
-    operationalInterpretation: "The Patient Revenue Engine is improving core revenue recovery, but the next constraint is timing precision across reminders, recall, and review requests.",
+    operationalInterpretation: "The Revenue Recovery System is improving core revenue recovery, but the next constraint is timing precision across reminders, recall, and review requests.",
     revenueImpact: `Recovered revenue is tracking at $${Number(latest?.recovered_revenue ?? 0).toLocaleString()} this period, with additional upside available through schedule stabilization.`,
     recommendation: "Prioritize daypart-specific reminder timing, high-value recall segmentation, and failed delivery review before expanding new patient acquisition spend.",
     expectedImprovement: "Expected improvement is 4-7% fewer cancellations and 8-12% stronger recall recovery over the next operating cycle.",
@@ -215,7 +215,7 @@ export async function coordinateEnterpriseIntelligence(
   const context = buildAliceEnterpriseContext(mode);
   const provider = getIntelligenceProvider();
   await provider.complete({
-    system: "ALICE is the enterprise healthcare operational intelligence coordinator for Zenith AI Automation Agency.",
+    system: "AI Revenue Intelligence is the enterprise healthcare operational intelligence coordinator for Zenith Pros.",
     prompt,
     context: { cloud, latest, mode }
   });

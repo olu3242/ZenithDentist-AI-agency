@@ -107,12 +107,12 @@ ERROR: Access token not provided. (same)
 | Module | Tables | First Migration |
 |--------|--------|----------------|
 | Organizations / Tenancy | 8 | 202605210003 |
-| Patient Revenue Engine | 12 | 202605210001 |
-| Workflow OS | 12 | 040 |
+| Revenue Recovery System | 12 | 202605210001 |
+| Automation Platform | 12 | 040 |
 | ALICE Intelligence | 22 | 202605210002 |
 | Revenue Attribution | 11 | 045 |
 | Communications / Video | 15 | 20260619000000 |
-| Mission Control | 12 | 041 |
+| Executive Dashboard | 12 | 041 |
 | GTM / Sales | 9 | 045 |
 | Client Success | 6 | 202606030006 |
 | Recovery / DLQ | 5 | 040 |

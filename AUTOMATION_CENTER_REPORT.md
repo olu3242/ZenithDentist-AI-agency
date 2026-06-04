@@ -19,4 +19,4 @@
 - Pause
 - Resume
 
-Executions persist through Workflow OS and Runtime OS.
+Executions persist through Automation Platform and Runtime OS.

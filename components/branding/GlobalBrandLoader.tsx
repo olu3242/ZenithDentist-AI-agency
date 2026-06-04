@@ -11,7 +11,7 @@ export function GlobalBrandLoader() {
             <div className="absolute inset-0 animate-ping rounded-full bg-primary/15" />
             <ZenithLogo iconOnly className="relative animate-pulse" markClassName="h-14 w-14 border-0 bg-transparent" />
           </div>
-          <p className="text-center text-sm font-bold text-muted">{brandConfig.trademark} is loading operational context.</p>
+          <p className="text-center text-sm font-bold text-muted">{brandConfig.brandName} is loading operational context.</p>
           <div className="w-full space-y-3">
             <div className="h-4 w-2/3 animate-pulse rounded bg-border" />
             <div className="h-4 w-1/2 animate-pulse rounded bg-border" />

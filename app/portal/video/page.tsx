@@ -10,7 +10,7 @@ export default async function VideoIntelligenceCenterPage() {
     <DashboardContainer>
       <PortalHeader
         title="Video Intelligence Center"
-        subtitle="Patient education, influence journeys, behavioral signals, attribution, and ALICE next-best-action recommendations."
+        subtitle="Patient education, influence journeys, behavioral signals, attribution, and AI Revenue Intelligence recommendations."
       />
 
       <KpiGrid>
@@ -62,7 +62,7 @@ export default async function VideoIntelligenceCenterPage() {
         <section className="rounded border border-line bg-white p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-teal" />
-            <h2 className="text-xl font-black text-ink">ALICE Video Intelligence</h2>
+            <h2 className="text-xl font-black text-ink">Video Revenue Intelligence</h2>
           </div>
           <div className="mt-4 grid gap-3">
             {state.recommendations.map(recommendation => (
@@ -92,7 +92,7 @@ export default async function VideoIntelligenceCenterPage() {
           items={[
             "Maps PMS and patient lifecycle signals to the right video journey.",
             "Uses attention, relationship health, retention risk, and readiness scores.",
-            "Feeds ALICE next-best-action recommendations and Workflow OS launches."
+            "Feeds AI Revenue Intelligence recommendations and Automation Platform launches."
           ]}
         />
         <CapabilityPanel
@@ -110,7 +110,7 @@ export default async function VideoIntelligenceCenterPage() {
           items={[
             "Connects video delivery, engagement, CTA clicks, outcomes, and revenue records.",
             "Separates revenue influenced, revenue recovered, and revenue protected.",
-            "Feeds evidence, reporting, Mission Control, and executive revenue visibility."
+            "Feeds evidence, reporting, Executive Dashboard, and executive revenue visibility."
           ]}
         />
         <CapabilityPanel
@@ -119,7 +119,7 @@ export default async function VideoIntelligenceCenterPage() {
           items={[
             "Supports welcome, cleaning, treatment, financing, review, referral, and follow-up videos.",
             "Keeps provider-personalized content available for journey orchestration.",
-            "Grounds LIZ and ALICE responses in approved video journey capabilities."
+            "Grounds advisor responses in approved video journey capabilities."
           ]}
         />
       </DashboardGrid>

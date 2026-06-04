@@ -1,4 +1,4 @@
-# Workflow OS Compliance Report
+# Automation Platform Compliance Report
 
 > **Platform Maturity Sprint — June 2026**
 > Verified against: `lib/workflow-os/`, `lib/event-fabric/`, `lib/alice/`, `lib/runtime/`
@@ -17,7 +17,7 @@
 
 ## Per-Automation Compliance Matrix
 
-| Automation | Workflow OS | Event Fabric | Mission Control | ALICE | Runtime OS | Evidence Layer | Revenue Attribution | Idempotency | Retry Logic | Multi-Tenant |
+| Automation | Automation Platform | Event Fabric | Executive Dashboard | ALICE | Runtime OS | Evidence Layer | Revenue Attribution | Idempotency | Retry Logic | Multi-Tenant |
 |---|---|---|---|---|---|---|---|---|---|---|
 | **Recall Recovery** | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ✅ | ✅ | ✅ | ✅ |
 | **No-Show Prevention** | ✅ | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | ✅ | ✅ | ✅ |
@@ -30,9 +30,9 @@
 
 ## Requirement Detail
 
-### Workflow OS ✅ (All 6)
+### Automation Platform ✅ (All 6)
 
-All automations execute through the Workflow OS:
+All automations execute through the Automation Platform:
 
 - **Recall Recovery + Review Growth:** Use `executeWorkflow()` from `lib/workflow-os/workflow-engine.ts`
 - **No-Show, Treatment, Chair Fill, Referral:** Use `emitAutomationEvent()` from `lib/automation/runtime.ts`, which also writes `workflow_executions` rows
@@ -54,9 +54,9 @@ All automations call `emitAutomationEvent()` or `executeWorkflow()` which intern
 
 ---
 
-### Mission Control ✅ (All 6)
+### Executive Dashboard ✅ (All 6)
 
-Mission Control has 65 panel components in `components/mission-control/` and 11 API routes in `app/api/mission-control/`. Every automation's events are surfaced via:
+Executive Dashboard has 65 panel components in `components/mission-control/` and 11 API routes in `app/api/mission-control/`. Every automation's events are surfaced via:
 - `app/api/mission-control/` routes feed real-time data to panels
 - `mission_control_events` and `mission_control_actions` tables (from evidence layer migration)
 - Revenue attribution, workflow lineage, and status visible per-automation
@@ -157,9 +157,9 @@ Per-automation evidence:
 
 | Category | Pass Rate | Notes |
 |----------|-----------|-------|
-| Workflow OS | 6/6 ✅ | All engines integrated |
+| Automation Platform | 6/6 ✅ | All engines integrated |
 | Event Fabric | 6/6 ✅ | All emit canonical events |
-| Mission Control | 6/6 ✅ | 65 panels, data-bound |
+| Executive Dashboard | 6/6 ✅ | 65 panels, data-bound |
 | ALICE | 0/6 ✅ (partial) | Agents built, not yet wired to triggers |
 | Runtime OS | 6/6 ✅ | Replay, tracing, self-healing available |
 | Evidence Layer | 0/6 ✅ (partial) | Conversion flags exist; delivery evidence pending |
@@ -168,7 +168,7 @@ Per-automation evidence:
 | Retry Logic | 6/6 ✅ | `withRetry()` + dead letters |
 | Multi-Tenant | 6/6 ✅ | RLS + org scoping |
 
-**Overall Workflow OS Compliance: 75% — Production-ready core; evidence layer and ALICE wiring are the primary gaps.**
+**Overall Automation Platform Compliance: 75% — Production-ready core; evidence layer and ALICE wiring are the primary gaps.**
 
 ---
 

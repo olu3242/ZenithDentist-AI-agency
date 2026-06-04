@@ -8,7 +8,7 @@ Reviewed and build-certified:
 
 - Landing
 - Dashboard
-- Mission Control
+- Executive Dashboard
 - PMS Operations Center
 - Revenue Center
 - ALICE
@@ -22,7 +22,7 @@ Reviewed and build-certified:
 | --- | --- | --- |
 | Landing | PASS STATIC | Responsive grid/breakpoint usage; build passes. |
 | Dashboard | PASS STATIC | Responsive cards and AppShell layout; build passes. |
-| Mission Control | PASS WITH DENSITY RISK | Uses responsive grids; dense three-column desktop layout. |
+| Executive Dashboard | PASS WITH DENSITY RISK | Uses responsive grids; dense three-column desktop layout. |
 | PMS Operations Center | PASS STATIC | Uses overflow-safe tab nav and responsive grids. |
 | Revenue Center | PASS STATIC | Existing portal route builds. |
 | ALICE | PASS STATIC | Existing portal route builds. |

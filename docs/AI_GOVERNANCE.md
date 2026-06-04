@@ -1,8 +1,8 @@
 # AI Governance Framework
 
 **Document Type:** Canonical Governance Reference  
-**Platform:** Zenith Patient OS™  
-**Component:** ALICE™ — Chief Intelligence Officer  
+**Platform:** Zenith Patient OS  
+**Component:** ALICE — Chief Intelligence Officer  
 **Status:** Ratified  
 **Last Updated:** 2026-06-02  
 
@@ -27,7 +27,7 @@
 
 ## 1. ALICE Mandate
 
-ALICE™ (Autonomous Learning and Intelligence for Clinical Engagement) is the Chief Intelligence Officer of Zenith Patient OS™. ALICE operates as a hybrid AI + rule-based system, coordinating intelligence across all platform engines.
+ALICE (Autonomous Learning and Intelligence for Clinical Engagement) is the Chief Intelligence Officer of Zenith Patient OS. ALICE operates as a hybrid AI + rule-based system, coordinating intelligence across all platform engines.
 
 ### 1.1 Authorized Actions
 
@@ -47,7 +47,7 @@ ALICE is explicitly **prohibited** from the following without explicit workflow-
 
 | Prohibition | Rationale |
 |-------------|-----------|
-| Modify production data directly | All data changes must flow through Workflow OS audit trail |
+| Modify production data directly | All data changes must flow through Automation Platform audit trail |
 | Override practice policies | Practice policy is set by organization_owner; ALICE may recommend policy changes but not enact them |
 | Create patient records | Patient records originate in the PMS; ALICE does not create new patient identities |
 | Delete patient records | Destructive operations on patient data require human authorization at organization_owner level or above |
@@ -58,7 +58,7 @@ ALICE is explicitly **prohibited** from the following without explicit workflow-
 
 ### 1.3 ALICE Role Summary
 
-> ALICE advises. Workflow OS executes. Practice staff authorize.
+> ALICE advises. Automation Platform executes. Practice staff authorize.
 
 ---
 
@@ -201,7 +201,7 @@ Fallback-generated decisions are subject to the same authorization and confidenc
 | Tier | Range | Action |
 |------|-------|--------|
 | **Autonomous Execution** | 0.9 – 1.0 | ALICE decision may execute via pre-authorized workflow without additional human review |
-| **Staff Notification** | 0.7 – 0.89 | Decision executes but staff member is notified via Mission Control |
+| **Staff Notification** | 0.7 – 0.89 | Decision executes but staff member is notified via Executive Dashboard |
 | **Staff Review Required** | 0.5 – 0.69 | Decision queued for staff review before execution |
 | **Fallback Only** | < 0.5 | AI decision discarded; rule-based fallback recommendation produced; human must authorize |
 
@@ -390,4 +390,4 @@ If ALICE cannot produce a reasoning string traceable to specific input signals, 
 
 ---
 
-*This document governs all AI operations within Zenith Patient OS™. Any deviation requires super_admin authorization and audit log entry.*
+*This document governs all AI operations within Zenith Patient OS. Any deviation requires super_admin authorization and audit log entry.*

@@ -23,4 +23,4 @@ Observed probe result:
 
 ## Impact
 
-If Supabase REST is unavailable, the app cannot insert a real lead into the database. The fix ensures this is now the only critical failure; Runtime OS, Workflow OS, Event Fabric, Analytics, and Email failures no longer block the lead pipeline.
+If Supabase REST is unavailable, the app cannot insert a real lead into the database. The fix ensures this is now the only critical failure; Runtime OS, Automation Platform, Event Fabric, Analytics, and Email failures no longer block the lead pipeline.

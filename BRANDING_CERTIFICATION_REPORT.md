@@ -5,7 +5,7 @@ Date: 2026-06-04
 ## Production Branding
 
 - Brand name normalized to `Zenith Pros`.
-- Trademark text normalized to `Zenith Pros™`.
+- Trademark text normalized to `Zenith Pros`.
 - Product descriptor normalized to `Patient Revenue Operating System`.
 - Production domain normalized to `https://zenithprosai.com`.
 

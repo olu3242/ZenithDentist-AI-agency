@@ -27,4 +27,4 @@ Date: 2026-06-01
 
 FAIL
 
-Tenant scoping exists on many operational tables, but required patient, appointment, workflow execution, workflow event, attribution, and Mission Control entities are not certifiable from the current schema.
+Tenant scoping exists on many operational tables, but required patient, appointment, workflow execution, workflow event, attribution, and Executive Dashboard entities are not certifiable from the current schema.

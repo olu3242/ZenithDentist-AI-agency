@@ -61,7 +61,7 @@ export default async function ClientOperationsPage() {
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
           <ExecutiveReportCard report={report} />
           <section className="rounded border border-card bg-surface p-5 text-white shadow-sm">
-            <p className="text-xs font-black uppercase tracking-wider text-white/55">ALICE client recommendations</p>
+            <p className="text-xs font-black uppercase tracking-wider text-white/55">Client revenue recommendations</p>
             <h2 className="mt-1 text-2xl font-black">Operational priorities</h2>
             <div className="mt-5 grid gap-3">
               {state.recommendations.map(item => (

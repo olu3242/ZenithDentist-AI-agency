@@ -122,7 +122,7 @@ function Adoption({ state }: { state: ClientImplementationState }) {
         ["Expansion Signals", state.health.filter(item => item.expansionScore >= 75).length]
       ]} />
       <Panel title="Adoption Intelligence" icon={Activity}>
-        <Rows rows={state.adoption.map(item => [`Score ${item.score}`, item.classification, `${item.workflowUsage} workflow uses`, `${item.aliceUsage} ALICE uses`])} empty="No adoption measurements are persisted yet." />
+        <Rows rows={state.adoption.map(item => [`Score ${item.score}`, item.classification, `${item.workflowUsage} workflow uses`, `${item.aliceUsage} AI Revenue Intelligence uses`])} empty="No adoption measurements are persisted yet." />
       </Panel>
       <Panel title="Client Health Rollups" icon={Users}>
         <Rows rows={state.health.map(item => [`Health ${item.healthScore}`, `Risk ${item.riskScore}`, `Expansion ${item.expansionScore}`])} empty="No client health rollups are persisted yet." />
@@ -188,9 +188,9 @@ function ClientPlaybooks({ state }: { state: ClientImplementationState }) {
         <Rows rows={[
           ["Health Score > 80", "Customer Success OS", "monthly review"],
           ["Adoption Score > 75", "Adoption Engine", "monthly review"],
-          ["Workflow Usage > 70%", "Workflow OS", "monthly review"],
+          ["Workflow Usage > 70%", "Automation Platform", "monthly review"],
           ["Revenue Attribution Active", "Evidence OS", "monthly review"],
-          ["No Critical Incidents", "Mission Control", "continuous"],
+          ["No Critical Incidents", "Executive Dashboard", "continuous"],
           ["SLA Compliance > 95%", "SLA Center", "continuous"]
         ]} empty="Healthy client criteria are unavailable." />
       </Panel>
@@ -258,7 +258,7 @@ const subtitles: Record<ImplementationSection, string> = {
   onboarding: "Automate practice information, provider data, locations, Google, PMS, Stripe, Calendly, email, and SMS readiness.",
   "integrations-readiness": "Verify Open Dental, Stripe, Google, Meta, Calendly, email, SMS, and WhatsApp connection posture.",
   training: "Assign and certify role-based training for practice owners, office managers, front desk teams, and providers.",
-  adoption: "Measure login frequency, workflow usage, ALICE usage, revenue dashboard usage, video usage, and treatment acceptance adoption.",
+  adoption: "Measure login frequency, workflow usage, AI Revenue Intelligence usage, revenue dashboard usage, video usage, and treatment acceptance adoption.",
   "go-live": "Enforce integration, workflow, template, training, and testing gates before client go-live.",
   "client-playbooks": "Standardize Day 1 activation, week 1 validation, success reviews, optimization, incident response, renewal, and expansion procedures."
 };

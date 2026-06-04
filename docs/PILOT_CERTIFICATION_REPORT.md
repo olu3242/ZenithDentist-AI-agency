@@ -7,7 +7,7 @@
 
 ## Pilot Scenario: Full Patient Revenue Cycle
 
-Simulated scenario: A new dental practice onboards to PROS, connects Open Dental, imports a patient, books an appointment, the workflow runs, a reminder is sent, the patient confirms, completes their visit, is sent for recall, revenue is attributed, ALICE generates an insight, and Mission Control reflects the state.
+Simulated scenario: A new dental practice onboards to PROS, connects Open Dental, imports a patient, books an appointment, the workflow runs, a reminder is sent, the patient confirms, completes their visit, is sent for recall, revenue is attributed, ALICE generates an insight, and Executive Dashboard reflects the state.
 
 ---
 
@@ -74,8 +74,8 @@ Simulated scenario: A new dental practice onboards to PROS, connects Open Dental
 | **Workflow ID** | `appointment_no_show` |
 | **Entry Point** | `emitAutomationEvent({ workflowId: "appointment_no_show", triggerName: "appointment_scheduled", ... })` |
 | **Table Written** | `automation_events`, `automation_traces` (status="executing") |
-| **Workflow OS** | ⚠️ Uses `emitAutomationEvent()` directly, not `executeWorkflow()` |
-| **Status** | ✅ Workflow triggers; ⚠️ not via Workflow OS canonical path |
+| **Automation Platform** | ⚠️ Uses `emitAutomationEvent()` directly, not `executeWorkflow()` |
+| **Status** | ✅ Workflow triggers; ⚠️ not via Automation Platform canonical path |
 
 ---
 
@@ -114,7 +114,7 @@ Simulated scenario: A new dental practice onboards to PROS, connects Open Dental
 | **Function** | `appointments.status = "completed"` + `triggerReviewRequest(orgId, visitData)` |
 | **Trigger Function** | `lib/dental-revenue-os/review-growth.ts::triggerReviewRequest()` |
 | **Workflow ID** | `review_request_due` |
-| **Entry Point** | `executeWorkflow(...)` — uses Workflow OS canonical path ✅ |
+| **Entry Point** | `executeWorkflow(...)` — uses Automation Platform canonical path ✅ |
 | **Table Written** | `workflow_executions` (workflow_id="review_request_due", patient_id, appointment_id, status="completed") |
 | **Patient Journey** | `confirmed → seen → completed` transitions |
 | **Status** | ✅ Fully implemented |
@@ -128,7 +128,7 @@ Simulated scenario: A new dental practice onboards to PROS, connects Open Dental
 |------|--------|
 | **Function** | `lib/dental-revenue-os/recall-recovery.ts::triggerRecallRecovery(orgId, recallData)` |
 | **Workflow ID** | `recall_due` |
-| **Entry Point** | `executeWorkflow(...)` — Workflow OS canonical path ✅ |
+| **Entry Point** | `executeWorkflow(...)` — Automation Platform canonical path ✅ |
 | **Table Written** | `workflow_executions` (workflow_id="recall_due", patient_id, trigger_name="recall_due") |
 | **Patient Journey** | `completed → recall` transition |
 | **Status** | ✅ Fully implemented |
@@ -162,8 +162,8 @@ Simulated scenario: A new dental practice onboards to PROS, connects Open Dental
 
 ---
 
-### Step 12: Mission Control Updated
-**Action:** Mission Control reflects current operational state
+### Step 12: Executive Dashboard Updated
+**Action:** Executive Dashboard reflects current operational state
 
 | Item | Detail |
 |------|--------|
@@ -190,7 +190,7 @@ Simulated scenario: A new dental practice onboards to PROS, connects Open Dental
 | 9. Recall Generated | `triggerRecallRecovery()` + `executeWorkflow()` | workflow_executions | ✅ |
 | 10. Revenue Attributed | `getWorkflowAttribution()` | workflow_revenue_attribution view | ✅ |
 | 11. ALICE Insight | `generateRevenueAnalysis()` | (LLM response only) | ✅ |
-| 12. Mission Control Updated | `getMissionControlState()` | (read aggregation) | ✅ |
+| 12. Executive Dashboard Updated | `getMissionControlState()` | (read aggregation) | ✅ |
 
 ---
 
@@ -214,10 +214,10 @@ Date: 2026-06-01
 
 - Onboarding Works: Implemented through `activatePilotTenant` and existing bootstrap flow.
 - Playbooks Install: Implemented through `installRevenuePlaybooks`.
-- Workflows Execute: Existing Workflow OS remains the execution entry point.
+- Workflows Execute: Existing Automation Platform remains the execution entry point.
 - Revenue Is Attributed: Playbook attribution rules are attached to active registry workflows.
 - ALICE Produces Insights: Verified through `verifyAlicePracticeAdvisor`.
-- Mission Control Updates: Uses canonical analytics projection.
+- Executive Dashboard Updates: Uses canonical analytics projection.
 - Reports Generate: Executive report builder is implemented.
 - ROI Can Be Measured: Pilot ROI formulas and recall validation simulation are implemented.
 

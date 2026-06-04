@@ -150,7 +150,7 @@ export const PERSONAS: Record<PersonaKey, PersonaConfig> = {
     nav: [
       { href: '/internal', label: 'Admin Dashboard', iconName: 'Shield' },
       { href: '/internal/organizations', label: 'Organizations', iconName: 'Building2' },
-      { href: '/internal/mission-control', label: 'Mission Control', iconName: 'Radar' },
+      { href: '/internal/mission-control', label: 'Executive Dashboard', iconName: 'Radar' },
       { href: '/internal/health', label: 'Health', iconName: 'Activity' },
     ],
     kpis: [

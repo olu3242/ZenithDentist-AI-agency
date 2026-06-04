@@ -11,7 +11,7 @@
 | Workflow Pause | `/automation-center` sets status `paused` |
 | Workflow Resume | `/automation-center` sets status `active` |
 | Workflow History | Runtime traces and automation events provide history |
-| Workflow Analytics | Workflow OS reads runtime health and registry state |
+| Workflow Analytics | Automation Platform reads runtime health and registry state |
 
 ## Persistence
 

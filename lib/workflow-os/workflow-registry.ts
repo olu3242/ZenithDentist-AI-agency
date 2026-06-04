@@ -2,7 +2,7 @@ import "server-only";
 
 /**
  * Workflow Registry — canonical source of all workflow definitions.
- * Wraps the automation blueprint registry and adds Workflow OS metadata.
+ * Wraps the automation blueprint registry and adds Automation Platform metadata.
  */
 
 import { automationRegistry, getAutomationBlueprint } from "@/lib/automation/registry";

@@ -16,7 +16,7 @@ Visitor → Homepage → Assessment → Audit → Booking → Opportunity → Cl
 - Public route `/` — no auth required
 - CTA click tracked via `POST /api/analytics/cta`
 - `cta_events` table written, `cta_clicked` Event Fabric published
-- Visitor count visible in admin Mission Control
+- Visitor count visible in admin Executive Dashboard
 
 ### 2. Assessment Form Submission ✅
 - `submitFunnelAction()` server action
@@ -46,7 +46,7 @@ Visitor → Homepage → Assessment → Audit → Booking → Opportunity → Cl
 - `pipeline_value = revenue_recovery_opportunity × 12`
 - `opportunity_created` Event Fabric event published
 
-### 6. Mission Control Visibility ✅
+### 6. Executive Dashboard Visibility ✅
 - Lead visible in CRM table with status "booked"
 - Active Opportunities count updated
 - Pipeline value reflects opportunity pipeline_value

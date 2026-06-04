@@ -11,7 +11,7 @@ Product: Patient Revenue Operating System (PROS)
 - Onboarding: 90/100
 - Playbooks: 92/100
 - Revenue Attribution: 88/100
-- Mission Control: 88/100
+- Executive Dashboard: 88/100
 - ALICE: 88/100
 - Analytics: 86/100
 - ROI Tracking: 90/100
@@ -31,7 +31,7 @@ Overall Score: 89/100
 - Customer success scores cover practice, playbook, automation coverage, revenue opportunity, and ALICE recommendation quality.
 - Executive reports can be produced weekly, monthly, and quarterly.
 - ALICE advisor verification uses existing analytics-grounded ALICE reporting.
-- Pilot operations center uses existing analytics and Mission Control surfaces.
+- Pilot operations center uses existing analytics and Executive Dashboard surfaces.
 - ROI validation simulation verifies the recall recovery attribution chain.
 
 ## Final Decision

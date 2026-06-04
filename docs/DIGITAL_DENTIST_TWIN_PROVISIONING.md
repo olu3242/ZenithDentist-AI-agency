@@ -288,6 +288,6 @@ If provider API keys are not available at launch:
 
 ## Related Documents
 
-- `docs/PILOT_OPERATIONS_OS.md` — Avatar Readiness Mission Control panel
+- `docs/PILOT_OPERATIONS_OS.md` — Avatar Readiness Executive Dashboard panel
 - `docs/GO_LIVE_RUNBOOK.md` — Day 2 provider setup commands
 - `docs/30_DAY_ACTIVATION_PLAN.md` — Day 1–4 asset collection timeline

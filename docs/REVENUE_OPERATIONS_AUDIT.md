@@ -31,7 +31,7 @@
 
 **Payload Fields:** organizationId, patientId, appointmentId, scheduledAt, patientName, patientPhone, patientEmail, providerName, appointmentType
 
-**Status:** Fully implemented. Uses `emitAutomationEvent()` (pre-Workflow OS path). Attribution via `revenue_recovery_events`.
+**Status:** Fully implemented. Uses `emitAutomationEvent()` (pre-Automation Platform path). Attribution via `revenue_recovery_events`.
 
 ---
 
@@ -40,14 +40,14 @@
 
 - **Trigger Function:** `triggerRecallRecovery(organizationId, recallData: RecallData)`
 - **Workflow ID:** `recall_due`
-- **Emit Path:** `executeWorkflow()` → Workflow OS → Event Fabric (upgraded path)
+- **Emit Path:** `executeWorkflow()` → Automation Platform → Event Fabric (upgraded path)
 - **Metrics Function:** `getRecallRecoveryMetrics(organizationId)` → queries `recall_recovery_events`
 - **Revenue Metric:** `revenue_attributed` field per row; `booked` count from `appointment_booked = true`
 - **Attribution Table:** `recall_recovery_events` (linked to `workflow_executions` via `workflow_execution_id` FK from migration 202606010002)
 
 **Payload Fields:** patientId, recallType, outreachChannel, dueDate, metadata
 
-**Status:** Fully implemented and uses `executeWorkflow()` (Workflow OS canonical path). Attribution FK wired.
+**Status:** Fully implemented and uses `executeWorkflow()` (Automation Platform canonical path). Attribution FK wired.
 
 ---
 
@@ -63,7 +63,7 @@
 
 **Payload Fields:** organizationId, patientId, treatmentPlanId, estimatedValue, treatmentType, proposedAt, followUpDays (default 7)
 
-**Status:** Implemented. Uses older `emitAutomationEvent()` path (not Workflow OS). Metrics query confirmed against `revenue_recovery_events`.
+**Status:** Implemented. Uses older `emitAutomationEvent()` path (not Automation Platform). Metrics query confirmed against `revenue_recovery_events`.
 
 ---
 
@@ -90,14 +90,14 @@
 
 - **Trigger Function:** `triggerReviewRequest(organizationId, visitData: VisitData)`
 - **Workflow ID:** `review_request_due`
-- **Emit Path:** `executeWorkflow()` → Workflow OS (canonical path)
+- **Emit Path:** `executeWorkflow()` → Automation Platform (canonical path)
 - **Metrics Function:** `getReviewGrowthMetrics(organizationId)` → queries `review_growth_events`
 - **Revenue Metric:** `converted` flag, `revenue_attributed` per event, `avgRating`
 - **Attribution Table:** `review_growth_events` (linked via `workflow_execution_id` FK)
 
 **Payload Fields:** patientId, visitDate, platform, providerName, metadata
 
-**Status:** Fully implemented with Workflow OS path. Attribution FK wired in migration 202606010002.
+**Status:** Fully implemented with Automation Platform path. Attribution FK wired in migration 202606010002.
 
 ---
 
@@ -135,7 +135,7 @@ triggerXxx()
 
 ## Findings
 
-1. **Workflow OS adoption is partial:** Recall Recovery and Review Generation use `executeWorkflow()` (canonical). No-Show, Treatment Acceptance, Chair Fill, and Referral use `emitAutomationEvent()` directly. All 6 should migrate to Workflow OS for consistent attribution.
+1. **Automation Platform adoption is partial:** Recall Recovery and Review Generation use `executeWorkflow()` (canonical). No-Show, Treatment Acceptance, Chair Fill, and Referral use `emitAutomationEvent()` directly. All 6 should migrate to Automation Platform for consistent attribution.
 
 2. **Chair Fill reuses recall_due workflow ID** — attribution will be conflated with recall events. Requires dedicated workflow definition.
 

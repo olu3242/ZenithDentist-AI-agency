@@ -1,4 +1,4 @@
-# Mission Control Data Audit
+# Executive Dashboard Data Audit
 
 ## Status: WIRED ✅ — All dashboards read from canonical sources
 
@@ -61,7 +61,7 @@ Organization scoping: optional `organizationId` parameter available for multi-te
 
 ---
 
-## Mission Control Pipeline
+## Executive Dashboard Pipeline
 
 Lead statuses visible in pipeline:
 - `new` — initial state

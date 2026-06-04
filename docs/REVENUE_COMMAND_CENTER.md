@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Mission Control Revenue Command Center is the primary financial intelligence panel for practice owners and administrators. It surfaces nine key revenue metrics in real time, enabling immediate visibility into revenue health, recovery opportunities, and forecast performance.
+The Executive Dashboard Revenue Command Center is the primary financial intelligence panel for practice owners and administrators. It surfaces nine key revenue metrics in real time, enabling immediate visibility into revenue health, recovery opportunities, and forecast performance.
 
 ---
 
@@ -222,7 +222,7 @@ Returns all 9 metrics in a single aggregated response.
 
 ---
 
-## Dashboard Layout (Mission Control)
+## Dashboard Layout (Executive Dashboard)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -247,4 +247,4 @@ Returns all 9 metrics in a single aggregated response.
 - [Revenue OS Architecture](REVENUE_OS_ARCHITECTURE.md)
 - [Revenue Opportunity Engine](REVENUE_OPPORTUNITY_ENGINE.md)
 - [Revenue Forecasting Engine](REVENUE_FORECASTING_ENGINE.md)
-- [Mission Control Master Spec](MISSION_CONTROL_MASTER_SPEC.md)
+- [Executive Dashboard Master Spec](MISSION_CONTROL_MASTER_SPEC.md)

@@ -32,7 +32,7 @@ public.user_roles
 public.conversion_profiles
 ```
 
-### Patient Revenue Engine (12 tables)
+### Revenue Recovery System (12 tables)
 ```
 public.appointment_attributions
 public.audits
@@ -48,7 +48,7 @@ public.patient_journey_evidence
 public.operational_audits_gtm
 ```
 
-### Workflow OS (12 tables)
+### Automation Platform (12 tables)
 ```
 public.automation_audit_runs
 public.automation_blueprints
@@ -124,7 +124,7 @@ public.video_engagement_events
 public.video_library
 ```
 
-### Mission Control (12 tables)
+### Executive Dashboard (12 tables)
 ```
 public.automation_dead_letters
 public.mission_control_actions

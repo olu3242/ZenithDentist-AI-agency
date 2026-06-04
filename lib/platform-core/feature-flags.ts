@@ -24,9 +24,9 @@ interface FlagDefinition {
 }
 
 const FLAG_REGISTRY: Record<FeatureFlag, FlagDefinition> = {
-  workflow_os_v2:              { defaultEnabled: true,  description: "Workflow OS execution engine v2", since: "2025-05-30" },
+  workflow_os_v2:              { defaultEnabled: true,  description: "Automation Platform execution engine v2", since: "2025-05-30" },
   ai_os_alice:                 { defaultEnabled: true,  description: "ALICE AI OS grounding layer",    since: "2025-05-30" },
-  mission_control_v2:          { defaultEnabled: true,  description: "Mission Control convergence",    since: "2025-05-30" },
+  mission_control_v2:          { defaultEnabled: true,  description: "Executive Dashboard convergence",    since: "2025-05-30" },
   marketplace:                 { defaultEnabled: false, description: "Extension marketplace",          since: "2025-05-30" },
   multi_tenant_hardening:      { defaultEnabled: true,  description: "Multi-tenant enforcement layer", since: "2025-05-30" },
   execution_fabric:            { defaultEnabled: true,  description: "Execution Fabric coordinator",   since: "2025-05-30" },

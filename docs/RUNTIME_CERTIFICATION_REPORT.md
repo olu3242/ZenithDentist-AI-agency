@@ -31,7 +31,7 @@ FAIL
 
 Runtime tables exist, but required table names and canonical execution ownership are not certifiable. `workflow_runs`, `automation_queue`, and `automation_failures` are created by migration but absent from `lib/database.types.ts`.
 
-## Workflow OS
+## Automation Platform
 
 FAIL
 

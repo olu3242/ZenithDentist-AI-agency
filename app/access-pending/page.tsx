@@ -37,7 +37,7 @@ export default async function AccessPendingPage({
             <div>
               <p className="text-sm font-black text-ink">{message}</p>
               <p className="mt-2 text-sm font-semibold leading-6 text-muted">
-                Please contact Zenith AI Automation Agency if you believe this is an error.
+                Please contact Zenith Pros support if you believe this is an error.
               </p>
               {params?.email ? <p className="mt-2 text-xs font-bold uppercase tracking-wider text-muted">Email: {params.email}</p> : null}
             </div>

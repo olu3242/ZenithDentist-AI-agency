@@ -4,10 +4,10 @@ import "server-only";
  * AI OS — barrel export.
  *
  * ALICE is the Operational Intelligence Layer.
- * AI OS sits above Workflow OS in the Zenith platform stack.
+ * AI OS sits above Automation Platform in the Zenith platform stack.
  *
  * Stack:
- *   Supabase → Runtime Kernel → Workflow OS → AI OS → Apps
+ *   Supabase → Runtime Kernel → Automation Platform → AI OS → Apps
  */
 
 // ALICE Grounding Layer

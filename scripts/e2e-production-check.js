@@ -84,9 +84,9 @@ for (const localePrefix of ["/en-US/:path*", "/es-US/:path*", "/en-CA/:path*", "
 
 assertContains("lib/supabase/server.ts", "sb_secret_", "Supabase server client must accept modern secret keys");
 assertContains("lib/supabase/server.ts", "supabase_service_client_unavailable", "Supabase service client must log structured failures");
-assertContains("lib/patient-revenue-engine.ts", "Patient Revenue Engine", "Patient Revenue Engine product definition must exist");
-assertContains("lib/marketplace-core/extension-registry.ts", "PATIENT_REVENUE_ENGINE_PRODUCT.id", "Patient Revenue Engine marketplace product must exist");
-assertContains("app/automation-marketplace/actions.ts", "installPatientRevenueEngineAction", "Patient Revenue Engine install action must exist");
-assertContains("app/automation-marketplace/actions.ts", "deployPatientRevenueEngineAction", "Patient Revenue Engine deploy action must exist");
+assertContains("lib/patient-revenue-engine.ts", "Revenue Recovery System", "Revenue Recovery System product definition must exist");
+assertContains("lib/marketplace-core/extension-registry.ts", "PATIENT_REVENUE_ENGINE_PRODUCT.id", "Revenue Recovery System marketplace product must exist");
+assertContains("app/automation-marketplace/actions.ts", "installPatientRevenueEngineAction", "Revenue Recovery System install action must exist");
+assertContains("app/automation-marketplace/actions.ts", "deployPatientRevenueEngineAction", "Revenue Recovery System deploy action must exist");
 
 console.log("E2E production invariant check passed.");

@@ -1,10 +1,10 @@
-# Workflow OS Validation Report
+# Automation Platform Validation Report
 
 Generated: 2026-06-01
 
 ## Summary
 
-Workflow OS overview route exists and compiles:
+Automation Platform overview route exists and compiles:
 
 - `/workflow-os`
 
@@ -34,5 +34,5 @@ The current Supabase admin/service key is an anon key. Creating a workflow and v
 
 ## Status
 
-Workflow OS Status: `PARTIAL / BLOCKED FOR E2E`
+Automation Platform Status: `PARTIAL / BLOCKED FOR E2E`
 

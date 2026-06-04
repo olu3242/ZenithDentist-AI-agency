@@ -7,7 +7,7 @@ import { ZenithLogo } from "@/components/branding/ZenithLogo";
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const nav: NavItem[] = [
-  { href: "/internal/mission-control",  label: "Mission Control",  icon: RadioTower },
+  { href: "/internal/mission-control",  label: "Executive Dashboard",  icon: RadioTower },
   { href: "/internal/runtime-health",   label: "Runtime Health",   icon: ShieldAlert },
   { href: "/internal/automation-audit", label: "E2E Audit",        icon: ListChecks },
   { href: "/internal/events",           label: "Events",           icon: Network },
@@ -23,7 +23,7 @@ const nav: NavItem[] = [
   { href: "/internal/integrations",     label: "PMS",              icon: PlugZap },
   { href: "/internal/governance",       label: "Governance",       icon: ShieldCheck },
   { href: "/internal/platform",         label: "Platform",         icon: ShieldCheck },
-  { href: "/internal/ai",               label: "ALICE",            icon: Brain },
+  { href: "/internal/ai",               label: "AI Revenue Intelligence", icon: Brain },
   { href: "/internal/playbooks",        label: "Playbooks",        icon: GitBranch },
   { href: "/internal/operations",       label: "Operations",       icon: Activity },
   { href: "/internal/recommendations",  label: "Recommendations",  icon: ClipboardList },

@@ -21,7 +21,7 @@ Blockers are issues that prevent a milestone from being reached regardless of sc
 
 ## 2. Module Readiness Scores
 
-### 2.1 Workflow OS / Execution Engine
+### 2.1 Automation Platform / Execution Engine
 
 | Dimension | Score | Notes |
 |---|---|---|
@@ -87,7 +87,7 @@ Blockers are issues that prevent a milestone from being reached regardless of sc
 
 **Overall: 60%**
 
-**Blockers (first customer):** Column name mismatch must be fixed before chair utilization data appears in Mission Control. Manual snapshot entry must be defined if OpenDental is not sending data.
+**Blockers (first customer):** Column name mismatch must be fixed before chair utilization data appears in Executive Dashboard. Manual snapshot entry must be defined if OpenDental is not sending data.
 
 ---
 
@@ -193,7 +193,7 @@ Blockers are issues that prevent a milestone from being reached regardless of sc
 
 ---
 
-### 2.14 Mission Control — Core (9 panels)
+### 2.14 Executive Dashboard — Core (9 panels)
 
 | Dimension | Score | Notes |
 |---|---|---|
@@ -205,7 +205,7 @@ Blockers are issues that prevent a milestone from being reached regardless of sc
 
 ---
 
-### 2.15 Mission Control — 3 New Centers
+### 2.15 Executive Dashboard — 3 New Centers
 
 | Dimension | Score | Notes |
 |---|---|---|
@@ -252,7 +252,7 @@ Blockers are issues that prevent a milestone from being reached regardless of sc
 | Recall email outreach via Resend | Ready (Resend LIVE) | No |
 | Review request via Resend | Ready (Resend LIVE) | No |
 | No-show recovery via Resend | Ready (Resend LIVE) | No |
-| Workflow OS routes and executes automations | Ready (83%) | No |
+| Automation Platform routes and executes automations | Ready (83%) | No |
 | Discovery OS saves session | Not ready (schema mismatch) | YES |
 | ROI Proof Engine captures baseline | Not ready (schema mismatch) | YES |
 | Practice health score on dashboard | Partially ready (Practice Health 65%) | No |
@@ -305,7 +305,7 @@ All prior blockers plus:
 
 | Module | Score | First Customer Blocker? |
 |---|---|---|
-| Workflow OS | 83% | No |
+| Automation Platform | 83% | No |
 | Patient Recovery | 64% | Soft (OpenDental) |
 | Recall Recovery | 62% | Yes (Twilio or email fallback needed) |
 | Review Growth | 72% | No |
@@ -318,8 +318,8 @@ All prior blockers plus:
 | Renewal Engine | 67% | No |
 | Expansion Engine | 65% | No |
 | Client Success Dashboard | 67% | No |
-| Mission Control Core | 78% | No |
-| Mission Control Centers | 63% | No |
+| Executive Dashboard Core | 78% | No |
+| Executive Dashboard Centers | 63% | No |
 | ALICE Dental | 68% | No |
 | Security | 48% | Yes (multi-tenant) |
 

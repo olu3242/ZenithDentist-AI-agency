@@ -22,7 +22,7 @@
     "primaryCta": "Start Free Revenue Assessment",
     "demoCta": "Watch Platform Demo",
     "assessmentTitle": "Discover Hidden Revenue Opportunities",
-    "assessmentBody": "Complete a short assessment and receive a personalized Practice Growth Report including your Revenue Opportunity Estimate, Patient Retention Analysis, and ALICE Recommendations.",
+    "assessmentBody": "Complete a short assessment and receive a personalized Practice Growth Report including your Revenue Opportunity Estimate, Patient Retention Analysis, and AI Revenue Intelligence recommendations.",
     "finalCta": "Ready To Discover What Is Being Missed?",
     "bookStrategy": "Book Strategy Session"
   },
@@ -40,19 +40,19 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "alicePriority": "ALICE priority",
+    "alicePriority": "Revenue priority",
     "recoveredRevenue": "Recovered revenue",
     "patients": "Patients",
     "bookings": "Bookings"
   },
   "missionControl": {
-    "kicker": "Zenith PROS Mission Control",
-    "title": "Mission Control",
+    "kicker": "Zenith Pros Executive Dashboard",
+    "title": "Executive Dashboard",
     "subtitle": "Enterprise operational command center for runtime intelligence, provider confidence, trace propagation, replay safety, and predictive monitoring."
   },
   "workflowOS": {
-    "kicker": "Zenith PROS Workflow OS",
-    "title": "Workflow OS",
+    "kicker": "Zenith Pros Automation Platform",
+    "title": "Automation Platform",
     "subtitle": "Registered dental automations, execution analytics, replay posture, SLA pressure, and workflow health.",
     "registeredWorkflows": "Registered workflows",
     "operationalScore": "Operational score",
@@ -63,9 +63,9 @@
     "review": "Review"
   },
   "patientRevenueEngine": {
-    "title": "Patient Revenue Engine",
-    "install": "Install Patient Revenue Engine",
-    "deploy": "Deploy Patient Revenue Engine",
+    "title": "Revenue Recovery System",
+    "install": "Install Revenue Recovery System",
+    "deploy": "Deploy Revenue Recovery System",
     "description": "Recover patient revenue through recall, reactivation, treatment acceptance, memberships, referrals, and reviews."
   },
   "clientSuccessOS": {
@@ -75,10 +75,10 @@
     "goLive": "Go-live readiness"
   },
   "alice": {
-    "title": "ALICE Operational Intelligence",
+    "title": "AI Revenue Intelligence",
     "recommendation": "Recommendation",
     "confidence": "Confidence",
-    "localizedBriefing": "ALICE is using {locale} language and {currency} financial context."
+    "localizedBriefing": "AI Revenue Intelligence is using {locale} language and {currency} financial context."
   },
   "roi": {
     "title": "Live Revenue Opportunity Engine",
@@ -100,7 +100,7 @@
   "email": {
     "auditSubject": "Your FREE Revenue Opportunity Assessment for {practiceName}",
     "auditReady": "Your FREE Revenue Opportunity Report is ready",
-    "bookWalkthrough": "Book your implementation walkthrough to review the recommended Zenith PROS Revenue Playbooks."
+    "bookWalkthrough": "Book your implementation walkthrough to review the recommended Zenith Pros Revenue Playbooks."
   },
   "sms": {
     "assessmentReady": "Your Zenith Revenue Opportunity Report is ready. Book your walkthrough when convenient.",

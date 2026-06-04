@@ -264,7 +264,7 @@ const allWorkflows = getActiveWorkflows();
 
 ### 5.2 Activate Each Workflow
 
-For each required workflow, execute via the Workflow OS:
+For each required workflow, execute via the Automation Platform:
 ```typescript
 import { executeWorkflow } from "@/lib/workflow-os";
 
@@ -324,7 +324,7 @@ curl /api/alice/insights -H "x-internal-token: <token>"
 # Expected: HTTP 200, insights array populated
 ```
 
-### Test 5: Mission Control State
+### Test 5: Executive Dashboard State
 ```bash
 curl /api/mission-control/state -H "x-internal-token: <token>"
 # Expected: HTTP 200, operationalScore > 0, no unhealthyWorkflows for this org

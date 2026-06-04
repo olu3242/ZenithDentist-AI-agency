@@ -1,4 +1,4 @@
-# Mission Control — Revenue & Intelligence Dashboard
+# Executive Dashboard — Revenue & Intelligence Dashboard
 
 ## Overview
 

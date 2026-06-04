@@ -9,7 +9,7 @@
 
 ## Platform Overview
 
-Zenith is an AI-powered automation platform for dental practices. It orchestrates patient recall, no-show recovery, billing follow-up, and review management through a structured Workflow OS, governed by ALICE (AI Lifecycle Intelligence and Coordination Engine). The platform is built on Next.js, Supabase, and a purpose-built multi-tenant runtime.
+Zenith is an AI-powered automation platform for dental practices. It orchestrates patient recall, no-show recovery, billing follow-up, and review management through a structured Automation Platform, governed by ALICE (AI Lifecycle Intelligence and Coordination Engine). The platform is built on Next.js, Supabase, and a purpose-built multi-tenant runtime.
 
 This report scores Zenith's readiness across 7 dimensions using evidence gathered directly from the codebase, infrastructure configuration, and operational audit.
 
@@ -63,8 +63,8 @@ This report scores Zenith's readiness across 7 dimensions using evidence gathere
 **Definition:** How complete and functional is the operational infrastructure?
 
 **Strengths:**
-- Workflow OS fully implemented: engine, state machine, registry, replay, versioning, scheduler, analytics
-- Mission Control aggregates runtime health, AI health, governance state, and recovery state in one panel
+- Automation Platform fully implemented: engine, state machine, registry, replay, versioning, scheduler, analytics
+- Executive Dashboard aggregates runtime health, AI health, governance state, and recovery state in one panel
 - Implementation OS: checklists, tracker, scorecard, and health monitoring all built
 - Customer Success OS: risk engine, renewal engine, expansion engine all implemented
 - Event Fabric with `publishEvent()` for inter-system communication
@@ -78,7 +78,7 @@ This report scores Zenith's readiness across 7 dimensions using evidence gathere
 - No self-service customer flows — every onboarding step requires manual action
 - No automated go-live criteria enforcement — go-live sign-off is a manual checklist
 
-**Score rationale:** The internal operational infrastructure (workflows, AI, Mission Control) is genuinely strong. The score is reduced significantly by the two disconnected integrations, absence of external monitoring, and partial Stripe implementation.
+**Score rationale:** The internal operational infrastructure (workflows, AI, Executive Dashboard) is genuinely strong. The score is reduced significantly by the two disconnected integrations, absence of external monitoring, and partial Stripe implementation.
 
 ---
 
@@ -89,7 +89,7 @@ This report scores Zenith's readiness across 7 dimensions using evidence gathere
 **Strengths:**
 - Support Specialist role defined with clear scope and escalation paths
 - Incident Response Playbook defines severity levels, SLAs, communication templates, and post-mortem process
-- Mission Control provides support context (workflow status, health scores) without Supabase access
+- Executive Dashboard provides support context (workflow status, health scores) without Supabase access
 
 **Gaps:**
 - No ticketing system documented or configured (support inbox not defined)
@@ -193,7 +193,7 @@ The weighted average of all 6 dimensions, with Access Controls, HIPAA Compliance
 - Automated workflow execution with SLA tracking
 - AI-governed interventions with approval gates
 - Tenant data isolation (enforced via `scopedByOrganization()`)
-- Operational health visibility via Mission Control
+- Operational health visibility via Executive Dashboard
 - Incident response process (documented)
 - Replay and recovery mechanisms
 

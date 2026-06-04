@@ -1,8 +1,8 @@
 import "server-only";
 
 /**
- * Workflow Runtime — live state of the Workflow OS execution layer.
- * Consumes Runtime Kernel telemetry to produce Workflow OS health.
+ * Workflow Runtime — live state of the Automation Platform execution layer.
+ * Consumes Runtime Kernel telemetry to produce Automation Platform health.
  */
 
 import { getRuntimeHealthState } from "@/lib/runtime/automation-health";

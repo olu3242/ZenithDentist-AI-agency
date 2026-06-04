@@ -2,7 +2,7 @@
 
 ## Event Flow
 
-`Event Fabric -> Automation Registry -> Workflow OS -> Runtime OS`
+`Event Fabric -> Automation Registry -> Automation Platform -> Runtime OS`
 
 ## Supported Events
 
@@ -19,7 +19,7 @@
 
 - Lead funnel side effects now invoke `executeRegisteredAutomation("lead_created")`.
 - Manual automation execution emits persistent workflow/automation events.
-- Workflow events publish to Runtime Event Fabric for Mission Control visibility.
+- Workflow events publish to Runtime Event Fabric for Executive Dashboard visibility.
 
 ## Remaining Gap
 

@@ -25,4 +25,4 @@ All agents share:
 
 ## Governance Rule
 
-Agents may recommend, coordinate, and execute within policy boundaries. They may not bypass Workflow OS, Governance OS, tenant policy, or audit logging.
+Agents may recommend, coordinate, and execute within policy boundaries. They may not bypass Automation Platform, Governance OS, tenant policy, or audit logging.

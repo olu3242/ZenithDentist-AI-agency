@@ -112,7 +112,7 @@ const { topPerformers } = await getPracticeMemorySummary(organizationId);
 // topPerformers: [{ entityType: 'avatar', entityId: '...', avgScore: 84 }, ...]
 ```
 
-This feeds the Mission Control Revenue Dashboard's practice KPI panel.
+This feeds the Executive Dashboard Revenue Dashboard's practice KPI panel.
 
 ## Integration Points
 
@@ -120,5 +120,5 @@ This feeds the Mission Control Revenue Dashboard's practice KPI panel.
 |--------|---------------------------|
 | ALICE Decision Engine | Reads memory for channel/script context in AI prompt |
 | Channel Optimizer | `getEntityEffectiveness('channel', channelName)` to rank channels |
-| Mission Control Dashboard | `getPracticeMemorySummary()` for top performer KPIs |
+| Executive Dashboard Dashboard | `getPracticeMemorySummary()` for top performer KPIs |
 | Script Engine | `script_templates.performance_score` updated from `script_effectiveness` records |

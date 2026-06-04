@@ -33,7 +33,7 @@ Each playbook item is designed to feed:
 - Customer Success OS
 - Agency CRM
 - Evidence OS
-- Mission Control
+- Executive Dashboard
 
 ## Healthy Client Criteria
 

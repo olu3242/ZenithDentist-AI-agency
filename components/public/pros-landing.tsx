@@ -525,7 +525,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
         <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
           <div className="flex flex-col justify-center">
             <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#14B8A6]">Meet LIZ</p>
-            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Your Revenue Recovery Advisor™</h2>
+            <h2 className="mt-4 text-4xl font-black leading-tight md:text-5xl">Your Revenue Recovery Advisor</h2>
             <p className="mt-5 text-lg leading-8 text-[#64748B]">
               LIZ is not a chatbot. LIZ is your Executive Revenue Intelligence Agent — continuously analyzing practice performance and surfacing the actions most likely to recover revenue, improve retention, and support patient engagement.
             </p>
@@ -778,7 +778,7 @@ export function ProsLanding({ calendlyUrl, landingStats, legalEntity }: ProsLand
             </div>
           </div>
           <div className="mt-12 flex flex-col items-center gap-3 border-t border-white/8 pt-8 text-center">
-            <p className="font-black text-white">Zenith AI Automation Agency™</p>
+            <p className="font-black text-white">Zenith Pros</p>
             <p className="text-xs text-white/30">Dental Revenue Operating System</p>
             <div className="flex flex-wrap justify-center gap-4 text-xs text-white/25">
               <Link href="/privacy" className="transition hover:text-white/50">Privacy Policy</Link>

@@ -2,7 +2,7 @@
 
 | Surface | Internal Ops | Sales | Implementation | Customer Success | Practice Owner | Office Manager | Front Desk | Provider | Billing | DSO Executive |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Mission Control | Write | Read | Read | Read | Read | Read | No | No | No | Read |
+| Executive Dashboard | Write | Read | Read | Read | Read | Read | No | No | No | Read |
 | PMS Operations | Admin | No | Write | Read | Read | Write | Read | No | No | Read |
 | Revenue Center | Read | Read | Read | Read | Write | Read | Read | Read | Read | Write |
 | ALICE | Write | Read | Read | Read | Read | Read | Read | Read | No | Read |

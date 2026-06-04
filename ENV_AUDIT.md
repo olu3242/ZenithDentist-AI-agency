@@ -12,7 +12,7 @@
 | `OPENAI_API_KEY` | Present | AI provider optional for lead capture |
 | `ANTHROPIC_API_KEY` | Present | AI provider optional for lead capture |
 | Runtime OS URLs | Not configured | Runtime OS is in-process/Supabase-backed |
-| Workflow OS URLs | Not configured | Workflow OS is in-process/Supabase-backed |
+| Automation Platform URLs | Not configured | Automation Platform is in-process/Supabase-backed |
 | Event Fabric URLs | Not configured | Event Fabric is in-process/Supabase-backed |
 
 ## Connectivity Result

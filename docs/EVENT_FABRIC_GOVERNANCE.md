@@ -1,7 +1,7 @@
-# Event Fabric™ Governance
+# Event Fabric Governance
 
 **Document Type:** Canonical Governance Reference
-**Platform:** Zenith Patient OS™
+**Platform:** Zenith Patient OS
 **Last Updated:** 2026-06-02
 **Status:** ACTIVE — governs all platform events
 
@@ -11,7 +11,7 @@
 
 > **All events are immutable once written. No updates or deletes are permitted.**
 
-The Event Fabric™ is the platform's central nervous system. Every significant state change — patient actions, ALICE decisions, workflow executions, revenue attributions, growth events — produces an immutable event record. This immutability is the foundation of:
+The Event Fabric is the platform's central nervous system. Every significant state change — patient actions, ALICE decisions, workflow executions, revenue attributions, growth events — produces an immutable event record. This immutability is the foundation of:
 
 - Complete platform audit trail
 - Reliable replay capability
@@ -24,7 +24,7 @@ Any code path that attempts to UPDATE or DELETE records from `runtime_event_fabr
 
 ## 2. Required Event Fields
 
-Every event written to the Event Fabric™ must include all of the following fields:
+Every event written to the Event Fabric must include all of the following fields:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -101,7 +101,7 @@ All event keys follow the pattern: `<domain>.<entity>.<action>`
 
 ## 5. priority Enum Values
 
-| Value | Description | SLA | Mission Control |
+| Value | Description | SLA | Executive Dashboard |
 |---|---|---|---|
 | `CRITICAL` | Platform health, security events, data integrity | Process within 60s | Real-time alert |
 | `HIGH` | Patient safety, urgent communications, DLQ entries | Process within 5 min | Real-time subscription |
@@ -232,7 +232,7 @@ Automated archival jobs must run on a schedule to move events beyond retention w
 
 | Event Key | Type | Source | Description |
 |---|---|---|---|
-| `growth.score.calculated` | GROWTH_EVENT | GrowthOS | Practice Growth Score™ recalculated |
+| `growth.score.calculated` | GROWTH_EVENT | GrowthOS | Practice Growth Score recalculated |
 | `growth.engine.triggered` | GROWTH_EVENT | GrowthOS | A growth automation engine fired |
 
 ### Avatar Domain
@@ -244,16 +244,16 @@ Automated archival jobs must run on a schedule to move events beyond retention w
 
 ---
 
-## 13. Observability — Mission Control
+## 13. Observability — Executive Dashboard
 
-Mission Control subscribes to the following event priority tiers in real-time:
+Executive Dashboard subscribes to the following event priority tiers in real-time:
 
 - **CRITICAL:** Immediate push notification to all active `platform_admin` sessions
-- **HIGH:** Real-time display in Mission Control event feed (auto-refreshing)
+- **HIGH:** Real-time display in Executive Dashboard event feed (auto-refreshing)
 - **NORMAL:** Surfaced in batched event stream, 60-second refresh
 - **LOW:** Included in daily summary reports only
 
-Mission Control displays:
+Executive Dashboard displays:
 - Live event count by type (last 24h)
 - DLQ entry count (requires immediate attention indicator)
 - ALICE decision volume and fallback rate

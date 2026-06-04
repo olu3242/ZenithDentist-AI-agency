@@ -26,7 +26,7 @@ export async function generateDentalOperationalPredictions(): Promise<DentalOper
     prediction("front-desk-load", "front_desk", "Front desk overload risk", Math.max(0, (frontOffice?.retryRate ?? 0) * 28 + (frontOffice?.unresolvedFailures ?? 0) * 18), "Reduce operator pressure by clearing retry spikes and missed-call recovery delays."),
     prediction("retention-instability", "retention", "Retention instability", Math.max(0, 100 - client.scores.reliabilityScore), "Stabilize failed patient follow-up paths before they compound into churn."),
     prediction("review-forecast", "reviews", "Review generation slowdown", Math.max(0, 100 - (reputation?.healthScore ?? 0)), "Inspect review request latency and provider health before expanding volume."),
-    prediction("operational-efficiency", "efficiency", "Operational efficiency pressure", Math.max(0, 100 - runtime.scores.operationalScore), "Resolve top bottlenecks from Mission Control before launching additional execution volume.")
+    prediction("operational-efficiency", "efficiency", "Operational efficiency pressure", Math.max(0, 100 - runtime.scores.operationalScore), "Resolve top bottlenecks from Executive Dashboard before launching additional execution volume.")
   ];
 }
 

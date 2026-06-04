@@ -1,4 +1,4 @@
-# Mission Control Error Report
+# Executive Dashboard Error Report
 
 **Sprint:** Error Resilience
 **Score:** 85 / 100 — GO

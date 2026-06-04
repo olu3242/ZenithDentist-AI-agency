@@ -31,9 +31,9 @@ There is no `app/dashboard/layout.tsx`. Dashboard pages directly use `AppShell`,
 
 `app/admin/layout.tsx` uses `AppShell`. Admin pages inherit the unified shell after the AppShell refactor.
 
-### Mission Control Layout
+### Executive Dashboard Layout
 
-There is no `app/mission-control/layout.tsx`. Mission Control uses `AppShell` directly and keeps its specialized three-column operational layout. It now inherits the governed shell and watermark behavior.
+There is no `app/mission-control/layout.tsx`. Executive Dashboard uses `AppShell` directly and keeps its specialized three-column operational layout. It now inherits the governed shell and watermark behavior.
 
 ## Root Cause
 

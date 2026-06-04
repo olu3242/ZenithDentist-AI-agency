@@ -251,7 +251,7 @@ The automation audit layer maps every core domain into production readiness crit
 - Enterprise coordination: multi-location orchestration and benchmark intelligence.
 - Revenue recovery: leakage detection and prioritization.
 
-Each automation blueprint declares triggers, actions, intelligence outputs, ALICE visibility, emitted event types, required pipelines, and required controls. Mission Control evaluates missing event emissions, replay readiness, telemetry coverage, and ALICE grounding visibility through `/internal/automation-audit`.
+Each automation blueprint declares triggers, actions, intelligence outputs, AI visibility, emitted event types, required pipelines, and required controls. Executive Dashboard evaluates missing event emissions, replay readiness, telemetry coverage, and ALICE grounding visibility through `/internal/automation-audit`.
 
 ## Runtime Intelligence Consolidation
 
@@ -275,7 +275,7 @@ Dashboard responsibilities:
 
 ## Operational Intelligence Consolidation
 
-The next consolidation layer connects the registry, runtime traces, Mission Control, client visibility, and ALICE reasoning into one operational intelligence platform.
+The next consolidation layer connects the registry, runtime traces, Executive Dashboard, client visibility, and ALICE reasoning into one operational intelligence platform.
 
 New runtime modules:
 
@@ -287,7 +287,7 @@ New runtime modules:
 
 Expanded surfaces:
 
-- `/client-operations`: per-client operational visibility, domain reliability, engagement metrics, SLA compliance, automation ROI, and ALICE client recommendations.
+- `/client-operations`: per-client operational visibility, domain reliability, engagement metrics, SLA compliance, automation ROI, and Client revenue recommendations.
 - `/mission-control`: now includes live operational graph, predictive alerts, dependency issues, dead-letter explorer, trace explorer, and ALICE remediation feed.
 - `/api/mission-control/runtime-health`: now returns graph state, dependency issues, predictive alerts, replay recommendations, degraded workflows, and ALICE operations reasoning.
 

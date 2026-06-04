@@ -27,7 +27,7 @@ ALICE (AI-driven Learning and Intelligence for Clinical Engagement) was generati
 ```
 ALICE decision created
     ↓ (alice_patient_decisions: status='pending')
-Action taken by staff or Workflow OS
+Action taken by staff or Automation Platform
     ↓ (appointment booked, treatment accepted, etc.)
 Outcome observed
     ↓

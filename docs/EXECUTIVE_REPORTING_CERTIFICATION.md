@@ -19,7 +19,7 @@
 
 ---
 
-## 2. Internal Mission Control
+## 2. Internal Executive Dashboard
 **File:** `app/internal/mission-control/page.tsx`
 
 | Data Function | Source | Status |
@@ -96,7 +96,7 @@ Certified in previous sprint audits (`docs/EXECUTIVE_CENTER_CERTIFICATION.md`, `
 | Dashboard | Status |
 |---|---|
 | Portal (`portal/page.tsx`) | REAL DATA |
-| Mission Control | REAL DATA |
+| Executive Dashboard | REAL DATA |
 | Revenue Attribution Center | REAL DATA |
 | Benchmarking Engine | REAL DATA |
 | Video Journey Analytics | REAL DATA |

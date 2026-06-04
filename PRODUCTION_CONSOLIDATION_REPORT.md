@@ -9,10 +9,10 @@ Branch: release/production-consolidated
 - Authentication: login, signup governance, OAuth callback, password reset, and tenant-aware auth routing retained.
 - Multi-tenancy: organization-scoped portal data, tenant membership, permissions, locale defaults, and currency defaults retained.
 - Revenue OS: treatment acceptance, recall recovery, reactivation, membership, reviews, referrals, forecasting, attribution, provider performance, and benchmarking retained.
-- Workflow OS: automation registry, workflow launch surfaces, governance, runtime health, dead letter queue, analytics projection, and traceability retained.
+- Automation Platform: automation registry, workflow launch surfaces, governance, runtime health, dead letter queue, analytics projection, and traceability retained.
 - ALICE: advisor, traceability, operational intelligence, executive briefing, outcomes, and patient decision layers retained.
-- Mission Control: executive operational views, command center routes, workflow context, and localized content retained.
-- Patient Revenue Engine: ROI assessment, booking CTA, recommendations, commercial logic, lead capture, conversion tracking, and patient revenue routes retained.
+- Executive Dashboard: executive operational views, command center routes, workflow context, and localized content retained.
+- Revenue Recovery System: ROI assessment, booking CTA, recommendations, commercial logic, lead capture, conversion tracking, and patient revenue routes retained.
 - Localization and currency: en-US, es-US, en-CA, fr-CA message foundation, next-intl routing, locale switcher, USD/CAD currency utilities, and organization/profile/patient locale fields retained.
 - Documentation: production, certification, architecture, operational, revenue, workflow, ALICE, and readiness documents merged without duplicate conflict sections.
 

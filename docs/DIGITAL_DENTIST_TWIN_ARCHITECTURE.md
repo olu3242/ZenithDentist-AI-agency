@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Digital Dentist Twin is Zenith's proprietary patient engagement system that creates personalized AI-driven video, voice, and messaging experiences. Each patient receives communications delivered by a virtual dentist avatar — consistent in voice, appearance, and clinical knowledge — dramatically improving engagement versus generic outreach.
+The Digital Dentist Twin is Zenith's patient engagement system for personalized AI-driven video, voice, and messaging experiences. Each patient receives communications delivered by a virtual dentist avatar — consistent in voice, appearance, and clinical knowledge — designed to improve engagement versus generic outreach.
 
 ---
 

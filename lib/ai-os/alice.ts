@@ -4,11 +4,11 @@ import "server-only";
  * ALICE — Operational Intelligence Layer of Zenith AI OS.
  *
  * ALICE is the single AI agent surface for Zenith.  She consumes data from:
- *   - Workflow OS (executions, states, analytics)
+ *   - Automation Platform (executions, states, analytics)
  *   - Runtime Kernel (traces, SLA, dead letters, recovery)
  *   - Event Fabric (live platform signals)
  *   - Tenant Context (practice-specific context)
- *   - Mission Control State (operational health)
+ *   - Executive Dashboard State (operational health)
  *
  * ALICE may:
  *   - Recommend workflow changes
@@ -18,7 +18,7 @@ import "server-only";
  *
  * ALICE may NOT:
  *   - Execute workflows directly
- *   - Bypass Workflow OS governance
+ *   - Bypass Automation Platform governance
  *   - Modify tenant data without an approved governance record
  *   - Skip audit trails
  */

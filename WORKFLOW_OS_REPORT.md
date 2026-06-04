@@ -1,8 +1,8 @@
-# Workflow OS Report
+# Automation Platform Report
 
 ## Status
 
-Workflow OS routes and libraries are reachable through role-aware navigation and protected by middleware.
+Automation Platform routes and libraries are reachable through role-aware navigation and protected by middleware.
 
 ## Connected Layers
 

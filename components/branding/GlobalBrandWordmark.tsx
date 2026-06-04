@@ -15,7 +15,7 @@ export function GlobalBrandWordmark({
   return (
     <span className={cn("min-w-0 leading-none", className)}>
       <strong className={cn("block text-xl font-black leading-none tracking-normal", textClassName)}>
-        {brandConfig.shortName} {brandConfig.productAcronym}™
+        {brandConfig.shortName} {brandConfig.productAcronym}
       </strong>
       {subtitle ? <small className={cn("mt-1 block text-xs font-semibold leading-tight", mutedClassName)}>{subtitle}</small> : null}
     </span>

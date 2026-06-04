@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Workflow Replay — Workflow OS facade over the Runtime Kernel replay engine.
+ * Workflow Replay — Automation Platform facade over the Runtime Kernel replay engine.
  * All replay operations must flow through here so state machine transitions
  * and audit trails are maintained.
  */

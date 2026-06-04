@@ -25,4 +25,4 @@ ALICE becomes Chief Operating Intelligence.
 
 ## Boundary
 
-ALICE coordinates intelligence. Execution still goes through Workflow OS, Runtime OS, Governance OS, and tenant policy.
+ALICE coordinates intelligence. Execution still goes through Automation Platform, Runtime OS, Governance OS, and tenant policy.

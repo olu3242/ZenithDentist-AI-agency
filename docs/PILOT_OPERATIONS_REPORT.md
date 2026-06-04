@@ -26,4 +26,4 @@ Tracks:
 
 ## Status
 
-Pilot monitoring is ready through existing Mission Control and analytics surfaces.
+Pilot monitoring is ready through existing Executive Dashboard and analytics surfaces.

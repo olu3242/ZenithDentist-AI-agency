@@ -9,7 +9,7 @@
 
 | Domain | Status | Blocker |
 |--------|--------|---------|
-| Workflow OS | CERTIFIED | None |
+| Automation Platform | CERTIFIED | None |
 | AI OS | CONDITIONAL | Cross-tenant data leak (patched — see §3) |
 | Tenant Enforcement | BLOCKED | API routes have no tenant guards wired |
 | Integrations | PARTIAL | 2 LIVE, 2 PARTIAL, 2 DISCONNECTED |
@@ -82,11 +82,11 @@ All events route through `publishRuntimeFabricEvent()` with `sourceSystem: "work
 
 | Metric | Count | Evidence |
 |--------|-------|---------|
-| Pages directly importing Workflow OS | **0** | No `import` from `lib/workflow-os` in `app/**` |
-| API routes directly importing Workflow OS | **1** | `app/api/mission-control/runtime-health/route.ts` (indirect via runtime modules) |
-| Layers consuming Workflow OS | **6** | `lib/mission-control/`, `lib/ai-os/`, `lib/operations-core/`, `lib/implementation-os/`, `lib/roi-os/`, `lib/marketplace-core/` |
+| Pages directly importing Automation Platform | **0** | No `import` from `lib/workflow-os` in `app/**` |
+| API routes directly importing Automation Platform | **1** | `app/api/mission-control/runtime-health/route.ts` (indirect via runtime modules) |
+| Layers consuming Automation Platform | **6** | `lib/mission-control/`, `lib/ai-os/`, `lib/operations-core/`, `lib/implementation-os/`, `lib/roi-os/`, `lib/marketplace-core/` |
 
-**Finding:** Pages and most APIs consume Workflow OS through aggregation layers (mission-control, ai-os), not directly. This is the correct architecture. Direct page imports are not needed.
+**Finding:** Pages and most APIs consume Automation Platform through aggregation layers (mission-control, ai-os), not directly. This is the correct architecture. Direct page imports are not needed.
 
 ### 1.6 Execution Paths (5 examples)
 
@@ -164,7 +164,7 @@ ALICE reads from live telemetry:
 - `generateAliceInsights()` — predictive insights from operational metrics
 - `getPortalData(organizationId)` — tenant-scoped operational data (post-fix)
 
-ALICE does **not** generate its own metrics. It reads from the Workflow OS + Runtime layers.
+ALICE does **not** generate its own metrics. It reads from the Automation Platform + Runtime layers.
 
 ### 2.3 Events Consumed / Produced
 
@@ -198,7 +198,7 @@ Auto-approved only if:
   - governance.trustScore >= 80
 ```
 
-**ALICE cannot bypass Workflow OS.** `getAliceWorkflowRecommendations()` (`lib/ai-os/alice.ts:130`) routes recommendations through `routeWorkflow()` from Workflow OS — never calls execution directly.
+**ALICE cannot bypass Automation Platform.** `getAliceWorkflowRecommendations()` (`lib/ai-os/alice.ts:130`) routes recommendations through `routeWorkflow()` from Automation Platform — never calls execution directly.
 
 ### 2.5 Workflow Subscriptions
 
@@ -326,14 +326,14 @@ No imports of twilio SDK, no fetch to Twilio/Google APIs anywhere in codebase
 | User Invitation | **FAIL** | No auth system. No `auth.users` creation, no invite emails, no role assignment. `lib/tenant/tenant-enforcement.ts:assertOrganizationMembership()` exists but has nothing to check against. |
 | Integration Setup | **FAIL** | `lib/marketplace-core/extension-registry.ts` defines 7 extensions with config schemas but no customer-facing UI to configure them. No API route to save extension config per org. |
 | Workflow Activation | **FAIL** | `lib/workflow-os/workflow-registry.ts` has 10 workflows registered. No UI page for customers to enable/disable workflows per org. No API route to toggle workflow status per org. |
-| Mission Control Access | **PASS (internal)** | `app/internal/mission-control/page.tsx` is fully functional with live data from `getOperationalMeshState()`, `buildReplayCenterState()`, etc. Customer-facing portal does not exist. |
+| Executive Dashboard Access | **PASS (internal)** | `app/internal/mission-control/page.tsx` is fully functional with live data from `getOperationalMeshState()`, `buildReplayCenterState()`, etc. Customer-facing portal does not exist. |
 | ALICE Usage | **PASS (backend)** | `app/api/alice/chat/route.ts`, `/insights`, `/recommendations`, `/reports` are live. `lib/alice.ts:answerOperationalQuery()` calls AI provider. `app/portal/page.tsx` renders ALICE insights panel. |
 | Executive Reporting | **PASS** | `lib/runtime/executive-reporting.ts:buildExecutiveReportSnapshot()` aggregates 12 data sources. `app/api/mission-control/executive-report/route.ts` serves it. `app/api/reports/[id]/route.ts` enables download. |
 
 ### 5.2 Customer Journey Gap Analysis
 
 The gap between FAIL items and PASS items reveals the platform's current state:
-- **Backend intelligence:** Complete (ALICE, Workflow OS, Mission Control, Reporting)
+- **Backend intelligence:** Complete (ALICE, Automation Platform, Executive Dashboard, Reporting)
 - **Customer-facing product:** Incomplete (no auth, no onboarding, no activation UI)
 
 The platform is production-ready as an **internal operations platform**. It is **not** production-ready as a **customer SaaS product**.

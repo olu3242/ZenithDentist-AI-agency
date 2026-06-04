@@ -11,7 +11,7 @@ Zenith now has the foundation of a workflow-first operating system. The platform
 - Patient lifecycle trigger map
 - Practice Health Score
 - Unified Workflow Launcher
-- Executable ALICE action layer
+- Executable Automation action layer
 - Revenue Command Center V2
 - Growth Command Center V2
 - Operations Command Center V2

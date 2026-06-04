@@ -28,13 +28,13 @@ MVP2 extended the existing multi-OS platform with eight new production modules w
 ## 2. Architectural Principles Maintained
 
 ### Single Entry Point for Workflow Execution
-All Dental Revenue OS modules (`patient-recovery.ts`, `recall-recovery.ts`, `review-growth.ts`) call `executeWorkflow()` from `lib/workflow-os/workflow-engine.ts`. There is no bypassing of the Workflow OS. Evidence: `patient-recovery.ts` line 3 imports `executeWorkflow`; `recall-recovery.ts` line 4 imports `executeWorkflow`.
+All Dental Revenue OS modules (`patient-recovery.ts`, `recall-recovery.ts`, `review-growth.ts`) call `executeWorkflow()` from `lib/workflow-os/workflow-engine.ts`. There is no bypassing of the Automation Platform. Evidence: `patient-recovery.ts` line 3 imports `executeWorkflow`; `recall-recovery.ts` line 4 imports `executeWorkflow`.
 
 ### Event Fabric for All Signals
 `lib/dental-revenue-os/dental-events.ts` calls `publishEvent()` from `lib/event-fabric/index.ts` for all seven dental event types. No module creates ad-hoc Supabase inserts for event propagation.
 
 ### No Duplicate AI Layer
-`lib/ai-os/alice-dental.ts` explicitly imports from the existing ALICE layer (`getAliceInsights`, `getAliceWorkflowRecommendations` from `lib/ai-os/alice.ts`). It extends, not replaces, the ALICE operational intelligence surface.
+`lib/ai-os/alice-dental.ts` explicitly imports from the existing ALICE layer (`getAliceInsights`, `getAliceWorkflowRecommendations` from `lib/ai-os/alice.ts`). It extends, not replaces, the AI Revenue Intelligence surface.
 
 ### Tenant-Scoped Data Access
 All Dental Revenue OS database reads use `.eq("organization_id", organizationId)` and `.is("deleted_at", null)`. The pattern is consistent across all five event tables.
@@ -46,7 +46,7 @@ New dental blueprints (`recall_recovery_pack`, `patient_reactivation_pack`, `rev
 
 ## 3. Integration with Existing OS Layers
 
-### Workflow OS Integration
+### Automation Platform Integration
 - `triggerPatientRecovery()` → `executeWorkflow({ workflowId: "reactivation_candidate_detected" })`
 - `triggerRecallRecovery()` → `executeWorkflow({ workflowId: "recall_due" })`
 - `triggerReviewRequest()` → `executeWorkflow({ workflowId: "review_request_due" })`
@@ -92,4 +92,4 @@ Audited for duplication across all MVP2 additions:
 
 ## 6. Summary
 
-MVP2 adds 8 new modules (approximately 2,800 lines of new TypeScript) to a platform that had ~120 existing files. Every addition integrates through existing OS layer interfaces rather than bypassing them. The platform architecture remains: single `executeWorkflow()` entry point → Workflow OS state machine → Event Fabric → Mission Control / AI OS.
+MVP2 adds 8 new modules (approximately 2,800 lines of new TypeScript) to a platform that had ~120 existing files. Every addition integrates through existing OS layer interfaces rather than bypassing them. The platform architecture remains: single `executeWorkflow()` entry point → Automation Platform state machine → Event Fabric → Executive Dashboard / AI OS.

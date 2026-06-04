@@ -8,7 +8,7 @@ Generated: 2026-06-01
 | --- | ---: | --- |
 | Frontend Wiring | 72 | Primary dashboards wired; landing still mixed. |
 | Backend Wiring | 82 | Supabase/server/API modules present across major domains. |
-| Mission Control | 86 | Strong runtime/module aggregation. |
+| Executive Dashboard | 86 | Strong runtime/module aggregation. |
 | PMS | 38 | PMS backend exists; required `/dashboard/pms/*` routes missing. |
 | ALICE | 78 | ALICE modules/API/routes exist; live provider validation pending. |
 | Revenue Center | 80 | Portal/admin/internal revenue routes wired to data modules. |
@@ -23,7 +23,7 @@ REQUIRES REMEDIATION
 
 ## Evidence
 
-- ROI Assessment and Mission Control are substantially wired.
+- ROI Assessment and Executive Dashboard are substantially wired.
 - Dashboard and portal data routes use backend modules.
 - Landing page is now partially backend-fed but still includes static/demo sections.
 - Required PMS dashboard route family is absent.

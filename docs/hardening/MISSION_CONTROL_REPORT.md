@@ -1,14 +1,14 @@
-# Mission Control Report
+# Executive Dashboard Report
 
 **Date:** 2026-05-31  
-**Component:** Mission Control Aggregator  
+**Component:** Executive Dashboard Aggregator  
 **Score:** 85/100
 
 ---
 
 ## Overview
 
-Mission Control is the platform's operational command center. `getMissionControlState(organizationId)` aggregates 8+ data sources into a unified dashboard state object, providing real-time visibility across runtime, analytics, ALICE, and replay.
+Executive Dashboard is the platform's operational command center. `getMissionControlState(organizationId)` aggregates 8+ data sources into a unified dashboard state object, providing real-time visibility across runtime, analytics, ALICE, and replay.
 
 ---
 
@@ -44,13 +44,13 @@ Mission Control is the platform's operational command center. `getMissionControl
 | `traceLineage` | N/A (new) | YES ✓ |
 | ALICE (`generateAliceInsights`) | YES | YES ✓ |
 
-**All 8 sources are now fully org-scoped.** No cross-tenant data leakage paths remain in Mission Control.
+**All 8 sources are now fully org-scoped.** No cross-tenant data leakage paths remain in Executive Dashboard.
 
 ---
 
 ## Routes Covered
 
-| Route | Handler | Mission Control Integration |
+| Route | Handler | Executive Dashboard Integration |
 |-------|---------|----------------------------|
 | `GET /api/monitoring/health` | monitoring handler | Feeds dead letter + alert status |
 | `GET /api/roi` | roi handler | Feeds roi-intelligence-center |
@@ -79,10 +79,10 @@ This was a **critical security fix** — organizations could previously see each
 
 ## Lineage Tracking
 
-`getRecentLineageChains()` is called by Mission Control to populate the lineage panel:
+`getRecentLineageChains()` is called by Executive Dashboard to populate the lineage panel:
 ```
 Recent Activity:
-  correlation_id: abc123 → Portal → Workflow → Event → Analytics → ALICE → Mission Control
+  correlation_id: abc123 → Portal → Workflow → Event → Analytics → ALICE → Executive Dashboard
   correlation_id: def456 → Portal → Workflow → Event → Analytics
   ...
 ```
@@ -93,12 +93,12 @@ Provides full chain visibility for debugging and audit.
 
 ## Replay Integration
 
-Mission Control exposes replay triggers:
+Executive Dashboard exposes replay triggers:
 ```typescript
 replayEvent({ eventId, organizationId, mode: 'failure' })
 ```
 
-Available from Mission Control's dead letter panel — operators can trigger replays without leaving the dashboard.
+Available from Executive Dashboard's dead letter panel — operators can trigger replays without leaving the dashboard.
 
 ---
 
@@ -109,7 +109,7 @@ Available from Mission Control's dead letter panel — operators can trigger rep
 | No real-time push updates (WebSocket) | Medium |
 | Sales intelligence center discovery data not always populated | Medium |
 | Billing lifecycle integration incomplete | Medium |
-| No alert acknowledgment flow in Mission Control | Low |
+| No alert acknowledgment flow in Executive Dashboard | Low |
 
 ---
 

@@ -75,7 +75,7 @@ getMissionControlState(organizationId)
   └─► answerOperationalQuery(...)              ← query interface
 ```
 
-ALICE insights surface in Mission Control dashboard as the AI advisory panel.
+ALICE insights surface in Executive Dashboard as the AI advisory panel.
 
 ---
 

@@ -4,7 +4,7 @@ Generated: 2026-06-01
 
 ## Executive Summary
 
-The ROI Calculator has been repositioned as the **FREE Revenue Opportunity Assessment™** and is now the primary lead-generation engine for Zenith PROS™.
+The ROI Calculator has been repositioned as the **FREE Revenue Opportunity Assessment** and is now the primary lead-generation engine for Zenith Pros.
 
 Public positioning now emphasizes:
 
@@ -106,15 +106,15 @@ The endpoint:
 - Creates ALICE-backed audit record.
 - Queues customer summary email.
 - Queues internal sales notification.
-- Returns Mission Control lead status and commercial assessment metrics.
+- Returns Executive Dashboard lead status and commercial assessment metrics.
 
 Existing server action retained:
 
 - `submitFunnelAction`
 
-## Mission Control Integration
+## Executive Dashboard Integration
 
-Mission Control lead records are created through the existing lead funnel path:
+Executive Dashboard lead records are created through the existing lead funnel path:
 
 - `leads.status = audit_requested`
 - `leads.source = free_revenue_opportunity_assessment`
@@ -166,7 +166,7 @@ ALICE report generated
 ↓
 Audit record created
 ↓
-Mission Control attribution attached
+Executive Dashboard attribution attached
 ↓
 Runtime trace started
 ↓
@@ -188,6 +188,6 @@ Evidence:
 - Existing ROI calculation path preserved.
 - New commercial opportunity metrics persisted.
 - ALICE report generated and stored.
-- Mission Control lead attribution added.
+- Executive Dashboard lead attribution added.
 - API endpoint added for assessment submissions.
 - Customer and internal notification emails updated.

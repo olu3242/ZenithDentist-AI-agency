@@ -21,7 +21,7 @@ executeWorkflow(WorkflowExecutionRequest)          [workflow-engine.ts:55]
                   (idempotency check, queuing, persistence)
 ```
 
-### Flow B: runtime_event_fabric_events (Mission Control Source)
+### Flow B: runtime_event_fabric_events (Executive Dashboard Source)
 
 ```
 executeWorkflow(WorkflowExecutionRequest)          [workflow-engine.ts:55]
@@ -65,7 +65,7 @@ Analytics data derives exclusively from `automation_traces`. This table captures
 
 ---
 
-## 3. Read Path — Mission Control Event Panel
+## 3. Read Path — Executive Dashboard Event Panel
 
 ```
 GET /api/mission-control/state
@@ -73,10 +73,10 @@ GET /api/mission-control/state
         └─► lib/runtime/automation-health.ts:113
               └─► supabase
                     .from("runtime_event_fabric_events")
-                    (reads event stream for Mission Control panel)
+                    (reads event stream for Executive Dashboard panel)
 ```
 
-Mission Control's live event panel derives from `runtime_event_fabric_events`. This table captures lightweight event signals with structured metadata (`eventKey`, `sourceSystem`, `targetChannel`, `priority`, `summary`).
+Executive Dashboard's live event panel derives from `runtime_event_fabric_events`. This table captures lightweight event signals with structured metadata (`eventKey`, `sourceSystem`, `targetChannel`, `priority`, `summary`).
 
 ---
 
@@ -85,9 +85,9 @@ Mission Control's live event panel derives from `runtime_event_fabric_events`. T
 | Dimension | `automation_traces` | `runtime_event_fabric_events` |
 |-----------|---------------------|-------------------------------|
 | Written by | `emitAutomationEvent()` via automation runtime | `publishRuntimeFabricEvent()` via event fabric |
-| Read by | Analytics (`getWorkflowAnalyticsSummary`) | Mission Control event panel |
+| Read by | Analytics (`getWorkflowAnalyticsSummary`) | Executive Dashboard event panel |
 | Schema focus | Full execution record: workflow, trigger, action, idempotency, timing | Lightweight event signal: key, type, source, channel, priority, summary, payload |
-| Purpose | Durable execution log for analytics aggregation | Real-time event bus for Mission Control observability |
+| Purpose | Durable execution log for analytics aggregation | Real-time event bus for Executive Dashboard observability |
 | Relationship | One record per workflow execution attempt | One record per workflow lifecycle event emitted |
 | Are they duplicates? | NO | NO |
 
@@ -112,14 +112,14 @@ The architecture is sound: a single `executeWorkflow()` entry point guarantees b
 
 ## 6. Remaining Gap: No Cross-Table Reconciliation
 
-**Gap:** Analytics (`getWorkflowAnalyticsSummary`) reads only `automation_traces`. Mission Control reads only `runtime_event_fabric_events`. There is no reconciliation query that joins or compares counts across the two tables.
+**Gap:** Analytics (`getWorkflowAnalyticsSummary`) reads only `automation_traces`. Executive Dashboard reads only `runtime_event_fabric_events`. There is no reconciliation query that joins or compares counts across the two tables.
 
 **Scenario where counts diverge:**
 1. `emitAutomationEvent()` succeeds (writes `automation_traces`)
 2. `publishWorkflowEvent()` throws an exception (DB write to `runtime_event_fabric_events` fails)
 3. `executeWorkflow()` propagates the exception — the caller sees a failure
 4. But `automation_traces` already has the record (write is not rolled back in a transaction with event fabric)
-5. Analytics shows an execution that Mission Control does not
+5. Analytics shows an execution that Executive Dashboard does not
 
 **Probability:** Low — both are Supabase writes and should succeed or fail together in normal operation. No transactional guarantee spans both tables.
 

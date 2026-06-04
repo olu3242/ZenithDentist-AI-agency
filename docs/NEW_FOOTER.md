@@ -12,7 +12,7 @@ Contact          Patient Retention      Blog               [City, State]
 
 ## Bottom Row
 ```
-Zenith AI Automation Agency™  |  Dental Revenue Recovery Platform
+Zenith Pros  |  Dental Revenue Recovery Platform
 Privacy Policy  ·  Terms of Service  ·  © 2025 EduRadius LLC. All Rights Reserved.
 ```
 

@@ -17,7 +17,7 @@
 | 5 | Add trace_id secondary guard to dead letter query | DONE | `lib/runtime/automation-health.ts` |
 | 6 | getWorkflowAnalyticsSummary accepts organizationId | DONE | `lib/workflow-os/workflow-analytics.ts` |
 | 7 | getTenantWorkflowAnalytics passes org downstream | DONE | `lib/workflow-os/workflow-analytics.ts` |
-| 8 | Mission Control ROI/Revenue/Index all org-scoped | DONE | `lib/mission-control/roi-intelligence-center.ts`, `dental-revenue-center.ts`, `index.ts` |
+| 8 | Executive Dashboard ROI/Revenue/Index all org-scoped | DONE | `lib/mission-control/roi-intelligence-center.ts`, `dental-revenue-center.ts`, `index.ts` |
 | 9 | analyticsProjector and replayEvent and traceLineage new modules | DONE | `lib/analytics/projector.ts`, `lib/event-fabric/replay.ts`, `lib/lineage/index.ts` |
 
 ---
@@ -42,7 +42,7 @@
 - `getTenantWorkflowAnalytics(tenantId, organizationId)` — passes org to summary
 - All downstream callers updated
 
-### Mission Control
+### Executive Dashboard
 **`lib/mission-control/roi-intelligence-center.ts`** — `getWorkflowAnalyticsSummary(organizationId)`  
 **`lib/mission-control/dental-revenue-center.ts`** — `getWorkflowAnalyticsSummary(organizationId)`  
 **`lib/mission-control/index.ts`** — `getWorkflowAnalyticsSummary(organizationId)`
@@ -95,7 +95,7 @@ No duplicate workflow execution paths found. ✓
 
 `traceLineage(correlationId, organizationId)` reconstructs:
 ```
-Portal → Workflow → Event → Analytics → ALICE → Mission Control
+Portal → Workflow → Event → Analytics → ALICE → Executive Dashboard
 ```
 `getRecentLineageChains()` available for dashboard consumption.
 

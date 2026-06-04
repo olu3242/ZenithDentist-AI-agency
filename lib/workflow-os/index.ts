@@ -1,13 +1,13 @@
 import "server-only";
 
 /**
- * Workflow OS — barrel export.
+ * Automation Platform — barrel export.
  *
- * The Workflow OS is the operational execution layer of Zenith.
+ * The Automation Platform is the operational execution layer of Zenith.
  * Every automation executes through this system.
  *
  * Stack position:
- *   Supabase → Runtime Kernel → Workflow OS → AI OS → Apps
+ *   Supabase → Runtime Kernel → Automation Platform → AI OS → Apps
  */
 
 // Engine

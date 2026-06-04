@@ -33,4 +33,4 @@ Current operating state
 
 ## Enterprise Extension
 
-The same architecture supports multi-location operations graphs, cross-practice benchmarking, portfolio health, and DSO Mission Control.
+The same architecture supports multi-location operations graphs, cross-practice benchmarking, portfolio health, and DSO Executive Dashboard.

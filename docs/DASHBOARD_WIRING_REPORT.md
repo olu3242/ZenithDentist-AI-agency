@@ -28,7 +28,7 @@ Dashboard surfaces are mostly wired to backend modules. However, several dashboa
 | Front Desk Dashboard | Role workspace in landing only | PARTIAL |
 | Provider Dashboard | Role workspace in landing only | PARTIAL |
 | Office Manager Dashboard | Role workspace in landing only | PARTIAL |
-| Mission Control | `/mission-control` | WIRED |
+| Executive Dashboard | `/mission-control` | WIRED |
 | PMS Center | `/portal/integrations`, `/api/opendental/sync` | PARTIAL |
 | Revenue Center | `/portal/revenue`, `/internal/revenue`, `/admin/roi` | WIRED |
 | ALICE Center | `/portal/alice`, `/api/alice/*` | WIRED |

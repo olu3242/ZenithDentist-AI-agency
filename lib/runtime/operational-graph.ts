@@ -113,7 +113,7 @@ function buildNodesForBlueprint(blueprint: AutomationBlueprint, runtime: Runtime
     ...blueprint.queueHandlers.map(handler => node(`handler:${blueprint.id}:${handler}`, handler, "queue_handler", blueprint, baseRisk - 4)),
     ...(blueprint.dependencies ?? []).map(provider => node(`provider:${blueprint.id}:${provider}`, provider, "provider", blueprint, baseRisk)),
     node(`persistence:${blueprint.id}`, "runtime persistence", "persistence", blueprint, baseRisk - 10),
-    node(`ui:${blueprint.id}`, "Mission Control visibility", "ui_visibility", blueprint, baseRisk - 12),
+    node(`ui:${blueprint.id}`, "Executive Dashboard visibility", "ui_visibility", blueprint, baseRisk - 12),
     ...blueprint.aliceGroundingSurfaces.map(surface => node(`alice:${blueprint.id}:${surface}`, surface, "alice_grounding", blueprint, baseRisk - 10)),
     node(`sla:${blueprint.id}`, blueprint.slaMinutes ? `${blueprint.slaMinutes} minute SLA` : "SLA missing", "sla", blueprint, blueprint.slaMinutes ? baseRisk - 15 : 85)
   ];

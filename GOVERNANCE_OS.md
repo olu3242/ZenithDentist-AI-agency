@@ -28,4 +28,4 @@ Governance OS ensures autonomous decisions remain auditable, tenant-scoped, poli
 
 ## Rule
 
-No AI agent can bypass Workflow OS governance or tenant policy.
+No AI agent can bypass Automation Platform governance or tenant policy.

@@ -1,4 +1,4 @@
-# Mission Control Validation Report
+# Executive Dashboard Validation Report
 
 Generated: 2026-06-01
 
@@ -8,7 +8,7 @@ PARTIAL.
 
 ## Verified
 
-Mission Control routes and APIs compile:
+Executive Dashboard routes and APIs compile:
 
 - `/mission-control`
 - `/api/mission-control/state`
@@ -21,7 +21,7 @@ Mission Control routes and APIs compile:
 
 ## Live Data Evidence
 
-Mission Control modules consume runtime, event fabric, workflow, automation, and tenant data from `lib/**` modules rather than only static local component values.
+Executive Dashboard modules consume runtime, event fabric, workflow, automation, and tenant data from `lib/**` modules rather than only static local component values.
 
 ## Gaps
 

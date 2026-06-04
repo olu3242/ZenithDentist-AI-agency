@@ -10,8 +10,8 @@ Generated: 2026-06-01
 | Lead funnel / CRM | `lib/data/leads.ts` |
 | Portal operations | `lib/data/operations.ts` |
 | Tenant data | `lib/data/tenants.ts` |
-| Mission Control | `lib/mission-control/index.ts`, `lib/runtime/*` |
-| Workflow OS | `lib/workflow-os/*` |
+| Executive Dashboard | `lib/mission-control/index.ts`, `lib/runtime/*` |
+| Automation Platform | `lib/workflow-os/*` |
 | Automation OS | `lib/automation-os/registry.ts` |
 | ALICE / AI OS | `lib/ai-os/*`, `lib/alice.ts`, `lib/alice/*` |
 | PMS | `lib/pms.ts`, `lib/open-dental.ts` |
@@ -22,7 +22,7 @@ Generated: 2026-06-01
 
 | Risk | Evidence |
 | --- | --- |
-| Mission Control state split | `lib/mission-control/index.ts` and `lib/stability.ts` both expose Mission Control-ish state. |
+| Executive Dashboard state split | `lib/mission-control/index.ts` and `lib/stability.ts` both expose Executive Dashboard-ish state. |
 | Automation split | `lib/automation/*` and `lib/automation-os/*` both exist. |
 | ALICE split | `lib/alice.ts`, `lib/alice/*`, `lib/ai-os/*`, and `lib/ai/*` all contain AI behavior. |
 | Revenue ops split | `lib/roi.ts`, `lib/pilot-operations.ts`, `lib/commercial-operations.ts`, and revenue reports overlap. |

@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Tenant Health — operational health view per tenant for Mission Control.
+ * Tenant Health — operational health view per tenant for Executive Dashboard.
  */
 
 import { getWorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";

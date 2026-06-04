@@ -23,7 +23,7 @@ Current team state: All 8 roles defined in the Role Matrix but **not all roles a
 ### Operations That Continue
 
 **Platform Automation (fully automated):**
-- All active Zenith workflows execute automatically via the Workflow OS: `recall_due`, `appointment_no_show`, `review_request_due`, `lead_created`, and others
+- All active Zenith workflows execute automatically via the Automation Platform: `recall_due`, `appointment_no_show`, `review_request_due`, `lead_created`, and others
 - ALICE generates insights and recommendations for practice admins continuously
 - Resend email delivery fires automatically as workflow events trigger notifications
 - Dead letter and retry mechanisms (`retryEnabled: true`, `deadLetterRequired: true` in every blueprint) handle transient failures without human intervention
@@ -153,7 +153,7 @@ With proper preparation, the following can continue for 90 days:
 | Operation | 30 Days | 60 Days | 90 Days |
 |---|---|---|---|
 | Workflow execution (automated) | Continues | Continues | Continues |
-| ALICE recommendations | Continues | Continues | Drift risk |
+| AI Revenue Intelligence recommendations | Continues | Continues | Drift risk |
 | Customer health / CSM | Continues | Continues | Continues |
 | Standard renewals | Stalls → Mitigable | Stalls → Mitigable | Stalls |
 | New tenant provisioning | Stalls → Mitigable | Stalls → Mitigable | Stalls |

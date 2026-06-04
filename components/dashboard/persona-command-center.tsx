@@ -40,11 +40,11 @@ export function PersonaCommandCenter({
         <section className="rounded border border-line bg-white p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-teal" />
-            <h2 className="text-sm font-black uppercase tracking-wider text-ink">ALICE priority</h2>
+            <h2 className="text-sm font-black uppercase tracking-wider text-ink">Revenue priority</h2>
           </div>
           <p className="mt-3 text-sm font-semibold text-muted">{persona.aliceRecommendations[0]}</p>
           <Link href="/portal/alice" className="mt-4 inline-flex items-center gap-2 text-sm font-black text-teal">
-            Open ALICE recommendations
+            Open AI Revenue Intelligence recommendations
             <ArrowRight className="h-4 w-4" />
           </Link>
         </section>
@@ -122,7 +122,7 @@ export function PersonaCommandCenter({
         <article className="rounded border border-line bg-white p-5 shadow-sm lg:col-span-2">
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-teal" />
-            <h2 className="text-sm font-black uppercase tracking-wider text-ink">Embedded ALICE recommendations</h2>
+            <h2 className="text-sm font-black uppercase tracking-wider text-ink">Embedded AI Revenue Intelligence recommendations</h2>
           </div>
           <div className="mt-4 grid gap-3">
             {persona.aliceRecommendations.map((recommendation, index) => {

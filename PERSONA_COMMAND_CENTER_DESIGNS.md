@@ -13,7 +13,7 @@ Every command center has:
 - Persona label and mission
 - Operating cadence
 - Four persona-specific KPIs
-- ALICE priority recommendation
+- Revenue priority recommendation
 - Mission-domain drilldowns
 - Persona workflow queue
 - Embedded ALICE recommendation list

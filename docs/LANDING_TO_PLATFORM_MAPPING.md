@@ -5,13 +5,13 @@ Generated: 2026-06-01
 | Landing Section | Platform Counterpart | Status |
 | --- | --- | --- |
 | Hero Dashboard | `getAdminDashboardData()`, `getRuntimeHealthState()` | MAPPED |
-| Route Probe | Mission Control/ALICE/Enterprise API routes | MAPPED |
+| Route Probe | Executive Dashboard/ALICE/Enterprise API routes | MAPPED |
 | Ecosystem Bar | PMS/integration modules | EDUCATIONAL |
 | Gallery Workspace | No single backend equivalent | STATIC PREVIEW |
 | Revenue Leaks | Revenue playbooks, ROI assessment, `lib/roi.ts` | MAPPED |
 | Playbooks | `lib/revenue-playbooks`, automation marketplace | MAPPED |
 | ALICE Practice Advisor | `/portal/alice`, `/api/alice/*` | MAPPED |
-| Mission Control | `/mission-control`, `/api/mission-control/*` | MAPPED |
+| Executive Dashboard | `/mission-control`, `/api/mission-control/*` | MAPPED |
 | PMS Operations | `/portal/integrations`, `/api/opendental/sync` | PARTIAL |
 | Role Workspaces | No canonical role routes | STATIC PREVIEW |
 | Revenue Assessment | `components/public/roi-funnel-form.tsx`, `/api/roi-assessment` | MAPPED |

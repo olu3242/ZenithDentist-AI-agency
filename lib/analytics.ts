@@ -25,6 +25,21 @@ declare global {
 
 export function trackClientEvent(event: AnalyticsEvent, metadata: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
+  if (!document.cookie.includes("cookie_consent=")) return;
+
+  const consentCookie = document.cookie
+    .split("; ")
+    .find(item => item.startsWith("cookie_consent="))
+    ?.split("=")
+    .slice(1)
+    .join("=");
+
+  try {
+    const consent = consentCookie ? JSON.parse(decodeURIComponent(consentCookie)) as { analytics?: boolean; marketing?: boolean } : null;
+    if (!consent?.analytics) return;
+  } catch {
+    return;
+  }
 
   window.gtag?.("event", event, metadata);
   window.fbq?.("trackCustom", event, metadata);

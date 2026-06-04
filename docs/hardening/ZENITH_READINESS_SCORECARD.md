@@ -43,7 +43,7 @@
 
 ---
 
-### 3. Workflow OS & Runtime — 94/100
+### 3. Automation Platform & Runtime — 94/100
 
 | Check | Status | File Evidence |
 |-------|--------|---------------|
@@ -118,7 +118,7 @@
 
 ---
 
-### 7. Mission Control — 93/100
+### 7. Executive Dashboard — 93/100
 
 | Check | Status | File Evidence |
 |-------|--------|---------------|
@@ -188,11 +188,11 @@
 |-----------|-------|--------|---------|
 | Auth & Authorization | 72 | 12% | 8.64 |
 | Multi-Tenant Isolation | 61 | 18% | 10.98 |
-| Workflow OS & Runtime | 94 | 15% | 14.10 |
+| Automation Platform & Runtime | 94 | 15% | 14.10 |
 | AI / ALICE Intelligence | 28 | 10% | 2.80 |
 | Analytics & Observability | 91 | 8% | 7.28 |
 | Dental Practice Features | 90 | 10% | 9.00 |
-| Mission Control | 93 | 7% | 6.51 |
+| Executive Dashboard | 93 | 7% | 6.51 |
 | Database Schema | 95 | 8% | 7.60 |
 | API Coverage & Security | 88 | 7% | 6.16 |
 | Build Health & Code Quality | 98 | 5% | 4.90 |
@@ -209,13 +209,13 @@
 ## READINESS VERDICT
 
 ### Production-Ready Subsystems (no changes needed)
-- Workflow OS and Runtime Kernel (`lib/workflow-os/`, `lib/runtime/`)
+- Automation Platform and Runtime Kernel (`lib/workflow-os/`, `lib/runtime/`)
 - Event Fabric (`lib/event-fabric/`, `lib/runtime/event-fabric.ts`)
 - Automation Engine (`lib/automation/registry.ts`, `lib/automation/runtime.ts`)
 - Analytics Projector (`lib/analytics/projector.ts`)
 - Monitoring, Alerting, Error Infrastructure (`lib/monitoring/`, `lib/alerting/`, `lib/errors/`)
 - Dental Revenue OS (`lib/dental-revenue-os/` — all 5 modules)
-- Mission Control panels (64 components, 11 API routes)
+- Executive Dashboard panels (64 components, 11 API routes)
 - Database schema (81 tables, RLS on ~80 tables)
 - RBAC system (`lib/rbac/`)
 - Build pipeline (TypeScript + ESLint clean)

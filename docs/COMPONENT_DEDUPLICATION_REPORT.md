@@ -20,7 +20,7 @@ These re-export the existing canonical implementations without introducing new v
 | Loading states | `components/loading-skeleton.tsx`, `GlobalBrandLoader`, `components/ui/canonical/loading-state.tsx` | `components/brand/global-loader.tsx` legacy. |
 | Navigation/sidebars | AppShell + portal/admin/internal sidebars | Multiple role-specific sidebar implementations. |
 | Charts | Portal chart components | Enterprise/autonomous chart-style panels overlap. |
-| Dashboards | Mission Control + portal dashboard | Enterprise/autonomous/internal dashboard panels overlap. |
+| Dashboards | Executive Dashboard + portal dashboard | Enterprise/autonomous/internal dashboard panels overlap. |
 | Brand logos | `components/branding/ZenithLogo.tsx` | Legacy `components/brand/*` and older global brand components. |
 
 ## Action Taken

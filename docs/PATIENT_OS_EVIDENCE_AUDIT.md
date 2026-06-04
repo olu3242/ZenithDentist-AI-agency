@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-| Workflow | Trigger Exists | Workflow Registered | Execution Recorded | Evidence Recorded | Mission Control Event | ALICE Trace | Revenue Attribution | Retry/Self-Healing | Tenant Safe | Status |
+| Workflow | Trigger Exists | Workflow Registered | Execution Recorded | Evidence Recorded | Executive Dashboard Event | ALICE Trace | Revenue Attribution | Retry/Self-Healing | Tenant Safe | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `welcome_patient` | Yes | Yes | Partial | Missing | Missing | Missing | Missing | Yes | Yes | Partial |
 | `post_visit_checkin` | Partial | Not found as local canonical workflow | Missing | Missing | Missing | Missing | Missing | Missing | Partial | Fail |

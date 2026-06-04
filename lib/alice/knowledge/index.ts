@@ -29,20 +29,20 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
   {
     domain: "platform",
     version: "3.0.0",
-    owner: "ALICE Operational Intelligence Layer",
+    owner: "AI Revenue Intelligence Layer",
     sources: ["lib/analytics-projector.ts", "lib/patient-revenue-engine.ts", "app/mission-control/page.tsx"],
     capabilities: ["platform awareness", "change awareness", "operational scoring"],
     certification: "certified",
-    summary: "ALICE understands Zenith PROS as one Patient Revenue Operating System composed of Mission Control, Workflow OS, PMS Operations, Revenue Playbooks, and analytics projection."
+    summary: "ALICE understands Zenith Pros as one Patient Revenue Operating System composed of Executive Dashboard, Automation Platform, PMS Operations, Revenue Playbooks, and analytics projection."
   },
   {
     domain: "mission_control",
     version: "3.0.0",
-    owner: "Mission Control",
+    owner: "Executive Dashboard",
     sources: ["app/mission-control/page.tsx", "components/mission-control/*"],
     capabilities: ["executive scorecard", "risk routing", "workflow advisory"],
     certification: "certified",
-    summary: "Mission Control remains the executive operating surface for runtime, workflow, PMS, revenue, and ALICE intelligence."
+    summary: "Executive Dashboard remains the executive operating surface for runtime, workflow, PMS, revenue, and ALICE intelligence."
   },
   {
     domain: "revenue",
@@ -56,11 +56,11 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
   {
     domain: "workflow_governance",
     version: "3.0.0",
-    owner: "Workflow OS",
+    owner: "Automation Platform",
     sources: ["lib/workflow-os/*", "supabase/migrations/20260601170000_workflow_os_enterprise_governance.sql"],
     capabilities: ["version awareness", "approval awareness", "SLA awareness", "ROI awareness"],
     certification: "certified",
-    summary: "Workflow governance extends the canonical Workflow OS with versioning, approval, sandbox, SLA, audit, dependency, marketplace, and ROI metadata."
+    summary: "Workflow governance extends the canonical Automation Platform with versioning, approval, sandbox, SLA, audit, dependency, marketplace, and ROI metadata."
   },
   {
     domain: "pms_operations",

@@ -321,7 +321,7 @@ Customers may request a full data export upon cancellation. Zenith is obligated 
 |---|---|---|
 | Patient interaction events | `operational_events` | CSV/JSON |
 | Workflow execution history | `automation_traces` | CSV/JSON |
-| ALICE recommendations | `recommendation_events` | CSV/JSON |
+| AI Revenue Intelligence recommendations | `recommendation_events` | CSV/JSON |
 | Audit timeline | `runtime_audit_timeline` | CSV/JSON |
 | Billing history | `billing_events` | CSV |
 | User list | `organization_members` | CSV |

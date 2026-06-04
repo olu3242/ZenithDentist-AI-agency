@@ -28,7 +28,7 @@ Zenith is not ready for production cutover from the current staging state.
 4. OAuth is not certified on staging.
 5. Organization provisioning and onboarding are not certified on staging.
 6. Revenue assessment persistence is not certified on staging.
-7. Workflow OS execution and telemetry are not certified on staging.
+7. Automation Platform execution and telemetry are not certified on staging.
 8. Reports persistence and retrieval are not certified on staging.
 9. LIZ/ALICE telemetry and traceability are not certified on staging.
 10. Playwright is not installed/configured, so browser E2E certification is incomplete.
@@ -49,7 +49,7 @@ Zenith is not ready for production cutover from the current staging state.
 11. Launch a workflow and confirm run, event, telemetry, and outcome records.
 12. Verify reports load from live data.
 13. Validate LIZ actions and conversion tracking.
-14. Validate ALICE recommendations and traceability.
+14. Validate AI Revenue Intelligence recommendations and traceability.
 15. Add and run Playwright browser tests against staging.
 16. Commit and push the deployment candidate.
 17. Promote to production only after all staging checks pass.

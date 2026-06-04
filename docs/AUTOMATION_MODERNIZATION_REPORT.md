@@ -1,10 +1,10 @@
-# Automation Modernization Report — Workflow OS™ as Primary Engine
+# Automation Modernization Report — Automation Platform as Primary Engine
 
 ## Executive Summary
 
-Zenith has completed a full transition from n8n-dependent automation to **Workflow OS™** as the canonical automation engine. n8n is now a secondary integration broker only, reserved exclusively for external third-party connectors that require webhook delivery or legacy API bridging. All business logic, patient journey orchestration, revenue attribution, ALICE decisions, and communication delivery now execute natively within Zenith's internal platform.
+Zenith has completed a full transition from n8n-dependent automation to **Automation Platform** as the canonical automation engine. n8n is now a secondary integration broker only, reserved exclusively for external third-party connectors that require webhook delivery or legacy API bridging. All business logic, patient journey orchestration, revenue attribution, ALICE decisions, and communication delivery now execute natively within Zenith's internal platform.
 
-This transition eliminates external runtime dependency for core business automation, improves observability via Mission Control™, and enables the full ALICE Decision Engine to operate as the canonical AI decision authority.
+This transition eliminates external runtime dependency for core business automation, improves observability via Executive Dashboard, and enables the full ALICE Decision Engine to operate as the canonical AI decision authority.
 
 ---
 
@@ -12,13 +12,13 @@ This transition eliminates external runtime dependency for core business automat
 
 | Concern | Before | After |
 |---------|--------|-------|
-| Business logic | n8n workflows | Workflow OS™ |
-| Patient journeys | n8n sequences | Journey Library + Workflow OS™ |
-| Revenue attribution | n8n events | Workflow OS™ + Event Fabric™ |
+| Business logic | n8n workflows | Automation Platform |
+| Patient journeys | n8n sequences | Journey Library + Automation Platform |
+| Revenue attribution | n8n events | Automation Platform + Event Fabric |
 | Communication delivery | n8n | Communication Hub adapters |
-| ALICE decisions | n8n triggers | Workflow OS™ + ALICE engine |
-| Observability | n8n dashboard | Mission Control™ |
-| Failure handling | n8n retry | Workflow OS™ DLQ + Replay Engine |
+| ALICE decisions | n8n triggers | Automation Platform + ALICE engine |
+| Observability | n8n dashboard | Executive Dashboard |
+| Failure handling | n8n retry | Automation Platform DLQ + Replay Engine |
 
 ---
 
@@ -64,9 +64,9 @@ None of these use cases involve Zenith business logic, patient journey decisions
 
 | Criteria | Status |
 |----------|--------|
-| Workflow OS™ is canonical execution engine | ✅ MET |
+| Automation Platform is canonical execution engine | ✅ MET |
 | ALICE is canonical decision engine | ✅ MET |
-| Mission Control™ is canonical observability platform | ✅ MET |
+| Executive Dashboard is canonical observability platform | ✅ MET |
 | No business-critical workflow depends solely on n8n | ✅ MET |
 | 90%+ automation execution inside Zenith | ✅ MET (96%) |
 | n8n used only for external connectors | ✅ MET |
@@ -78,10 +78,10 @@ None of these use cases involve Zenith business logic, patient journey decisions
 ```
 Patient Action / PMS Trigger / Webhook
               ↓
-        Event Fabric™
+        Event Fabric
     (publishRuntimeFabricEvent)
               ↓
-         Workflow OS™
+         Automation Platform
       (executeWorkflow)
          ↙        ↘
   ALICE Decision    Communication Hub
@@ -98,7 +98,7 @@ Patient Action / PMS Trigger / Webhook
 **Event flow summary:**
 
 ```
-Event Fabric → Workflow OS → Communication Hub → [SMS Adapter, Email Adapter,
+Event Fabric → Automation Platform → Communication Hub → [SMS Adapter, Email Adapter,
                     ↓                              WhatsApp Adapter, Video Adapter,
             ALICE Decision Engine                  Voice Adapter, Portal Adapter]
                     ↓

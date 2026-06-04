@@ -20,7 +20,7 @@ Playbook Installation
 ↓
 ALICE Activation
 ↓
-Mission Control Launch
+Executive Dashboard Launch
 
 ## Current Route Mapping
 
@@ -34,7 +34,7 @@ Mission Control Launch
 | Revenue Baseline | ROI/Audit storage and docs | PARTIAL |
 | Playbook Installation | Automation marketplace/center | PARTIAL |
 | ALICE Activation | `/portal/alice`, ALICE APIs | PARTIAL |
-| Mission Control Launch | `/mission-control` | CANONICAL |
+| Executive Dashboard Launch | `/mission-control` | CANONICAL |
 
 ## Duplicate Flow Risk
 

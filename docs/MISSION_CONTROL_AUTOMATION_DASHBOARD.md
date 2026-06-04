@@ -1,8 +1,8 @@
-# Mission Control™ — Automation Health Dashboard
+# Executive Dashboard — Automation Health Dashboard
 
 ## Purpose
 
-The Workflow Command Center within Mission Control™ surfaces automation health metrics, providing real-time visibility into the performance of Workflow OS™, the Communication Hub, ALICE decision engine, and Event Fabric. This dashboard is the canonical observability platform for Zenith automation.
+The Workflow Command Center within Executive Dashboard surfaces automation health metrics, providing real-time visibility into the performance of Automation Platform, the Communication Hub, ALICE decision engine, and Event Fabric. This dashboard is the canonical observability platform for Zenith automation.
 
 **API Endpoint:** `GET /api/automation-health`
 
@@ -10,7 +10,7 @@ The Workflow Command Center within Mission Control™ surfaces automation health
 
 ## Panel 1: Automation Engine Status
 
-Surfaces the operational health of Workflow OS™ execution.
+Surfaces the operational health of Automation Platform execution.
 
 ### Metrics
 
@@ -217,7 +217,7 @@ WHERE organization_id = $1
 
 ## Panel 5: Event Fabric Health
 
-Surfaces the operational health of the Event Fabric™ event pipeline.
+Surfaces the operational health of the Event Fabric event pipeline.
 
 ### Metrics
 

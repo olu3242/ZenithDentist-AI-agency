@@ -22,7 +22,7 @@ components/public/
 3. TRUST BAR (PMS names + assessment stats)
 4. ASSESSMENT (RoiFunnelForm — primary conversion)
 5. REVENUE LEAKS (7 leak cards, clean copy)
-6. LIZ SECTION (Revenue Recovery Advisor™)
+6. LIZ SECTION (Revenue Recovery Advisor)
 7. STORY GALLERY (5-slide horizontal scroll, outcomes only)
 8. IMPLEMENTATION TIMELINE (9-step, desktop horizontal / mobile vertical)
 9. OUTCOMES GRID (8 outcome cards)
@@ -70,7 +70,7 @@ type LandingStats = {
 
 **Remove from component state:**
 - `apiOpen` / `apiResponses` — Route Probe removed
-- `missionTab` — Mission Control section removed
+- `missionTab` — Executive Dashboard section removed
 - `role` — Role Workspaces section removed
 - `pms` — PMS Ops section removed
 - `galleryMode` — gallery mode switcher removed
@@ -85,7 +85,7 @@ type LandingStats = {
 
 ## Navigation Rewrite
 
-Old nav: Platform · Screens · Leaks · Playbooks · Intelligence · Mission Control · PMS Ops · Assessment  
+Old nav: Platform · Screens · Leaks · Playbooks · Intelligence · Executive Dashboard · PMS Ops · Assessment  
 New nav: Assessment · Solutions · Results · About · Case Studies · Contact
 
 Old CTA: "Get My Free Assessment"  
@@ -96,12 +96,12 @@ New CTA: "Start Free Assessment"
 ## Removed Sections (complete deletion)
 
 1. **Route Probe Panel** (`<aside>` with API probing)
-2. **Mission Control Preview card** (right column of hero)
+2. **Executive Dashboard Preview card** (right column of hero)
 3. **Gallery mode switcher** (Demo/Sandbox/Live)
 4. **PMS Integration Translator gallery card** (schema mapping)
-5. **Mission Control Command gallery card** (dispatch logs)
+5. **Executive Dashboard Command gallery card** (dispatch logs)
 6. **Operatory hotspot telemetry** (hotspot click interaction)
-7. **Mission Control section** (`#mission-control`) — move to authenticated
+7. **Executive Dashboard section** (`#mission-control`) — move to authenticated
 8. **PMS Ops section** (`#pms-ops`) — move to internal
 9. **Role Workspaces section** (`#role-workspaces`) — remove entirely
 10. **Duplicate ROI sliders** (the standalone `#roi-engine` section above RoiFunnelForm)
@@ -115,8 +115,8 @@ New CTA: "Start Free Assessment"
 | Hero H1 | "Recover lost revenue. Reduce no-shows. Fill chairs. Grow production." | "Recover Lost Revenue. Fill More Chairs. Grow Predictably." |
 | Hero body | Lists internal systems | Outcome description only |
 | Alice card | "backend runtime and analytics modules" | Remove; show LIZ as "Revenue Recovery Advisor" |
-| LiveChart title | "Mission Control Results" | "Revenue Breakdown" |
-| Lead gate banner | "platform has enough signal to generate Mission Control lead" | "Your practice profile is complete" |
+| LiveChart title | "Executive Dashboard Results" | "Revenue Breakdown" |
+| Lead gate banner | "platform has enough signal to generate Executive Dashboard lead" | "Your practice profile is complete" |
 | FAQ 2 | References tenant controls | Plain: what is needed to start |
 | FAQ 3 | "runtime trace, attribution record" | Plain ROI explanation |
 | Install step panel | "tenant safety", "rollback path" | "readiness checkpoint", "transition plan confirmed" |
@@ -128,7 +128,7 @@ New CTA: "Start Free Assessment"
 
 The following must NOT appear on any public page:
 
-- [ ] Workflow OS — ✓ removed
+- [ ] Automation Platform — ✓ removed
 - [ ] Event Fabric — ✓ removed
 - [ ] Recovery Orchestrator — ✓ removed
 - [ ] Automation Registry — ✓ removed

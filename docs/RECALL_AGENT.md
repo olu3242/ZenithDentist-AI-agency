@@ -68,7 +68,7 @@ Week 8:  Staff escalation (manual personal outreach recommended)
 For patients 12+ months overdue:
 - Skip standard sequence
 - Immediate staff escalation with personal phone call recommended
-- ALICE flags in Mission Control overdue patient list
+- ALICE flags in Executive Dashboard overdue patient list
 
 ---
 
@@ -91,7 +91,7 @@ ALICE monitors recall metrics at the practice level:
 - Recovery revenue (new appointments booked × avg hygiene value)
 - Outreach attempt efficiency (bookings per attempt)
 
-ALICE surfaces recall insights in Mission Control daily briefing.
+ALICE surfaces recall insights in Executive Dashboard daily briefing.
 
 ---
 

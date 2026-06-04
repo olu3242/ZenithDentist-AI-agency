@@ -8,11 +8,11 @@ Audited deployed Vercel environment for:
 
 - Every page route
 - Every API route
-- Workflow OS
+- Automation Platform
 - Runtime OS
 - AI OS / ALICE
 - Platform Admin
-- Mission Control
+- Executive Dashboard
 - Dashboard panels
 - Automations
 - Multi-tenant enforcement
@@ -212,8 +212,8 @@ API route result summary:
 | Dashboard | UNKNOWN | NO | UNVERIFIED | NO | `/dashboard` returns Vercel `401` |
 | Admin | UNKNOWN | NO | UNVERIFIED | NO | `/admin` returns Vercel `401` |
 | Internal | UNKNOWN | NO | UNVERIFIED | NO | `/internal` returns Vercel `401` |
-| Mission Control | UNKNOWN | NO | UNVERIFIED | NO | `/mission-control` returns Vercel `401` |
-| Workflow OS | UNKNOWN | NO | UNVERIFIED | NO | `/workflow-os` returns Vercel `401` |
+| Executive Dashboard | UNKNOWN | NO | UNVERIFIED | NO | `/mission-control` returns Vercel `401` |
+| Automation Platform | UNKNOWN | NO | UNVERIFIED | NO | `/workflow-os` returns Vercel `401` |
 | Runtime OS | UNKNOWN | NO | UNVERIFIED | NO | `/runtime-os` returns Vercel `401` |
 | AI OS / ALICE | UNKNOWN | NO | UNVERIFIED | NO | `/portal/alice` and `/api/alice/*` return Vercel `401` |
 | Automation Marketplace | UNKNOWN | NO | UNVERIFIED | NO | `/automation-marketplace` returns Vercel `401` |
@@ -230,19 +230,19 @@ Dashboard panels cannot be verified live because `/dashboard` returns `401` befo
 
 Local code indicates dashboard surfaces exist, but production readiness requires a live rendered page and live API/data verification.
 
-## Mission Control Panel Audit
+## Executive Dashboard Panel Audit
 
 Production status: blocked.
 
-Mission Control panels cannot be verified live because `/mission-control` and `/api/mission-control/*` return `401` before app code.
+Executive Dashboard panels cannot be verified live because `/mission-control` and `/api/mission-control/*` return `401` before app code.
 
 ## Workflow Audit
 
 Production status: blocked.
 
-Workflow OS cannot be verified live because `/workflow-os` and supporting APIs are inaccessible.
+Automation Platform cannot be verified live because `/workflow-os` and supporting APIs are inaccessible.
 
-Local code contains Workflow OS routes and `executeWorkflow()` infrastructure, but production execution was not reachable through Vercel.
+Local code contains Automation Platform routes and `executeWorkflow()` infrastructure, but production execution was not reachable through Vercel.
 
 ## Automation Audit
 

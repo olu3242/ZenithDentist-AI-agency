@@ -2,7 +2,7 @@
 
 ## Learn
 
-User asks about Zenith, workflows, PMS, ALICE, Mission Control, or product capabilities.
+User asks about Zenith, workflows, PMS, ALICE, Executive Dashboard, or product capabilities.
 
 Flow:
 

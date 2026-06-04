@@ -8,8 +8,8 @@
 - Portal
 - Admin
 - Internal
-- Mission Control
-- Workflow OS
+- Executive Dashboard
+- Automation Platform
 - Runtime OS
 - Settings
 - Loading states

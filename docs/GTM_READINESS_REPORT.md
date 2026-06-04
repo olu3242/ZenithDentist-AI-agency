@@ -163,7 +163,7 @@ Monthly ROI report → Quarterly QBR → Renewal / Expansion
 
 ---
 
-## 4. Sales Intelligence (Mission Control)
+## 4. Sales Intelligence (Executive Dashboard)
 
 The Sales Intelligence Center (`lib/mission-control/sales-intelligence-center.ts`) surfaces:
 - Discovery funnel: sessions → qualified → proposals → closed

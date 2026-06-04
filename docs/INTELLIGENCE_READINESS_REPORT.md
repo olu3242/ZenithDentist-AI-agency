@@ -113,7 +113,7 @@ Gap: Decision lifecycle (pending → acted → outcome) is modeled but outcome t
 
 **INTELLIGENCE LAYER: READY FOR PILOT DEPLOYMENT**
 
-All five components have working libraries, database write patterns, events, and APIs. The intelligence layer can score patients, predict treatment acceptance, optimize channels, and generate ALICE recommendations from day one. Accuracy improves automatically as behavioral data accumulates during the pilot period.
+All five components have working libraries, database write patterns, events, and APIs. The intelligence layer can score patients, predict treatment acceptance, optimize channels, and generate AI Revenue Intelligence recommendations from day one. Accuracy improves automatically as behavioral data accumulates during the pilot period.
 
 | Component | Status |
 |-----------|--------|

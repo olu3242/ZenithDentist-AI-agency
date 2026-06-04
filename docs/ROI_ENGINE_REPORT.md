@@ -10,7 +10,7 @@
 
 The ROI Proof Engine creates a before-vs-after audit trail for each customer. It captures a baseline at onboarding, measures impact by comparing current state to that baseline, and generates three report types (monthly, quarterly, annual) that constitute the evidence delivered to clients.
 
-The engine is the primary instrument for proving value and supporting renewals. It is directly invoked by the Client Success OS and surfaces in the ROI Intelligence Center panel in Mission Control.
+The engine is the primary instrument for proving value and supporting renewals. It is directly invoked by the Client Success OS and surfaces in the ROI Intelligence Center panel in Executive Dashboard.
 
 ---
 

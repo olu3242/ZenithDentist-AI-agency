@@ -70,7 +70,7 @@ The following existing systems were extended in Phase 12 — capabilities added 
 | Directory | Files | Lines of Code (approx.) | Purpose |
 |---|---|---|---|
 | lib/digital-twin/ | index.ts | ~350 | Practice visibility and 5-lever simulation engine |
-| lib/workflow-recovery/ | index.ts | ~280 | Self-healing workflow layer extending Workflow OS |
+| lib/workflow-recovery/ | index.ts | ~280 | Self-healing workflow layer extending Automation Platform |
 | lib/commercial-os/ | index.ts | ~320 | Commercial pipeline management extending Commercialization OS |
 | lib/alice/ (new files) | executive-briefing.ts, knowledge-evolution.ts | ~450 | Executive intelligence layer extending ALICE |
 
@@ -110,9 +110,9 @@ The following existing systems were extended in Phase 12 — capabilities added 
 | DIGITAL_TWIN_OS_REPORT.md | Digital Twin OS architecture + simulation engine |
 | EXECUTIVE_INTELLIGENCE_REPORT.md | ALICE Executive Intelligence layer documentation |
 | SMART_VIDEO_JOURNEY_REPORT.md | Smart Video Journey Engine documentation |
-| MISSION_CONTROL_REPORT.md | Mission Control panel inventory + routing |
+| MISSION_CONTROL_REPORT.md | Executive Dashboard panel inventory + routing |
 | EVENT_FABRIC_REPORT.md | Complete event catalog + governance |
-| WORKFLOW_OS_REPORT.md | Workflow OS function inventory + recovery integration |
+| WORKFLOW_OS_REPORT.md | Automation Platform function inventory + recovery integration |
 | PRODUCTION_READINESS_REPORT.md | 40-item production readiness checklist |
 | EXECUTIVE_SUMMARY_REPORT.md | One-page executive platform summary |
 | ZENITH_ENTERPRISE_HARMONIZATION_CERTIFICATION.md | This document |
@@ -127,7 +127,7 @@ The following existing systems were extended in Phase 12 — capabilities added 
 | Digital Twin could have created new revenue tables | digital-twin/index.ts reads revenue_opportunities, revenue_attribution_records | No duplicate revenue analytics |
 | ALICE Executive could have been a new intelligence engine | executive-briefing.ts imports alice/index.ts and extends it | No duplicate intelligence engine |
 | Workflow Recovery could have been a new automation engine | workflow-recovery/index.ts imports workflow-os/ health-monitor + recovery-engine | No duplicate automation engine |
-| Multiple analytics dashboards could have been created | All visibility routes through Mission Control panels | No duplicate dashboards |
+| Multiple analytics dashboards could have been created | All visibility routes through Executive Dashboard panels | No duplicate dashboards |
 | Video ROI attribution could have duplicated revenue attribution | video-intelligence.ts reads revenue_attribution_records WHERE source='video' | No duplicate attribution system |
 | Simulation engine could have been a standalone service | digital-twin/index.ts reads existing tables, writes only to 3 snapshot tables | No duplicate data platform |
 
@@ -142,8 +142,8 @@ The following existing systems were extended in Phase 12 — capabilities added 
 | Commercial Readiness | 85 | 100 | READY FOR PILOT | Live credentials (Resend, Twilio) |
 | Digital Twin Readiness | 90 | 100 | READY FOR PILOT | None |
 | Executive Intelligence Readiness | 88 | 100 | READY FOR PILOT | ALICE retraining is manual-only |
-| Mission Control Readiness | 92 | 100 | READY FOR PILOT | None |
-| Workflow OS Readiness | 95 | 100 | READY FOR PILOT | None |
+| Executive Dashboard Readiness | 92 | 100 | READY FOR PILOT | None |
+| Automation Platform Readiness | 95 | 100 | READY FOR PILOT | None |
 | Production Readiness | 82 | 100 | READY FOR PILOT | 5 env vars + CTO sign-off |
 | **Overall Platform Readiness** | **89** | **100** | **PILOT READY** | 5 env vars + CTO sign-off |
 
@@ -164,9 +164,9 @@ The following existing systems were extended in Phase 12 — capabilities added 
 | 1 | Reuse Before Create | YES — 24 modules reused |
 | 2 | Extend Before Replace | YES — 4 extensions, 0 replacements |
 | 3 | Single Canonical Intelligence Brain | YES — ALICE is sole intelligence brain |
-| 4 | Single Canonical Automation Engine | YES — Workflow OS is sole automation brain |
+| 4 | Single Canonical Automation Engine | YES — Automation Platform is sole automation brain |
 | 5 | Single Canonical Nervous System | YES — Event Fabric is sole event bus |
-| 6 | Single Executive View | YES — Mission Control is sole dashboard |
+| 6 | Single Executive View | YES — Executive Dashboard is sole dashboard |
 | 7 | Schema-First Development | YES — all tables in migration 20260603000009 |
 | 8 | Event-Driven by Default | YES — all new systems publish to Event Fabric |
 | 9 | No Silent Failures | YES — all APIs return structured errors |
@@ -192,12 +192,12 @@ Immediate actions:
 2. Complete CTO sign-off review
 3. Onboard first pilot dental practice
 4. Monitor ALICE intelligence score daily for first 30 days
-5. Track all 10 pilot milestones in Mission Control
+5. Track all 10 pilot milestones in Executive Dashboard
 
 Phase 13 development candidates:
 - Auto-retrain ALICE when recommendation acceptance rate drops below 60%
 - Dedicated /api/video-journey route
-- Mobile app for practice staff (Mission Control mobile)
+- Mobile app for practice staff (Executive Dashboard mobile)
 - Multi-practice dashboard for Zenith Operational OS clients
 - Automated HIPAA compliance reporting
 

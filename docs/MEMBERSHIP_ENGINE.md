@@ -124,7 +124,7 @@ ALICE identifies patients eligible for membership offers:
 
 ---
 
-## 7. Enrollment Workflow (Workflow OS)
+## 7. Enrollment Workflow (Automation Platform)
 
 ### Workflow: `membership_enrollment_offer`
 
@@ -221,7 +221,7 @@ When a member cancels:
 
 ## 11. Membership Analytics
 
-Available in Mission Control → Revenue Dashboard:
+Available in Executive Dashboard → Revenue Dashboard:
 
 | Metric | Description |
 |--------|-------------|

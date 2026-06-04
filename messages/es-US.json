@@ -22,7 +22,7 @@
     "primaryCta": "Iniciar evaluación gratuita",
     "demoCta": "Ver demo de la plataforma",
     "assessmentTitle": "Descubra oportunidades de ingresos ocultas",
-    "assessmentBody": "Complete una evaluación breve y reciba un informe personalizado con estimación de oportunidad de ingresos, análisis de retención de pacientes y recomendaciones de ALICE.",
+    "assessmentBody": "Complete una evaluación breve y reciba un informe personalizado con estimación de oportunidad de ingresos, análisis de retención de pacientes y recomendaciones de inteligencia de ingresos con IA.",
     "finalCta": "¿Listo para descubrir lo que se está perdiendo?",
     "bookStrategy": "Reservar sesión estratégica"
   },
@@ -40,19 +40,19 @@
   },
   "dashboard": {
     "title": "Panel",
-    "alicePriority": "Prioridad de ALICE",
+    "alicePriority": "Prioridad de ingresos",
     "recoveredRevenue": "Ingresos recuperados",
     "patients": "Pacientes",
     "bookings": "Reservas"
   },
   "missionControl": {
-    "kicker": "Zenith PROS Mission Control",
-    "title": "Mission Control",
+    "kicker": "Zenith Pros Executive Dashboard",
+    "title": "Executive Dashboard",
     "subtitle": "Centro de comando operativo empresarial para inteligencia de ejecución, confianza de proveedores, trazabilidad, replay seguro y monitoreo predictivo."
   },
   "workflowOS": {
-    "kicker": "Zenith PROS Workflow OS",
-    "title": "Workflow OS",
+    "kicker": "Zenith Pros Automation Platform",
+    "title": "Automation Platform",
     "subtitle": "Automatizaciones dentales registradas, analítica de ejecución, postura de replay, presión SLA y salud de workflows.",
     "registeredWorkflows": "Workflows registrados",
     "operationalScore": "Puntaje operativo",
@@ -63,9 +63,9 @@
     "review": "Revisar"
   },
   "patientRevenueEngine": {
-    "title": "Motor de ingresos del paciente",
-    "install": "Instalar Patient Revenue Engine",
-    "deploy": "Desplegar Patient Revenue Engine",
+    "title": "Sistema de recuperación de ingresos",
+    "install": "Instalar Revenue Recovery System",
+    "deploy": "Desplegar Revenue Recovery System",
     "description": "Recupere ingresos de pacientes mediante recall, reactivación, aceptación de tratamientos, membresías, referidos y reseñas."
   },
   "clientSuccessOS": {
@@ -75,10 +75,10 @@
     "goLive": "Preparación para lanzamiento"
   },
   "alice": {
-    "title": "Inteligencia operativa ALICE",
+    "title": "Inteligencia de ingresos con IA",
     "recommendation": "Recomendación",
     "confidence": "Confianza",
-    "localizedBriefing": "ALICE usa idioma {locale} y contexto financiero {currency}."
+    "localizedBriefing": "La inteligencia de ingresos con IA usa idioma {locale} y contexto financiero {currency}."
   },
   "roi": {
     "title": "Motor de oportunidad de ingresos en vivo",
@@ -100,7 +100,7 @@
   "email": {
     "auditSubject": "Su evaluación gratuita de oportunidad de ingresos para {practiceName}",
     "auditReady": "Su informe gratuito de oportunidad de ingresos está listo",
-    "bookWalkthrough": "Reserve su revisión de implementación para ver los playbooks recomendados de Zenith PROS."
+    "bookWalkthrough": "Reserve su revisión de implementación para ver los playbooks recomendados de Zenith Pros."
   },
   "sms": {
     "assessmentReady": "Su informe de oportunidad de ingresos de Zenith está listo. Reserve su revisión cuando le convenga.",

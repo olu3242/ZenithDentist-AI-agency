@@ -21,7 +21,7 @@ Onboarding OS is the standardized activation system for new Zenith clients. It d
 | 5 | **Journey Configuration** | 6 core journeys activated (see sequence below) | CSM | Day 5–7 |
 | 6 | **Revenue Tracking Setup** | Revenue attribution webhooks verified; first test attribution confirmed | CSM | Day 5–7 |
 | 7 | **ALICE Activation** | ALICE agent enabled; first recommendation generated | Auto | Day 7 |
-| 8 | **Mission Control Walkthrough** | Practice owner trained on dashboard; KPIs reviewed | CSM | Day 7–10 |
+| 8 | **Executive Dashboard Walkthrough** | Practice owner trained on dashboard; KPIs reviewed | CSM | Day 7–10 |
 | 9 | **First Patient Engaged** | First patient receives journey message and opens/responds | Auto/ALICE | Day 10–14 |
 | 10 | **First Attribution Confirmed** | First revenue attributed via ALICE action → booking → payment chain | Auto/Revenue OS | Day 14–21 |
 
@@ -37,7 +37,7 @@ Onboarding OS is the standardized activation system for new Zenith clients. It d
 | Day 2 | PMS connected + Twilio/Resend configured + test message sent |
 | Day 3 | Avatar video created (1 provider) |
 | Day 5 | Recall journey + review journey activated |
-| Day 7 | ALICE enabled + Mission Control walkthrough + first patient message sent |
+| Day 7 | ALICE enabled + Executive Dashboard walkthrough + first patient message sent |
 | Day 14 | Check-in: first attribution reviewed, questions answered |
 
 ### Growth — 14-Day Track
@@ -50,7 +50,7 @@ Onboarding OS is the standardized activation system for new Zenith clients. It d
 | Day 5 | Voice profile setup |
 | Day 7 | All 6 journeys activated + revenue tracking setup |
 | Day 10 | ALICE activation + first recommendations reviewed with client |
-| Day 14 | Mission Control walkthrough + first patient engagement confirmed |
+| Day 14 | Executive Dashboard walkthrough + first patient engagement confirmed |
 | Day 21 | First attribution confirmed + 30-day forecast shared |
 
 ### Performance / Enterprise — 30-Day Track
@@ -63,7 +63,7 @@ Onboarding OS is the standardized activation system for new Zenith clients. It d
 | Day 7 | Milestone Gate 1: PMS + comms confirmed live |
 | Day 7–10 | All journeys configured + custom journey review |
 | Day 10 | Revenue tracking verified + benchmark snapshot created |
-| Day 14 | Milestone Gate 2: journeys live + first ALICE recommendations reviewed |
+| Day 14 | Milestone Gate 2: journeys live + first AI Revenue Intelligence recommendations reviewed |
 | Day 14–21 | Provider performance baseline established |
 | Day 21 | Milestone Gate 3: first patient engaged + first attribution confirmed |
 | Day 28–30 | 30-day performance review + growth score baseline + ROI summary |
@@ -199,7 +199,7 @@ See `30_DAY_ACTIVATION_PLAN.md` for the complete daily action plan.
 |------|-------|------------------|
 | Week 1 | Infrastructure | PMS + comms live, avatar in production |
 | Week 2 | Activation | Journeys live, first patient messages sent |
-| Week 3 | Attribution | First revenue attributed, ALICE recommendations reviewed |
+| Week 3 | Attribution | First revenue attributed, AI Revenue Intelligence recommendations reviewed |
 | Week 4 | Optimization | 30-day benchmark, growth score baseline, ROI summary delivered |
 
 ---

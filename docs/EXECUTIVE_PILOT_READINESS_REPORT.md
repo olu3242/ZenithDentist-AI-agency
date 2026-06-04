@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-The Zenith Patient OS™ platform is **architecture-complete** and **pilot-ready**. All core systems have been built, tested, and documented. The platform can onboard its first dental practice today using the Go-Live Runbook.
+The Zenith Patient OS platform is **architecture-complete** and **pilot-ready**. All core systems have been built, tested, and documented. The platform can onboard its first dental practice today using the Go-Live Runbook.
 
 **Current Pilot Capacity**:
 - **2 supervised practices** before live provider integrations are configured (HeyGen, ElevenLabs)
@@ -41,7 +41,7 @@ The Zenith Patient OS™ platform is **architecture-complete** and **pilot-ready
 
 | Capability | Status | Evidence |
 |------------|--------|----------|
-| Workflow OS | READY | lib/workflow-os (10 files), execution engine live, scheduleWorkflow() operational |
+| Automation Platform | READY | lib/workflow-os (10 files), execution engine live, scheduleWorkflow() operational |
 | Digital Dentist Twin | READY | avatar/voice/script/journey all operational, provisioning guide complete |
 | Patient Influence Engine | READY | 7-dimension scoring, ALICE consuming scores, all patients scored |
 | Revenue Attribution | READY | 4 engines, revenue_attribution_records, 4 touchpoint types live |
@@ -153,8 +153,8 @@ Use `docs/GO_LIVE_RUNBOOK.md`. CSM can complete onboarding in 3 days.
 
 The following systems were built across Phase 4–6 (all production-ready):
 
-**Phase 4 (Workflow OS + Patient Intelligence)**
-- Workflow OS with 10-file execution engine
+**Phase 4 (Automation Platform + Patient Intelligence)**
+- Automation Platform with 10-file execution engine
 - Patient Influence Engine (7-dimension scoring)
 - 7 AI Domain Agents
 - Communication Hub with provider adapters
@@ -177,5 +177,5 @@ The following systems were built across Phase 4–6 (all production-ready):
 
 - `docs/GO_LIVE_RUNBOOK.md` — Launch commands
 - `docs/30_DAY_ACTIVATION_PLAN.md` — Day-by-day timeline
-- `docs/PILOT_OPERATIONS_OS.md` — Mission Control panels
+- `docs/PILOT_OPERATIONS_OS.md` — Executive Dashboard panels
 - `docs/EBR_TEMPLATE.md` — Day 30 executive review template

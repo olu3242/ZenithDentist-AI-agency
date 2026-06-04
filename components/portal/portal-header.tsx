@@ -2,7 +2,7 @@ export function PortalHeader({ title, subtitle }: { title: string; subtitle: str
   return (
     <header className="flex min-w-0 flex-col justify-between gap-4 rounded border border-line bg-white p-5 shadow-sm lg:flex-row lg:items-end">
       <div className="min-w-0">
-        <p className="brand-kicker">Zenith PROS client intelligence portal</p>
+        <p className="brand-kicker">Zenith Pros client intelligence portal</p>
         <h1 className="mt-2 text-2xl font-black text-ink md:text-3xl">{title}</h1>
         <p className="mt-2 max-w-3xl text-sm font-semibold text-muted md:text-base">{subtitle}</p>
       </div>

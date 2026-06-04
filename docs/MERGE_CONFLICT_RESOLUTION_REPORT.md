@@ -38,7 +38,7 @@ Date: 2026-06-02
 - Restored legacy video workflow IDs including confirmation, reminder, recall, reactivation, no-show recovery, post-visit, review, referral, membership, treatment acceptance, and VIP loyalty journeys.
 - Preserved newer video workflow IDs including welcome patient, cleaning, treatment acceptance, membership enrollment, review request, referral request, patient 30-day check-in, and financing journeys.
 - Synced the expanded video journey set into the Automation OS registry catalog.
-- Expanded `/portal/video` to show Smart Video Journeys, ALICE Video Intelligence, Patient Influence Engine, Treatment Acceptance Accelerator, Video Attribution Engine, and Provider Video Library.
+- Expanded `/portal/video` to show Smart Video Journeys, Video Revenue Intelligence, Patient Influence Engine, Treatment Acceptance Accelerator, Video Attribution Engine, and Provider Video Library.
 - Merged LIZ knowledge sources for Product Catalog, Workflow Catalog, Automation Catalog, Video Engagement OS, Video Intelligence, Automation Audit, ROI Framework, and FAQ Library.
 - Added LIZ automation-audit intent handling with direct actions for Automation Audit and Certification Center.
 - Rebuilt the migration manifest with clean forward-migration detail sections and a unique timestamp for Smart Video Journey migration governance.

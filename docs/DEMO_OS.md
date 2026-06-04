@@ -35,7 +35,7 @@ Always run the demo from the demo org — never from a real client account.
 > "Before I show you anything, I want to find out what this practice is worth to you right now. Let me run a quick scan."
 
 **Actions:**
-1. Open Mission Control → Revenue Opportunities panel.
+1. Open Executive Dashboard → Revenue Opportunities panel.
 2. Show the "Revenue At Risk" total — highlight the big number immediately.
 3. Click into the top 3 opportunities (treatment follow-up, recall, membership).
 4. For each: show patient name (demo data), amount at risk, and days since last contact.
@@ -70,12 +70,12 @@ Always run the demo from the demo org — never from a real client account.
 
 ---
 
-### Segment 3: Mission Control (5 minutes)
+### Segment 3: Executive Dashboard (5 minutes)
 
 **Objective:** Show the practice owner's command center view — everything happening in one place.
 
 **Actions:**
-1. Open Mission Control dashboard.
+1. Open Executive Dashboard.
 2. Walk through the 4 KPI cards: Revenue At Risk / Opportunities Found / Revenue Recovered MTD / Forecast 30-Day.
 3. Show Growth Score (0–100) with trend arrow.
 4. Show the radar chart: Practice vs Network on 5 benchmark dimensions.
@@ -95,7 +95,7 @@ Always run the demo from the demo org — never from a real client account.
 **Actions:**
 1. Open Patient Influence Scores → filter by score >75.
 2. Show a sample high-score patient: influence score 82, treatment at risk $1,800, recall 23 days overdue.
-3. Show ALICE recommendations panel: 3 recommendations with estimated revenue impact and confidence.
+3. Show AI Revenue Intelligence recommendations panel: 3 recommendations with estimated revenue impact and confidence.
 4. Click "Activate" on the treatment follow-up recommendation — show journey activation flow.
 5. Show the journey steps: SMS Day 1 → Video Day 3 → Follow-up call Day 7.
 

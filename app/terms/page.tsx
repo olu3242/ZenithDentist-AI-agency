@@ -3,8 +3,8 @@ import Link from "next/link";
 import { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Zenith AI Automation Agency",
-  description: "Terms of Service for Zenith AI Automation Agency services provided by FinClarity Bookkeeping and Services LLC."
+  title: "Terms of Service | Zenith Pros",
+  description: "Terms of Service for Zenith Pros services provided by FinClarity Bookkeeping and Services LLC."
 };
 
 const sections = [
@@ -54,15 +54,15 @@ const sections = [
   {
     title: "6. INTELLECTUAL PROPERTY",
     body: [
-      "The Services, including all software, designs, documentation, methodologies, processes, trademarks, content, and related materials, are owned by FinClarity Bookkeeping and Services LLC and are protected by applicable intellectual property laws.",
-      "No ownership rights are transferred to customers."
+      "Customer data remains owned by the customer.",
+      "Zenith Pros service materials, software, documentation, reports, templates, and training content are provided under the applicable subscription or services agreement."
     ]
   },
   {
-    title: "7. PROPRIETARY METHODS",
+    title: "7. SERVICE MATERIALS",
     body: [
-      "The Services may incorporate proprietary business methods, automation processes, operational frameworks, analytical models, workflows, software systems, and implementation methodologies.",
-      "Customers may not copy, reproduce, disclose, distribute, reverse engineer, or create derivative works from any proprietary materials provided through the Services."
+      "The Services may include automation processes, operational frameworks, analytical models, workflows, software systems, and implementation materials.",
+      "Customers may not copy, reproduce, disclose, distribute, reverse engineer, or create derivative works from service materials except as allowed in a written agreement."
     ]
   },
   {
@@ -100,7 +100,7 @@ export default function TermsPage() {
     <main className="min-h-screen bg-background px-4 py-12 text-ink sm:px-6 lg:px-8">
       <article className="mx-auto max-w-4xl rounded border border-line bg-white p-6 shadow-soft sm:p-10">
         <Link href="/" className="text-sm font-black uppercase tracking-wider text-teal">
-          Zenith AI Automation Agency
+          Zenith Pros
         </Link>
         <h1 className="mt-5 text-4xl font-black tracking-tight text-ink">Terms of Service</h1>
         <p className="mt-2 text-sm font-bold text-muted">Effective Date: January 1, 2026</p>
@@ -109,7 +109,7 @@ export default function TermsPage() {
           <p>
             These Terms of Service (&quot;Terms&quot;) govern your access to and use of the websites, software,
             applications, automation services, communication tools, analytics services, and related offerings
-            provided by {LEGAL_ENTITY.legalName} (&quot;Company,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) under the Zenith AI Automation Agency brand (&quot;Services&quot;).
+            provided by {LEGAL_ENTITY.legalName} (&quot;Company,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) under the Zenith Pros brand (&quot;Services&quot;).
           </p>
           <p>By accessing or using the Services, you agree to be bound by these Terms.</p>
         </div>

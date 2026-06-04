@@ -30,7 +30,7 @@ export default async function PortalPage() {
       <DashboardContainer>
         <PortalHeader
           title="AI Operations Command Center"
-          subtitle="A client-facing revenue intelligence portal showing what Zenith AI Automation Agency is operating, optimizing, and recovering."
+          subtitle="A client-facing revenue intelligence portal showing revenue recovery work, optimization priorities, and operational results."
         />
         <div className="flex flex-wrap items-center gap-3">
           <SubscriptionBadge plan={tenantData.organization.active_plan} />

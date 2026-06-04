@@ -31,7 +31,7 @@
 | Event Fabric | ✓ | publishEvent() single path → runtime_event_fabric_events |
 | Runtime | ✓ | executeWorkflow() single entry point |
 | ALICE | ✓ | answerOperationalQuery() with org scoping |
-| Mission Control | ✓ | getOperationalHealthDashboard() with RBAC guard |
+| Executive Dashboard | ✓ | getOperationalHealthDashboard() with RBAC guard |
 | Billing | ✓ | Stripe integration + entitlement enforcement + usage tracking |
 | Marketplace | ✓ | Cross-tenant organization_id check in extension-runtime.ts |
 

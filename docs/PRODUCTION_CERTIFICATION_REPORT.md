@@ -9,7 +9,7 @@
 
 **Decision: READY FOR DENTAL PILOT**
 
-The Zenith AI / Patient Revenue Operating System has passed production certification for the dental pilot phase. The core automation stack, Workflow OS, Runtime OS, Multi-Tenant security, and Mission Control are production-grade. Key pre-production items are documented below with clear resolution paths.
+The Zenith AI / Patient Revenue Operating System has passed production certification for the dental pilot phase. The core automation stack, Automation Platform, Runtime OS, Multi-Tenant security, and Executive Dashboard are production-grade. Key pre-production items are documented below with clear resolution paths.
 
 ---
 
@@ -82,7 +82,7 @@ Null `organizationId` returns safe empty defaults, never throws or leaks data.
 
 ---
 
-## Workflow OS Verification
+## Automation Platform Verification
 
 | Check | Status |
 |-------|--------|
@@ -109,7 +109,7 @@ Null `organizationId` returns safe empty defaults, never throws or leaks data.
 
 ---
 
-## Mission Control Verification
+## Executive Dashboard Verification
 
 | Check | Status |
 |-------|--------|
@@ -148,7 +148,7 @@ Null `organizationId` returns safe empty defaults, never throws or leaks data.
 |------|-------------|
 | Google Places API | Auto-capture review confirmation |
 | Real peer benchmarks | Replace hardcoded industry averages with live peer data |
-| ALICE confidence recalibration | Improve forecast accuracy over time |
+| AI confidence recalibration | Improve forecast accuracy over time |
 
 ---
 
@@ -174,7 +174,7 @@ Null `organizationId` returns safe empty defaults, never throws or leaks data.
 - [ ] Verify `GET /api/health` returns all services healthy
 - [ ] Onboard first practice via `lib/onboarding/client-onboarding-engine.ts`
 - [ ] Validate Practice Health Score returns non-zero values
-- [ ] Confirm Mission Control loads with live data
+- [ ] Confirm Executive Dashboard loads with live data
 - [ ] Trigger test recall recovery event and verify attribution
 
 ---

@@ -1,4 +1,4 @@
-# Mission Control Consolidation
+# Executive Dashboard Consolidation
 
 ## Status
 
@@ -8,12 +8,12 @@ Implemented as the new navigation and dashboard architecture.
 
 | Consolidated domain | Includes |
 | --- | --- |
-| Revenue Mission Control | Revenue, forecasting, reports, simulations, ROI assessment results |
-| Patient Mission Control | Patients, recall, reviews, retention, no-show prevention |
-| Operations Mission Control | PMS, cloud, locations, onboarding, operational readiness |
-| Automation Mission Control | Workflow OS, Runtime OS, Automation Center, marketplace actions |
-| DSO Enterprise Mission Control | Location benchmarks, enterprise reporting, portfolio variance |
-| Zenith Internal Mission Control | Runtime recovery, tenant governance, ALICE controls, platform readiness |
+| Revenue Executive Dashboard | Revenue, forecasting, reports, simulations, ROI assessment results |
+| Patient Executive Dashboard | Patients, recall, reviews, retention, no-show prevention |
+| Operations Executive Dashboard | PMS, cloud, locations, onboarding, operational readiness |
+| Automation Executive Dashboard | Automation Platform, Runtime OS, Automation Center, marketplace actions |
+| DSO Enterprise Executive Dashboard | Location benchmarks, enterprise reporting, portfolio variance |
+| Zenith Internal Executive Dashboard | Runtime recovery, tenant governance, ALICE controls, platform readiness |
 
 ## What Changed
 

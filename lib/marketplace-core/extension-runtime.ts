@@ -3,7 +3,7 @@ import "server-only";
 /**
  * Extension Runtime — provides extensions with a sandboxed interface to the
  * Zenith platform.  Extensions route through this layer; they NEVER access
- * Runtime Kernel or Workflow OS directly.
+ * Runtime Kernel or Automation Platform directly.
  */
 
 import { getInstalledExtensions } from "@/lib/marketplace-core/extension-loader";
@@ -19,7 +19,7 @@ export interface ExtensionWorkflowRequest {
 }
 
 /**
- * An extension triggers a workflow — always routes through Workflow OS.
+ * An extension triggers a workflow — always routes through Automation Platform.
  * Extensions cannot bypass the execution engine.
  */
 export async function extensionTriggerWorkflow(req: ExtensionWorkflowRequest) {
@@ -48,7 +48,7 @@ export async function extensionTriggerWorkflow(req: ExtensionWorkflowRequest) {
     },
   });
 
-  // Delegate to Workflow OS
+  // Delegate to Automation Platform
   return routeWorkflow({
     trigger: req.trigger,
     organizationId: req.organizationId,

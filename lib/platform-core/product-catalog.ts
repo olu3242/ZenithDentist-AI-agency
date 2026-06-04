@@ -120,7 +120,7 @@ export const PRODUCT_CATALOG: ProductCapability[] = [
   {
     id: "ai_copilot",
     name: "ALICE AI Copilot",
-    description: "ALICE operational intelligence: recommendations, forecasts, anomaly detection.",
+    description: "AI Revenue Intelligence: recommendations, forecasts, anomaly detection.",
     version: "1.0.0",
     category: "intelligence",
     requiredPlan: "professional",
@@ -143,7 +143,7 @@ export const PRODUCT_CATALOG: ProductCapability[] = [
   },
   {
     id: "mission_control",
-    name: "Mission Control",
+    name: "Executive Dashboard",
     description: "Operational control plane: runtime health, workflow health, AI health, recovery.",
     version: "1.0.0",
     category: "operations",

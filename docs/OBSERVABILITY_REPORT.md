@@ -11,7 +11,7 @@
 The health endpoint checks 6 platform services and returns a structured health response. Services checked:
 1. Supabase connectivity (database ping)
 2. Runtime kernel (automation_traces query)
-3. Workflow OS (automation registry reachability)
+3. Automation Platform (automation registry reachability)
 4. Event Fabric (runtime_event_fabric_events table)
 5. AI provider (env.ANTHROPIC_API_KEY presence)
 6. Tenant context (organization_members query)
@@ -133,7 +133,7 @@ Each `Alert` includes: id, category, severity, title, description, count, firstS
 ### Incident Runbooks
 
 **workflow_failure (critical):**
-1. Check `dead-letter-explorer.tsx` in Mission Control for failing workflow IDs
+1. Check `dead-letter-explorer.tsx` in Executive Dashboard for failing workflow IDs
 2. Navigate to `replay-center.tsx` — identify replay candidates with `confidence > 0.7`
 3. Execute dry-run first: `executeReplay({ traceId, dryRun: true })`
 4. If rollbackSafe, execute: `executeReplay({ traceId, approved: true })`
@@ -162,7 +162,7 @@ Each `Alert` includes: id, category, severity, title, description, count, firstS
 
 **runtime_failure (critical):**
 1. Check `operational_incidents` table for open incidents
-2. Navigate to `incident-timeline.tsx` in Mission Control
+2. Navigate to `incident-timeline.tsx` in Executive Dashboard
 3. Review `autonomous-recovery-center.tsx` for active recovery plans
 4. If healing score < 50: manually trigger `replayTrace()` for affected traces
 5. Escalate to engineering if `operationalScore < 30`
@@ -203,4 +203,4 @@ Used to trace step-level execution details per workflow_execution. Queryable by 
 | Execution logs | 80 | Table defined, log writes need verification |
 | Runbooks | 75 | Defined above, not yet in-product |
 
-**Gap:** Incident runbooks exist as documentation but are not yet surfaced in-product (no runbook viewer in Mission Control panels). The `operational_incidents` table exists but automated incident creation from alert evaluation is partial.
+**Gap:** Incident runbooks exist as documentation but are not yet surfaced in-product (no runbook viewer in Executive Dashboard panels). The `operational_incidents` table exists but automated incident creation from alert evaluation is partial.

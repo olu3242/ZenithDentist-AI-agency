@@ -46,7 +46,7 @@ Required deployment domains are represented locally:
 | Onboarding states | Present in core tenancy repair |
 | Products/orders | Present in commercial/platform migrations |
 | ROI assessments | Present in revenue commercialization migration |
-| Workflow runs/events | Present in Workflow OS migrations |
+| Workflow runs/events | Present in Automation Platform migrations |
 | Automation traces/dead letters | Present in runtime/automation migrations |
 | Analytics tables | Present in analytics/production evidence migrations |
 | ALICE tables | Present in AI operations/traceability migrations |

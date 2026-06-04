@@ -1,4 +1,4 @@
-# Zenith Patient OS™ — Go-Live Runbook
+# Zenith Patient OS — Go-Live Runbook
 
 > Operational runbook for launching a pilot practice. Follow each step in sequence. Do not skip verification checks.
 
@@ -326,7 +326,7 @@ Confirm:
 - `journey_health.steps_delivered_mtd >= 1`
 - `journey_health.steps_failed = 0`
 
-### Step 4: Check ALICE Recommendations
+### Step 4: Check AI Revenue Intelligence recommendations
 
 ```
 GET /api/agents/recommendations?organizationId=org_uuid&status=pending
@@ -418,7 +418,7 @@ If score < 60, review the lowest-scoring dimension and address it.
 
 ## Related Documents
 
-- `docs/PILOT_OPERATIONS_OS.md` — Mission Control overview
+- `docs/PILOT_OPERATIONS_OS.md` — Executive Dashboard overview
 - `docs/DIGITAL_DENTIST_TWIN_PROVISIONING.md` — Detailed twin setup
 - `docs/30_DAY_ACTIVATION_PLAN.md` — Complete day-by-day timeline
 - `docs/PILOT_REVENUE_VALIDATION.md` — Revenue validation queries

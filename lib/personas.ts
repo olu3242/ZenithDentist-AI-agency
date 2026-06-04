@@ -159,14 +159,14 @@ export const personas: Record<PersonaKey, PersonaDefinition> = {
       { href: "/portal/revenue", label: "Revenue", description: "Revenue, forecasting, reports, and simulations", domain: "revenue" },
       { href: "/portal/patients", label: "Patients", description: "Patients, recall, reviews, and retention", domain: "patients" },
       { href: "/portal/command", label: "Operations", description: "PMS, cloud, locations, and operations", domain: "operations" },
-      { href: "/automation-center", label: "Automations", description: "Workflow OS and automation execution", domain: "automation" },
+      { href: "/automation-center", label: "Automations", description: "Automation Platform and automation execution", domain: "automation" },
       { href: "/portal/reports", label: "Reports", description: "Executive reporting center", domain: "revenue" },
       { href: "/settings", label: "Settings", description: "Organization settings", domain: "operations" }
     ]
   },
   dso_executive: {
     key: "dso_executive",
-    label: "DSO Enterprise Mission Control",
+    label: "DSO Enterprise Executive Dashboard",
     roleLabel: "DSO Executive",
     defaultRoles: ["practice_owner", "super_admin"],
     commandCenterPath: "/portal/locations",
@@ -185,7 +185,7 @@ export const personas: Record<PersonaKey, PersonaDefinition> = {
       "Standardize automations only after confirming PMS data quality by location."
     ],
     workflows: ["Portfolio Benchmarking", "Location Rollout", "Governance Review", "Enterprise Reporting"],
-    reports: ["Enterprise Mission Control", "Location Benchmark Report", "Portfolio ROI Report"],
+    reports: ["Enterprise Executive Dashboard", "Location Benchmark Report", "Portfolio ROI Report"],
     navigation: [
       { href: "/dashboard", label: "Enterprise Mission", description: "DSO command center", domain: "enterprise" },
       { href: "/portal/locations", label: "Locations", description: "Location benchmarking", domain: "enterprise" },
@@ -229,7 +229,7 @@ export const personas: Record<PersonaKey, PersonaDefinition> = {
   },
   zenith_platform_operator: {
     key: "zenith_platform_operator",
-    label: "Zenith Internal Mission Control",
+    label: "Zenith Internal Executive Dashboard",
     roleLabel: "Zenith Platform Operator",
     defaultRoles: ["super_admin"],
     commandCenterPath: "/dashboard",
@@ -245,15 +245,15 @@ export const personas: Record<PersonaKey, PersonaDefinition> = {
     aliceRecommendations: [
       "Resolve unresolved dead letters before expanding workflow coverage.",
       "Review tenant scoping on any dashboard that mixes platform and client data.",
-      "Prioritize ALICE recommendations with source traces and confidence evidence."
+      "Prioritize AI Revenue Intelligence recommendations with source traces and confidence evidence."
     ],
     workflows: ["Runtime Recovery", "Tenant Audit", "ALICE Grounding Review", "Workflow Replay"],
     reports: ["Platform Readiness", "Runtime Health", "Tenant Isolation", "Governance Review"],
     navigation: [
       { href: "/dashboard", label: "Zenith Mission", description: "Internal mission control", domain: "platform" },
-      { href: "/mission-control", label: "Mission Control", description: "Platform mission control", domain: "platform" },
+      { href: "/mission-control", label: "Executive Dashboard", description: "Platform mission control", domain: "platform" },
       { href: "/runtime-os", label: "Runtime OS", description: "Runtime health and recovery", domain: "automation" },
-      { href: "/workflow-os", label: "Workflow OS", description: "Workflow registry and analytics", domain: "automation" },
+      { href: "/workflow-os", label: "Automation Platform", description: "Workflow registry and analytics", domain: "automation" },
       { href: "/internal", label: "Internal Ops", description: "Internal platform operations", domain: "platform" },
       { href: "/automation-center", label: "Automations", description: "Execute and observe workflows", domain: "automation" },
       { href: "/settings", label: "Settings", description: "Platform settings", domain: "operations" }

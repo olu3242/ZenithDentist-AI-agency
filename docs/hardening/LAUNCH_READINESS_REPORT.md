@@ -34,18 +34,18 @@ The Zenith Dental AI platform has completed Batch 2 (Runtime Convergence) and is
 - [x] Lead Funnel: VERIFIED (all 7 layers)
 - [x] ROI Audit: VERIFIED (all 7 layers)
 - [x] Workflow Execution: VERIFIED (all 7 layers)
-- [x] Discovery Sessions: PARTIAL (UI + DB + Mission Control)
+- [x] Discovery Sessions: PARTIAL (UI + DB + Executive Dashboard)
 - [x] Client Onboarding: PARTIAL (DB + workflow traces)
-- [x] Marketplace Install: PARTIAL (UI + API + DB + runtime + analytics + Mission Control)
+- [x] Marketplace Install: PARTIAL (UI + API + DB + runtime + analytics + Executive Dashboard)
 - [x] Billing Lifecycle: PARTIAL (API + DB + analytics)
 - [x] Support Tickets: PARTIAL (API + DB)
-- [x] Alerting: PARTIAL (API + DB + runtime + analytics + Mission Control)
+- [x] Alerting: PARTIAL (API + DB + runtime + analytics + Executive Dashboard)
 - [x] Audit Logging: PARTIAL (API + DB + runtime + analytics)
 - [x] Zero MISSING features
 - [x] Zero STUB-only features
 
 ### Operational Readiness
-- [x] Mission Control operational (`getMissionControlState`)
+- [x] Executive Dashboard operational (`getMissionControlState`)
 - [x] ALICE operational (`answerOperationalQuery`, `generateAliceInsights`, `generateAliceReport`)
 - [x] Analytics Projector operational (`analyticsProjector`)
 - [x] Replay operational (`replayEvent`)
@@ -76,7 +76,7 @@ The Zenith Dental AI platform has completed Batch 2 (Runtime Convergence) and is
 | Database / RLS | 93/100 | YES |
 | Event Fabric | 91/100 | YES |
 | Workflow Runtime | 89/100 | YES |
-| Mission Control | 85/100 | YES |
+| Executive Dashboard | 85/100 | YES |
 | Lineage | 84/100 | YES |
 | Analytics Projector | 82/100 | YES |
 | ALICE AI Layer | 78/100 | CONDITIONAL |
@@ -120,7 +120,7 @@ The Zenith Dental AI platform has completed Batch 2 (Runtime Convergence) and is
 - Single-location dental practices
 - Full Lead Funnel + ROI Audit + Workflow Execution features
 - ALICE operational queries and reports
-- Mission Control operator monitoring
+- Executive Dashboard operator monitoring
 
 **Not authorized for (until scale conditions met):**
 - Enterprise multi-location clients

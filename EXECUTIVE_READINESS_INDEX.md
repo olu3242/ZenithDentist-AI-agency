@@ -2,7 +2,7 @@
 
 Readiness formula:
 
-Evidence Coverage + Revenue Attribution Coverage + ALICE Traceability + Incident Coverage + Recovery Coverage + SLA Compliance
+Evidence Coverage + Revenue Attribution Coverage + AI Decision Traceability + Incident Coverage + Recovery Coverage + SLA Compliance
 
 Levels:
 

@@ -1,8 +1,8 @@
-# Workflow OS™ Migration Plan — From n8n to Internal Execution
+# Automation Platform Migration Plan — From n8n to Internal Execution
 
 ## Migration Status: COMPLETE for All Internal Workflows
 
-All internal business logic, patient journey sequences, and communication delivery workflows have been successfully migrated from n8n to Workflow OS™ and the Communication Hub adapter layer. External connector workflows (Google review sync, third-party webhooks) are intentionally retained in n8n.
+All internal business logic, patient journey sequences, and communication delivery workflows have been successfully migrated from n8n to Automation Platform and the Communication Hub adapter layer. External connector workflows (Google review sync, third-party webhooks) are intentionally retained in n8n.
 
 ---
 
@@ -10,16 +10,16 @@ All internal business logic, patient journey sequences, and communication delive
 
 | Workflow | Type | Old Owner | New Owner | Status |
 |----------|------|-----------|-----------|--------|
-| `welcome_patient` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `appointment_prep` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `treatment_education` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `treatment_acceptance` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `post_treatment` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `review_request` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `recall_30day` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `recall_90day` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `referral_ask` | Patient OS | n8n | Workflow OS™ | MIGRATED |
-| `membership_offer` | Patient OS | n8n | Workflow OS™ | MIGRATED |
+| `welcome_patient` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `appointment_prep` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `treatment_education` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `treatment_acceptance` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `post_treatment` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `review_request` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `recall_30day` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `recall_90day` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `referral_ask` | Patient OS | n8n | Automation Platform | MIGRATED |
+| `membership_offer` | Patient OS | n8n | Automation Platform | MIGRATED |
 | `video_delivery` | Video | n8n | Video Adapter | MIGRATED |
 | `sms_delivery` | Comms | n8n | SMS Adapter | MIGRATED |
 | `email_delivery` | Comms | n8n | Email Adapter | MIGRATED |
@@ -34,7 +34,7 @@ All internal business logic, patient journey sequences, and communication delive
 
 ## Journey Library — 7 Patient OS Journeys
 
-All 7 canonical Patient OS journeys are now managed by the Journey Library + Workflow OS™:
+All 7 canonical Patient OS journeys are now managed by the Journey Library + Automation Platform:
 
 | Journey Key | Description | Workflows Included |
 |-------------|-------------|-------------------|

@@ -102,7 +102,7 @@ Priority Score → ALICE decision → Outreach order
 
 ---
 
-## 6. Recall Workflow (Workflow OS)
+## 6. Recall Workflow (Automation Platform)
 
 ### Workflow: `recall_patient_outreach`
 
@@ -114,7 +114,7 @@ Priority Score → ALICE decision → Outreach order
 | **Audit Trail** | All steps logged to Event Fabric |
 | **Retry** | 3 attempts, exponential backoff |
 | **Failure Policy** | DLQ after retry exhaustion |
-| **DLQ** | Mission Control DLQ review queue |
+| **DLQ** | Executive Dashboard DLQ review queue |
 | **Replay** | Full replay and checkpoint replay supported |
 | **Observability** | volume, success rate, conversion rate metrics |
 
@@ -195,7 +195,7 @@ When a recall patient books an appointment:
 
 ## 10. Recall Analytics
 
-Available in Mission Control → Patient Operations Center:
+Available in Executive Dashboard → Patient Operations Center:
 
 | Metric | Description |
 |--------|-------------|

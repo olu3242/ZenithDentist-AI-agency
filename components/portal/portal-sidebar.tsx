@@ -14,7 +14,7 @@ const nav: NavItem[] = [
   { href: "/portal/forecasting",   label: "Forecasting",   icon: Radar },
   { href: "/portal/integrations",  label: "PMS",           icon: CloudCog },
   { href: "/portal/command",       label: "Command",       icon: ShieldCheck },
-  { href: "/portal/alice",         label: "ALICE",         icon: Brain },
+  { href: "/portal/alice",         label: "AI Revenue",    icon: Brain },
   { href: "/portal/dashboard",     label: "Dashboard",     icon: BarChart3 },
   { href: "/portal/revenue",       label: "Revenue",       icon: RefreshCw },
   { href: "/portal/patients",      label: "Patients",      icon: HeartPulse },

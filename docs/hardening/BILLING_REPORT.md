@@ -31,7 +31,7 @@ The ZenithDentist billing subsystem is fully implemented and converged. All thre
 | Revenue Recovery | No | Yes | Yes |
 | Lead Nurture | No | Yes | Yes |
 | AI Copilot | No | No | Yes |
-| Mission Control | No | No | Yes |
+| Executive Dashboard | No | No | Yes |
 | Marketplace | No | No | Yes |
 | API Access | No | No | Yes |
 

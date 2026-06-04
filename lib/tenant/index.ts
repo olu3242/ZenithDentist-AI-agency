@@ -6,7 +6,7 @@ import "server-only";
  * Every API route and data access MUST flow through this module.
  *
  * Stack position:
- *   Supabase → Runtime Kernel → Tenant → Workflow OS → AI OS → Apps
+ *   Supabase → Runtime Kernel → Tenant → Automation Platform → AI OS → Apps
  */
 
 export { resolveTenant, resolveTenantById, resolveTenantBySlug } from "@/lib/tenant/tenant-resolver";

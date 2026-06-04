@@ -11,7 +11,7 @@ export default async function MissionControlPage() {
   const state = await getMissionControlState();
   return (
     <div className="space-y-6">
-      <InternalHeader title="Mission Control" subtitle="Operational stability, queue health, AI grounding, replay controls, and Open Dental pilot visibility." />
+      <InternalHeader title="Executive Dashboard" subtitle="Operational stability, queue health, AI grounding, replay controls, and Open Dental pilot visibility." />
       <MissionControlCenter state={state} />
       <OpenDentalPilotPanel state={state} />
       <QueueHealthPanel state={state} />

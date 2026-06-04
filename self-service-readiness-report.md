@@ -128,7 +128,7 @@ High. Every practice requires a 1–3 day integration setup phase by a Zenith Im
 After integrations are configured, a practice admin sees a list of available workflows for their plan tier, can toggle them on/off with a single click, and sees confirmation that the workflow is active.
 
 ### Current State
-The Workflow OS is fully built:
+The Automation Platform is fully built:
 - `workflow-registry.ts` — all workflows are defined with status, SLA, and replay capability
 - `workflow-engine.ts` — `executeWorkflow()` can activate workflows programmatically
 - `workflow-state-machine.ts` — state transitions are enforced

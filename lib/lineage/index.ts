@@ -32,7 +32,7 @@ export interface LineageChain {
 
 /**
  * traceLineage — reconstructs the full execution chain for a given correlationId.
- * Traces: Portal → Workflow → Event → Analytics → ALICE → Mission Control
+ * Traces: Portal → Workflow → Event → Analytics → ALICE → Executive Dashboard
  */
 export async function traceLineage(correlationId: string, organizationId: string): Promise<LineageChain> {
   const supabase = createServiceClient();

@@ -136,7 +136,7 @@ If `prediction_accuracy` drops below 0.60 for 3 consecutive days:
 
 1. Flag is set in `practice_memory_records` with type = `alice_accuracy_alert`
 2. A `publishRuntimeFabricEvent` is emitted with `eventType = "governance"`, `priority = "critical"`
-3. Super admin notification is triggered via Mission Control
+3. Super admin notification is triggered via Executive Dashboard
 4. Success team is alerted to review recent `alice_outcome_records` for systematic misfires
 
 This alert is not auto-triggered by the current `snapshotAlicePerformance()` — it requires the daily reconciliation job to compare 3-day rolling average.

@@ -1,7 +1,7 @@
 BEGIN;
 
 -- ============================================================
--- Dental Growth OS™ | Practice Intelligence OS™ | Growth Score™
+-- Dental Growth OS | Practice Intelligence OS | Growth Score
 -- Migration: 202606030004_dental_growth_os
 -- ============================================================
 

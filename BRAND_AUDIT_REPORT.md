@@ -10,7 +10,7 @@ Source of truth: `lib/brand.ts` and `lib/brand/tokens.ts`.
 | Wordmark | ZENITH |
 | Descriptor | AI Automation Agency |
 | Tagline | Automate. Scale. Dominate. |
-| Product line | Patient Revenue Engine |
+| Product line | Revenue Recovery System |
 | Personality | Enterprise, intelligent, trustworthy, premium, modern AI, operational excellence |
 
 ## Implementation

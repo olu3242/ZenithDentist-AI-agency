@@ -17,7 +17,7 @@ Verified through `verifyAlicePracticeAdvisor` in `lib/pilot-operations.ts`.
 
 ALICE remains grounded through:
 
-Events -> Analytics Projector -> Metrics -> ALICE -> Mission Control
+Events -> Analytics Projector -> Metrics -> ALICE -> Executive Dashboard
 
 The implementation uses `generateAliceReport` and `analyticsProjector`; it does not let ALICE bypass analytics.
 

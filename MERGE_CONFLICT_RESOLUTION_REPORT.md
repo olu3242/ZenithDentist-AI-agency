@@ -13,7 +13,7 @@ Resolved all active merge conflicts from the Zenith production consolidation mer
 - Preserved localization routing, supported locale checks, localized middleware responses, locale switcher support, and i18n message files.
 - Preserved multi-tenant organization scoping, locale defaults, currency defaults, profile locale settings, and patient language foundation.
 - Preserved Revenue OS registrations and exports for treatment acceptance, recall recovery, reactivation, memberships, reviews, referrals, forecasting, attribution, provider performance, and benchmarking.
-- Preserved Workflow OS, ALICE, Mission Control, Patient Revenue Engine, Automation Health, dead letter handling, analytics projection, runtime telemetry, and tenant isolation checks.
+- Preserved Automation Platform, ALICE, Executive Dashboard, Revenue Recovery System, Automation Health, dead letter handling, analytics projection, runtime telemetry, and tenant isolation checks.
 - Merged documentation by retaining the most complete versions and preserving unique production, certification, architecture, and readiness sections.
 
 ## Key Files Resolved

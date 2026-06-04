@@ -28,9 +28,9 @@ Audited navigation, pages, dashboards, cards, widgets, buttons, forms, tables, c
 
 | Navigation group | Items | Page load status | Responsive status | Classification |
 | --- | --- | --- | --- | --- |
-| Public landing nav | Platform, Screens, Leaks, Playbooks, ALICE, Mission Control, PMS Ops, Assessment | Anchor navigation works in-page | Responsive header uses constrained layout | PARTIALLY FUNCTIONAL |
+| Public landing nav | Platform, Screens, Leaks, Playbooks, ALICE, Executive Dashboard, PMS Ops, Assessment | Anchor navigation works in-page | Responsive header uses constrained layout | PARTIALLY FUNCTIONAL |
 | Admin sidebar | Command, Leads, Audits, Bookings, ROI, Analytics | Routes exist and build | Sidebar layout responsive enough for app shell | FULLY FUNCTIONAL |
-| Internal sidebar | Mission Control, Runtime Health, E2E Audit, Events, Grounding, Resilience, Replays, Intelligence, Accuracy, Confidence, Sim Accuracy, Cloud, Orchestration, PMS, Governance, Platform, ALICE, Playbooks, Operations, Recommendations, Organizations, Health, Benchmarks, Revenue, Platform Metrics | Routes exist and build | Sidebar/app-shell responsive | PARTIALLY FUNCTIONAL |
+| Internal sidebar | Executive Dashboard, Runtime Health, E2E Audit, Events, Grounding, Resilience, Replays, Intelligence, Accuracy, Confidence, Sim Accuracy, Cloud, Orchestration, PMS, Governance, Platform, ALICE, Playbooks, Operations, Recommendations, Organizations, Health, Benchmarks, Revenue, Platform Metrics | Routes exist and build | Sidebar/app-shell responsive | PARTIALLY FUNCTIONAL |
 | App shell role nav | Role-based portal/dashboard/settings links | Routes exist and build | Mobile top/bottom surfaces present | FULLY FUNCTIONAL |
 | Portal sidebar | Dashboard, Revenue, Recall, Patients, Reports, Locations, Integrations, Reviews, Forecasting, ALICE, Command, Cloud, Orchestration, Knowledge, Settings, Simulations | Routes exist and build | Responsive portal shell | PARTIALLY FUNCTIONAL |
 
@@ -46,9 +46,9 @@ Audited navigation, pages, dashboards, cards, widgets, buttons, forms, tables, c
 | Dashboard | Tenant data, scoped admin data, runtime data, automation state | Navigation/action panels | Dashboard loading/error files exist | FULLY FUNCTIONAL |
 | Automation Center | Automation registry + runtime traces | Execute/Pause/Resume with persistence | Pending + success/error query states | FULLY FUNCTIONAL |
 | Automation Marketplace | Automation registry + patient revenue product | Install/Enable/Disable/PRE install/deploy | Pending + success/error query states | FULLY FUNCTIONAL |
-| Mission Control | Runtime, governance, provider, replay, incident, tenant modules | Many panels are read/diagnostic; selected modules persist events | Route loading/error files exist | PARTIALLY FUNCTIONAL |
+| Executive Dashboard | Runtime, governance, provider, replay, incident, tenant modules | Many panels are read/diagnostic; selected modules persist events | Route loading/error files exist | PARTIALLY FUNCTIONAL |
 | Runtime OS | Tenant/runtime modules | Mostly read-only operational dashboard | Route build verified | PARTIALLY FUNCTIONAL |
-| Workflow OS | Tenant + workflow governance/registry | Governance views, limited mutation | Route build verified | PARTIALLY FUNCTIONAL |
+| Automation Platform | Tenant + workflow governance/registry | Governance views, limited mutation | Route build verified | PARTIALLY FUNCTIONAL |
 | Portal | Tenant + portal operational data | Reports/downloads/navigation | Portal route loading/error coverage partial | PARTIALLY FUNCTIONAL |
 | GTM Command Center | GTM tables + admin fallback | Create/update GTM functions exist in library; page is mostly read-only | Route build verified | PARTIALLY FUNCTIONAL |
 | Internal pages | Internal aggregate data modules | Mostly read-only diagnostics | Route build verified | PARTIALLY FUNCTIONAL |
@@ -86,7 +86,7 @@ Audited navigation, pages, dashboards, cards, widgets, buttons, forms, tables, c
 | Admin charts | Lead/ROI/event rows | FULLY FUNCTIONAL |
 | Revenue dashboard metrics | Lead/ROI/booking aggregates | FULLY FUNCTIONAL |
 | Portal scorecards/charts | `getPortalData()` live/fallback data | PARTIALLY FUNCTIONAL |
-| Mission Control runtime widgets | Runtime modules and derived state | PARTIALLY FUNCTIONAL |
+| Executive Dashboard runtime widgets | Runtime modules and derived state | PARTIALLY FUNCTIONAL |
 | Landing gallery/hero preview | Explicit sandbox/demo sample data | MOCK DATA |
 | Product/marketplace registry cards | Static automation registry + persisted status | PARTIALLY FUNCTIONAL |
 
@@ -95,7 +95,7 @@ Audited navigation, pages, dashboards, cards, widgets, buttons, forms, tables, c
 | Item | Current classification | Remediation status |
 | --- | --- | --- |
 | Public landing gallery modes `demo/sandbox/live` | MOCK DATA | Left as product demo; labeled in audit |
-| Some Mission Control panels | PARTIALLY FUNCTIONAL | Backend modules exist, but not every panel has mutation/drilldown |
+| Some Executive Dashboard panels | PARTIALLY FUNCTIONAL | Backend modules exist, but not every panel has mutation/drilldown |
 | Portal empty states | PLACEHOLDER when Supabase unavailable or tenant missing | Valid fallback; not removed |
 | Automation registry empty state | PLACEHOLDER when Supabase/org unavailable | Valid fallback; action requires tenant migration |
 | GTM Command Center | PARTIALLY FUNCTIONAL | Backend functions exist; page lacks full mutation UI |
@@ -108,5 +108,5 @@ No typecheck, lint, or production-build-broken components remain after this spri
 
 - A true 100% clickable certification requires browser automation across authenticated roles and a linked Supabase project with seed data.
 - Several diagnostic dashboards are intentionally read-only and therefore do not have save/update/delete actions.
-- Not every custom Mission Control table has generic sorting/filtering/pagination.
+- Not every custom Executive Dashboard table has generic sorting/filtering/pagination.
 - Public product demo sections still contain explicit sandbox/sample content.

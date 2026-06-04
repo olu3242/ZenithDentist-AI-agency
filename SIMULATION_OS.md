@@ -13,7 +13,7 @@ Primary modules:
 
 ## Purpose
 
-Simulation OS runs scenarios before execution so workflows and ALICE recommendations can be tested against a digital twin.
+Simulation OS runs scenarios before execution so workflows and AI Revenue Intelligence recommendations can be tested against a digital twin.
 
 ## Simulation Targets
 

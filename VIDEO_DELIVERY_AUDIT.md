@@ -2,7 +2,7 @@
 
 Delivery ownership:
 
-- Workflow OS owns state, orchestration, evidence, attribution, retries, and self-healing.
+- Automation Platform owns state, orchestration, evidence, attribution, retries, and self-healing.
 - n8n owns SMS, email, WhatsApp, provider integrations, outbound delivery, and callbacks.
 
 Implemented delivery records:

@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Workflow Engine — the core execution entry point for Workflow OS.
+ * Workflow Engine — the core execution entry point for Automation Platform.
  *
  * Every automation MUST enter through executeWorkflow().  No direct
  * automation execution is permitted outside this engine.
@@ -49,7 +49,7 @@ export interface WorkflowEventInput {
 }
 
 /**
- * Execute a workflow through Workflow OS.  This is the single authoritative
+ * Execute a workflow through Automation Platform.  This is the single authoritative
  * entry point — all automations must go through here.
  */
 export async function executeWorkflow(
@@ -87,7 +87,7 @@ export async function executeWorkflow(
     },
   });
 
-  // Publish to Event Fabric so Mission Control and AI OS receive the signal
+  // Publish to Event Fabric so Executive Dashboard and AI OS receive the signal
   await publishWorkflowEvent({
     eventType: "workflow.execution.started",
     workflowId: req.workflowId,
@@ -117,7 +117,7 @@ export async function executeWorkflow(
 /**
  * Publish a workflow lifecycle event to the Event Fabric.
  * Used internally by workflow-os modules; also exported for AI OS and
- * Mission Control to emit workflow-level events.
+ * Executive Dashboard to emit workflow-level events.
  */
 export async function publishWorkflowEvent(input: WorkflowEventInput): Promise<void> {
   await publishEvent({

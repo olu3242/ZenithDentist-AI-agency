@@ -1,4 +1,4 @@
-# Documentation OS™ — Institutional Memory Layer
+# Documentation OS — Institutional Memory Layer
 
 **Classification:** Canonical Platform Specification
 **Status:** OPERATIONAL
@@ -10,7 +10,7 @@
 
 ## Purpose
 
-Documentation OS™ is the institutional memory of Zenith Patient OS™. Every component, workflow, schema, API route, agent, and integration is documented, versioned, and governed. No platform component exists without documentation. No production deployment is permitted without documentation coverage passing the governance gate.
+Documentation OS is the institutional memory of Zenith Patient OS. Every component, workflow, schema, API route, agent, and integration is documented, versioned, and governed. No platform component exists without documentation. No production deployment is permitted without documentation coverage passing the governance gate.
 
 **Core principles:**
 - Every lib module has a corresponding doc entry in the Architecture Registry
@@ -23,7 +23,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ## 9 Core Modules
 
-### 1. Documentation Studio™
+### 1. Documentation Studio
 **Purpose:** Authoring interface for all platform documentation.
 **Implementation:** Markdown-based, stored in `docs/` directory at repository root.
 **Conventions:**
@@ -36,7 +36,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 2. Architecture Registry™
+### 2. Architecture Registry
 **Purpose:** Canonical record of all platform components, their layers, dependencies, lib module paths, and operational status.
 **Location:** `docs/ZENITH_ARCHITECTURE_REGISTRY.md`
 **Contains:** DB Schema Registry (35+ tables), Lib Module Registry (28+ modules), API Route Registry (20+ routes), Event Catalogue (30+ events), Workflow Registry.
@@ -44,8 +44,8 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 3. Workflow Registry™
-**Purpose:** All Workflow OS workflow definitions documented with steps, triggers, owners, and expected outcomes.
+### 3. Workflow Registry
+**Purpose:** All Automation Platform workflow definitions documented with steps, triggers, owners, and expected outcomes.
 **Primary source:** `lib/workflow-os/workflow-registry.ts`
 **Documentation:** Each workflow entry in the code registry has a corresponding documentation section in the Architecture Registry.
 **Standard workflows documented:**
@@ -59,7 +59,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 4. Agent Registry™
+### 4. Agent Registry
 **Purpose:** Documentation of all 7 AI agents — their purpose, trigger conditions, decision logic, escalation paths, and output events.
 **Primary source:** `agent_registry` DB table + `lib/agents/` directory
 **Agents registered:**
@@ -74,7 +74,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 5. Integration Registry™
+### 5. Integration Registry
 **Purpose:** All external integrations documented — credentials required, health check endpoint, sync frequency, failure handling.
 **Primary source:** `integration_registry` DB table + `lib/integration-os/` + `lib/adapters/`
 **Integrations registered:**
@@ -91,7 +91,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 6. Schema Registry™
+### 6. Schema Registry
 **Purpose:** Every DB table documented — purpose, columns, RLS policy, organisation scoping, migration file.
 **Location:** `docs/ZENITH_ARCHITECTURE_REGISTRY.md` — Section 1: DB Schema Registry
 **Standard entry format:**
@@ -102,7 +102,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 7. API Registry™
+### 7. API Registry
 **Purpose:** All `app/api/` routes catalogued — methods, authentication requirements, request/response schema, rate limits.
 **Location:** `docs/ZENITH_ARCHITECTURE_REGISTRY.md` — Section 3: API Route Registry
 **Standard entry format:**
@@ -113,7 +113,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 8. Runbook Registry™
+### 8. Runbook Registry
 **Purpose:** Operational runbooks for incidents, deployments, rollbacks, and routine maintenance.
 **Location:** `docs/RUNBOOK_*.md`
 **Required runbooks:**
@@ -126,7 +126,7 @@ Documentation OS™ is the institutional memory of Zenith Patient OS™. Every c
 
 ---
 
-### 9. Compliance Registry™
+### 9. Compliance Registry
 **Purpose:** HIPAA documentation, platform governance records, consent templates, BAA tracking, and audit trail.
 **Location:** `docs/COMPLIANCE_*.md`
 **Contents:**
@@ -145,7 +145,7 @@ Every documented component MUST include the following fields:
 
 | # | Field | Description |
 |---|-------|-------------|
-| 1 | `component_name` | Official product name with trademark |
+| 1 | `component_name` | Official product name with brandName |
 | 2 | `classification` | Canonical / Specification / Runbook / Compliance |
 | 3 | `status` | OPERATIONAL / PARTIAL / PLANNED |
 | 4 | `owner` | Named owner (person or team) |
@@ -164,7 +164,7 @@ Every documented component MUST include the following fields:
 
 ---
 
-## Auto Documentation Engine™ — Trigger Conditions
+## Auto Documentation Engine — Trigger Conditions
 
 The following changes MUST trigger documentation updates:
 
@@ -231,4 +231,4 @@ Components counted:
 - Each sprint closes with a documentation review checkpoint
 - Any component with missing documentation is flagged as a P2 backlog item
 - Documentation debt is tracked the same as technical debt
-- The Documentation OS™ health dashboard is reviewed weekly in platform governance meetings
+- The Documentation OS health dashboard is reviewed weekly in platform governance meetings

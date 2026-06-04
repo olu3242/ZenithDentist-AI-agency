@@ -57,7 +57,7 @@ Pricing OS defines Zenith's complete pricing model: subscription tiers, implemen
 | Referral Journeys | No | Yes | Yes | Yes |
 | Review Generation Journeys | Yes | Yes | Yes | Yes |
 | **Platform** | | | | |
-| Mission Control Dashboard | Basic | Full | Full | Full |
+| Executive Dashboard Dashboard | Basic | Full | Full | Full |
 | PMS Integration (OpenDental) | Yes | Yes | Yes | Yes |
 | API Access | No | No | Yes | Yes |
 | Multi-Location / DSO | No | No | No | Yes |

@@ -1,4 +1,4 @@
-# ALICE Traceability Report
+# AI Decision Traceability Report
 
 > **Platform Maturity Sprint — June 2026**
 > Source: `lib/alice/agents/`, `lib/alice/index.ts`
@@ -7,7 +7,7 @@
 
 ## Overview
 
-ALICE (AI-Linked Clinical and Commercial Engine) is the intelligence layer of the Zenith platform. ALICE agents analyze practice data, generate ranked recommendations, and produce structured reports that drive Mission Control dashboards and automation prioritization.
+ALICE (AI-Linked Clinical and Commercial Engine) is the intelligence layer of the Zenith platform. ALICE agents analyze practice data, generate ranked recommendations, and produce structured reports that drive Executive Dashboards and automation prioritization.
 
 ALICE requires `ANTHROPIC_API_KEY` in the environment for real LLM inference. Without the key, agents return empty/stub responses.
 
@@ -155,7 +155,7 @@ CREATE TABLE alice_recommendation_traces (
 
 **Trace lifecycle:**
 1. ALICE agent generates recommendation → `trace_id` created
-2. Recommendation surfaced in Mission Control
+2. Recommendation surfaced in Executive Dashboard
 3. User acts (or automation fires) → `action_taken` written
 4. Outcome measured (revenue, appointment booked) → `outcome` written
 5. Confidence recalibration: `outcome.actual_revenue / recommendation.impact.estimated_revenue`

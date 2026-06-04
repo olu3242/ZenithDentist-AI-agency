@@ -31,7 +31,7 @@ Not certified as 100% production-interactive because remote Supabase is not link
 
 - Remote backend connectivity cannot be fully certified until Supabase is linked and migrations are applied.
 - Authenticated browser navigation for all roles was not run in this sprint.
-- Some Mission Control, Portal, Internal, Workflow OS, and Runtime OS widgets are diagnostic/read-only and do not expose full CRUD controls.
+- Some Executive Dashboard, Portal, Internal, Automation Platform, and Runtime OS widgets are diagnostic/read-only and do not expose full CRUD controls.
 - Some landing page sections are intentionally sandbox/demo preview content.
 - Some custom dashboard tables still need table-level controls beyond the shared admin CRM table.
 

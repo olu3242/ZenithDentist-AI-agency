@@ -1,6 +1,6 @@
 # Pilot Revenue Validation Framework
 
-> How to validate that the Zenith Patient OS™ is generating measurable, attributable revenue during a pilot.
+> How to validate that the Zenith Patient OS is generating measurable, attributable revenue during a pilot.
 
 ---
 
@@ -14,7 +14,7 @@ Revenue validation is the primary commercial evidence that a pilot is working. I
 
 ```
 Workflow triggers
-    ↓ (Workflow OS executes communication workflow)
+    ↓ (Automation Platform executes communication workflow)
 Communication sent
     ↓ (SMS, Email, or Video delivered via Communication Hub)
 Patient engages

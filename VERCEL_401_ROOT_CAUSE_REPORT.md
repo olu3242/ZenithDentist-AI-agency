@@ -215,7 +215,7 @@ In Vercel project settings:
 | Login page loads | FAIL | `/login` returns Vercel `401` |
 | Signup page loads | FAIL | `/signup` returns Vercel `401` |
 | Dashboard accessible after authentication | BLOCKED | Vercel blocks route before app auth |
-| Mission Control reachable | BLOCKED | Vercel blocks route before app auth |
+| Executive Dashboard reachable | BLOCKED | Vercel blocks route before app auth |
 | API routes return application responses | FAIL | API probes return Vercel `401` |
 
 ## Final Root Cause

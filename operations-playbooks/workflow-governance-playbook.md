@@ -1,5 +1,5 @@
 # Workflow Governance Playbook
-## Zenith AI Dental Platform — Workflow OS Management v1.0
+## Zenith AI Dental Platform — Automation Platform Management v1.0
 
 **Owner:** AI Operations Manager / Platform Admin  
 **Review Cadence:** Monthly for active changes; quarterly for standing governance  
@@ -9,11 +9,11 @@
 
 ## Overview
 
-This playbook governs how workflows are added, modified, deprecated, and recovered in the Zenith Workflow OS. The Workflow OS (`lib/workflow-os/`) is the operational execution layer — every patient interaction, revenue recovery action, and AI recommendation runs through it. Changes to workflows affect live tenant operations and must follow the process defined here.
+This playbook governs how workflows are added, modified, deprecated, and recovered in the Zenith Automation Platform. The Automation Platform (`lib/workflow-os/`) is the operational execution layer — every patient interaction, revenue recovery action, and AI recommendation runs through it. Changes to workflows affect live tenant operations and must follow the process defined here.
 
 ---
 
-## Workflow OS Architecture Reference
+## Automation Platform Architecture Reference
 
 Key modules (for context in this playbook):
 
@@ -201,7 +201,7 @@ An SLA breach occurs when a workflow execution exceeds its defined `slaMinutes` 
 
 ### Detection
 
-Mission Control exposes `slaBreachCount` in the runtime health state. A non-zero value requires investigation.
+Executive Dashboard exposes `slaBreachCount` in the runtime health state. A non-zero value requires investigation.
 
 ```bash
 GET /api/mission-control/runtime-health
@@ -255,7 +255,7 @@ Replay is the mechanism for re-executing a failed or stalled workflow. All repla
 ### Replay Governance
 
 From `lib/ai-os/agent-governance.ts`:
-- `replay` is in `APPROVAL_REQUIRED` set — it **always** requires operator approval unless the governance trust score is ≥ 80 AND ALICE confidence is ≥ 0.8.
+- `replay` is in `APPROVAL_REQUIRED` set — it **always** requires operator approval unless the governance trust score is ≥ 80 AND AI confidence is ≥ 0.8.
 - `canAutoApprove("replay", confidence)` returns `false` unconditionally for `replay` type.
 
 This means every replay requires manual operator action via the governance approval queue.

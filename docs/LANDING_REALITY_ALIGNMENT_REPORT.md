@@ -11,7 +11,7 @@ Replace demo values where backend equivalents exist and clearly label sandbox va
 | Landing Area | Status | Evidence |
 | --- | --- | --- |
 | Hero Metrics | REAL BACKEND DATA | `app/page.tsx` passes data from `getAdminDashboardData()` and `getRuntimeHealthState()`. |
-| Mission Control Preview | REAL BACKEND DATA + SANDBOX SECTIONS | Revenue/runtime tabs now use backend summary stats; remaining tabs are preview content. |
+| Executive Dashboard Preview | REAL BACKEND DATA + SANDBOX SECTIONS | Revenue/runtime tabs now use backend summary stats; remaining tabs are preview content. |
 | ALICE Preview | SANDBOX LABELED | Copy now states backend runtime/analytics modules are used and sandbox copy is labeled where live data is unavailable. |
 | Revenue Center Preview | SANDBOX CALCULATOR | Local slider remains an educational preview, not a live dashboard. |
 | PMS Preview | PARTIAL BACKEND | PMS routes now exist under `/dashboard/pms`; landing PMS copy remains readiness education. |
@@ -22,8 +22,8 @@ Replace demo values where backend equivalents exist and clearly label sandbox va
 
 - `getAdminDashboardData()`
 - `getRuntimeHealthState()`
-- Mission Control API route probe buttons
-- ALICE recommendations API route probe
+- Executive Dashboard API route probe buttons
+- AI Revenue Intelligence recommendations API route probe
 - Enterprise integrations API route probe
 
 ## Remaining Public-Safe Sandbox Data

@@ -1,4 +1,4 @@
-# Pilot Operations OS™
+# Pilot Operations OS
 
 > Transition from architecture-complete to pilot-operational.
 
@@ -6,7 +6,7 @@
 
 ## Purpose
 
-The Pilot Operations OS bridges the gap between a fully-architected platform and a live, revenue-generating pilot deployment. It provides Mission Control panels, operational dashboards, and success criteria tracking so that Client Success Managers (CSMs) and engineers always know the exact state of a pilot practice.
+The Pilot Operations OS bridges the gap between a fully-architected platform and a live, revenue-generating pilot deployment. It provides Executive Dashboard panels, operational dashboards, and success criteria tracking so that Client Success Managers (CSMs) and engineers always know the exact state of a pilot practice.
 
 ---
 
@@ -14,7 +14,7 @@ The Pilot Operations OS bridges the gap between a fully-architected platform and
 
 | # | Deliverable | Description | Primary File/Table |
 |---|-------------|-------------|-------------------|
-| 1 | **pilot_operations_dashboard** | Real-time readiness overview across all Mission Control panels | GET /api/pilot |
+| 1 | **pilot_operations_dashboard** | Real-time readiness overview across all Executive Dashboard panels | GET /api/pilot |
 | 2 | **onboarding_engine** | Implementation projects + tasks + milestones pipeline | lib/client-success/index.ts |
 | 3 | **journey_scheduler_engine** | delay_days → scheduledFor computation + execution | lib/journey-scheduler/index.ts |
 | 4 | **alice_outcome_reconciliation** | Decision → outcome → revenue feedback loop | lib/alice/outcome-reconciliation.ts |
@@ -24,7 +24,7 @@ The Pilot Operations OS bridges the gap between a fully-architected platform and
 
 ---
 
-## Mission Control Panels
+## Executive Dashboard Panels
 
 ### Panel 1: Pilot Readiness
 

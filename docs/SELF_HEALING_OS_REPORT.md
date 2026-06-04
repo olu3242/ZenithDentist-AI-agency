@@ -165,7 +165,7 @@ Autonomous recovery runs on a timer and self-heals without operator input:
 1. Detects circuits in OPEN state for > 5 minutes
 2. Attempts probe request to diagnose root cause
 3. If root cause resolved: resets circuit and replays top-priority dead letters
-4. If root cause persists: creates Mission Control alert with `operationalSeverity = CRITICAL`
+4. If root cause persists: creates Executive Dashboard alert with `operationalSeverity = CRITICAL`
 
 Governed by `lib/runtime/autonomous-recovery.ts` (full implementation in `lib/runtime/`).
 

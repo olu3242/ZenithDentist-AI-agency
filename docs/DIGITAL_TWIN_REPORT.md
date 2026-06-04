@@ -7,7 +7,7 @@
 
 ## Overview
 
-The Digital Twin capability simulates workflow outcomes before execution. Before launching an automation campaign (e.g., a recall outreach to 240 patients), the platform forecasts expected revenue, appointment count, and response rate based on historical data and ALICE confidence scores. After execution, actual outcomes are captured and variance is computed — feeding a continuous improvement loop.
+The Digital Twin capability simulates workflow outcomes before execution. Before launching an automation campaign (e.g., a recall outreach to 240 patients), the platform forecasts expected revenue, appointment count, and response rate based on historical data and AI confidence scores. After execution, actual outcomes are captured and variance is computed — feeding a continuous improvement loop.
 
 ---
 
@@ -22,13 +22,13 @@ Before Execution:
   lib/runtime/simulation-engine.ts
         ↓
   Historical data analysis (last 90 days)
-  × ALICE confidence score
+  × AI confidence score
   × Practice-specific conversion rates
         ↓
   forecast_runs record created:
     { expected_revenue, expected_appointments, expected_response_rate }
         ↓
-  Preview shown in Mission Control before commit
+  Preview shown in Executive Dashboard before commit
 
 After Execution:
   workflow_executions.completed_at reached
@@ -58,7 +58,7 @@ CREATE TABLE public.forecast_runs (
   expected_revenue        numeric(12,2),
   expected_appointments   integer,
   expected_response_rate  numeric(5,4),    -- 0.0000–1.0000
-  confidence_score        numeric(3,2),    -- ALICE confidence
+  confidence_score        numeric(3,2),    -- AI confidence
   forecast_method         text,            -- 'historical_avg' | 'alice_ml' | 'manual'
   forecasted_at           timestamptz DEFAULT now(),
 
@@ -91,7 +91,7 @@ The simulation engine models three scenarios for each workflow:
 - Historical conversion rate (from last 90 days of `workflow_executions`)
 - Patient population size (target audience for the run)
 - Average appointment value (from `revenue_recovery_events`)
-- ALICE confidence score (from `revenue_analyst` report)
+- AI confidence score (from `revenue_analyst` report)
 
 **Output:**
 ```typescript
@@ -126,7 +126,7 @@ interface PracticeDigitalTwin {
 
 The Digital Twin is refreshed on:
 1. Each workflow execution completion
-2. Manual refresh via Mission Control
+2. Manual refresh via Executive Dashboard
 3. Nightly batch (00:00 practice timezone)
 
 ---
@@ -178,7 +178,7 @@ Variance history powers forecast improvement over time — as the platform accum
 | `lib/runtime/replay-engine.ts` | ✅ Built | `getReplayCenterState()` implemented |
 | `forecast_runs` table | ⚠️ Planned | In next migration (`202606020001`) |
 | Variance capture (actual vs forecast) | ⚠️ Planned | After `forecast_runs` table live |
-| Mission Control pre-execution preview | ⚠️ Planned | UI component not yet built |
+| Executive Dashboard pre-execution preview | ⚠️ Planned | UI component not yet built |
 | ALICE forecast recalibration | ❌ Planned | Post-pilot capability |
 
 ---

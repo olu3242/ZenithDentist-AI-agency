@@ -9,7 +9,7 @@
 
 **PRODUCTION-READY FOR DENTAL PILOT**
 
-The Zenith AI Patient Revenue Operating System has reached 84/100 overall platform maturity. The core infrastructure — Workflow OS, Runtime OS, Event Fabric, Multi-Tenant Security, and Mission Control — is production-grade. Six revenue automation engines are implemented and attribution-linked. The platform is ready for a controlled dental pilot with 1–3 practices.
+The Zenith AI Patient Revenue Operating System has reached 84/100 overall platform maturity. The core infrastructure — Automation Platform, Runtime OS, Event Fabric, Multi-Tenant Security, and Executive Dashboard — is production-grade. Six revenue automation engines are implemented and attribution-linked. The platform is ready for a controlled dental pilot with 1–3 practices.
 
 ---
 
@@ -18,12 +18,12 @@ The Zenith AI Patient Revenue Operating System has reached 84/100 overall platfo
 | Dimension | Maturity Level | Score | Evidence |
 |-----------|---------------|-------|---------|
 | Revenue Operations | Production | 88/100 | 6 engines implemented, attribution VIEW, evidence layer |
-| Workflow OS | Production | 94/100 | 11-state machine, SLA enforcement, versioning |
+| Automation Platform | Production | 94/100 | 11-state machine, SLA enforcement, versioning |
 | Runtime OS | Production | 91/100 | Trace engine, dead letters, replay, autonomous recovery |
 | Event Fabric | Production | 90/100 | Canonical events, channel routing, correlation IDs |
 | ALICE Intelligence | Pilot-Ready | 78/100 | 4 agents built; requires `ANTHROPIC_API_KEY`; traces pending |
 | LIZ Advisor | Pilot-Ready | 72/100 | `app/api/liz/` exists; patient-facing AI; validation required |
-| Mission Control | Production | 93/100 | 65 panels, 11 API routes, real data |
+| Executive Dashboard | Production | 93/100 | 65 panels, 11 API routes, real data |
 | Commercialization | Pilot-Ready | 80/100 | 4 plans, feature entitlements, usage metering |
 | Benchmarking | Early | 65/100 | Hardcoded benchmarks; real peer data needed |
 | PMS Integration | Framework | 60/100 | 4 adapters; Open Dental pilot only; 3 stubs |
@@ -38,7 +38,7 @@ The Zenith AI Patient Revenue Operating System has reached 84/100 overall platfo
 
 ### Sprint Session 1 — Foundation
 - Revenue engine library: 6 automation TypeScript modules
-- Workflow OS: state machine (11 states), scheduler, router, registry
+- Automation Platform: state machine (11 states), scheduler, router, registry
 - Event Fabric: canonical event emission via `emitAutomationEvent()`
 - Supabase schema: patients, appointments, workflow_executions, recall/review/revenue events
 
@@ -47,7 +47,7 @@ The Zenith AI Patient Revenue Operating System has reached 84/100 overall platfo
 - Revenue attribution: `workflow_revenue_attribution` VIEW, 7-bucket breakdown, `RevenueAttribution` interface
 - Attribution links: `workflow_execution_id` FK added to all revenue tables (migration 202606010002)
 - Practice Health Score: 5-dimension composite in `lib/dental-revenue-os/practice-health.ts`
-- Mission Control: 65 panel components, 11 API routes, 21 concurrent data sources
+- Executive Dashboard: 65 panel components, 11 API routes, 21 concurrent data sources
 
 ### Sprint Session 3 — Platform Maturity
 - Self-Healing OS: `withRetry()`, circuit breaker, replay engine, autonomous recovery
@@ -76,7 +76,7 @@ Six automation engines are production-ready with full TypeScript implementations
 
 Revenue gap to 100/100: n8n delivery confirmation receipts, Google Places review confirmation, PMS real-time data.
 
-### Workflow OS (94/100)
+### Automation Platform (94/100)
 
 `lib/workflow-os/` — 10 modules covering the complete workflow lifecycle:
 

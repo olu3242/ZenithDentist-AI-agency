@@ -1,4 +1,4 @@
-# Zenith Patient OS™ — 2026 Product Roadmap
+# Zenith Patient OS — 2026 Product Roadmap
 
 **Classification:** Canonical Roadmap Authority
 **Status:** ACTIVE — Updated 2026-06-02
@@ -27,7 +27,7 @@
 
 | Deliverable | Status | Evidence |
 |-------------|--------|---------|
-| Workflow OS operational (10 modules) | ✅ | lib/workflow-os — workflow-engine, registry, scheduler, step-executor |
+| Automation Platform operational (10 modules) | ✅ | lib/workflow-os — workflow-engine, registry, scheduler, step-executor |
 | Event Fabric operational (immutable dual-write) | ✅ | lib/event-fabric |
 | Digital Dentist Twin foundation | ✅ | lib/digital-dentist-twin, lib/avatar-studio, lib/voice-studio |
 | Patient Influence Engine | ✅ | lib/patient-influence, lib/treatment-intelligence, lib/channel-optimization |
@@ -78,7 +78,7 @@
 
 ## Q3 2026 (July – September): Revenue Validation
 
-**Primary Objective:** Prove that Zenith Patient OS™ generates measurable, attributable revenue for pilot clients.
+**Primary Objective:** Prove that Zenith Patient OS generates measurable, attributable revenue for pilot clients.
 
 **Status:** 🔴 UPCOMING
 
@@ -93,7 +93,7 @@
 | Case study published (first pilot client) | Sep 2026 | Documented revenue impact: production increase, recall recovery, treatment acceptance |
 | Benchmark intelligence module | Sep 2026 | Cross-practice score comparisons enabled (requires ≥ 3 clients) |
 | HeyGen/ElevenLabs live (video + voice) | Aug 2026 | Avatar video delivered in at least one journey |
-| ALICE Executive Briefing™ delivered daily | Aug 2026 | Auto-generated briefing delivered to all pilot clients |
+| ALICE Executive Briefing delivered daily | Aug 2026 | Auto-generated briefing delivered to all pilot clients |
 | Platform Certification re-run | Sep 2026 | Target: 90/100 (PLATINUM) |
 
 **Q3 Gate:** ≥ 3 clients with validated revenue attribution, platform certification ≥ 90.
@@ -167,7 +167,7 @@ Q4 Scale
 
 The following items are intentionally deferred to 2027 or later:
 
-- Custom AI model training on Zenith proprietary data (requires ≥ 1,000 patients, 12-month data history)
+- Custom AI model training on approved Zenith platform data (requires >= 1,000 patients, 12-month data history)
 - Autonomous ALICE execution without human confirmation (governance policy: ALICE recommends, humans approve)
 - White-label platform licensing to other SaaS companies
 - International expansion outside North America

@@ -9,7 +9,7 @@
 | Leads | `leads` via `getAdminDashboardData` |
 | Revenue/conversions | `roi_calculations`, `bookings`, `outreach_events` |
 | Automations | `automation_registry` via `getAutomationOSState` |
-| Workflow runs | `automation_events`, Workflow OS runtime |
+| Workflow runs | `automation_events`, Automation Platform runtime |
 | Runtime executions | `automation_traces`, `automation_dead_letters` |
 | Reviews/patients/appointments | Existing portal operational tables/adapters where configured |
 
@@ -17,7 +17,7 @@
 
 - Dashboard now includes Automation OS live counts and execution totals.
 - Tenant resolution now prefers the authenticated `zenith_organization_id` cookie before the default slug.
-- Workflow OS now displays persisted automation registry status where available.
+- Automation Platform now displays persisted automation registry status where available.
 
 ## Remaining Gap
 

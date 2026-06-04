@@ -2,7 +2,7 @@
 
 Generated: 2026-06-01
 
-Product: Zenith PROS - Patient Revenue Operating System
+Product: Zenith Pros - Patient Revenue Operating System
 
 ## Executive Decision
 

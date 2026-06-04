@@ -158,7 +158,7 @@ RBAC (criterion 3) remains 0/10 — `userId`/`membershipRole` still null in `res
 - `lib/workflow-os/workflow-engine.ts` — `publishRuntimeFabricEvent()` called → writes `runtime_event_fabric_events`
 - Both writes happen synchronously within `executeWorkflow()` on every invocation
 - Analytics reads `automation_traces` via `getWorkflowAnalyticsSummary()` → `getRuntimeHealthState()`
-- Mission Control event panel reads `runtime_event_fabric_events`
+- Executive Dashboard event panel reads `runtime_event_fabric_events`
 
 **REMAINING GAP:**
 - No cross-table join in analytics layer — a failed `emitAutomationEvent` write that still succeeds on `publishRuntimeFabricEvent` would produce inconsistent counts between dashboards. Low probability but no reconciliation mechanism exists.

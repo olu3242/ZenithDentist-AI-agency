@@ -232,7 +232,7 @@ Zenith serves dental practices, which are HIPAA-covered entities. Any vendor tha
 ### Risk 1: Single Token Authentication Bypass
 **Likelihood: Medium | Impact: Critical**
 
-If `INTERNAL_ACCESS_TOKEN` is not set (or is empty), middleware falls through and all internal routes are publicly accessible. A malicious actor who discovers the Mission Control URL gains full read/write access to all tenant data.
+If `INTERNAL_ACCESS_TOKEN` is not set (or is empty), middleware falls through and all internal routes are publicly accessible. A malicious actor who discovers the Executive Dashboard URL gains full read/write access to all tenant data.
 
 **Mitigation:** Audit all environment variables immediately. Implement startup check that fails loudly if any auth token is empty. Prioritize proper authentication layer.
 
@@ -268,6 +268,6 @@ Two advertised integrations (Twilio telephony, Google Business) are in the exten
 ### Risk 5: No External Monitoring
 **Likelihood: High (ongoing) | Impact: High**
 
-Zenith has no external uptime monitoring. Platform outages are detected via internal Mission Control checks (which are only as reliable as the internal team's monitoring cadence) or customer support reports. A P0 outage at 2 AM could go undetected for hours.
+Zenith has no external uptime monitoring. Platform outages are detected via internal Executive Dashboard checks (which are only as reliable as the internal team's monitoring cadence) or customer support reports. A P0 outage at 2 AM could go undetected for hours.
 
 **Mitigation:** Implement external monitoring (Better Uptime, Datadog, or equivalent) for at minimum: `/api/mission-control/runtime-health`, `/api/opendental/sync`, Supabase reachability. Configure PagerDuty or equivalent alerting to Platform Admin and AI Operations Manager phones.

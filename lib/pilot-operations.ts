@@ -85,9 +85,9 @@ export async function activatePilotTenant(input: PilotActivationInput): Promise<
     evidence: `ALICE grounding score is ${projection.scores.aliceGrounding}/100.`
   });
   steps.push({
-    name: "Mission Control Activated",
+    name: "Executive Dashboard Activated",
     status: projection.scores.platformHealth >= 70 ? "complete" : "blocked",
-    evidence: `Mission Control analytics projection health is ${projection.scores.platformHealth}/100.`
+    evidence: `Executive Dashboard analytics projection health is ${projection.scores.platformHealth}/100.`
   });
 
   return {

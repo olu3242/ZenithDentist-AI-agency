@@ -2,7 +2,7 @@ import "server-only";
 
 /**
  * Execution Observability — structured logging and telemetry for every
- * workflow execution event inside Workflow OS.
+ * workflow execution event inside Automation Platform.
  */
 
 import { logger } from "@/lib/logger";

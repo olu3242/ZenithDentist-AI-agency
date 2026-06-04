@@ -48,7 +48,7 @@ All six automations emit through one of two canonical paths:
 2. **`executeWorkflow()`** — `lib/workflow-os/workflow-engine.ts`
    - Used by: Recall Recovery, Review Growth
 
-Both paths write a `workflow_executions` row and propagate through the Workflow OS state machine (`lib/workflow-os/workflow-state-machine.ts`).
+Both paths write a `workflow_executions` row and propagate through the Automation Platform state machine (`lib/workflow-os/workflow-state-machine.ts`).
 
 ---
 

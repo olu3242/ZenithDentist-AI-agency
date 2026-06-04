@@ -8,14 +8,14 @@
 
 ## Full Feature Reality Matrix
 
-| Feature | UI | API | DB | Runtime | Analytics | ALICE | Mission Control | Status |
+| Feature | UI | API | DB | Runtime | Analytics | ALICE | Executive Dashboard | Status |
 |---------|-----|-----|-----|---------|-----------|-------|----------------|--------|
 | Lead Funnel | ✓ app/funnel | ✓ /api/leads | ✓ leads | ✓ lead_created event | ✓ outreach_events | ✓ getPortalData | ✓ getMissionControlState | **VERIFIED** |
 | ROI Audit | ✓ app/admin/roi | ✓ /api/roi | ✓ roi_calculations | ✓ automation_traces | ✓ usage_metrics | ✓ generateAliceReport | ✓ roi-intelligence-center | **VERIFIED** |
 | Workflow Execution | — | ✓ /api/workflow/* | ✓ automation_traces | ✓ executeWorkflow() | ✓ analyticsProjector | ✓ answerOperationalQuery | ✓ getMissionControlState | **VERIFIED** |
 | Discovery Sessions | ✓ app/admin/discovery | — | ✓ discovery_sessions | — | — | — | ✓ sales-intelligence-center | **PARTIAL** |
 | Client Onboarding | — | — | ✓ client_onboarding_playbooks | ✓ workflow traces | — | — | — | **PARTIAL** |
-| Marketplace Install | ✓ app/marketplace/dental | ✓ /api/marketplace/dental | ✓ installed_extensions | ✓ extension-runtime.ts | ✓ publishEvent | — | ✓ Mission Control | **PARTIAL** |
+| Marketplace Install | ✓ app/marketplace/dental | ✓ /api/marketplace/dental | ✓ installed_extensions | ✓ extension-runtime.ts | ✓ publishEvent | — | ✓ Executive Dashboard | **PARTIAL** |
 | Billing Lifecycle | — | ✓ /api/billing/status | ✓ billing_events | — | ✓ usage_metrics | — | — | **PARTIAL** |
 | Support Tickets | — | ✓ /api/support/tickets | ✓ operational_incidents | — | — | — | — | **PARTIAL** |
 | Alerting | — | ✓ /api/monitoring/health | ✓ operational_incidents | ✓ dead letters detected | ✓ evaluateAlerts | — | ✓ getMissionControlState | **PARTIAL** |
@@ -25,12 +25,12 @@
 
 ## What Makes Each Feature VERIFIED
 
-**VERIFIED** requires all 7 columns populated (UI + API + DB + Runtime + Analytics + ALICE + Mission Control).
+**VERIFIED** requires all 7 columns populated (UI + API + DB + Runtime + Analytics + ALICE + Executive Dashboard).
 
 | Feature | Why VERIFIED |
 |---------|-------------|
 | Lead Funnel | All 7 layers present: UI at app/funnel, API /api/leads, leads table, lead_created publishEvent, outreach_events analytics, ALICE reads via getPortalData, getMissionControlState includes pipeline |
-| ROI Audit | All 7 layers: UI at app/admin/roi, /api/roi, roi_calculations table, automation_traces for runtime, usage_metrics, generateAliceReport('roi_summary'), roi-intelligence-center in Mission Control |
+| ROI Audit | All 7 layers: UI at app/admin/roi, /api/roi, roi_calculations table, automation_traces for runtime, usage_metrics, generateAliceReport('roi_summary'), roi-intelligence-center in Executive Dashboard |
 | Workflow Execution | All 7 layers: no standalone UI needed (triggers from features), /api/workflow/*, automation_traces table, executeWorkflow() canonical, analyticsProjector reads traces, ALICE answers workflow queries, getMissionControlState aggregates |
 
 ---
@@ -39,38 +39,38 @@
 
 ### Discovery Sessions
 - **Missing:** API endpoint (`/api/discovery`), Runtime event publishing, Analytics integration, ALICE awareness
-- **Has:** UI at `app/admin/discovery`, `discovery_sessions` DB table, `sales-intelligence-center` in Mission Control
+- **Has:** UI at `app/admin/discovery`, `discovery_sessions` DB table, `sales-intelligence-center` in Executive Dashboard
 - **Path to VERIFIED:** Add `/api/discovery` CRUD, add `publishEvent('discovery_session_created')`, feed into analyticsProjector, add to getPortalData for ALICE
 
 ### Client Onboarding
-- **Missing:** UI (`app/onboarding`), API (`/api/onboarding`), Analytics, ALICE, Mission Control
+- **Missing:** UI (`app/onboarding`), API (`/api/onboarding`), Analytics, ALICE, Executive Dashboard
 - **Has:** `client_onboarding_playbooks` DB table, workflow trace integration
 - **Path to VERIFIED:** Build onboarding UI + API, add publishEvent calls, add to ALICE data sources
 
 ### Marketplace Install
 - **Missing:** ALICE integration
-- **Has:** UI, API, DB, runtime via extension-runtime.ts, analytics via publishEvent, Mission Control
+- **Has:** UI, API, DB, runtime via extension-runtime.ts, analytics via publishEvent, Executive Dashboard
 - **Path to VERIFIED:** Add `installed_extensions` to `getPortalData()` for ALICE awareness
 
 ### Billing Lifecycle
-- **Missing:** UI (`app/billing`), Runtime event (no `publishEvent` on billing changes), ALICE, Mission Control
+- **Missing:** UI (`app/billing`), Runtime event (no `publishEvent` on billing changes), ALICE, Executive Dashboard
 - **Has:** `/api/billing/status`, `billing_events` table, `usage_metrics` analytics
-- **Path to VERIFIED:** Add billing UI, add `publishEvent('billing_event_created')`, surface in ALICE + Mission Control
+- **Path to VERIFIED:** Add billing UI, add `publishEvent('billing_event_created')`, surface in ALICE + Executive Dashboard
 
 ### Support Tickets
-- **Missing:** UI, Runtime, Analytics, ALICE, Mission Control
+- **Missing:** UI, Runtime, Analytics, ALICE, Executive Dashboard
 - **Has:** `/api/support/tickets`, `operational_incidents` table
 - **Path to VERIFIED:** Full stack build required; highest effort of all PARTIAL features
 
 ### Alerting
 - **Missing:** UI (alert management page), ALICE awareness
-- **Has:** API, DB, dead letter detection, evaluateAlerts analytics, Mission Control
+- **Has:** API, DB, dead letter detection, evaluateAlerts analytics, Executive Dashboard
 - **Path to VERIFIED:** Add alerting UI page, add to ALICE data sources for proactive warnings
 
 ### Audit Logging
-- **Missing:** UI (`app/audit`), ALICE integration, Mission Control aggregation
+- **Missing:** UI (`app/audit`), ALICE integration, Executive Dashboard aggregation
 - **Has:** API, `runtime_audit_timeline` table, `logAuditEvent()` runtime, `getAuditSummary()` analytics
-- **Path to VERIFIED:** Add audit UI, add to ALICE + Mission Control
+- **Path to VERIFIED:** Add audit UI, add to ALICE + Executive Dashboard
 
 ---
 

@@ -48,4 +48,4 @@ Lead Create -> Save Lead/ROI/Audit -> Return Success -> Fire Runtime Trace Async
 
 ## Remaining Operational Requirement
 
-A real lead can only be inserted when Supabase REST/database connectivity is available. Runtime OS, Workflow OS, Event Fabric, Analytics, and Email are now non-blocking; Supabase lead persistence remains the correct critical dependency.
+A real lead can only be inserted when Supabase REST/database connectivity is available. Runtime OS, Automation Platform, Event Fabric, Analytics, and Email are now non-blocking; Supabase lead persistence remains the correct critical dependency.

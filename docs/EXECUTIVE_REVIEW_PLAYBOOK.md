@@ -44,7 +44,7 @@ Duration: 30 minutes for up to 3 pilots; 45 minutes for 4–6 pilots.
 - Patients with high intent score not yet in an active journey
 - Membership candidates: patients with 2+ confirmed appointments, no membership
 - Referral candidates: patients with NPS ≥ 9 not yet in referral journey
-- Data source: ALICE recommendations from `agent_recommendations` WHERE `week_created = this_week`
+- Data source: AI Revenue Intelligence recommendations from `agent_recommendations` WHERE `week_created = this_week`
 
 ### Section 5: ALICE Insights
 - Top 3 recommendations from `agent_recommendations` created this week
@@ -105,7 +105,7 @@ The upserted row serves as the permanent record of this week's Executive Review 
 Each Executive Review generates:
 
 1. **`pilot_roi_reports` row** (`report_period = '7d'`) — permanent audit record
-2. **Mission Control portal item** — visible to practice owner in their dashboard
+2. **Executive Dashboard portal item** — visible to practice owner in their dashboard
 3. **Email to practice owner** (via Resend) — "Your Weekly ZenithDentist Performance Summary"
 4. **Internal Slack summary** (via webhook) — #pilot-war-room channel with traffic-light status
 
@@ -131,9 +131,9 @@ Each Executive Review generates:
 | Recipient | Format | Timing |
 |-----------|--------|--------|
 | Practice Owner | Email (Resend) | Monday 10:00 local |
-| Mission Control | Portal notification | Monday 09:45 |
+| Executive Dashboard | Portal notification | Monday 09:45 |
 | Internal Team | Slack #pilot-war-room | Monday 09:40 |
-| CTO | Dashboard summary | Real-time via Mission Control |
+| CTO | Dashboard summary | Real-time via Executive Dashboard |
 
 ---
 

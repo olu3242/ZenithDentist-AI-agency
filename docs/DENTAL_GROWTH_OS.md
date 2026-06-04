@@ -1,15 +1,15 @@
-# Dental Growth OS™
+# Dental Growth OS
 
 ## Overview
 
-Dental Growth OS™ is the growth automation layer of the Zenith Patient OS™ platform. It automates growth across five pillars: Acquisition, Reputation, Referrals, Recall, and Membership. Each pillar has a dedicated engine that tracks leads, patients, and outcomes — feeding the Growth Score™ and surfacing in the Growth Command Center in Mission Control™.
+Dental Growth OS is the growth automation layer of the Zenith Patient OS platform. It automates growth across five pillars: Acquisition, Reputation, Referrals, Recall, and Membership. Each pillar has a dedicated engine that tracks leads, patients, and outcomes — feeding the Growth Score and surfacing in the Growth Command Center in Executive Dashboard.
 
 ---
 
 ## Architecture Overview
 
 ```
-Dental Growth OS™
+Dental Growth OS
 ├── Acquisition Engine     → tracks new_patient_leads (7 sources)
 ├── Reputation Engine      → tracks reputation_events (reviews, ratings)
 ├── Referral Engine        → tracks referral_tracking (2-layer architecture)
@@ -17,10 +17,10 @@ Dental Growth OS™
 └── Membership Engine      → tracks membership_tracking (enrollment + retention)
                                       │
                                       ▼
-                               Growth Score™ (0-100)
+                               Growth Score (0-100)
                                       │
                                       ▼
-                          Growth Command Center (Mission Control)
+                          Growth Command Center (Executive Dashboard)
 ```
 
 ---
@@ -103,7 +103,7 @@ Automate review generation, track review receipt across platforms, and manage re
 
 | Event Type | Trigger |
 |------------|---------|
-| `review_requested` | Workflow OS sends review request after positive visit |
+| `review_requested` | Automation Platform sends review request after positive visit |
 | `review_received` | Review posted on platform (manual or webhook) |
 | `review_responded` | Staff or ALICE-generated response sent |
 | `review_recovered` | Negative review converted to neutral/positive via response |
@@ -183,9 +183,9 @@ Weight: 15% of overall Growth Score
 
 ---
 
-## Integration with Workflow OS
+## Integration with Automation Platform
 
-Each engine action triggers a Workflow OS event via Event Fabric. This enables automated follow-up sequences:
+Each engine action triggers a Automation Platform event via Event Fabric. This enables automated follow-up sequences:
 
 | Engine Action | Event Emitted | Workflow Triggered |
 |---------------|---------------|-------------------|
@@ -215,7 +215,7 @@ ALICE generates a personalized decision for each flagged patient, selecting the 
 
 ## Growth Score Dashboard
 
-The Dental Growth OS feeds the Growth Command Center in Mission Control with real-time metrics across all five pillars. See `GROWTH_COMMAND_CENTER.md` for panel specifications and refresh cadences.
+The Dental Growth OS feeds the Growth Command Center in Executive Dashboard with real-time metrics across all five pillars. See `GROWTH_COMMAND_CENTER.md` for panel specifications and refresh cadences.
 
 ---
 
@@ -226,4 +226,4 @@ The Dental Growth OS feeds the Growth Command Center in Mission Control with rea
 - `REFERRAL_ENGINE.md` — Full referral engine specification
 - `MEMBERSHIP_ENGINE.md` — Full membership engine specification
 - `RECALL_ENGINE.md` — Full recall engine specification
-- `GROWTH_COMMAND_CENTER.md` — Mission Control panel specifications
+- `GROWTH_COMMAND_CENTER.md` — Executive Dashboard panel specifications

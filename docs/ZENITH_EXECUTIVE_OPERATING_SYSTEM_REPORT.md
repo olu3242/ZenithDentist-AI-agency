@@ -14,7 +14,7 @@ Zenith is a fully converged Dental Automation Operating System built on a layere
 Supabase (Data Layer)
   └── Runtime Kernel          (single orchestration facade)
         └── Tenant Layer      (enforcement at every boundary)
-              └── Workflow OS (all automations route here)
+              └── Automation Platform (all automations route here)
                     └── AI OS / ALICE (grounded intelligence)
                           └── Platform Core / Operations Core
                                 └── Go-Live OS Suite (5 modules)
@@ -42,7 +42,7 @@ Supabase (Data Layer)
 
 The single orchestration facade that every subsystem registers with. No subsystem operates outside the kernel. Exports: `runtimeKernel`, `getRuntimeHealth`, `getRuntimeTelemetry`.
 
-### 2.2 Workflow OS
+### 2.2 Automation Platform
 **Location:** `lib/workflow-os/`
 
 All automations route through `executeWorkflow()` — no workflow runs outside this system. Enforces a strict lifecycle state machine:
@@ -78,7 +78,7 @@ ALICE (Autonomous Lifecycle Intelligence & Clinical Engagement) is the operation
 - Approval required for: `pause`, `replay`, `escalate`, `reroute`
 - Trust score gates all interventions
 - Every ALICE action is logged and tenant-scoped
-- ALICE routes through Workflow OS — never bypasses it
+- ALICE routes through Automation Platform — never bypasses it
 
 **ALICE Capabilities:**
 - `aliceQuery()` — Natural language platform queries
@@ -245,7 +245,7 @@ All 30+ database field references are validated against the generated `database.
 - `POST /api/auth/sign-up` — Organization creation + bootstrap
 - `POST /api/auth/sign-out` — Session termination
 
-**Workflow OS:**
+**Automation Platform:**
 - `POST /api/workflows/execute` — Single workflow execution entry point
 - `GET /api/workflows/[id]/status` — Live execution status
 - `POST /api/workflows/[id]/replay` — Governed replay (ALICE approval)
@@ -273,8 +273,8 @@ All routes enforce `withTenantGuard()` before any data access.
 
 ### 6.1 App Pages (56 pages)
 **Dashboard Suite:**
-- `/dashboard` — Mission Control overview
-- `/dashboard/workflows` — Workflow OS console
+- `/dashboard` — Executive Dashboard overview
+- `/dashboard/workflows` — Automation Platform console
 - `/dashboard/alice` — ALICE copilot interface
 - `/dashboard/analytics` — Analytics and KPIs
 - `/dashboard/roi` — ROI dashboard
@@ -300,7 +300,7 @@ All routes enforce `withTenantGuard()` before any data access.
 | Component | Score | Status |
 |-----------|-------|--------|
 | Runtime Kernel | 95% | Production Ready |
-| Workflow OS | 92% | Production Ready |
+| Automation Platform | 92% | Production Ready |
 | AI OS / ALICE | 88% | Production Ready |
 | Event Fabric | 90% | Production Ready |
 | Multi-Tenant Enforcement | 96% | Production Ready |
@@ -337,7 +337,7 @@ All routes enforce `withTenantGuard()` before any data access.
 
 ### 30 Days — Foundation
 - [ ] Onboard first 3 pilot practices
-- [ ] Enable Workflow OS for recall + no-show + review automations
+- [ ] Enable Automation Platform for recall + no-show + review automations
 - [ ] ALICE in advisory mode (recommendations, no auto-interventions)
 - [ ] Implement Supabase RLS on all tenant-scoped tables
 - [ ] Wire Stripe billing end-to-end
@@ -381,7 +381,7 @@ A typical dental practice ($800K revenue, 20 no-shows/month):
 ### 9.3 Customer Journey Automation
 1. **Lead → Trial:** Automated demo sequence via `lead_nurture` workflow
 2. **Trial → Onboarding:** Implementation OS 14-day playbook
-3. **Onboarding → Active:** Workflow OS activation + ALICE briefing
+3. **Onboarding → Active:** Automation Platform activation + ALICE briefing
 4. **Active → Expanding:** Expansion Engine identifies capability gaps
 5. **Expanding → Advocate:** Advocacy Engine + Referral OS flywheel
 
@@ -402,7 +402,7 @@ A typical dental practice ($800K revenue, 20 no-shows/month):
 - **One runtime:** All automations route through `executeWorkflow()`
 - **One event fabric:** All events use `ZenithEvent` envelope
 - **One tenant boundary:** All data access enforces `organization_id` scope
-- **One AI layer:** ALICE cannot bypass Workflow OS or governance
+- **One AI layer:** ALICE cannot bypass Automation Platform or governance
 - **Zero mock data:** All metrics from live Supabase telemetry
 - **Full audit trail:** Every action logged to `runtime_audit_timeline`
 
@@ -419,7 +419,7 @@ A typical dental practice ($800K revenue, 20 no-shows/month):
 Zenith is the first purpose-built Dental Automation Operating System. The platform converges patient lifecycle automation, AI operational intelligence, revenue tracking, and customer success into a single coherent system.
 
 The three convergence sprints delivered:
-- **Sprint 1:** Runtime Kernel + Workflow OS + AI OS + Event Fabric + Multi-Tenant foundation
+- **Sprint 1:** Runtime Kernel + Automation Platform + AI OS + Event Fabric + Multi-Tenant foundation
 - **Sprint 2:** ALICE grounding + Tenant hardening + Platform Core + Marketplace + Operations Core
 - **Sprint 3:** Implementation OS + Customer Success OS + Revenue OS + ROI OS + Referral OS + Production audit
 

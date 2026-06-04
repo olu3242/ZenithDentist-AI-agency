@@ -104,7 +104,7 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
       treatment_acceptance_rate: input.treatmentAcceptanceRate ?? null,
       recall_rate: input.recallRate ?? null
     } as Json,
-    notes: "FREE Revenue Opportunity Assessment - Mission Control lead record created"
+    notes: "FREE Revenue Opportunity Assessment - Executive Dashboard lead record created"
   };
 
   logger.info("[AUDIT] Database Insert", {

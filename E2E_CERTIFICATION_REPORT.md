@@ -7,8 +7,8 @@ Certified customer-facing claims for:
 - Revenue Assessment
 - LIZ
 - ALICE
-- Mission Control
-- Workflow OS
+- Executive Dashboard
+- Automation Platform
 - Revenue Playbooks
 - Onboarding
 - Authentication
@@ -69,10 +69,10 @@ Classification: PARTIALLY CERTIFIED
 
 Evidence:
 
-- UI: `app/portal/alice/page.tsx`, Mission Control ALICE components.
+- UI: `app/portal/alice/page.tsx`, Executive Dashboard ALICE components.
 - API: `/api/alice/*` routes exist.
 - Persistence: insights, recommendations, recommendation lineage tables exist.
-- Workflow: ALICE recommendations surface workflow actions, but not every recommendation writes execution lineage.
+- Workflow: AI Revenue Intelligence recommendations surface workflow actions, but not every recommendation writes execution lineage.
 - Telemetry: runtime traces and recommendation lineage are available, but generated insights can be in-memory fallback.
 - Reporting: ALICE reports and executive summaries exist.
 - Permissions: protected routes and tenant-scoped queries exist.
@@ -82,7 +82,7 @@ Certification gap:
 
 - Require every ALICE recommendation to persist problem, evidence, recommended action, operator decision, workflow execution, and outcome trace.
 
-### Mission Control
+### Executive Dashboard
 
 Classification: PARTIALLY CERTIFIED
 
@@ -99,9 +99,9 @@ Evidence:
 
 Certification gap:
 
-- Browser-level production E2E proof for every Mission Control action was not executed in this sprint.
+- Browser-level production E2E proof for every Executive Dashboard action was not executed in this sprint.
 
-### Workflow OS
+### Automation Platform
 
 Classification: CERTIFIED
 
@@ -197,7 +197,7 @@ Classification: PARTIALLY CERTIFIED
 
 Evidence:
 
-- UI: forecasting portal and Mission Control forecasting panels.
+- UI: forecasting portal and Executive Dashboard forecasting panels.
 - API: enterprise and mission-control routes.
 - Persistence: `enterprise_forecasts`, `forecast_accuracy`, `forecasting_events`.
 - Telemetry/reporting: forecast accuracy and event tables.

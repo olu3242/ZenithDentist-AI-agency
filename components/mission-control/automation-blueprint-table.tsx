@@ -4,7 +4,7 @@ export function AutomationBlueprintTable({ state }: { state: AutomationAuditStat
   return (
     <section className="rounded border border-card bg-white p-5 shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-muted">Automation blueprint registry</p>
-      <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Triggers, actions, event emissions, and ALICE visibility</h2>
+      <h2 className="mt-1 text-2xl font-black text-[#F8FAFC]">Triggers, actions, event emissions, and AI visibility</h2>
       <div className="mt-5 overflow-x-auto">
         <div className="min-w-[900px] divide-y divide-line rounded border border-card">
           {state.coverageResults.map(result => {
@@ -16,7 +16,7 @@ export function AutomationBlueprintTable({ state }: { state: AutomationAuditStat
                   <p className="mt-1 text-xs font-bold uppercase tracking-wider text-muted">{result.domain.replace(/_/g, " ")}</p>
                 </div>
                 <p className="text-sm font-semibold text-muted">{blueprint?.description}</p>
-                <Score label="ALICE" value={result.aliceVisibilityScore} />
+                <Score label="AI Revenue Intelligence" value={result.aliceVisibilityScore} />
                 <Score label="Replay" value={result.replayReadinessScore} />
                 <Score label="Observe" value={result.observabilityScore} />
                 <Score label="SLA" value={result.slaCoverageScore} />

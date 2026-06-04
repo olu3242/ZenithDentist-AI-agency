@@ -6,10 +6,10 @@ Date: 2026-06-01
 
 | Surface | Backend source | Status |
 | --- | --- | --- |
-| Mission Control | `getRuntimeHealthState`, runtime/governance/provider/replay/tenant modules | Connected, tenant-derived |
+| Executive Dashboard | `getRuntimeHealthState`, runtime/governance/provider/replay/tenant modules | Connected, tenant-derived |
 | Portal | `getPortalData`, `getTenantData` | Connected, falls back empty if Supabase unavailable |
 | Internal | `getInternalPlatformData` | Connected to tenant and portal aggregates |
-| Workflow OS | `getTenantData`, workflow governance modules | Connected with governance/static registry mix |
+| Automation Platform | `getTenantData`, workflow governance modules | Connected with governance/static registry mix |
 | Runtime OS | `getTenantData`, runtime health modules | Connected |
 | GTM Command Center | `getBusinessGrowthState` | Connected to GTM tables; global agency scope |
 | Automation Center | `getTenantData`, automation registry/state | Connected |

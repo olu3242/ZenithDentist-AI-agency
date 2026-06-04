@@ -1,6 +1,6 @@
 # Executive Automation Report
 
-## Mission Control Panels
+## Executive Dashboard Panels
 
 Automation OS now provides data for:
 

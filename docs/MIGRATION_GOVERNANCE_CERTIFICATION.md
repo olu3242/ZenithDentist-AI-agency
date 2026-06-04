@@ -29,7 +29,7 @@ Status: PASS
 Evidence:
 
 - `docs/MIGRATION_GOVERNANCE.md` defines one production deployment sequence:
-  Backup -> Migration Validation -> Staging Replay -> Production Replay -> Smoke Test -> Runtime Validation -> Revenue Validation -> ALICE Validation -> Mission Control Validation.
+  Backup -> Migration Validation -> Staging Replay -> Production Replay -> Smoke Test -> Runtime Validation -> Revenue Validation -> ALICE Validation -> Executive Dashboard Validation.
 - `scripts/validate-migrations.js` blocks duplicate timestamp IDs and out-of-order timestamp migrations.
 
 ## Claude Rules

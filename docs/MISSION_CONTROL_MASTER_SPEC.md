@@ -1,4 +1,4 @@
-# Mission Control — Master Specification
+# Executive Dashboard — Master Specification
 
 **Version:** 2.0  
 **Status:** Canonical  
@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-Mission Control is the unified operational command center for ZenithDentist — the single interface through which dental practice staff and Zenith operations teams observe platform performance, manage patient journeys, review AI decisions, and take action on growth opportunities.
+Executive Dashboard is the unified operational command center for ZenithDentist — the single interface through which dental practice staff and Zenith operations teams observe platform performance, manage patient journeys, review AI decisions, and take action on growth opportunities.
 
 ---
 
@@ -18,7 +18,7 @@ Mission Control is the unified operational command center for ZenithDentist — 
 - **Action-Oriented** — Every insight surfaces a clear next action.
 - **Role-Based Views** — Content filtered by user role and organization.
 - **Real-Time** — Data reflects current state within < 5 minutes.
-- **Audit-First** — Every action taken via Mission Control is logged.
+- **Audit-First** — Every action taken via Executive Dashboard is logged.
 
 ---
 
@@ -35,7 +35,7 @@ Mission Control is the unified operational command center for ZenithDentist — 
 
 ---
 
-## 4. Mission Control Modules
+## 4. Executive Dashboard Modules
 
 ### 4.1 Growth Command Center
 
@@ -84,7 +84,7 @@ Mission Control is the unified operational command center for ZenithDentist — 
 
 | Panel | Data Source |
 |-------|------------|
-| Active Workflows | Workflow OS runtime |
+| Active Workflows | Automation Platform runtime |
 | Failed Workflows | DLQ |
 | Retry Queue | Workflows in retry state |
 | Workflow Volume (24h) | Execution count by type |
@@ -131,7 +131,7 @@ Mission Control is the unified operational command center for ZenithDentist — 
 
 ## 5. Event-Driven Updates
 
-Mission Control receives all updates via the Event Fabric:
+Executive Dashboard receives all updates via the Event Fabric:
 
 ```
 Platform Action → Event emitted → mission_control_events → UI subscription → Panel refresh
@@ -157,7 +157,7 @@ const subscription = supabase
 
 ## 6. Action Capabilities
 
-From Mission Control, authorized users can:
+From Executive Dashboard, authorized users can:
 
 | Action | Role Required | Audit Trail |
 |--------|-------------|-------------|
@@ -173,7 +173,7 @@ From Mission Control, authorized users can:
 
 ## 7. Portal Access Gate Display
 
-When a practice fails access gates, Mission Control shows a clear remediation path:
+When a practice fails access gates, Executive Dashboard shows a clear remediation path:
 
 | Gate Failed | Display | Action Available |
 |-------------|---------|-----------------|
@@ -186,7 +186,7 @@ When a practice fails access gates, Mission Control shows a clear remediation pa
 
 ## 8. Notification Center
 
-Mission Control routes notifications by severity and role:
+Executive Dashboard routes notifications by severity and role:
 
 | Notification Type | Severity | Routes To |
 |------------------|---------|----------|
@@ -211,7 +211,7 @@ Mission Control routes notifications by severity and role:
 
 ---
 
-## 10. Data Retention in Mission Control
+## 10. Data Retention in Executive Dashboard
 
 | Data | Retention in UI |
 |------|----------------|
@@ -225,7 +225,7 @@ Mission Control routes notifications by severity and role:
 
 ## 11. Multi-Practice Portfolio View
 
-For `agency_admin` and `super_admin` roles, Mission Control provides a portfolio-level view:
+For `agency_admin` and `super_admin` roles, Executive Dashboard provides a portfolio-level view:
 
 - All practices listed with Growth Score
 - Portfolio aggregate Growth Score

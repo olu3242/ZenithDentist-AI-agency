@@ -16,10 +16,10 @@ The pass audited 50+ library modules, 30+ database tables, 40+ API routes, and 2
 
 | System | Role | Status |
 |---|---|---|
-| Workflow OS | Canonical automation brain | CANONICAL — do not replace |
+| Automation Platform | Canonical automation brain | CANONICAL — do not replace |
 | ALICE | Canonical intelligence brain | CANONICAL — do not replace |
 | Event Fabric | Canonical nervous system | CANONICAL — do not replace |
-| Mission Control | Canonical executive visibility layer | CANONICAL — do not replace |
+| Executive Dashboard | Canonical executive visibility layer | CANONICAL — do not replace |
 | Revenue OS | Canonical revenue intelligence | CANONICAL — do not replace |
 | Commercialization OS | Canonical commercialization layer | CANONICAL — extended by Commercial OS |
 | Digital Twin OS | Visibility + simulation overlay | NEW — reads existing tables |
@@ -123,8 +123,8 @@ The pass audited 50+ library modules, 30+ database tables, 40+ API routes, and 2
 | Commercial OS vs Commercialization OS | Commercial OS extends Commercialization OS — no replacement |
 | Digital Twin reads revenue data | digital-twin/index.ts reads revenue_opportunities, revenue_attribution_records — no duplicate tables |
 | ALICE Executive vs ALICE Core | executive-briefing.ts imports alice/index.ts — no duplicate intelligence engine |
-| Workflow Recovery vs Workflow OS | workflow-recovery/ imports workflow-os/ health-monitor — no duplicate automation engine |
-| Multiple analytics dashboards | All panels route through Mission Control — no duplicate dashboards |
+| Workflow Recovery vs Automation Platform | workflow-recovery/ imports workflow-os/ health-monitor — no duplicate automation engine |
+| Multiple analytics dashboards | All panels route through Executive Dashboard — no duplicate dashboards |
 | Video ROI vs Revenue Attribution | video_engagement_os reads revenue_attribution_records where source='video' — no new attribution engine |
 
 ---
@@ -133,7 +133,7 @@ The pass audited 50+ library modules, 30+ database tables, 40+ API routes, and 2
 
 | Credential | Purpose | Affected Systems |
 |---|---|---|
-| TWILIO_AUTH_TOKEN | SMS delivery for patient journeys | Workflow OS, Smart Video Journey |
+| TWILIO_AUTH_TOKEN | SMS delivery for patient journeys | Automation Platform, Smart Video Journey |
 | RESEND_API_KEY | Email delivery for proposals + briefings | Commercial OS, ALICE Executive |
 | HEYGEN_API_KEY | AI video generation | Smart Video Journey |
 | ELEVENLABS_API_KEY | Voice synthesis | Smart Video Journey |
@@ -150,9 +150,9 @@ All 5 credentials are environment-only gaps. No code changes required. Once set,
 | 1 | Reuse Before Create | COMPLIANT | 24 existing modules reused |
 | 2 | Extend Before Replace | COMPLIANT | 4 extensions, 0 replacements |
 | 3 | Single Canonical Brain | COMPLIANT | ALICE remains sole intelligence brain |
-| 4 | Single Canonical Automation Engine | COMPLIANT | Workflow OS remains sole automation brain |
+| 4 | Single Canonical Automation Engine | COMPLIANT | Automation Platform remains sole automation brain |
 | 5 | Single Nervous System | COMPLIANT | Event Fabric is sole event bus |
-| 6 | Single Executive View | COMPLIANT | Mission Control is sole dashboard namespace |
+| 6 | Single Executive View | COMPLIANT | Executive Dashboard is sole dashboard namespace |
 | 7 | Schema-First | COMPLIANT | All tables in migration 20260603000009 |
 | 8 | Event-Driven by Default | COMPLIANT | All new systems publish to Event Fabric |
 | 9 | No Silent Failures | COMPLIANT | All new APIs return structured errors |

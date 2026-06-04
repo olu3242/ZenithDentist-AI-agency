@@ -1,4 +1,4 @@
-# Mission Control Architecture
+# Executive Dashboard Architecture
 
 ## Status
 
@@ -26,14 +26,14 @@ Role
 | Enterprise | `/portal/locations`, `/portal/reports`, `/portal/forecasting` |
 | Platform | `/mission-control`, `/internal`, `/internal/*` |
 
-## Mission Control Types
+## Executive Dashboard Types
 
 | Mission control | Audience |
 | --- | --- |
 | Executive Command Center | Practice owners |
-| DSO Enterprise Mission Control | Multi-location and DSO leaders |
+| DSO Enterprise Executive Dashboard | Multi-location and DSO leaders |
 | Growth Operations Command Center | Zenith agency operators |
-| Zenith Internal Mission Control | Super admins and platform operators |
+| Zenith Internal Executive Dashboard | Super admins and platform operators |
 
 ## Implementation Notes
 

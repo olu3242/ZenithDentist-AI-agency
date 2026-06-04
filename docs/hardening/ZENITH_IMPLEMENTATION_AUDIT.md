@@ -156,7 +156,7 @@ Relies on RLS as sole protection; any misconfigured RLS policy = cross-tenant br
 - `roleAtLeast(role, minimum)` — numeric comparison
 
 **Permissions (`lib/rbac/permissions.ts`):**
-- 39 permissions across: Platform, Organization, Practice, ALICE, Mission Control, Marketplace, Analytics
+- 39 permissions across: Platform, Organization, Practice, ALICE, Executive Dashboard, Marketplace, Analytics
 - `hasPermission(role, permission)` → `roleAtLeast()` check
 
 **No login/signup UI page exists** (`/login`, `/signup` — not found in `app/`)

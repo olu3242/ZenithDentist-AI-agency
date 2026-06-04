@@ -2,7 +2,7 @@ import "server-only";
 
 /**
  * Agent Runtime — the execution environment for ALICE.
- * ALICE consumes: Workflow OS, Runtime Events, Recovery Events, Replay Engine,
+ * ALICE consumes: Automation Platform, Runtime Events, Recovery Events, Replay Engine,
  * Telemetry, and Tenant Context.  She advises and orchestrates — she does NOT
  * directly execute business logic.
  */

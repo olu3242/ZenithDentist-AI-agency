@@ -167,7 +167,7 @@ Implements the interface but contains only a stub (`return super.complete(reques
 }
 ```
 
-**Use Case:** Displayed in Mission Control executive panels. Can be called on demand or scheduled daily/weekly.
+**Use Case:** Displayed in Executive Dashboard executive panels. Can be called on demand or scheduled daily/weekly.
 
 ---
 

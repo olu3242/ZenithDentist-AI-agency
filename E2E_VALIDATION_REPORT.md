@@ -44,7 +44,7 @@ Create Playwright or equivalent browser/API e2e coverage for:
 - Marketplace Flow
 - Revenue Recovery Flow
 - Client Success Flow
-- Mission Control Flow
+- Executive Dashboard Flow
 - ALICE Flow
 - Tenant Isolation Flow
 - RLS Enforcement Flow

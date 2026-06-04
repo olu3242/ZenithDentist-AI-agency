@@ -4,7 +4,7 @@ Date: 2026-06-01
 
 ## Activation Flow
 
-Practice Signup -> Organization Created -> Admin User Created -> PMS Connected -> Revenue Playbooks Installed -> ALICE Activated -> Mission Control Activated
+Practice Signup -> Organization Created -> Admin User Created -> PMS Connected -> Revenue Playbooks Installed -> ALICE Activated -> Executive Dashboard Activated
 
 ## Implementation
 
@@ -16,12 +16,12 @@ Existing systems used:
 - PMS connection: `pms_integrations`
 - Playbook installation: `automation_registry`
 - ALICE activation evidence: `analyticsProjector` and `generateAliceReport`
-- Mission Control activation evidence: canonical analytics projection health
+- Executive Dashboard activation evidence: canonical analytics projection health
 
 ## Readiness Evidence
 
 - No new platform architecture was introduced.
-- Activation persists into existing onboarding, PMS, automation, analytics, ALICE, and Mission Control surfaces.
+- Activation persists into existing onboarding, PMS, automation, analytics, ALICE, and Executive Dashboard surfaces.
 - Blockers are returned per step so pilot operations can see exactly where onboarding fails.
 
 ## Status

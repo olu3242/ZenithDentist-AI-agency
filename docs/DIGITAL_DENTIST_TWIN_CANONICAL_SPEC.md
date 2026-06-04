@@ -146,8 +146,8 @@ Script Output
 
 | Channel | Format | Delivery Mechanism |
 |---------|--------|--------------------|
-| SMS | Short link to video | Workflow OS → SMS provider |
-| Email | Thumbnail + play button | Workflow OS → email provider |
+| SMS | Short link to video | Automation Platform → SMS provider |
+| Email | Thumbnail + play button | Automation Platform → email provider |
 | Patient Portal | Embedded player | patient_portal_items record |
 | In-Office | Waiting room display | Digital signage integration |
 

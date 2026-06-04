@@ -23,4 +23,4 @@ Event Fabric Score: 78/100
 
 ## Recommendation
 
-Refactor Workflow OS and AI observability to call `publishEvent()` and reserve `publishRuntimeFabricEvent()` as internal-only.
+Refactor Automation Platform and AI observability to call `publishEvent()` and reserve `publishRuntimeFabricEvent()` as internal-only.

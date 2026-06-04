@@ -64,14 +64,14 @@ Zenith serves independent and group dental practices. Leads enter the system via
 
 ### Live Platform Demo (20 min)
 
-**1. Mission Control (5 min)**
-Show Mission Control dashboard (`/mission-control`). Narrate: "This is what our team sees — and what you'll see — showing your workflows, health score, and ALICE's current recommendations."
+**1. Executive Dashboard (5 min)**
+Show Executive Dashboard (`/mission-control`). Narrate: "This is what our team sees — and what you'll see — showing your workflows, health score, and ALICE's current recommendations."
 
 **2. Workflow Demo: Recall (7 min)**
 Walk through a recall workflow:
 - Show how OpenDental data triggers the `recall_due` workflow
 - Show the patient being segmented, prioritized, and contacted automatically
-- Show the execution trace in Mission Control
+- Show the execution trace in Executive Dashboard
 - Tie back to their audit: "Your audit showed X patients overdue for recall. This workflow would reach them automatically."
 
 **3. ALICE AI Demo (5 min)**

@@ -26,7 +26,7 @@ Zenith operates with 8 defined roles. Each role has a specific scope, system acc
 - Responsible for HIPAA compliance posture and any legal/regulatory decisions
 
 ### System Access
-- Full access to all internal dashboards: Mission Control, GTM Command Center, Lead Operations, Client Operations
+- Full access to all internal dashboards: Executive Dashboard, GTM Command Center, Lead Operations, Client Operations
 - Full Supabase access (service key) — reads and writes all tables
 - Stripe dashboard: full admin access
 - Resend dashboard: full admin access
@@ -58,14 +58,14 @@ The Founder has succeeded when: (1) Zenith operates for 30 days without requirin
 - Performs monthly cross-tenant isolation verification tests
 - Reviews and applies schema migrations; verifies no data leak after each migration
 - Manages `INTERNAL_ACCESS_TOKEN`, `PORTAL_ACCESS_TOKEN`, and `ADMIN_ACCESS_TOKEN` secrets
-- Monitors Mission Control daily; responds to P1/P2 infrastructure incidents per Incident Response Playbook
+- Monitors Executive Dashboard daily; responds to P1/P2 infrastructure incidents per Incident Response Playbook
 - Maintains external uptime monitoring (when implemented)
 - Performs quarterly infrastructure security review
 
 ### System Access
 - Full Supabase access (service key and dashboard)
 - Vercel/hosting platform: admin access
-- Mission Control: full access (`/mission-control`, all `/api/mission-control/*` routes)
+- Executive Dashboard: full access (`/mission-control`, all `/api/mission-control/*` routes)
 - All API routes (via `INTERNAL_ACCESS_TOKEN`)
 - GitHub: push access to main branch (with review requirements)
 - Environment variable management: all variables
@@ -101,7 +101,7 @@ Platform Admin succeeds when the platform runs reliably at scale without Founder
 - Documents all implementation decisions in `tenant_onboarding_runs.setup_payload`
 
 ### System Access
-- Mission Control: read access (implementation health monitoring)
+- Executive Dashboard: read access (implementation health monitoring)
 - Supabase: read and write to `tenant_onboarding_runs`, `extension_configurations`, `organization_members`
 - OpenDental API testing: via `/api/opendental/sync`
 - Internal API access via `INTERNAL_ACCESS_TOKEN` for implementation verification tests
@@ -138,7 +138,7 @@ Implementation Manager succeeds when practices reach go-live in ≤ 14 days with
 
 ### System Access
 - Customer portal: admin-level view of assigned tenant accounts
-- Mission Control: read access to per-tenant health and workflow data
+- Executive Dashboard: read access to per-tenant health and workflow data
 - Workflow analytics: `getTenantWorkflowAnalytics()` outputs for assigned accounts
 - ALICE insights: `/api/alice/insights` for assigned accounts
 - CRM: full access to assigned account records
@@ -214,7 +214,7 @@ Revenue Operations Manager succeeds when the pipeline is predictable, forecasts 
 ### System Access
 - Customer portal: read-only view for all tenant accounts (support context only)
 - CRM: read access to customer records; write access to support ticket fields
-- Mission Control: read access (enough to verify basic platform health when supporting customers)
+- Executive Dashboard: read access (enough to verify basic platform health when supporting customers)
 - No Supabase admin access; no production data modification
 - No access to ALICE governance or workflow activation
 
@@ -249,7 +249,7 @@ Support Specialist succeeds when P3/P2 issues are resolved within SLA with high 
 
 ### System Access
 - ALICE AI interfaces: full access (`/api/alice/*`)
-- Mission Control: full access, with emphasis on `aiHealth` and `governanceTrustScore` panels
+- Executive Dashboard: full access, with emphasis on `aiHealth` and `governanceTrustScore` panels
 - Autonomous operations API: full access (`/api/autonomous/*`)
 - Governance state: full access (`/api/mission-control/governance`)
 - `runtime_governance_decisions` and `runtime_audit_timeline`: read access
@@ -280,7 +280,7 @@ AI Operations Manager succeeds when ALICE operates with a sustained trust score 
 
 ### Responsibilities
 - Manages the practice's Zenith portal configuration (settings, locations, user invitations)
-- Reviews and acts on ALICE recommendations surfaced in the practice portal
+- Reviews and acts on AI Revenue Intelligence recommendations surfaced in the practice portal
 - Monitors workflow activity and performance via the practice-facing dashboard
 - Contacts Zenith support for technical issues via the support channel
 - Completes the onboarding portal tour and training sessions
@@ -291,7 +291,7 @@ AI Operations Manager succeeds when ALICE operates with a sustained trust score 
 - Tenant-scoped dashboard: workflow status, health scores, ROI reports, ALICE insights
 - User management: invite, manage roles, remove users within their organization
 - Integration settings: view active integrations; submit configuration change requests to Zenith Implementation Manager
-- No access to: Mission Control, any other tenant's data, Zenith internal APIs, governance tools
+- No access to: Executive Dashboard, any other tenant's data, Zenith internal APIs, governance tools
 
 ### Escalation Paths
 - Technical issues → Zenith Support Specialist (support inbox)
@@ -300,12 +300,12 @@ AI Operations Manager succeeds when ALICE operates with a sustained trust score 
 
 ### KPIs (measured by Zenith, shared in QBRs)
 - Portal active sessions per month (engagement signal)
-- ALICE recommendations acted on vs. ignored ratio
+- AI Revenue Intelligence recommendations acted on vs. ignored ratio
 - Workflow adoption rate (% of provisioned workflows actively running)
 - Health score trend over time
 
 ### Success Criteria
-A Tenant Admin is successful when their practice has a health score ≥ 80, workflow adoption rate ≥ 70%, and they are actively engaging with ALICE recommendations at least monthly.
+A Tenant Admin is successful when their practice has a health score ≥ 80, workflow adoption rate ≥ 70%, and they are actively engaging with AI Revenue Intelligence recommendations at least monthly.
 
 ---
 
@@ -313,7 +313,7 @@ A Tenant Admin is successful when their practice has a health score ≥ 80, work
 
 | System / Resource | Founder | Platform Admin | Impl. Mgr | CSM | RevOps | Support | AI Ops Mgr | Tenant Admin |
 |---|---|---|---|---|---|---|---|---|
-| Mission Control | Full | Full | Read | Read | — | Read | Full | — |
+| Executive Dashboard | Full | Full | Read | Read | — | Read | Full | — |
 | Supabase (admin) | Full | Full | Scoped write | — | — | — | Read (API) | — |
 | ALICE API | Full | — | — | Read | — | — | Full | — |
 | Governance API | Full | Full | — | — | — | — | Full | — |

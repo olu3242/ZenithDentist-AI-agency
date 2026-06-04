@@ -12,7 +12,7 @@ The codebase at HEAD contains a comprehensive multi-tenant SaaS platform built o
 - Workflow registry (`lib/automation/registry.ts`) with automation blueprints
 - Runtime tracing (`lib/runtime/trace-engine.ts`) with `automation_traces` table
 - Event Fabric (`lib/event-fabric/index.ts`) publishing to `runtime_event_fabric_events`
-- Mission Control with 64+ panel components
+- Executive Dashboard with 64+ panel components
 - Multi-tenant RLS via `organizations`, `organization_members`
 - ALICE AI OS with `lib/ai-os/` and `lib/alice/` layers
 - Dead letter queue (`automation_dead_letters`)
@@ -28,7 +28,7 @@ The codebase at HEAD contains a comprehensive multi-tenant SaaS platform built o
 
 ---
 
-## Target Architecture (PROS™)
+## Target Architecture (PROS)
 
 The Patient Revenue Operating System requires:
 1. Patient master data synced from PMS (patients table)
@@ -78,7 +78,7 @@ The Patient Revenue Operating System requires:
 | Dentrix, Eaglesoft, Denticon adapters are stubs | HIGH | 5–10 days each |
 | Chair fill uses recall_due workflow ID | LOW | 1 hour |
 | Referral engine uses lead_created workflow ID | LOW | 1 hour |
-| No WebSocket/SSE for Mission Control push updates | LOW | 2–3 days |
+| No WebSocket/SSE for Executive Dashboard push updates | LOW | 2–3 days |
 | workflow_events not written at every step | LOW | 1–2 hours |
 | Revenue analytics caching layer | LOW | 1 day |
 | In-product runbook viewer | LOW | 1–2 days |
@@ -93,7 +93,7 @@ The Patient Revenue Operating System requires:
 | PMS sync stubs | HIGH | Real patient data requires full adapter implementation. Pilot works with manual seeding but not production sync. |
 | Attribution coverage | MEDIUM | 4/6 revenue engines don't write workflow_executions rows, so workflow_revenue_attribution view will miss their revenue. |
 | ANTHROPIC_API_KEY required | MEDIUM | ALICE falls back to LocalProvider (returns raw prompts) without key. Not useful for real insights. |
-| Mission Control load | LOW | 21 parallel Supabase queries per page load. At high traffic, connection pooling may be needed. |
+| Executive Dashboard load | LOW | 21 parallel Supabase queries per page load. At high traffic, connection pooling may be needed. |
 | Idempotency key coverage | LOW | executeWorkflow() accepts idempotencyKey but not all callers provide one. Duplicate execution risk exists. |
 
 ---
@@ -141,18 +141,18 @@ Gap: JSON robustness (LLM may return markdown fences); `AI_PROVIDER` env var mus
 ## Revenue Engine Readiness: 80/100
 
 All 6 revenue engines are callable and emit events:
-- Recall Recovery + Review Generation: fully on Workflow OS path ✅
+- Recall Recovery + Review Generation: fully on Automation Platform path ✅
 - No-Show Prevention, Treatment Acceptance, Chair Fill, Referral: use `emitAutomationEvent()` directly ⚠️
 
 Revenue attribution is structurally complete but depends on:
 1. Revenue events being written with `workflow_execution_id` FKs populated
 2. Workflows using `executeWorkflow()` to create `workflow_executions` rows
 
-Until 4 engines migrate to Workflow OS, attribution for those engines will return zeros in the view.
+Until 4 engines migrate to Automation Platform, attribution for those engines will return zeros in the view.
 
 ---
 
-## Mission Control Readiness: 80/100
+## Executive Dashboard Readiness: 80/100
 
 - 64 panel components present
 - `getMissionControlState()` aggregates 21 data sources
@@ -189,7 +189,7 @@ End-to-end flow works when patients/appointments are seeded directly via Supabas
 
 | Subsystem | Score |
 |-----------|-------|
-| Workflow OS | 88 |
+| Automation Platform | 88 |
 | Runtime OS | 85 |
 | ALICE | 85 |
 | Revenue Attribution | 85 |
@@ -197,7 +197,7 @@ End-to-end flow works when patients/appointments are seeded directly via Supabas
 | Observability | 83 |
 | Analytics | 82 |
 | Revenue Operations | 82 |
-| Mission Control | 80 |
+| Executive Dashboard | 80 |
 | Customer Onboarding | 80 |
 | PMS Framework | 72 |
 | E2E (Pilot Scenario) | 75 |
@@ -215,6 +215,6 @@ End-to-end flow works when patients/appointments are seeded directly via Supabas
 3. **Strongly recommended:** Migrate No-Show, Treatment Acceptance, Chair Fill, Referral engines to `executeWorkflow()` for full attribution coverage
 4. **Recommended:** Define `chair_fill` and `referral_workflow` as distinct workflow IDs in automation registry
 
-The platform's core PROS infrastructure (Workflow OS, Runtime OS, Event Fabric, Attribution, Tenant Isolation, ALICE, Mission Control) is production-grade. The primary blocker for a real-patient pilot is the PMS data import layer, which is structurally designed but not yet fully implemented.
+The platform's core PROS infrastructure (Automation Platform, Runtime OS, Event Fabric, Attribution, Tenant Isolation, ALICE, Executive Dashboard) is production-grade. The primary blocker for a real-patient pilot is the PMS data import layer, which is structurally designed but not yet fully implemented.
 
 **Recommended Pilot Path:** Single practice, Open Dental, manual data seeding in Week 1, real PMS sync in Week 2–3. Full revenue attribution visible by end of Week 3.

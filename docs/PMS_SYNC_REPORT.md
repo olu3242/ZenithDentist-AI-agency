@@ -124,7 +124,7 @@ class OpenDentalAdapter implements PMSAdapter {
 }
 ```
 
-**Pilot Panel:** `components/mission-control/open-dental-pilot-panel.tsx` displays sync status in Mission Control.
+**Pilot Panel:** `components/mission-control/open-dental-pilot-panel.tsx` displays sync status in Executive Dashboard.
 
 **Open Dental API Routes:** `app/api/opendental/` — separate route group for direct Open Dental API integration.
 

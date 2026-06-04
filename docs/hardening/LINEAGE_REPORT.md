@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Lineage system provides end-to-end traceability for every operation in the Zenith platform. Given a `correlationId`, `traceLineage()` reconstructs the full execution chain from portal action through Mission Control.
+The Lineage system provides end-to-end traceability for every operation in the Zenith platform. Given a `correlationId`, `traceLineage()` reconstructs the full execution chain from portal action through Executive Dashboard.
 
 ---
 
@@ -27,7 +27,7 @@ Portal
         └─► Event (Event Fabric)
               └─► Analytics
                     └─► ALICE
-                          └─► Mission Control
+                          └─► Executive Dashboard
 ```
 
 | Layer | Node Type | Data Source | Key Field |
@@ -37,7 +37,7 @@ Portal
 | 3 — Event | `fabric_event` | `runtime_event_fabric_events` | `correlation_id` |
 | 4 — Analytics | `analytics_snapshot` | `usage_metrics` + projector | `correlation_id` |
 | 5 — ALICE | `alice_insight` | ALICE response cache | `correlation_id` |
-| 6 — Mission Control | `mission_control_state` | aggregated snapshot | `correlation_id` |
+| 6 — Executive Dashboard | `mission_control_state` | aggregated snapshot | `correlation_id` |
 
 ---
 
@@ -81,7 +81,7 @@ Tables that store `correlation_id`:
 | Workflow → Event | 99% | executeWorkflow always publishes event |
 | Event → Analytics | 85% | analyticsProjector reads asynchronously; slight lag |
 | Analytics → ALICE | 70% | ALICE not always called per-correlation; batch reads |
-| ALICE → Mission Control | 90% | getMissionControlState reads ALICE insights |
+| ALICE → Executive Dashboard | 90% | getMissionControlState reads ALICE insights |
 
 **Overall chain completeness: ~88%**
 
@@ -93,7 +93,7 @@ Tables that store `correlation_id`:
 
 Retrieves the most recent N correlation chains for dashboard display.  
 Default limit: 20 chains.  
-Used by Mission Control's lineage panel and the audit UI.
+Used by Executive Dashboard's lineage panel and the audit UI.
 
 ---
 

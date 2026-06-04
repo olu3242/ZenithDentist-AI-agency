@@ -129,7 +129,7 @@
 
 ---
 
-### GAP-009: Mission Control Page — 21 Concurrent Requests Per Load
+### GAP-009: Executive Dashboard Page — 21 Concurrent Requests Per Load
 
 **Severity:** MEDIUM  
 **Impact:** Cold loads are expensive; no caching strategy for non-critical metrics

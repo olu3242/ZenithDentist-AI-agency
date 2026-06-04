@@ -128,4 +128,4 @@ The following items are deferred to Batch 2 (Runtime Convergence):
 3. `analyticsProjector()` — new function
 4. Marketplace events: `installation.created`, `deployment.executed`
 5. `replayEvent()` as canonical public function
-6. Full lineage tracking: Portal → Workflow → Event → Analytics → ALICE → Mission Control
+6. Full lineage tracking: Portal → Workflow → Event → Analytics → ALICE → Executive Dashboard

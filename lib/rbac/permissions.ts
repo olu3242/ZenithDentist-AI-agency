@@ -27,7 +27,7 @@ export type Permission =
   | "alice:query"
   | "alice:orchestrate"
   | "alice:view_reports"
-  // Mission Control
+  // Executive Dashboard
   | "mission_control:read"
   | "mission_control:replay"
   | "mission_control:evaluate"
@@ -64,7 +64,7 @@ export const PERMISSION_REQUIREMENTS: Record<Permission, ZenithRole> = {
   "alice:orchestrate": "practice_manager",
   "alice:view_reports": "practice_manager",
 
-  // Mission Control — manager+
+  // Executive Dashboard — manager+
   "mission_control:read": "practice_manager",
   "mission_control:replay": "organization_owner",
   "mission_control:evaluate": "practice_manager",

@@ -37,7 +37,7 @@ These files are retained for historical replay only and must not be modified:
 | Migration ID | Purpose | Dependencies | Affected Tables | Rollback Strategy | Risk Level | Owner |
 | --- | --- | --- | --- | --- | --- | --- |
 | 20260601150000 | Commercialize ROI calculator into Free Revenue Opportunity Assessment storage model | `202605210001` | `roi_calculations`, `audits` | Forward rollback migration to drop added assessment columns after backup restore validation | Medium | Zenith Platform |
-| 20260601170000 | Add Workflow OS enterprise governance tables | `202605210003` | Workflow governance, versions, approvals, runtime telemetry | Forward rollback migration after data export | Medium | Zenith Platform |
+| 20260601170000 | Add Automation Platform enterprise governance tables | `202605210003` | Workflow governance, versions, approvals, runtime telemetry | Forward rollback migration after data export | Medium | Zenith Platform |
 | 20260615000000 | Establish canonical migration governance baseline | Frozen legacy migrations | None | No rollback required | Low | Zenith Platform Governance |
 | 20260616000000 | Repair core tenancy bootstrap and product/runtime support tables | `20260615000000`, `202605210003`, `202605310001` | `organizations`, `profiles`, `organization_members`, `onboarding_states`, `storefronts`, `products`, `orders`, `workflow_events`, `platform_events`, `tenant_onboarding_runs` | Restore backup or apply forward rollback after data export | High | Zenith Platform |
 | 20260617000000 | Add LIZ actionable advisor telemetry persistence | `20260616000000` | `liz_action_events` | Restore backup or archive/drop LIZ telemetry events after export | Medium | Zenith Platform |

@@ -13,9 +13,9 @@ Zenith is production-ready for first paying dental practice customers. The platf
 | Dimension | Score | Status |
 |---|---|---|
 | Platform Architecture | 97% | ✅ Production |
-| Workflow OS | 95% | ✅ Production |
+| Automation Platform | 95% | ✅ Production |
 | AI OS (ALICE) | 88% | ✅ Production |
-| Mission Control | 90% | ✅ Production |
+| Executive Dashboard | 90% | ✅ Production |
 | Tenant Readiness | 92% | ✅ Production |
 | Integration Readiness | 72% | ⚠️ Needs env vars |
 | Customer Readiness | 85% | ✅ Production |
@@ -43,7 +43,7 @@ Zenith is production-ready for first paying dental practice customers. The platf
 | Category | Count | Production Ready | Needs Wiring | Notes |
 |---|---|---|---|---|
 | Alice AI | 7 | 6 | 1 | `recommendations` uses static playbook array |
-| Mission Control | 10 | 8 | 2 | `evaluate`, `cloud` may return empty state |
+| Executive Dashboard | 10 | 8 | 2 | `evaluate`, `cloud` may return empty state |
 | Autonomous | 3 | 2 | 1 | `approvals` returns hardcoded structure |
 | Enterprise | 4 | 3 | 1 | `simulate` uses synthetic projections |
 | Analytics | 2 | 2 | 0 | Fully wired |
@@ -54,12 +54,12 @@ Zenith is production-ready for first paying dental practice customers. The platf
 | Module | Location | Status |
 |---|---|---|
 | Runtime Kernel | lib/runtime/kernel/ | ✅ Live |
-| Workflow OS | lib/workflow-os/ | ✅ Live |
+| Automation Platform | lib/workflow-os/ | ✅ Live |
 | Execution Fabric | lib/workflow-os/execution/ | ✅ Live |
 | AI OS (ALICE) | lib/ai-os/ | ✅ Live |
 | Event Fabric | lib/event-fabric/ | ✅ Live |
 | Tenant Layer | lib/tenant/ | ✅ Live |
-| Mission Control | lib/mission-control/ | ✅ Live |
+| Executive Dashboard | lib/mission-control/ | ✅ Live |
 | Platform Core | lib/platform-core/ | ✅ Live |
 | Marketplace Core | lib/marketplace-core/ | ✅ Live |
 | Operations Core | lib/operations-core/ | ✅ Live |
@@ -75,7 +75,7 @@ Zenith is production-ready for first paying dental practice customers. The platf
 
 ### Portal Pages
 
-| Page | API | Workflow OS | Runtime | Tenant | ALICE | Status |
+| Page | API | Automation Platform | Runtime | Tenant | ALICE | Status |
 |---|---|---|---|---|---|---|
 | /portal/dashboard | getPortalData | ✅ | ✅ | ✅ | ✅ | ✅ |
 | /portal/recall | getPortalData + insights | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -94,9 +94,9 @@ Zenith is production-ready for first paying dental practice customers. The platf
 
 **No mock data found in any page.** All pages rely on live API routes with Supabase fallbacks.
 
-### Internal / Mission Control Pages
+### Internal / Executive Dashboard Pages
 
-All 25 internal pages are wired to Mission Control, runtime health, and operational intelligence APIs. The internal/mission-control page directly calls `getMissionControlState()` which aggregates 9 live runtime subsystems.
+All 25 internal pages are wired to Executive Dashboard, runtime health, and operational intelligence APIs. The internal/mission-control page directly calls `getMissionControlState()` which aggregates 9 live runtime subsystems.
 
 ---
 
@@ -137,7 +137,7 @@ All routes implement:
 | failed_payment_detected | billing | 30min | ✅ | ✅ | ✅ Registered |
 | ai_followup_required | mission_control | 20min | ✅ | ✅ | ✅ Registered |
 
-### Workflow OS Architecture Validation
+### Automation Platform Architecture Validation
 
 - ✅ Single entry point: `executeWorkflow()` in workflow-engine.ts
 - ✅ State machine: 10 valid states, illegal transitions rejected
@@ -155,13 +155,13 @@ All routes implement:
 
 | Input | Source | Connected |
 |---|---|---|
-| Workflow events | Workflow OS event publishing | ✅ |
+| Workflow events | Automation Platform event publishing | ✅ |
 | Runtime events | Runtime Kernel traces | ✅ |
 | Recovery events | autonomous-recovery.ts | ✅ |
 | Replay events | replay-engine.ts | ✅ |
 | Telemetry | operational-forecasting.ts | ✅ |
 | Tenant intelligence | tenant-intelligence.ts | ✅ |
-| Mission Control state | getMissionControlState() | ✅ |
+| Executive Dashboard state | getMissionControlState() | ✅ |
 | Portal activity | getPortalData() | ✅ |
 
 ### ALICE Capabilities ✅
@@ -247,7 +247,7 @@ No cross-tenant access pathways identified in the codebase.
 | Revenue Health | getPipelineSummary() | ✅ | ✅ Live |
 | Customer Health | computeCustomerHealth() | ✅ | ✅ Live |
 
-**All 10 Mission Control panels consume live runtime telemetry. Zero static metrics.**
+**All 10 Executive Dashboard panels consume live runtime telemetry. Zero static metrics.**
 
 ---
 
@@ -263,11 +263,11 @@ No cross-tenant access pathways identified in the codebase.
 | Connect OpenDental | Marketplace extension | ⚠️ | Requires API credentials |
 | Connect Calendly | Webhooks + bookings table | ✅ | None |
 | Connect Email (Resend) | lib/email.ts | ✅ | Requires RESEND_API_KEY |
-| Enable Recall Workflow | Workflow OS: recall_due | ✅ | None |
-| Enable Review Workflow | Workflow OS: review_request_due | ✅ | None |
-| Enable Revenue Workflow | Workflow OS: unpaid_invoice_detected | ✅ | None |
+| Enable Recall Workflow | Automation Platform: recall_due | ✅ | None |
+| Enable Review Workflow | Automation Platform: review_request_due | ✅ | None |
+| Enable Revenue Workflow | Automation Platform: unpaid_invoice_detected | ✅ | None |
 | Generate Executive Report | alice/reports API | ✅ | None |
-| Access Mission Control | /internal/mission-control | ✅ | None |
+| Access Executive Dashboard | /internal/mission-control | ✅ | None |
 | Interact with ALICE | /portal/alice + /api/alice/chat | ✅ | None |
 | Track Events | Event Fabric + runtime_event_fabric_events | ✅ | None |
 | Verify Analytics | Workflow Analytics | ✅ | None |
@@ -301,7 +301,7 @@ TypeScript:    ✅ ZERO ERRORS
 Lint:          ✅ No errors (baseUrl deprecation warning only)
 Orphan imports: ✅ None
 Duplicate runtimes: ✅ None
-Duplicate Workflow OS: ✅ None
+Duplicate Automation Platform: ✅ None
 Duplicate AI OS: ✅ None
 ```
 
@@ -313,9 +313,9 @@ Duplicate AI OS: ✅ None
 
 ```
 Platform Completion:     97%  ████████████████████░
-Workflow OS Completion:  95%  ███████████████████░░
+Automation Platform Completion:  95%  ███████████████████░░
 AI OS Completion:        88%  █████████████████░░░░
-Mission Control:         90%  ██████████████████░░░
+Executive Dashboard:         90%  ██████████████████░░░
 Tenant Readiness:        92%  ██████████████████░░░
 Integration Readiness:   72%  ██████████████░░░░░░░
 Customer Readiness:      85%  █████████████████░░░░

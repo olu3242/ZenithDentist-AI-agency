@@ -77,7 +77,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 </head>
 <body>
   <div class="header">
-    <div class="brand">Zenith AI Automation Agency™ · Dental Revenue Operating System</div>
+    <div class="brand">Zenith Pros · Dental Revenue Operating System</div>
     <h1>Revenue Opportunity Audit</h1>
     <div class="subtitle">
       ${lead?.practice_name ?? "Your Practice"}
@@ -135,7 +135,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
   </div>
 
   <div class="footer">
-    <p>© ${new Date().getFullYear()} Zenith AI Automation Agency™. All rights reserved. This report is confidential and intended solely for the named practice.</p>
+    <p>© ${new Date().getFullYear()} Zenith Pros. All rights reserved. This report is confidential and intended solely for the named practice.</p>
     <p style="margin-top:4px">Sample estimates based on industry benchmarks. Actual results vary by practice profile and implementation.</p>
   </div>
 </body>

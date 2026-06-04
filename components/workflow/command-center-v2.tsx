@@ -76,7 +76,7 @@ export function CommandCenterV2({
       </section>
       {firstWorkflow ? (
         <section className="rounded border border-line bg-white p-5 shadow-sm">
-          <h2 className="text-xl font-black text-ink">ALICE action layer</h2>
+          <h2 className="text-xl font-black text-ink">Automation action layer</h2>
           <div className="mt-4 grid gap-3 lg:grid-cols-2">
             {actions.filter(action => action.stage === "recommend").slice(0, 4).map(action => {
               const workflow = getWorkflowCatalogItem(action.workflowId) ?? firstWorkflow;

@@ -16,7 +16,7 @@ All six revenue automations have functional TypeScript implementations. The prim
 **Source:** `lib/dental-revenue-os/recall-recovery.ts`
 
 ### Implemented
-- `triggerRecallRecovery()` calls `executeWorkflow()` → Workflow OS state machine
+- `triggerRecallRecovery()` calls `executeWorkflow()` → Automation Platform state machine
 - `getRecallRecoveryMetrics()` reads `recall_recovery_events` with RLS tenant isolation
 - `recall_recovery_events.appointment_booked` boolean for conversion tracking
 - `workflow_execution_id` FK added via migration `202606010002_revenue_attribution.sql`
@@ -70,7 +70,7 @@ All six revenue automations have functional TypeScript implementations. The prim
 |-----|----------|--------|
 | Treatment plan data ingested from PMS (currently requires manual trigger) | P0 | High |
 | Financing reminder step (step 2 of follow-up sequence) not yet templated | P1 | Low |
-| ALICE confidence score not yet written to event metadata | P1 | Low |
+| AI confidence score not yet written to event metadata | P1 | Low |
 | Acceptance rate baseline needs historical PMS data to be meaningful | P2 | Medium |
 
 ---
@@ -158,7 +158,7 @@ All six revenue automations have functional TypeScript implementations. The prim
 4. Google Places webhook for review confirmation
 5. Waitlist patient matching for Chair Fill
 6. Promoter detection for Referral Growth
-7. ALICE confidence scores in event metadata
+7. AI confidence scores in event metadata
 
 ### Week 3 (P2)
 8. Dentrix and Eaglesoft adapter real-data phase

@@ -90,7 +90,7 @@ Record a weekly health pulse entry in the CRM for each account. Minimum fields:
 
 ### Monitor (Score 60–79)
 - Schedule a proactive check-in call within 5 business days
-- Review ALICE recommendations — share 2–3 actionable insights with the practice admin
+- Review AI Revenue Intelligence recommendations — share 2–3 actionable insights with the practice admin
 - Track for 2 consecutive weeks; if does not improve to Healthy, escalate to At Risk
 
 ### At Risk (Score 40–59)
@@ -176,8 +176,8 @@ This account is at imminent churn risk.
 - Integration health: OpenDental sync frequency and success rate
 - Workflow anomalies: any dead-letter events, replay events
 
-**4. ALICE Recommendations Review (10 min)**
-- Top 3 ALICE recommendations the practice has not yet acted on
+**4. AI Revenue Intelligence recommendations Review (10 min)**
+- Top 3 AI Revenue Intelligence recommendations the practice has not yet acted on
 - Walk through the evidence and expected impact for each
 - Agree on 1–2 to commit to in the next quarter
 

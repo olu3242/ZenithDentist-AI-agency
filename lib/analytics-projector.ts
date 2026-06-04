@@ -125,7 +125,7 @@ export async function analyticsProjector(): Promise<AnalyticsProjection> {
     recommendations: [
       ...(failedSignals > 0 ? ["Review failed Event Fabric signals before expanding automation volume."] : []),
       ...(unresolvedFailures > 0 ? ["Clear unresolved runtime failures and replay eligible dead letters."] : []),
-      ...(workflow.overallFailureRate > 0 ? ["Inspect top failing workflows and route recovery through Workflow OS."] : []),
+      ...(workflow.overallFailureRate > 0 ? ["Inspect top failing workflows and route recovery through Automation Platform."] : []),
       ...(automation.counts.failed > 0 ? ["Recover failed automations from Automation Center."] : []),
       ...(platformHealth >= 90 ? ["Maintain current operating cadence and certify pilot onboarding."] : [])
     ]

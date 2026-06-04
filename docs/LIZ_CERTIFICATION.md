@@ -55,7 +55,7 @@ The public LIZ widget displays 6 rotating dental industry benchmark messages to 
 
 ---
 
-## Workflow OS — Classification: CONNECTED ✅
+## Automation Platform — Classification: CONNECTED ✅
 
 - `app/workflow-os/page.tsx` — displays real workflow health from DB
 - `lib/workflow-os/workflow-engine.ts` — publishes events to Event Fabric
@@ -63,7 +63,7 @@ The public LIZ widget displays 6 rotating dental industry benchmark messages to 
 
 ---
 
-## Mission Control — Classification: CONNECTED ✅
+## Executive Dashboard — Classification: CONNECTED ✅
 
 `app/mission-control/page.tsx` — 20+ panels loading real data:
 - Recovery orchestrator state from `workflow_recovery_events`
@@ -92,8 +92,8 @@ See EVENT_FABRIC_CERTIFICATION.md — all 7 event types published and consumed.
 | System | Status | Notes |
 |--------|--------|-------|
 | Revenue Engine | CONNECTED | calculateRevenueProjection() → roi_calculations |
-| Workflow OS | CONNECTED | Real DB, Event Fabric, recovery |
-| Mission Control | CONNECTED | 20+ panels, real data |
+| Automation Platform | CONNECTED | Real DB, Event Fabric, recovery |
+| Executive Dashboard | CONNECTED | 20+ panels, real data |
 | Analytics Projector | CONNECTED | 9 metrics, real queries |
 | Event Fabric | CONNECTED | Dual-write, all events published |
 | LIZ Public Widget | MARKETING | Intentional — no practice data on public page |

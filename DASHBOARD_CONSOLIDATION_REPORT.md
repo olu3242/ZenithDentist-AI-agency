@@ -28,9 +28,9 @@ The following remain as drilldown experiences:
 - Portal revenue, patients, reviews, recall, reports, forecasting, simulations
 - PMS operations
 - Automation Center
-- Workflow OS
+- Automation Platform
 - Runtime OS
-- Mission Control
+- Executive Dashboard
 - Internal operations
 
 ## Remaining Risk

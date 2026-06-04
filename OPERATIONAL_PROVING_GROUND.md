@@ -12,4 +12,4 @@ Implemented:
 
 Current status: PARTIAL
 
-The operational proof system is implemented locally. PASS requires remote migration application and live event/write-through proof from Workflow OS, Mission Control, Runtime OS, ALICE, LIZ, Revenue OS, Video Intelligence, Stripe, and Treatment Acceptance OS.
+The operational proof system is implemented locally. PASS requires remote migration application and live event/write-through proof from Automation Platform, Executive Dashboard, Runtime OS, ALICE, LIZ, Revenue OS, Video Intelligence, Stripe, and Treatment Acceptance OS.

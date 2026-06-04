@@ -128,7 +128,7 @@ The `role` column is populated on:
 | TenantGuardContext | PASS | `membershipRole: ZenithRole` populated |
 | Route handlers (all 33) | PARTIAL | `ctx.membershipRole` available; routes must add `requirePermission()` calls |
 | ALICE routes | PARTIAL | `alice:query` permission check not yet added to route handlers |
-| Mission Control | PARTIAL | `mission_control:read` not enforced at route level |
+| Executive Dashboard | PARTIAL | `mission_control:read` not enforced at route level |
 | Marketplace | PARTIAL | `marketplace:deploy` not enforced at route level |
 
 ---

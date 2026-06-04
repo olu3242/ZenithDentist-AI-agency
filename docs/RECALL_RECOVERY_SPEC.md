@@ -34,7 +34,7 @@ triggerRecallRecovery(organizationId, RecallData)
     ↓
 executeWorkflow() → lib/workflow-os/workflow-engine.ts
     ↓
-Workflow OS State Machine (registered → scheduled → executing)
+Automation Platform State Machine (registered → scheduled → executing)
     ↓
 ALICE Prioritization (revenue_analyst agent scores patient value)
     ↓

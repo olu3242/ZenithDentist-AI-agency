@@ -11,7 +11,7 @@ export function AliceResponseCard({ response }: { response: AliceFrameworkRespon
 
   return (
     <section className="rounded border border-line bg-white p-6 shadow-soft">
-      <p className="text-xs font-black uppercase tracking-wider text-teal">ALICE</p>
+      <p className="text-xs font-black uppercase tracking-wider text-teal">AI Revenue Intelligence</p>
       <h2 className="mt-2 text-2xl font-black">Autonomous Operational Intelligence Copilot</h2>
       <div className="mt-5 grid gap-3">
         {sections.map(([label, value]) => (

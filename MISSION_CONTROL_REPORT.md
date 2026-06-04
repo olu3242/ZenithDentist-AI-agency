@@ -1,8 +1,8 @@
-# Mission Control Report
+# Executive Dashboard Report
 
 ## Status
 
-Mission Control is the super-admin command center and is reachable through `/mission-control`.
+Executive Dashboard is the super-admin command center and is reachable through `/mission-control`.
 
 ## Coverage
 

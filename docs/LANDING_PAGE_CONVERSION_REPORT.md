@@ -9,9 +9,9 @@
 | Dimension | Before | After |
 |-----------|--------|-------|
 | Total sections | 12 | 9 |
-| Navigation items | 8 (Platform, Screens, Leaks, Playbooks, Intelligence, Mission Control, PMS Ops, Assessment) | 6 (Assessment, Solutions, Results, About, Case Studies, Contact) |
+| Navigation items | 8 (Platform, Screens, Leaks, Playbooks, Intelligence, Executive Dashboard, PMS Ops, Assessment) | 6 (Assessment, Solutions, Results, About, Case Studies, Contact) |
 | Technical language instances | ~40 | 0 |
-| Internal system names exposed | 6+ (Workflow OS, Event Fabric, ALICE, Mission Control, Route Probe, Dispatch Log) | 0 |
+| Internal system names exposed | 6+ (Automation Platform, Event Fabric, ALICE, Executive Dashboard, Route Probe, Dispatch Log) | 0 |
 | Developer tools on public page | 1 (Route Probe Panel) | 0 |
 | Components showing "0 / Pending / Idle" | 4 metrics | 0 |
 | Schema mapping exposed | Yes (txt_pat_id, dt_last_visit, writeback) | No |
@@ -28,7 +28,7 @@
 | State variables | 12 | 4 | **67% fewer** |
 | Data props passed from server | 6 fields | 2 fields | **67% fewer** |
 | API calls at page load | 2 (admin data + runtime health) | 1 (admin data only) | **50% fewer** |
-| Sections with no conversion value | 5 (Mission Control, PMS Ops, Role Workspaces, Route Probe, Gallery tech) | 0 | **100% removed** |
+| Sections with no conversion value | 5 (Executive Dashboard, PMS Ops, Role Workspaces, Route Probe, Gallery tech) | 0 | **100% removed** |
 
 **Estimated content reduction: 68%** (meets the 60% target)
 
@@ -43,8 +43,8 @@ The following internal/technical elements were removed from the public page:
 - API route probing buttons and JSON response display
 
 ### Internal Architecture Exposure
-- Mission Control Preview card in hero (showing runtime stats, error counts, "Backend summary snapshot")
-- Mission Control section (`#mission-control`) with tabbed revenue/runtime/operations/alice/executive views
+- Executive Dashboard Preview card in hero (showing runtime stats, error counts, "Backend summary snapshot")
+- Executive Dashboard section (`#mission-control`) with tabbed revenue/runtime/operations/alice/executive views
 - PMS Integration Translator gallery card (schema mapping: `txt_pat_id ===== patient_id (UUID)`)
 - PMS Ops section (`#pms-ops`) with connector profiles and terminal log output
 - Operatory hotspot telemetry panel
@@ -60,12 +60,12 @@ The following internal/technical elements were removed from the public page:
 - "Runtime traces monitored: 0 active/completed, 0 failed"
 
 ### Internal Language Removed
-- Workflow OS, Event Fabric, Recovery Orchestrator
+- Automation Platform, Event Fabric, Recovery Orchestrator
 - Automation Registry, Schema Mapping, PMS Translation Layer
 - ALICE (public name is LIZ)
 - "Tenant", "writeback", "adapter", "sync integrity"
 - "Sandbox", "Live bus", "Dispatch", "Dead letters", "Retry queue"
-- "Mission Control lead", "runtime trace", "attribution record"
+- "Executive Dashboard lead", "runtime trace", "attribution record"
 - "INF/WRN" log levels
 - "Rollback path known", "Evidence captured", "Tenant safety"
 
@@ -86,7 +86,7 @@ Landing → Hero CTA → Assessment (primary) → Report Generated → Book Stra
 
 ### LIZ Positioning
 - Before: ALICE (internal AI name), positioned as "AI Platform" / "AI Agent"
-- After: LIZ branded as "Revenue Recovery Advisor™" — human-adjacent, outcome-focused, no AI architecture exposed
+- After: LIZ branded as "Revenue Recovery Advisor" — human-adjacent, outcome-focused, no AI architecture exposed
 
 ---
 
@@ -134,7 +134,7 @@ Landing → Hero CTA → Assessment (primary) → Report Generated → Book Stra
 |------|--------|
 | `app/page.tsx` | Rewritten — removed runtime health call, simplified props |
 | `components/public/pros-landing.tsx` | Full rewrite — 843 → ~580 lines, all technical content removed |
-| `components/public/roi-funnel-form.tsx` | 2 copy fixes — "Mission Control" references removed |
+| `components/public/roi-funnel-form.tsx` | 2 copy fixes — "Executive Dashboard" references removed |
 
 ## Documentation Created
 

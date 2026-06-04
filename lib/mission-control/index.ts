@@ -1,9 +1,9 @@
 import "server-only";
 
 /**
- * Mission Control — Operational Control Plane.
+ * Executive Dashboard — Operational Control Plane.
  *
- * Aggregates live data from Runtime Kernel, Workflow OS, AI OS,
+ * Aggregates live data from Runtime Kernel, Automation Platform, AI OS,
  * Recovery, Replay, and Tenant Context into a unified control surface.
  *
  * Every panel must consume live runtime data — no static metrics.

@@ -1,4 +1,4 @@
-# Expansion Engine™
+# Expansion Engine
 
 > Detecting and surfacing growth opportunities from live platform data.
 

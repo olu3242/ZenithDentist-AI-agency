@@ -165,7 +165,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
         <div className="rounded border border-line bg-white p-4 shadow-soft sm:p-6">
           <div className="flex flex-col gap-4 border-b border-line pb-5 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="brand-kicker">FREE Revenue Opportunity Assessment™</p>
+              <p className="brand-kicker">FREE Revenue Opportunity Assessment</p>
               <h2 className="mt-3 text-3xl font-black leading-tight text-ink sm:text-4xl">{t("title")}</h2>
               <p className="mt-2 max-w-2xl text-sm font-semibold leading-7 text-muted sm:text-base">
                 {t("subtitle")}
@@ -200,7 +200,7 @@ export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
           >
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment™</p>
+                <p className="text-xs font-black uppercase tracking-wider text-gold">Unlock Your FREE Revenue Opportunity Assessment</p>
                 <p className="mt-1 text-sm font-semibold leading-6 text-ink">
                   Your practice profile is complete. Unlock your personalized Practice Growth Report and 90-day opportunity snapshot.
                 </p>

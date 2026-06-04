@@ -4,7 +4,7 @@
 
 - Admin dashboard reads lead, ROI, event, audit, and booking data.
 - Portal dashboards resolve tenant context and shared navigation.
-- Runtime and Mission Control pages build from runtime libraries/API routes.
+- Runtime and Executive Dashboard pages build from runtime libraries/API routes.
 
 ## Remaining Placeholder Risk
 

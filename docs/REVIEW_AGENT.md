@@ -110,7 +110,7 @@ Private Recovery Workflow:
 IF sentiment_score 40–70:
   → Proceed with review request
   → Monitor for negative review indicators
-  → Flag in Mission Control for awareness
+  → Flag in Executive Dashboard for awareness
 ```
 
 ---
@@ -129,7 +129,7 @@ All review activity is reported to `lib/reputation-engine`:
 
 For platforms that provide API access (Google My Business):
 - New reviews polled daily
-- Negative reviews (< 3 stars) trigger immediate Mission Control alert
+- Negative reviews (< 3 stars) trigger immediate Executive Dashboard alert
 - Practice manager notified for personal response
 - Response templates available in Script Engine (`template_type: "review_response"`)
 

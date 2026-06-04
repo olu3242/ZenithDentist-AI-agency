@@ -7,7 +7,7 @@
 
 ## 1. Overview
 
-ALICE Dental is a domain extension of the ALICE operational intelligence layer. It provides seven structured question-answer handlers, each grounded in live telemetry from the ROI Engine and Workflow Analytics. ALICE Dental does not duplicate the base ALICE layer — it imports and extends it.
+ALICE Dental is a domain extension of the AI Revenue Intelligence layer. It provides seven structured question-answer handlers, each grounded in live telemetry from the ROI Engine and Workflow Analytics. ALICE Dental does not duplicate the base ALICE layer — it imports and extends it.
 
 **Architectural boundary:** ALICE is the only intelligence surface in the system. She advises; she does not execute. Every intervention recommendation that requires action (pause, replay, escalate, reroute) must pass through governance gates before it can proceed.
 
@@ -25,7 +25,7 @@ The base ALICE layer defines the operational contract:
 
 **ALICE may NOT:**
 - Execute workflows directly
-- Bypass Workflow OS governance
+- Bypass Automation Platform governance
 - Modify tenant data without an approved governance record
 - Skip audit trails
 
@@ -304,7 +304,7 @@ The auto-approve confidence threshold is `0.8` (stricter than the `0.7` gate in 
 
 ### Governance Trust Score
 
-Read from `lib/runtime/governance.getGovernanceState()`. The trust score is a live runtime metric. Its exact computation was not read but it feeds into both approval gates and Mission Control's `governanceTrustScore` field.
+Read from `lib/runtime/governance.getGovernanceState()`. The trust score is a live runtime metric. Its exact computation was not read but it feeds into both approval gates and Executive Dashboard's `governanceTrustScore` field.
 
 ---
 

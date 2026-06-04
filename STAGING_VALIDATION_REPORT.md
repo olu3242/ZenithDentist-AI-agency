@@ -35,7 +35,7 @@ Build result: PASS
 | Organizations | BLOCKED | Requires Supabase environment variables and verified remote migrations. |
 | Onboarding | BLOCKED | Requires organization/profile/member persistence against staging database. |
 | Revenue Assessment | BLOCKED | API depends on database/email configuration not present in Vercel environment. |
-| Workflow OS | PARTIAL | Code builds; staging execution/persistence not certified. |
+| Automation Platform | PARTIAL | Code builds; staging execution/persistence not certified. |
 | Reports | PARTIAL | Routes build; report persistence not certified against staging database. |
 | LIZ | PARTIAL | Local route model exists; staging API probe inconclusive and telemetry persistence requires Supabase config. |
 | ALICE | PARTIAL | UI/routes build; live recommendation traceability requires staging data and environment config. |

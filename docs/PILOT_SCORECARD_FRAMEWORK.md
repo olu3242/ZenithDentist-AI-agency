@@ -39,7 +39,7 @@ The Pilot Scorecard is the single most important document for every active pilot
 | 10 | Treatment Accepted | treatment_accepted | revenue_attribution_records | `COUNT(*) WHERE attribution_type='treatment_accepted' AND DATE(created_at)=today` |
 | 11 | Revenue Influenced | revenue_influenced | revenue_attribution_records | `SUM(amount) WHERE attribution_model='weighted_influence' AND DATE(created_at)=today` |
 | 12 | Revenue Recovered | revenue_recovered | revenue_attribution_records | `SUM(amount) WHERE attribution_type='recall_converted' AND DATE(created_at)=today` |
-| 13 | ALICE Recommendations | alice_recommendations | alice_patient_decisions | `COUNT(*) WHERE DATE(created_at)=today` |
+| 13 | AI Revenue Intelligence recommendations | alice_recommendations | alice_patient_decisions | `COUNT(*) WHERE DATE(created_at)=today` |
 | 14 | Journeys Started | journeys_started | patient_journey_assignments | `COUNT(*) WHERE DATE(assigned_at)=today` |
 | 15 | Journeys Completed | journeys_completed | patient_journey_assignments | `COUNT(*) WHERE completion_status='completed' AND DATE(completed_at)=today` |
 | 16 | CTA Clicks | — | video_deliveries | `COUNT(*) WHERE cta_clicked=true AND DATE(cta_clicked_at)=today` |

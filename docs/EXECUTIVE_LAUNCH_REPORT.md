@@ -29,9 +29,9 @@ Zenith is a Dental Revenue Operating System that converts dental practice visito
 - 6 automation workflow types (recall, no-show, treatment, reviews, referral, membership)
 
 ### Operations Platform
-- 9-panel admin Mission Control dashboard (real data)
+- 9-panel admin Executive Dashboard (real data)
 - Event Fabric (dual-write: CRM + telemetry)
-- Workflow OS with recovery orchestrator
+- Automation Platform with recovery orchestrator
 - Dead letter queue with replay engine
 - Runtime health monitoring
 
@@ -99,6 +99,6 @@ Zenith is a Dental Revenue Operating System that converts dental practice visito
 
 **LAUNCH**
 
-The platform is technically ready for first paying clients. Revenue pipeline is fully wired. Mission Control provides real-time visibility. Security gates are enforced. GTM playbook is documented.
+The platform is technically ready for first paying clients. Revenue pipeline is fully wired. Executive Dashboard provides real-time visibility. Security gates are enforced. GTM playbook is documented.
 
 Begin acquisition activities immediately per LAUNCH_PLAYBOOK.md.

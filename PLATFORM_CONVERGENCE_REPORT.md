@@ -14,10 +14,10 @@ Audited platform systems after Claude + Codex implementation work. Assumptions f
 | Logo | `components/branding/GlobalBrandLogo.tsx` | `components/brand/global-brand-logo.tsx` re-export | No | One active logo implementation. |
 | Loader | `components/branding/GlobalBrandLoader.tsx` | `components/brand/global-loader.tsx` re-export | No | `app/loading.tsx` uses canonical loader through `LoadingSkeleton`. |
 | Tenant provider | `components/tenant/tenant-provider.tsx` | tenant resolver/helper modules | No | Provider is UI context; helpers are server context. |
-| Mission Control provider | None | None | N/A | Mission Control uses server data loaders, not a React provider. |
+| Executive Dashboard provider | None | None | N/A | Executive Dashboard uses server data loaders, not a React provider. |
 | Workflow engine | `lib/workflow-os/workflow-engine.ts::executeWorkflow` | router/scheduler/dispatcher wrappers | No | Wrappers converge into `executeWorkflow()`. |
 | Runtime engine | `lib/runtime/trace-engine.ts` + `lib/runtime/instrumentation.ts` | domain-specific runtime projectors | No | Multiple runtime modules consume canonical trace state. |
-| Event fabric | `lib/event-fabric/index.ts::publishEvent` intended high-level API | direct `publishRuntimeFabricEvent()` calls | Partial duplicate | Low-level publisher is used directly by Workflow OS and AI observability. |
+| Event fabric | `lib/event-fabric/index.ts::publishEvent` intended high-level API | direct `publishRuntimeFabricEvent()` calls | Partial duplicate | Low-level publisher is used directly by Automation Platform and AI observability. |
 | Analytics projector | Missing canonical `analyticsProjector()` | client analytics + telemetry + workflow analytics | Partial duplicate | Needs explicit projector path. |
 
 ## Convergence Score

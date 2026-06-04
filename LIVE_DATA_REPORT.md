@@ -6,7 +6,7 @@
 - Admin CRM: live Supabase reads
 - Onboarding: live auth/profile/org/member writes
 - Runtime OS: live traces/dead letters
-- Workflow OS: live runtime health plus persisted registry status
+- Automation Platform: live runtime health plus persisted registry status
 - Automation Marketplace: live registry rows
 - Automation Center: live execution and trace-backed performance
 - ALICE: live tenant, portal, automation, and runtime context

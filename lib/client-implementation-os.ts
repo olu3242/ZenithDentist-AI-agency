@@ -57,7 +57,7 @@ export const implementationBlueprints = [
     integrations: ["Open Dental", "Stripe", "Google", "Calendly", "Email", "SMS", "WhatsApp"],
     data: ["Full PMS baseline", "Provider roster", "Locations", "Financial baseline", "Workflow inventory"],
     training: ["Practice Owner", "Office Manager", "Front Desk", "Provider"],
-    workflows: ["Recall Recovery", "Treatment Recovery", "Review Generation", "Schedule Optimization", "ALICE Recommendations"],
+    workflows: ["Recall Recovery", "Treatment Recovery", "Review Generation", "Schedule Optimization", "AI Revenue Intelligence recommendations"],
     successCriteria: ["All required integrations connected", "Training certified", "Go-live checklist passed", "30-day success review scheduled"]
   }
 ] as const;
@@ -152,7 +152,7 @@ export const implementationChecklistTemplates = [
   checklist("training", "practice_owner", "executive_dashboard_training", "Executive Dashboard Training", "customer_success", 18, "TRAINING_EVENT", true),
   checklist("training", "practice_owner", "revenue_dashboard_training", "Revenue Dashboard Training", "customer_success", 18, "TRAINING_EVENT", true),
   checklist("training", "practice_owner", "alice_training", "ALICE Training", "customer_success", 18, "TRAINING_EVENT", true),
-  checklist("training", "office_manager", "workflow_os_training", "Workflow OS Training", "customer_success", 18, "TRAINING_EVENT", true),
+  checklist("training", "office_manager", "workflow_os_training", "Automation Platform Training", "customer_success", 18, "TRAINING_EVENT", true),
   checklist("training", "office_manager", "recall_training", "Recall Training", "customer_success", 18, "TRAINING_EVENT"),
   checklist("training", "office_manager", "reviews_training", "Reviews Training", "customer_success", 18, "TRAINING_EVENT"),
   checklist("training", "office_manager", "reporting_training", "Reporting Training", "customer_success", 18, "TRAINING_EVENT"),
@@ -189,7 +189,7 @@ export const clientOperatingPlaybookTemplates: OperatingPlaybookTemplate[] = [
     operatingItem("day_1_activation", "verify_systems", "sms_sending_active", "SMS Sending Active", "implementation_owner", 1, "COMMUNICATION_EVENT"),
     operatingItem("day_1_activation", "verify_systems", "stripe_active", "Stripe Active", "billing", 1, "PAYMENT_EVENT"),
     operatingItem("day_1_activation", "verify_systems", "alice_active", "ALICE Active", "implementation_owner", 1, "ALICE_EVENT"),
-    operatingItem("day_1_activation", "verify_systems", "mission_control_active", "Mission Control Active", "operations", 1, "CERTIFICATION_EVENT"),
+    operatingItem("day_1_activation", "verify_systems", "mission_control_active", "Executive Dashboard Active", "operations", 1, "CERTIFICATION_EVENT"),
     operatingItem("day_1_activation", "verify_workflows", "appointment_reminders_active", "Appointment Reminders Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
     operatingItem("day_1_activation", "verify_workflows", "recall_workflow_active", "Recall Workflow Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
     operatingItem("day_1_activation", "verify_workflows", "review_workflow_active", "Review Workflow Active", "implementation_owner", 1, "WORKFLOW_EXECUTED"),
@@ -221,7 +221,7 @@ export const clientOperatingPlaybookTemplates: OperatingPlaybookTemplate[] = [
     operatingItem("thirty_day_success_review", "risks", "missing_data", "Missing Data", "operations", 30, "EVIDENCE_EVENT"),
     operatingItem("thirty_day_success_review", "risks", "integration_issues", "Integration Issues", "operations", 30, "INCIDENT_EVENT")
   ]),
-  playbook("sixty_day_optimization", "60 Day Optimization", "optimized", "60_day", "Tune workflows, ALICE recommendations, forecasting, and ROI.", ["KPI Progress Reviewed", "ROI Reviewed", "Forecast Accuracy Reviewed"], [
+  playbook("sixty_day_optimization", "60 Day Optimization", "optimized", "60_day", "Tune workflows, AI Revenue Intelligence recommendations, forecasting, and ROI.", ["KPI Progress Reviewed", "ROI Reviewed", "Forecast Accuracy Reviewed"], [
     operatingItem("sixty_day_optimization", "workflow_optimization", "recall_optimization", "Recall Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
     operatingItem("sixty_day_optimization", "workflow_optimization", "review_optimization", "Review Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
     operatingItem("sixty_day_optimization", "workflow_optimization", "treatment_acceptance_optimization", "Treatment Acceptance Optimization", "customer_success", 60, "WORKFLOW_EXECUTED"),
@@ -517,7 +517,7 @@ function buildOperatingPlaybookTemplateRows(organizationId: string) {
     cadence: playbook.cadence,
     objective: playbook.objective,
     success_metrics: playbook.successMetrics,
-    required_destinations: ["Executive Command Center", "Customer Success OS", "Agency CRM", "Evidence OS", "Mission Control"]
+    required_destinations: ["Executive Command Center", "Customer Success OS", "Agency CRM", "Evidence OS", "Executive Dashboard"]
   }));
 }
 

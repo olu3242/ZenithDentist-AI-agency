@@ -53,7 +53,7 @@ triggerReviewRequest(organizationId, VisitData)
         ↓
 executeWorkflow(workflowId: "review_request_due")
         ↓
-Workflow OS State Machine (registered → executing)
+Automation Platform State Machine (registered → executing)
         ↓
 n8n: Send Review Request
   SMS: "How was your visit today? Leave us a Google review:"

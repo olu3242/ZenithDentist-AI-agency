@@ -27,7 +27,7 @@ ALICE is observable via:
 - `/api/alice/insights` — current recommendations
 - `/api/alice/orchestration` — active orchestration plans
 - `/api/alice/forecast` — predictive outputs
-- Mission Control `aiHealth` panel — aggregate AI health metrics
+- Executive Dashboard `aiHealth` panel — aggregate AI health metrics
 
 ---
 
@@ -76,7 +76,7 @@ The governance trust score (0–100) represents the current reliability level of
 ### Trust Score Interpretation
 
 The trust score is affected by:
-- Proportion of ALICE recommendations accepted vs. rejected by operators
+- Proportion of AI Revenue Intelligence recommendations accepted vs. rejected by operators
 - Rate of governance policy violations
 - Outcome accuracy: did accepted recommendations produce the expected results?
 - Pending approval queue depth
@@ -106,7 +106,7 @@ GET /api/autonomous/approvals
 # Returns pending approval requests with: workflowId, interventionType, confidence, reason, proposedAt
 ```
 
-Also visible in Mission Control: `aiHealth.recoveryPlansAvailable` and `governanceTrustScore`.
+Also visible in Executive Dashboard: `aiHealth.recoveryPlansAvailable` and `governanceTrustScore`.
 
 ### Processing an Approval Request
 
@@ -205,7 +205,7 @@ Significant changes to ALICE's recommendation model require a formal retraining 
 ### What Qualifies as an AI Failure
 
 - ALICE producing recommendations that conflict with patient safety (e.g., recommending contacting a recently-deceased patient)
-- ALICE recommendations causing duplicate patient contacts at scale
+- AI Revenue Intelligence recommendations causing duplicate patient contacts at scale
 - ALICE approval queue growing unprocessed for > 4 hours
 - ALICE chat (`/api/alice/chat`) returning incorrect information to a practice admin
 

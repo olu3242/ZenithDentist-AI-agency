@@ -19,7 +19,7 @@ export async function sendAuditEmails(result: FunnelResult, localization: Locali
   const treatmentOpportunity = result.roi.treatment_opportunity ?? 0;
   const chairFillOpportunity = result.roi.chair_fill_opportunity ?? 0;
   const html = `
-    <p style="color:${brandConfig.colors.primary};font-weight:900;letter-spacing:.12em;text-transform:uppercase">${brandConfig.trademark}</p>
+    <p style="color:${brandConfig.colors.primary};font-weight:900;letter-spacing:.12em;text-transform:uppercase">${brandConfig.brandName}</p>
     <h1>${getLocalizedText("email.auditReady", localization)}</h1>
     <p><strong>${getLocalizedCurrency(1500, localization)} Consulting Value — FREE</strong></p>
     <p>${result.audit.audit_summary}</p>
@@ -45,7 +45,7 @@ export async function sendAuditEmails(result: FunnelResult, localization: Locali
       to: "implementation@zenithprosai.com",
       subject: `New FREE Revenue Assessment: ${result.lead.practice_name}`,
       html: `
-        <h1>Mission Control Lead Created</h1>
+        <h1>Executive Dashboard Lead Created</h1>
         <p><strong>Practice:</strong> ${result.lead.practice_name}</p>
         <p><strong>Contact:</strong> ${result.lead.dentist_name}</p>
         <p><strong>Email:</strong> ${result.lead.email}</p>

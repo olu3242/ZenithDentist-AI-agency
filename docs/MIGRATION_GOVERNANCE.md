@@ -2,7 +2,7 @@
 
 Date: 2026-06-01
 
-Company: FinClarity Bookkeeping and Services LLC, DBA Zenith AI Automation Agency
+Company: FinClarity Bookkeeping and Services LLC, DBA Zenith Pros
 
 Product: Patient Revenue Operating System (PROS)
 
@@ -150,7 +150,7 @@ Required production sequence:
 6. Runtime Validation
 7. Revenue Validation
 8. ALICE Validation
-9. Mission Control Validation
+9. Executive Dashboard Validation
 
 No shortcuts.
 

@@ -1,4 +1,4 @@
-# Patient Revenue Engine Report
+# Revenue Recovery System Report
 
 ## Overview
 

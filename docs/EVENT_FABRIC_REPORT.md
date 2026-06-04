@@ -104,14 +104,14 @@ The `getRuntimeEventFabricState()` function aggregates from:
 
 ---
 
-## Integration with Workflow OS
+## Integration with Automation Platform
 
 Every `executeWorkflow()` call in `lib/workflow-os/workflow-engine.ts` publishes a `workflow_os` event via `publishEvent()`. The state machine transitions (registered → executing → completed/failed) each emit an event, creating a full audit trail.
 
 The analytics projector (`lib/analytics/projector.ts`) reads from `runtime_event_fabric_events` to compute:
 - Delivery rate (delivered / total)
 - Events by type and source
-- Live signal count for Mission Control
+- Live signal count for Executive Dashboard
 
 ---
 
@@ -146,7 +146,7 @@ Event Fabric is the **canonical nervous system** of the ZenithDentist AI platfor
 ## 2. Architecture
 
 ```
-Any System (Workflow OS, Commercial OS, ALICE, Digital Twin, etc.)
+Any System (Automation Platform, Commercial OS, ALICE, Digital Twin, etc.)
         ↓ calls
 publishRuntimeFabricEvent(event: RuntimeFabricEvent)
         ↓ writes to
@@ -154,7 +154,7 @@ runtime_event_fabric_events (primary event log)
         ↓ dual-writes to
 mission_control_events (executive visibility)
         ↓ triggers
-Relevant domain handlers + Mission Control panel refresh
+Relevant domain handlers + Executive Dashboard panel refresh
         ↓ replay available via
 lib/runtime/workflow-replay.ts
 ```
@@ -226,10 +226,10 @@ Return: `Promise<void>` — resolves after dual-write completes.
 | revenue.opportunity.won | Revenue OS | Opportunity marked won |
 | pilot.milestone.reached | Pilot System | Milestone flag set |
 | pilot.milestone.at_risk | Pilot System | Milestone behind schedule |
-| patient.journey.started | Workflow OS | New patient journey initiated |
-| patient.journey.step.completed | Workflow OS | Journey step completed |
-| recall.triggered | Workflow OS | Recall campaign triggered |
-| treatment.follow_up.sent | Workflow OS | Treatment follow-up delivered |
+| patient.journey.started | Automation Platform | New patient journey initiated |
+| patient.journey.step.completed | Automation Platform | Journey step completed |
+| recall.triggered | Automation Platform | Recall campaign triggered |
+| treatment.follow_up.sent | Automation Platform | Treatment follow-up delivered |
 
 ### Phase 12 Events (New)
 
@@ -277,7 +277,7 @@ Return: `Promise<void>` — resolves after dual-write completes.
 | Event Type | Source System | Trigger | Key Payload Fields |
 |---|---|---|---|
 | video_roi_updated | Video Engine | calculateVideoROI() | practiceId, monthlyVideoRevenue, influencedPatients |
-| patient_journey_completed | Workflow OS | Journey final step | practiceId, patientId, journeyType, completionRate |
+| patient_journey_completed | Automation Platform | Journey final step | practiceId, patientId, journeyType, completionRate |
 | video_ab_winner | Video Engine | optimizeVideoContent() | practiceId, journeyType, winnerVariant, liftPct |
 
 #### Forecast Events
@@ -340,7 +340,7 @@ Replay marks replayed events with `replayed_at` timestamp and adds `source: 'rep
 
 ## 9. Event Fabric Health Monitoring
 
-Mission Control System Health panel monitors:
+Executive Dashboard System Health panel monitors:
 
 | Metric | Threshold | Alert |
 |---|---|---|

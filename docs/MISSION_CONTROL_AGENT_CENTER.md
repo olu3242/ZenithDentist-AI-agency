@@ -1,15 +1,15 @@
-# Mission Control Agent Center
+# Executive Dashboard Agent Center
 
 ## Overview
 
-The Mission Control Agent Center is the command interface for the AI Agent OS within the Zenith platform. It provides practice administrators and operations teams with a unified view of all 7 domain agents, ALICE coordination status, active recommendations, escalation queue, and agent performance metrics.
+The Executive Dashboard Agent Center is the command interface for the AI Agent OS within the Zenith platform. It provides practice administrators and operations teams with a unified view of all 7 domain agents, ALICE coordination status, active recommendations, escalation queue, and agent performance metrics.
 
 ---
 
 ## Architecture
 
 ```
-Mission Control
+Executive Dashboard
   └── Agent Center (/mission-control/agents)
         ├── ALICE Coordination Panel
         ├── 7 Agent Panels (one per agent)
@@ -33,7 +33,7 @@ The top-level panel shows ALICE's current operational view:
 | Replay Queue Depth       | Workflows awaiting replay                            |
 | Last Coordinated         | Timestamp of last `aliceCoordinate()` run            |
 
-ALICE coordination runs on a scheduled cadence and can be triggered manually from Mission Control.
+ALICE coordination runs on a scheduled cadence and can be triggered manually from Executive Dashboard.
 
 ---
 
@@ -141,7 +141,7 @@ A unified feed of all `agent_recommendations` across all agents, filterable by:
 - Revenue potential
 - Date range
 
-Staff can action or dismiss recommendations directly from Mission Control. Actioning a recommendation triggers the appropriate Workflow OS execution.
+Staff can action or dismiss recommendations directly from Executive Dashboard. Actioning a recommendation triggers the appropriate Automation Platform execution.
 
 ---
 

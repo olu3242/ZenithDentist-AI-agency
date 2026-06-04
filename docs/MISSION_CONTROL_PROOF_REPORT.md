@@ -1,4 +1,4 @@
-# Mission Control Proof Report
+# Executive Dashboard Proof Report
 
 > **Platform Maturity Sprint — June 2026**
 > Source: `components/mission-control/`, `app/api/mission-control/`
@@ -7,7 +7,7 @@
 
 ## Overview
 
-Mission Control is the operational nerve center of the Zenith platform. It provides real-time visibility into every automation, workflow, revenue event, and system health metric across the practice. This report documents the architecture, data sources, and evidence that Mission Control is production-grade.
+Executive Dashboard is the operational nerve center of the Zenith platform. It provides real-time visibility into every automation, workflow, revenue event, and system health metric across the practice. This report documents the architecture, data sources, and evidence that Executive Dashboard is production-grade.
 
 ---
 
@@ -18,11 +18,11 @@ $ ls components/mission-control/ | wc -l
 65
 ```
 
-Mission Control is fully data-bound — no hardcoded demo data. Every metric displayed is fetched from live Supabase tables at page load.
+Executive Dashboard is fully data-bound — no hardcoded demo data. Every metric displayed is fetched from live Supabase tables at page load.
 
 ---
 
-## API Routes: 11 Mission Control Endpoints
+## API Routes: 11 Executive Dashboard Endpoints
 
 Located at `app/api/mission-control/`:
 
@@ -44,7 +44,7 @@ Located at `app/api/mission-control/`:
 
 ## Concurrent Data Sources on Page Load
 
-Mission Control loads 21 concurrent data sources on mount:
+Executive Dashboard loads 21 concurrent data sources on mount:
 
 | # | Data Source | Table / Service |
 |---|-------------|-----------------|
@@ -85,7 +85,7 @@ The evidence layer migration (planned as `202606020001_evidence_layer.sql`) intr
 | `event_type` | Classification of event displayed |
 | `source_workflow_id` | Originating workflow |
 | `payload` | JSONB event context |
-| `displayed_at` | When surfaced in Mission Control |
+| `displayed_at` | When surfaced in Executive Dashboard |
 | `acknowledged_at` | When operator acknowledged |
 | `created_at` | Timestamp |
 
@@ -105,7 +105,7 @@ The evidence layer migration (planned as `202606020001_evidence_layer.sql`) intr
 
 ## Every Card: Full Workflow Lineage
 
-Each Mission Control card displays:
+Each Executive Dashboard card displays:
 
 | Panel Element | Data Source |
 |---------------|-------------|
@@ -120,7 +120,7 @@ Each Mission Control card displays:
 
 ---
 
-## Mission Control Architecture
+## Executive Dashboard Architecture
 
 ```
 Browser (Next.js App Router)

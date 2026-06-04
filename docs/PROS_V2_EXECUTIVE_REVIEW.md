@@ -14,7 +14,7 @@ Product: Patient Revenue Operating System (PROS)
 - Revenue Operations: 84/100
 - PMS Portal Readiness: 38/100
 - Dashboard Readiness: 70/100
-- Mission Control Readiness: 86/100
+- Executive Dashboard Readiness: 86/100
 - Landing Page Readiness: 62/100
 - Analytics: 68/100
 - ALICE: 78/100
@@ -30,7 +30,7 @@ Preserved:
 
 Exceeded:
 
-- Mission Control, ALICE, commercial operations, pilot operations, migration governance, and revenue playbook strategy exceed the legacy PRD.
+- Executive Dashboard, ALICE, commercial operations, pilot operations, migration governance, and revenue playbook strategy exceed the legacy PRD.
 
 Missing:
 
@@ -42,7 +42,7 @@ Missing:
 
 Harmonized:
 
-- PROS V2 blueprint now defines Patient Revenue Operating System as the umbrella and Patient Revenue Engine as the revenue subsystem.
+- PROS V2 blueprint now defines Patient Revenue Operating System as the umbrella and Revenue Recovery System as the revenue subsystem.
 
 ## Final Classification
 

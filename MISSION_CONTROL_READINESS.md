@@ -1,13 +1,13 @@
-# Mission Control Readiness
+# Executive Dashboard Readiness
 
 ## Current State
 
-Mission Control reads runtime, workflow, event fabric, tenant, provider, and automation signals. The Automation OS additions improve executive visibility into active, failed, queued, and performing automations.
+Executive Dashboard reads runtime, workflow, event fabric, tenant, provider, and automation signals. The Automation OS additions improve executive visibility into active, failed, queued, and performing automations.
 
 ## Remaining Work
 
-Add direct command APIs for recovery, replay, retry, and workflow mutation from Mission Control.
+Add direct command APIs for recovery, replay, retry, and workflow mutation from Executive Dashboard.
 
 ## Score
 
-Mission Control Readiness Score: 88/100
+Executive Dashboard Readiness Score: 88/100

@@ -52,7 +52,7 @@
 | 23 | Revenue OS opportunity scanner active | READY | `lib/revenue-os` |
 | 24 | Daily metrics aggregation scheduled | READY | Cron job via Vercel |
 | 25 | Event Fabric publishing governance events | READY | `publishRuntimeFabricEvent` wired to milestone flags |
-| 26 | Mission Control portal items generating | READY | `lib/mission-control` |
+| 26 | Executive Dashboard portal items generating | READY | `lib/mission-control` |
 
 ### Pilot War Room (6 items)
 
@@ -126,7 +126,7 @@ await (supabase as any)
 | SMS | Twilio | READY |
 | Email | Resend | READY |
 | Events | Runtime Fabric (internal) | READY |
-| Monitoring | Mission Control + Observability | READY |
+| Monitoring | Executive Dashboard + Observability | READY |
 | Type Safety | TypeScript strict mode | READY |
 
 ---
@@ -141,7 +141,7 @@ await (supabase as any)
 | ALICE Engine | `lib/runtime/dental-intelligence.ts` | Patient decisions |
 | Journey Scheduler | `lib/journey-scheduler/` | Step scheduling |
 | Event Fabric | `lib/runtime/event-fabric.ts` | Governance events |
-| Mission Control | `lib/mission-control/` | Portal items |
+| Executive Dashboard | `lib/mission-control/` | Portal items |
 
 ---
 

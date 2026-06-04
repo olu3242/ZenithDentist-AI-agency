@@ -22,7 +22,7 @@ This playbook defines how Zenith responds to platform incidents. An incident is 
 **Examples:**
 - Supabase database unreachable for all tenants
 - Cross-tenant data leak confirmed (e.g., `getPortalData()` returning another org's records)
-- Complete Workflow OS failure — no workflows executing across any tenant
+- Complete Automation Platform failure — no workflows executing across any tenant
 - ALICE producing systematically incorrect medical/dental guidance at scale
 
 **Response SLA:**
@@ -40,7 +40,7 @@ This playbook defines how Zenith responds to platform incidents. An incident is 
 **Examples:**
 - OpenDental sync failing for one or more tenants (workflows dependent on PMS data stalled)
 - Resend email delivery failing (recall and review workflows fire but no emails sent)
-- Mission Control returning 5xx for internal operations team
+- Executive Dashboard returning 5xx for internal operations team
 - ALICE insights API returning 5xx
 - Workflow executions completing but results not persisting to Supabase
 
@@ -57,7 +57,7 @@ This playbook defines how Zenith responds to platform incidents. An incident is 
 **Definition:** Non-critical workflows are delayed or a non-critical feature is unavailable. Core recall, no-show, and email delivery continue to function.
 
 **Examples:**
-- ALICE recommendations loading slowly (> 10 seconds)
+- AI Revenue Intelligence recommendations loading slowly (> 10 seconds)
 - Workflow analytics dashboard returning stale data
 - Governance trust score not updating
 - Calendly event sync delayed by > 30 minutes
@@ -90,9 +90,9 @@ This playbook defines how Zenith responds to platform incidents. An incident is 
 
 ## Detection Sources
 
-### Mission Control (Primary — Internal)
+### Executive Dashboard (Primary — Internal)
 
-The Zenith Mission Control dashboard (`/mission-control`) is the primary observability surface for the internal operations team. Key signals:
+The Zenith Executive Dashboard (`/mission-control`) is the primary observability surface for the internal operations team. Key signals:
 
 - **`operationalScore`** — overall platform health. Below 70 triggers P2 review; below 50 triggers P1.
 - **`unhealthyWorkflowCount`** — number of workflows in degraded state. Any non-zero count requires investigation.
@@ -111,7 +111,7 @@ ALICE monitors workflow patterns and surfaces anomalies via `/api/alice/insights
 - Provider health degradation
 - Unusual governance trust score changes
 
-ALICE alerts are visible in the Mission Control AI panel (`aiHealth.topInsightsCount`). High-priority insights should be reviewed within 30 minutes of appearance.
+ALICE alerts are visible in the Executive Dashboard AI panel (`aiHealth.topInsightsCount`). High-priority insights should be reviewed within 30 minutes of appearance.
 
 ### External Monitoring
 
@@ -120,7 +120,7 @@ Currently, no third-party uptime monitoring (e.g., Datadog, Better Uptime) is co
 - `/api/opendental/sync` — integration health
 - `/api/alice/insights` — AI availability
 
-Until external monitoring is configured, the Platform Admin must manually check Mission Control at least every 2 hours during business hours.
+Until external monitoring is configured, the Platform Admin must manually check Executive Dashboard at least every 2 hours during business hours.
 
 ---
 
@@ -155,9 +155,9 @@ P0 → Founder (immediate, all-hands)
 
 ### Investigation Steps
 
-1. Check Mission Control state: `GET /api/mission-control/state`
+1. Check Executive Dashboard state: `GET /api/mission-control/state`
 2. Check runtime health: `GET /api/mission-control/runtime-health`
-3. Check provider health from `integrationHealth` in Mission Control state
+3. Check provider health from `integrationHealth` in Executive Dashboard state
 4. Check governance state: `GET /api/mission-control/governance`
 5. Query `runtime_audit_timeline` for recent anomalies:
    ```sql
@@ -261,7 +261,7 @@ We will update you within [timeframe]. No action is required from your team.
 **Incident Commander:** [Name]
 
 ### Timeline
-- HH:MM — Incident detected (source: Mission Control / ALICE / customer report)
+- HH:MM — Incident detected (source: Executive Dashboard / ALICE / customer report)
 - HH:MM — Incident acknowledged
 - HH:MM — Root cause identified
 - HH:MM — Mitigation applied

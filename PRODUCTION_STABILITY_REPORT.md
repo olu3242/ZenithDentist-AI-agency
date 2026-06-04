@@ -5,7 +5,7 @@ Status: READY FOR VALIDATION
 Unified health dashboard inputs:
 
 - Runtime health from runtime traces, SLA breaches, dead letters, and replay state.
-- Workflow health from Workflow OS analytics.
+- Workflow health from Automation Platform analytics.
 - Event Fabric health from live signal propagation and channel pressure.
 - Analytics health from `analyticsProjector()`.
 - ALICE health from grounding coverage.

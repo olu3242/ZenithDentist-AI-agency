@@ -1,12 +1,12 @@
-# Zenith Patient OS™ — Executive Deployment Guide
+# Zenith Patient OS — Executive Deployment Guide
 
 > For practice owners and decision-makers. What Zenith does, what gets deployed, and what to expect.
 
 ---
 
-## What Is Zenith Patient OS™?
+## What Is Zenith Patient OS?
 
-Zenith Patient OS™ is an AI-powered growth platform built specifically for dental practices. It runs in the background of your practice — connecting to your existing patient management system, learning from your patient behavior, and automatically sending the right message to the right patient at the right time. It turns your patient data into booked appointments and attributed revenue without requiring your staff to do extra work.
+Zenith Patient OS is an AI-powered growth platform built specifically for dental practices. It runs in the background of your practice — connecting to your existing patient management system, learning from your patient behavior, and automatically sending the right message to the right patient at the right time. It turns your patient data into booked appointments and attributed revenue without requiring your staff to do extra work.
 
 In 30 days, practices on Zenith typically see measurable revenue attribution from automated patient engagement, with a target return of 3x their subscription cost.
 
@@ -57,7 +57,7 @@ In 30 days, practices on Zenith typically see measurable revenue attribution fro
 | Week | What Happens | Your Involvement |
 |------|-------------|-----------------|
 | **Week 1 (Days 1–7)** | Platform connected to your PMS, provider video + voice captured, communication channels set up, first patient journey launched | 2 hours: video recording session, credential sharing |
-| **Week 2 (Days 8–14)** | All patients imported and scored, ALICE generates first recommendations, first patient engagements recorded | 1 hour: review ALICE recommendations with CSM |
+| **Week 2 (Days 8–14)** | All patients imported and scored, ALICE generates first recommendations, first patient engagements recorded | 1 hour: review AI Revenue Intelligence recommendations with CSM |
 | **Week 3 (Days 15–21)** | Revenue attribution confirmed — first bookings tracked back to Zenith | 30 minutes: Day 21 revenue review call |
 | **Week 4 (Days 22–30)** | KPI review, ALICE tuning, expansion opportunities identified | 1 hour: Day 30 Executive Business Review |
 
@@ -69,7 +69,7 @@ In 30 days, practices on Zenith typically see measurable revenue attribution fro
 
 | Component | Cost | Notes |
 |-----------|------|-------|
-| Zenith Patient OS™ Growth Plan | $[pricing] / month | [placeholder — confirm with sales] |
+| Zenith Patient OS Growth Plan | $[pricing] / month | [placeholder — confirm with sales] |
 | Setup fee | $[pricing] | One-time |
 | Communication costs (SMS) | ~$20–50/mo | Usage-based via Twilio |
 | Digital Dentist Twin production | Included | HeyGen + ElevenLabs |

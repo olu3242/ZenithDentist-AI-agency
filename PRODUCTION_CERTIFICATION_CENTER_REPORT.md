@@ -15,10 +15,10 @@ Displays:
 - Failed Certifications
 - Evidence Coverage
 - Connector Certification
-- ALICE Traceability
+- AI Decision Traceability
 - Workflow Proof
 - Revenue Attribution
-- Mission Control Proof
+- Executive Dashboard Proof
 - Forecasting Certification
 - Report Traceability
 - Role Workspace Certification

@@ -29,7 +29,7 @@ export default async function PortalReviewsPage() {
           { label: "Review Score", workflowId: "review_request_due", value: `${conversion}%`, detail: "Review request to generated review conversion" },
           { label: "Referral Performance", workflowId: "referral_growth", value: latest?.reviews_generated ?? 0, detail: "Promoter and reputation momentum proxy" },
           { label: "Lead Funnel", workflowId: "lead_created", value: admin.leads.length, detail: "Assessment and lead records ready for nurture" },
-          { label: "Conversion Metrics", workflowId: "alice_growth_agent", value: `${conversion}%`, detail: "ALICE growth agent prioritization signal" }
+          { label: "Conversion Metrics", workflowId: "alice_growth_agent", value: `${conversion}%`, detail: "AI Revenue Intelligence prioritization signal" }
         ]}
         actions={buildUniversalActions("growth")}
         tenantData={tenantData}

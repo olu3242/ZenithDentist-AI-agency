@@ -10,7 +10,7 @@ export default async function InternalRuntimeHealthPage() {
   const state = await getRuntimeHealthState();
   return (
     <div className="space-y-6">
-      <InternalHeader title="Runtime Health" subtitle="Live trace observability, SLA breaches, dead letters, replay readiness, and ALICE remediation intelligence." />
+      <InternalHeader title="Runtime Health" subtitle="Live trace observability, SLA breaches, dead letters, replay readiness, and AI remediation intelligence." />
       <RuntimeHealthDashboard state={state} />
       <AliceRuntimeRecommendations state={state} />
       <div className="grid gap-6 xl:grid-cols-2">

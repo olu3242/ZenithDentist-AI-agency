@@ -3,7 +3,7 @@
 | Area | Score | Status |
 | --- | ---: | --- |
 | Platform Awareness | 92 | PASS |
-| Mission Control Awareness | 90 | PASS |
+| Executive Dashboard Awareness | 90 | PASS |
 | Workflow Awareness | 88 | PASS |
 | Revenue Awareness | 92 | PASS |
 | PMS Awareness | 86 | PASS |
@@ -16,11 +16,11 @@
 | Question | Grounding |
 | --- | --- |
 | Why is recall revenue declining? | ROI assessment, Revenue Playbooks, analytics projector |
-| What workflows are underperforming? | Workflow OS registry, runtime health |
+| What workflows are underperforming? | Automation Platform registry, runtime health |
 | What PMS sync errors exist? | PMS Operations Center |
 | Which playbook should be activated? | `buildAliceRevenueOpportunityReport`, Revenue Playbooks |
 | What is the largest revenue opportunity? | `calculateRevenueProjection` |
-| What operational risk exists? | Runtime, Workflow OS, PMS, analytics projection |
+| What operational risk exists? | Runtime, Automation Platform, PMS, analytics projection |
 
 ## Decision
 

@@ -21,7 +21,7 @@ Primary navigation is now generated from persona definitions in `lib/personas.ts
 | Revenue | Revenue recovery, forecasting, reports, simulations |
 | Patients | Patients, recall, reviews, retention |
 | Operations | PMS, cloud, locations, operational readiness |
-| Automation | Workflow OS, Runtime OS, Automation Center |
+| Automation | Automation Platform, Runtime OS, Automation Center |
 | Enterprise | DSO and multi-location mission control |
 | Platform | Zenith internal operations, governance, runtime recovery |
 
@@ -35,7 +35,7 @@ Primary navigation is now generated from persona definitions in `lib/personas.ts
 | Practice Owner | Executive Command, Revenue, Patients, Operations, Automations, Reports, Settings |
 | DSO Executive | Enterprise Mission, Locations, Forecasting, Reports, Automations, Settings |
 | Agency Growth Operator | Growth Command, Funnel, Lead Ops, Client Ops, GTM Command, Automations, Settings |
-| Zenith Platform Operator | Zenith Mission, Mission Control, Runtime OS, Workflow OS, Internal Ops, Automations, Settings |
+| Zenith Platform Operator | Zenith Mission, Executive Dashboard, Runtime OS, Automation Platform, Internal Ops, Automations, Settings |
 
 ## Deprecated Navigation Pattern
 

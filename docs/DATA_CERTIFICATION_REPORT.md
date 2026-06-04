@@ -46,7 +46,7 @@ These are multi-tenant tables populated by the tenant onboarding flow (`lib/data
 
 ### `workflow_executions` / `workflow_runs` — Platform Internal
 
-Queried by the Workflow OS health API (`app/api/automation-health/route.ts`) and Workflow OS page. Not part of the public revenue funnel.
+Queried by the Automation Platform health API (`app/api/automation-health/route.ts`) and Automation Platform page. Not part of the public revenue funnel.
 
 ---
 

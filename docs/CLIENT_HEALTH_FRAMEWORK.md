@@ -1,4 +1,4 @@
-# Client Health Score™ Framework
+# Client Health Score Framework
 
 > Measuring dental practice success across 6 dimensions on a 100-point scale.
 
@@ -132,7 +132,7 @@ WHERE organization_id = $1
 | 25 | 1–3 | Early stage |
 | 0 | 0 | No attribution — risk |
 
-**Low score action**: Check booking workflow triggers. Verify ALICE recommendations being actioned. Review no-show prevention engine.
+**Low score action**: Check booking workflow triggers. Verify AI Revenue Intelligence recommendations being actioned. Review no-show prevention engine.
 
 ---
 
@@ -260,7 +260,7 @@ When a dimension could be improved, the system surfaces the `top_opportunity`.
 | Dimension Score | top_opportunity |
 |----------------|----------------|
 | Provider Adoption = 0 | "Activate Digital Dentist Twin to increase engagement" |
-| Revenue Attribution < 50 | "Configure ALICE recommendations to drive attribution" |
+| Revenue Attribution < 50 | "Configure AI Revenue Intelligence recommendations to drive attribution" |
 | Journey Completion < 60 | "Bulk assign patients to recall journey" |
 | Usage < 70 | "Review agent configuration and fix execution errors" |
 | Patient Engagement < 50 | "Sync additional patient data from PMS" |
@@ -312,5 +312,5 @@ Triggers `calculateClientHealthScore()` in `lib/client-success/index.ts` and ins
 ## Related Documents
 
 - `docs/CLIENT_SUCCESS_OS.md` — Full Client Success OS overview
-- `docs/PILOT_OPERATIONS_OS.md` — Mission Control health panel
+- `docs/PILOT_OPERATIONS_OS.md` — Executive Dashboard health panel
 - `docs/EBR_TEMPLATE.md` — Section 1: Platform Health reporting

@@ -8,8 +8,8 @@ Generated: 2026-06-01
 | --- | ---: | --- |
 | Architecture Consistency | 66 | Canonical domains exist; overlapping internal/enterprise/autonomous systems remain. |
 | Component Consistency | 62 | Canonical UI target added; duplicate cards/loaders remain. |
-| Dashboard Consistency | 64 | Mission Control and Portal are canonical; role dashboard previews are not. |
-| Service Consistency | 70 | ROI/data/runtime/workflow services are clear; Mission Control/AI/automation splits remain. |
+| Dashboard Consistency | 64 | Executive Dashboard and Portal are canonical; role dashboard previews are not. |
+| Service Consistency | 70 | ROI/data/runtime/workflow services are clear; Executive Dashboard/AI/automation splits remain. |
 | Brand Consistency | 72 | `lib/brand` exists; legacy brand components remain. |
 | Documentation Consistency | 55 | Many reports overlap; canonical index created in report only. |
 | Codebase Health | 68 | Build/typecheck pass; repo has duplicate-risk modules. |
@@ -23,7 +23,7 @@ PARTIALLY CANONICALIZED
 
 - One canonical ROI/revenue assessment path is in place.
 - One canonical brand source exists.
-- One canonical Mission Control route exists.
+- One canonical Executive Dashboard route exists.
 - One canonical portal dashboard route exists.
 - Canonical UI re-export target created at `components/ui/canonical`.
 - Duplicate-risk modules remain and were not removed.
@@ -31,7 +31,7 @@ PARTIALLY CANONICALIZED
 
 ## Remediation Plan
 
-1. Pick canonical Mission Control state source and retire duplicate `lib/stability.ts` consumers.
+1. Pick canonical Executive Dashboard state source and retire duplicate `lib/stability.ts` consumers.
 2. Replace dashboard imports with `components/ui/canonical` primitives incrementally.
 3. Decide whether `components/enterprise` and `components/autonomous` are active product surfaces or archive candidates.
 4. Consolidate ALICE modules into one documented AI OS boundary.

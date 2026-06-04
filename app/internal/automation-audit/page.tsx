@@ -10,7 +10,7 @@ export default async function AutomationAuditPage() {
   const state = await getAutomationAuditState();
   return (
     <div className="space-y-6">
-      <InternalHeader title="Automation E2E Audit" subtitle="Operational domain coverage, event emissions, ALICE visibility, replay readiness, and telemetry completeness." />
+      <InternalHeader title="Automation E2E Audit" subtitle="Operational domain coverage, event emissions, AI visibility, replay readiness, and telemetry completeness." />
       <AutomationAuditCenter state={state} />
       <AutomationDomainMatrix state={state} />
       <AutomationGapPanel state={state} />
