@@ -13,6 +13,13 @@ export type AutomationDomain =
   | "treatment"
   | "insurance"
   | "implementation"
+  | "pms_intelligence"
+  | "provider_performance"
+  | "hygiene_growth"
+  | "ai_workforce"
+  | "clinical_education"
+  | "forecasting"
+  | "autonomous_growth"
   | "patient_influence"
   | "ai";
 

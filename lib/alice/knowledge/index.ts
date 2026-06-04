@@ -13,6 +13,7 @@ export type AliceKnowledgeDomain =
   | "configuration"
   | "playbooks"
   | "implementation_intelligence"
+  | "enterprise_moat"
   | "rbac"
   | "tenant_isolation";
 
@@ -65,17 +66,32 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
   },
   {
     domain: "implementation_intelligence",
-    version: "1.0.0",
+    version: "2.0.0",
     owner: "Client Success OS",
     sources: [
       "lib/implementation-intelligence.ts",
       "lib/client-implementation-os.ts",
       "supabase/migrations/20260701000000_implementation_intelligence_layer.sql",
+      "supabase/migrations/20260702000000_enterprise_moat_autonomous_practice.sql",
       "lib/automation/registry.ts"
     ],
-    capabilities: ["baseline scoring", "revenue leak detection", "PMS readiness", "activation guidance", "go-live certification"],
+    capabilities: ["baseline scoring", "revenue leak detection", "PMS readiness", "activation guidance", "go-live certification", "enterprise moat visibility"],
     certification: "partial",
-    summary: "ALICE grounds Implementation Advisor recommendations in baseline snapshots, implementation scores, revenue leaks, PMS readiness, workflow configurations, patient segments, and go-live certification evidence."
+    summary: "ALICE grounds Implementation Advisor recommendations in baseline snapshots, implementation scores, revenue leaks, PMS readiness, workflow configurations, patient segments, go-live certification evidence, and Batches 25-32 enterprise moat centers."
+  },
+  {
+    domain: "enterprise_moat",
+    version: "1.0.0",
+    owner: "ALICE Autonomous Practice Intelligence",
+    sources: [
+      "lib/implementation-intelligence.ts",
+      "components/mission-control/implementation-command-center.tsx",
+      "supabase/migrations/20260702000000_enterprise_moat_autonomous_practice.sql",
+      "lib/automation/registry.ts"
+    ],
+    capabilities: ["PMS intelligence", "insurance recovery", "provider scoring", "hygiene growth", "AI workforce orchestration", "clinical education intelligence", "practice forecasting", "autonomous growth planning"],
+    certification: "partial",
+    summary: "ALICE extends existing Mission Control and Workflow OS intelligence with PMS, insurance, provider, hygiene, AI workforce, clinical education, forecasting, and autonomous growth plan grounding."
   },
   {
     domain: "pms_operations",

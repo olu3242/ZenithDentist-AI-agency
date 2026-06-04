@@ -69,6 +69,27 @@ function ImplementationCommand({ state }: { state: ClientImplementationState }) 
           ]} empty="ALICE implementation recommendations are not available yet." />
         </Panel>
       </div>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Panel title="Enterprise Moat Centers" icon={Sparkles}>
+          <Rows rows={state.implementationIntelligence.enterpriseMoat.centers.map(center => [
+            center.label,
+            `${center.score}%`,
+            center.status.replace(/_/g, " "),
+            center.metric,
+            center.recommendation
+          ])} empty="Enterprise moat centers are not producing signals yet." />
+        </Panel>
+        <Panel title="Autonomous Growth Center" icon={Rocket}>
+          <Rows rows={[
+            ["Weekly Plans", state.implementationIntelligence.enterpriseMoat.autonomousGrowth.weeklyPlans],
+            ["Monthly Plans", state.implementationIntelligence.enterpriseMoat.autonomousGrowth.monthlyPlans],
+            ["Quarterly Plans", state.implementationIntelligence.enterpriseMoat.autonomousGrowth.quarterlyPlans],
+            ["Expected Lift", state.implementationIntelligence.enterpriseMoat.autonomousGrowth.expectedLift],
+            ["Revenue Goal", money(state.implementationIntelligence.enterpriseMoat.autonomousGrowth.revenueGoal)],
+            ...state.implementationIntelligence.enterpriseMoat.aliceEvolution.map(item => [item.stage, item.status])
+          ]} empty="Autonomous growth plans have not been generated yet." />
+        </Panel>
+      </div>
       <Panel title="Workflow OS Registration" icon={Activity}>
         <Rows rows={state.implementationIntelligence.workflowRegistrations.map(item => [item.id, item.stage, item.trigger, item.outputs.join(", ")])} empty="Implementation workflows are not registered." />
       </Panel>

@@ -445,7 +445,12 @@ function emptyImplementationIntelligence(): ImplementationIntelligenceState {
     revenueRecovery: { totalLeaks: 0, topCategory: "None", potentialRevenue: 0, recoveredRevenue: 0, topOpportunities: [] },
     pmsReadiness: { supportedVendors: [], assessedVendors: [], averageReadiness: 0, openPlans: 0 },
     aliceAdvisor: { topActions: [], topRisks: [], topOpportunities: [] },
-    workflowRegistrations: []
+    workflowRegistrations: [],
+    enterpriseMoat: {
+      centers: [],
+      autonomousGrowth: { weeklyPlans: 0, monthlyPlans: 0, quarterlyPlans: 0, expectedLift: 0, revenueGoal: 0 },
+      aliceEvolution: []
+    }
   };
 }
 

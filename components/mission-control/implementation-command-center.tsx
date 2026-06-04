@@ -1,4 +1,4 @@
-import { CheckCircle2, CircleAlert, Gauge, Wallet } from "lucide-react";
+import { Brain, CheckCircle2, CircleAlert, Gauge, Wallet } from "lucide-react";
 import type { ImplementationIntelligenceState } from "@/lib/implementation-intelligence";
 
 export function ImplementationCommandCenter({ state }: { state: ImplementationIntelligenceState }) {
@@ -23,6 +23,23 @@ export function ImplementationCommandCenter({ state }: { state: ImplementationIn
             <p className="mt-2 text-xs font-semibold text-muted">{step.recommendation}</p>
           </article>
         ))}
+      </div>
+      <div className="mt-5 border-t border-line pt-5">
+        <div className="mb-3 flex items-center gap-2">
+          <Brain className="h-5 w-5 text-teal" />
+          <h3 className="text-lg font-black text-ink">Enterprise Moat Centers</h3>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {state.enterpriseMoat.centers.map(center => (
+            <article key={center.key} className="rounded border border-line bg-paper p-3">
+              <p className="text-xs font-black uppercase tracking-wider text-muted">{center.status.replace(/_/g, " ")}</p>
+              <h4 className="mt-1 font-black text-ink">{center.label}</h4>
+              <strong className="mt-2 block text-2xl font-black text-ink">{center.score}%</strong>
+              <p className="mt-1 text-xs font-bold text-muted">{center.metric}</p>
+              <p className="mt-2 text-xs font-semibold text-muted">{center.recommendation}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
