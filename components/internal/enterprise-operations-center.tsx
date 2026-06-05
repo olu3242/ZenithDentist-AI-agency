@@ -1,4 +1,5 @@
 import { Activity, AlertTriangle, BarChart3, Brain, BriefcaseBusiness, DatabaseZap, Gauge, HeartPulse, Radar, ShieldCheck, TrendingUp } from "lucide-react";
+import { ExecutiveDashboardSuite } from "@/components/executive";
 import type { EnterpriseOperationsState, EnterpriseOpsSection } from "@/lib/enterprise-operations";
 
 export function EnterpriseOperationsCenter({ state, section }: { state: EnterpriseOperationsState; section: EnterpriseOpsSection }) {
@@ -76,6 +77,7 @@ function Executive({ state }: { state: EnterpriseOperationsState }) {
           ))}
         </div>
       </Panel>
+      <ExecutiveDashboardSuite recoveredRevenue={state.revenue.totalAttributed} recoverableRevenue={state.revenue.totalAttributed + state.commercial.outstandingInvoices} />
       <Forecasts state={state} />
     </>
   );

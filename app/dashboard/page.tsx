@@ -1,5 +1,6 @@
 import { AppShell } from "@/components/app/app-shell";
 import { PersonaCommandCenter } from "@/components/dashboard/persona-command-center";
+import { ExecutiveDashboardSuite } from "@/components/executive";
 import { getAutomationOSState } from "@/lib/automation-os/registry";
 import { getAdminDashboardData } from "@/lib/data/leads";
 import { getTenantData } from "@/lib/data/tenants";
@@ -16,10 +17,15 @@ export default async function DashboardPage() {
     getCurrentZenithRole("staff")
   ]);
   const persona = getPersonaForRole(role);
+  const recoveredRevenue = admin.opportunities.reduce((total, item) => total + Number(item.estimated_recovery ?? 0), 0);
+  const recoverableRevenue = admin.opportunities.reduce((total, item) => total + Number(item.pipeline_value ?? item.estimated_recovery ?? 0), 0);
 
   return (
     <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
-      <PersonaCommandCenter persona={persona} tenantData={tenantData} admin={admin} runtime={runtime} automationOS={automationOS} />
+      <div className="space-y-6">
+        <PersonaCommandCenter persona={persona} tenantData={tenantData} admin={admin} runtime={runtime} automationOS={automationOS} />
+        <ExecutiveDashboardSuite recoveredRevenue={recoveredRevenue} recoverableRevenue={recoverableRevenue} />
+      </div>
     </AppShell>
   );
 }

@@ -9,6 +9,7 @@ import { ExecutiveKPIGrid } from "@/components/mission-control/executive-kpi-gri
 import { ExecutiveIntelligenceCloud } from "@/components/mission-control/executive-intelligence-cloud";
 import { ExecutiveReportCard } from "@/components/mission-control/executive-report-card";
 import { EnterpriseUsageDashboard } from "@/components/mission-control/enterprise-usage-dashboard";
+import { ExecutiveDashboardSuite } from "@/components/executive";
 import { GovernanceCenter } from "@/components/mission-control/governance-center";
 import { IncidentTimeline } from "@/components/mission-control/incident-timeline";
 import { InfrastructureAwarenessPanel } from "@/components/mission-control/infrastructure-awareness-panel";
@@ -111,6 +112,7 @@ export default async function MissionControlPage() {
           </header>
           <RuntimeHealthBar state={state} providers={providers} replay={replay} />
           <ExecutiveKPIGrid runtime={state} replay={replay} tenant={tenantIntelligence} />
+          <ExecutiveDashboardSuite recoveredRevenue={report.automationRoi} recoverableRevenue={report.automationRoi + report.replayCandidates * 2500} />
           <RuntimeEventFabric fabric={fabric} />
           <ExecutiveIntelligenceCloud cloud={executiveCloud} />
           <div className="grid gap-6 xl:grid-cols-2">

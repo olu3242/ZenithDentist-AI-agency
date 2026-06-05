@@ -116,6 +116,32 @@ Owner:
 
 Zenith Platform
 
+### Migration ID: 20260703000000
+
+Purpose:
+
+Add dashboard personalization preferences for existing Mission Control, Portal, Executive, and Internal dashboard surfaces.
+
+Dependencies:
+
+- 20260702000000
+
+Affected Tables:
+
+- `dashboard_preferences`
+
+Rollback Strategy:
+
+Restore backup or archive/drop dashboard preference rows after export.
+
+Risk Level:
+
+Medium
+
+Owner:
+
+Zenith Platform
+
 ### Migration ID: 20260617000000
 
 Purpose:
