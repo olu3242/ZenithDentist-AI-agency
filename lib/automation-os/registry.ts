@@ -15,6 +15,8 @@ export const dentalAutomationLibrary = [
   { workflowId: "recall_due", category: "Patient Recall", pack: "Recall Automation" },
   { workflowId: "review_request_due", category: "Review Generation", pack: "Review Automation" },
   { workflowId: "referral_growth", category: "Referral Growth", pack: "Referral Growth Automation" },
+  { workflowId: "appointment_created", category: "Booking Confirmation", pack: "Appointment Lifecycle Automation" },
+  { workflowId: "appointment_cancelled", category: "Cancellation Recovery", pack: "Appointment Lifecycle Automation" },
   { workflowId: "appointment_no_show", category: "Missed Appointment Recovery", pack: "Missed Appointment Automation" },
   { workflowId: "reactivation_candidate_detected", category: "Reactivate Dormant Patients", pack: "Patient Reactivation" },
   { workflowId: "treatment_recovery", category: "Treatment Recovery", pack: "Treatment Recovery Automation" },

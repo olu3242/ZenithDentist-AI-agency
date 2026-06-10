@@ -5,8 +5,12 @@ import { runEnterpriseCertification } from "@/lib/evidence/evidence-engine";
 function isAuthorized(request: NextRequest): boolean {
   const cookieToken = request.cookies.get("zenith_internal_token")?.value ?? "";
   const headerToken = request.headers.get("x-internal-token") ?? "";
+  const bearer = (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
   const expected = process.env.ZENITH_INTERNAL_TOKEN;
-  return !!expected && (cookieToken === expected || headerToken === expected);
+  const cronSecret = process.env.CRON_SECRET;
+  if (expected && (cookieToken === expected || headerToken === expected || bearer === expected)) return true;
+  if (cronSecret && bearer === cronSecret) return true;
+  return false;
 }
 
 export async function GET(request: NextRequest) {

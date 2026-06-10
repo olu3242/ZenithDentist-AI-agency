@@ -16,7 +16,14 @@ export type OutreachEventType =
   | "assessment_completed"
   | "audit_generated"
   | "calendly_booking_created"
-  | "opportunity_created";
+  | "calendly_booking_cancelled"
+  | "booking_cancelled"
+  | "opportunity_created"
+  | "recall_due_detected"
+  | "patient_inactive_detected"
+  | "revenue_leak_detected"
+  | "review_request_triggered"
+  | "no_show_detected";
 export type AutomationEventStatus = "queued" | "running" | "succeeded" | "failed" | "skipped";
 export type NotificationSeverity = "info" | "success" | "warning" | "critical";
 export type ReportPeriod = "weekly" | "monthly";
