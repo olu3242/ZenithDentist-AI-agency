@@ -450,6 +450,14 @@ function emptyImplementationIntelligence(): ImplementationIntelligenceState {
       centers: [],
       autonomousGrowth: { weeklyPlans: 0, monthlyPlans: 0, quarterlyPlans: 0, expectedLift: 0, revenueGoal: 0 },
       aliceEvolution: []
+    },
+    unifiedIntelligence: {
+      entityScores: { total: 0, averageScore: 0, averageConfidence: 0, entities: [], scoreTypes: [] },
+      aliceRecommendations: { total: 0, open: 0, approved: 0, estimatedValue: 0, topActions: [] },
+      forecasts: { total: 0, averageConfidence: 0, horizons: [], categories: [], projectedValue: 0 },
+      practiceTwin: { configured: false, health: 0, growth: 0, risk: 0, capacity: 0, forecast: 0 },
+      actionRequests: { pending: 0, approved: 0, launched: 0, measured: 0 },
+      convergence: []
     }
   };
 }

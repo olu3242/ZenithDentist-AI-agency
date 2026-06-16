@@ -3,13 +3,15 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { automationRegistry } from "@/lib/automation/registry";
 import { getTenantData } from "@/lib/data/tenants";
-import type { AutomationRegistryStatus, Database, Json } from "@/lib/database.types";
+import type { Database, Json } from "@/lib/database.types";
 import { logger } from "@/lib/logger";
+import { deliverGeneratedReportEmail, REPORT_GENERATED_WORKFLOW_ID } from "@/lib/report-delivery";
 import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib/runtime/instrumentation";
 import { createServiceClient } from "@/lib/supabase/server";
 import { executeWorkflow } from "@/lib/workflow-os/workflow-engine";
 
 export type AutomationRegistryRecord = Database["public"]["Tables"]["automation_registry"]["Row"];
+type AutomationRegistryStatus = "available" | "active" | "paused" | "failed";
 
 export const dentalAutomationLibrary = [
   { workflowId: "recall_due", category: "Patient Recall", pack: "Recall Automation" },
@@ -22,6 +24,7 @@ export const dentalAutomationLibrary = [
   { workflowId: "schedule_gap_fill", category: "Schedule Optimization", pack: "Schedule Gap Fill Automation" },
   { workflowId: "recall_capacity_optimization", category: "Capacity Balancing", pack: "Recall Capacity Optimization" },
   { workflowId: "lead_created", category: "Lead Follow-Up", pack: "Lead Follow-Up" },
+  { workflowId: REPORT_GENERATED_WORKFLOW_ID, category: "Report Delivery", pack: "Report Delivery" },
   { workflowId: "missed_call_detected", category: "Staff Notifications", pack: "Staff Notifications" },
   { workflowId: "unpaid_invoice_detected", category: "Insurance Verification", pack: "Insurance Follow-Up" },
   { workflowId: "failed_payment_detected", category: "Internal Operations", pack: "Membership Plan Nurture" },
@@ -188,57 +191,240 @@ export async function updateAutomationStatus(workflowId: string, status: Automat
   if (error) throw new Error(`Unable to update automation status: ${error.message}`);
 }
 
-export async function executeRegisteredAutomation(workflowId: string) {
-  const tenantData = await getTenantData();
-  const organizationId = tenantData.tenant.organizationId ?? tenantData.organization.id;
-  const correlationId = randomUUID();
+export async function executeRegisteredAutomation(workflowId: string, options: {
+  organizationId?: string | null;
+  triggerName?: string;
+  actionName?: string;
+  correlationId?: string;
+  initiatedBy?: "system" | "alice" | "operator" | "scheduler";
+  payload?: Record<string, unknown>;
+} = {}) {
+  const tenantData = options.organizationId ? null : await getTenantData();
+  const organizationId = options.organizationId ?? tenantData?.tenant.organizationId ?? tenantData?.organization.id;
+  if (!organizationId) throw new Error("Automation execution requires an organization id.");
+  const correlationId = options.correlationId ?? randomUUID();
   const startedAt = new Date();
+  const triggerName = options.triggerName ?? "automation_center_manual_execute";
+  const actionName = options.actionName ?? "execute_registered_automation";
+  const payload = options.payload ?? { source: "automation_center" };
+  let activeExecutionId: string | undefined;
+  let activeIdempotencyKey = `${organizationId}:${workflowId}:${triggerName}:${correlationId}`;
   const trace = await startRuntimeTrace({
     workflowId,
-    eventName: "automation_center_execute",
+    eventName: triggerName,
     organizationId,
     correlationId,
-    metadata: { source: "automation_center" }
+    metadata: payload
   });
 
   try {
     const result = await executeWorkflow({
       workflowId,
       organizationId,
-      triggerName: "automation_center_manual_execute",
-      actionName: "execute_registered_automation",
+      triggerName,
+      actionName,
       correlationId,
-      initiatedBy: "operator",
-      payload: { source: "automation_center" }
+      initiatedBy: options.initiatedBy ?? "operator",
+      payload
+    });
+    activeExecutionId = result.executionId;
+    activeIdempotencyKey = `${organizationId}:${workflowId}:${triggerName}:${result.correlationId}`;
+    await recordWorkflowRun({
+      workflowId,
+      organizationId,
+      executionId: result.executionId,
+      correlationId: result.correlationId,
+      idempotencyKey: activeIdempotencyKey,
+      status: "running",
+      startedAt,
+      metadata: payload
+    });
+    const handlerOutput = await runWorkflowHandler(workflowId, {
+      organizationId,
+      correlationId: result.correlationId,
+      executionId: result.executionId,
+      payload
+    });
+    await recordWorkflowRun({
+      workflowId,
+      organizationId,
+      executionId: result.executionId,
+      correlationId: result.correlationId,
+      idempotencyKey: activeIdempotencyKey,
+      status: "completed",
+      startedAt,
+      completedAt: new Date(),
+      metadata: { ...payload, handlerOutput }
+    });
+    await updateAutomationRuntimeRecords(activeIdempotencyKey, "succeeded", "completed", {
+      ...payload,
+      executionId: result.executionId,
+      correlationId: result.correlationId,
+      handlerOutput
     });
     await completeRuntimeTrace(trace);
-    await updateAutomationStatus(workflowId, "active");
+    await updateAutomationStatusForOrganization(organizationId, workflowId, "active");
     await recordWorkflowExecutionEvidence({
       workflowId,
       organizationId,
       executionId: result.executionId,
       startedAt,
       status: "completed",
-      triggerSource: "automation_center_manual_execute",
+      triggerSource: triggerName,
       outcomeSummary: `Workflow ${workflowId} executed through Workflow OS with correlation ${result.correlationId}.`,
-      traceId: trace?.trace_id ?? null
+      traceId: trace?.trace_id ?? null,
+      affectedEntities: [handlerOutput]
     });
-    return result;
+    return { ...result, handlerOutput };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Automation execution failed";
+    const errorDetails = error instanceof Error && "details" in error
+      ? (error as Error & { details?: Record<string, unknown> }).details
+      : undefined;
     await failRuntimeTrace(trace, message, { workflowId, organizationId, correlationId });
-    await updateAutomationStatus(workflowId, "failed");
+    await updateAutomationStatusForOrganization(organizationId, workflowId, "failed");
+    await recordWorkflowRun({
+      workflowId,
+      organizationId,
+      executionId: activeExecutionId ?? (errorDetails?.executionId as string | undefined) ?? randomUUID(),
+      correlationId,
+      idempotencyKey: activeIdempotencyKey,
+      status: "failed",
+      startedAt,
+      completedAt: new Date(),
+      metadata: { ...payload, error: message, details: errorDetails ?? null }
+    });
+    await updateAutomationRuntimeRecords(activeIdempotencyKey, "failed", "failed", {
+      ...payload,
+      executionId: activeExecutionId ?? null,
+      correlationId,
+      error: message,
+      details: errorDetails ?? null
+    });
     await recordWorkflowExecutionEvidence({
       workflowId,
       organizationId,
+      executionId: activeExecutionId,
       startedAt,
       status: "failed",
-      triggerSource: "automation_center_manual_execute",
+      triggerSource: triggerName,
       outcomeSummary: message,
-      traceId: trace?.trace_id ?? null
+      traceId: trace?.trace_id ?? null,
+      affectedEntities: errorDetails ? [errorDetails] : []
     });
     throw error;
   }
+}
+
+async function updateAutomationRuntimeRecords(
+  idempotencyKey: string,
+  automationEventStatus: "succeeded" | "failed",
+  queueStatus: "completed" | "failed",
+  metadata: Record<string, unknown>
+) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+  await (supabase as any)
+    .from("automation_events")
+    .update({
+      status: automationEventStatus,
+      event_metadata: metadata as Json,
+      outcome: automationEventStatus === "succeeded" ? "Workflow completed." : "Workflow failed."
+    })
+    .contains("event_metadata", { idempotencyKey });
+  await (supabase as any)
+    .from("automation_queue")
+    .update({
+      status: queueStatus,
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq("idempotency_key", idempotencyKey);
+}
+
+async function updateAutomationStatusForOrganization(
+  organizationId: string,
+  workflowId: string,
+  status: AutomationRegistryStatus
+) {
+  const supabase = createServiceClient();
+  if (!supabase) throw new Error("Automation Registry requires Supabase service configuration.");
+
+  await syncAutomationRegistry(organizationId);
+  const { error } = await supabase
+    .from("automation_registry")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("organization_id", organizationId)
+    .eq("workflow_id", workflowId);
+  if (error) throw new Error(`Unable to update automation status: ${error.message}`);
+}
+
+async function runWorkflowHandler(
+  workflowId: string,
+  context: {
+    organizationId: string;
+    correlationId: string;
+    executionId: string;
+    payload: Record<string, unknown>;
+  }
+) {
+  if (workflowId !== REPORT_GENERATED_WORKFLOW_ID) {
+    return {
+      ok: true,
+      workflowId,
+      handled: false,
+      reason: "No inline handler registered; Workflow OS event was queued and evidenced."
+    };
+  }
+
+  const auditId = getString(context.payload.auditId);
+  if (!auditId) throw new Error("report_generated workflow requires auditId.");
+
+  return deliverGeneratedReportEmail({
+    organizationId: context.organizationId,
+    auditId,
+    leadId: getString(context.payload.leadId),
+    assessmentId: getString(context.payload.assessmentId),
+    workflowEventId: getString(context.payload.workflowEventId),
+    correlationId: context.correlationId
+  });
+}
+
+async function recordWorkflowRun(input: {
+  workflowId: string;
+  organizationId: string;
+  executionId: string;
+  correlationId: string;
+  idempotencyKey: string;
+  status: string;
+  startedAt: Date;
+  completedAt?: Date;
+  metadata: Record<string, unknown>;
+}) {
+  const supabase = createServiceClient();
+  if (!supabase) return;
+  const completedAt = input.completedAt?.toISOString() ?? null;
+  const latencyMs = input.completedAt ? Math.max(0, input.completedAt.getTime() - input.startedAt.getTime()) : null;
+  const payload = {
+    id: input.executionId,
+    workflow_id: input.workflowId,
+    organization_id: input.organizationId,
+    status: input.status,
+    correlation_id: input.correlationId,
+    idempotency_key: input.idempotencyKey,
+    started_at: input.startedAt.toISOString(),
+    completed_at: completedAt,
+    latency_ms: latencyMs,
+    metadata: input.metadata as Json
+  };
+  const { error } = await (supabase as any)
+    .from("workflow_runs")
+    .upsert(payload, { onConflict: "id" });
+  if (error) logger.warn("workflow_run_record_failed", { workflowId: input.workflowId, error: error.message });
+}
+
+function getString(value: unknown) {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
 async function recordWorkflowExecutionEvidence(input: {
@@ -250,6 +436,7 @@ async function recordWorkflowExecutionEvidence(input: {
   triggerSource: string;
   outcomeSummary: string;
   traceId?: string | null;
+  affectedEntities?: unknown[];
 }) {
   const supabase = createServiceClient();
   if (!supabase) return;
@@ -263,7 +450,7 @@ async function recordWorkflowExecutionEvidence(input: {
     status: input.status,
     duration_ms: completedAt.getTime() - input.startedAt.getTime(),
     trigger_source: input.triggerSource,
-    affected_entities: [],
+    affected_entities: (input.affectedEntities ?? []) as Json,
     outcome_summary: input.outcomeSummary,
     trace_id: input.traceId ?? null
   };

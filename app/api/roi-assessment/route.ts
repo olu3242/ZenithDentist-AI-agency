@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createLeadFunnel, RevenueAuditError } from "@/lib/data/leads";
-import { sendAuditEmails } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import { getErrorDiagnostics } from "@/lib/external-diagnostics";
 import { funnelSubmissionSchema } from "@/lib/validation";
@@ -26,13 +25,6 @@ export async function POST(request: Request) {
         assessmentName: "FREE Revenue Opportunity Assessment",
         consultingValue: 1500
       }
-    });
-
-    void sendAuditEmails(result).catch(error => {
-      logger.warn("roi_assessment_email_failed_non_blocking", {
-        leadId: result.lead.id,
-        error: getErrorDiagnostics(error)
-      });
     });
 
     return NextResponse.json({

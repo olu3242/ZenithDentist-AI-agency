@@ -106,6 +106,10 @@ function nextLocalized(request: NextRequest, route: ReturnType<typeof getLocaleR
 }
 
 function withLocaleResponse(response: NextResponse, locale: string) {
+  const location = response.headers.get("location");
+  if (location) {
+    response.headers.set("location", localizeInternalRedirect(location, locale));
+  }
   response.cookies.set("zenith_locale", locale, {
     path: "/",
     sameSite: "lax",
@@ -113,6 +117,24 @@ function withLocaleResponse(response: NextResponse, locale: string) {
   });
   response.headers.set("x-zenith-locale", locale);
   return response;
+}
+
+function localizeInternalRedirect(location: string, locale: string) {
+  const prefixPath = (pathname: string) => {
+    const [, firstSegment] = pathname.split("/");
+    if (isSupportedLocale(firstSegment) || pathname.startsWith("/api/")) return pathname;
+    return `/${locale}${pathname === "/" ? "" : pathname}`;
+  };
+
+  try {
+    const url = new URL(location);
+    url.pathname = prefixPath(url.pathname);
+    return url.toString();
+  } catch {
+    if (!location.startsWith("/")) return location;
+    const [pathname, query = ""] = location.split("?");
+    return `${prefixPath(pathname)}${query ? `?${query}` : ""}`;
+  }
 }
 
 function requireRoleRouteAccess(request: NextRequest, role: ReturnType<typeof roleFromRequest>, pathname: string) {

@@ -41,6 +41,54 @@ export function ImplementationCommandCenter({ state }: { state: ImplementationIn
           ))}
         </div>
       </div>
+      <div className="mt-5 border-t border-line pt-5">
+        <div className="mb-3 flex items-center gap-2">
+          <Brain className="h-5 w-5 text-teal" />
+          <h3 className="text-lg font-black text-ink">Unified Intelligence Convergence</h3>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+          <Metric
+            icon={Gauge}
+            label="Entity Scores"
+            value={state.unifiedIntelligence.entityScores.total}
+            detail={`${state.unifiedIntelligence.entityScores.averageScore}% avg / ${state.unifiedIntelligence.entityScores.averageConfidence}% confidence`}
+          />
+          <Metric
+            icon={Brain}
+            label="ALICE Recommendations"
+            value={state.unifiedIntelligence.aliceRecommendations.total}
+            detail={`$${state.unifiedIntelligence.aliceRecommendations.estimatedValue.toLocaleString()} estimated`}
+          />
+          <Metric
+            icon={Wallet}
+            label="Unified Forecasts"
+            value={state.unifiedIntelligence.forecasts.total}
+            detail={`$${state.unifiedIntelligence.forecasts.projectedValue.toLocaleString()} projected`}
+          />
+          <Metric
+            icon={CheckCircle2}
+            label="Practice Twin"
+            value={state.unifiedIntelligence.practiceTwin.configured ? "Active" : "Pending"}
+            detail={`${state.unifiedIntelligence.practiceTwin.health}% health / ${state.unifiedIntelligence.practiceTwin.risk}% risk`}
+          />
+          <Metric
+            icon={CircleAlert}
+            label="Action Requests"
+            value={state.unifiedIntelligence.actionRequests.pending}
+            detail={`${state.unifiedIntelligence.actionRequests.launched} launched / ${state.unifiedIntelligence.actionRequests.measured} measured`}
+          />
+        </div>
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          {state.unifiedIntelligence.convergence.map(item => (
+            <article key={item.layer} className="rounded border border-line bg-paper p-3">
+              <p className="text-xs font-black uppercase tracking-wider text-muted">{item.status.replace(/_/g, " ")}</p>
+              <h4 className="mt-1 font-black text-ink">{item.layer}</h4>
+              <p className="mt-1 text-xs font-bold text-muted">{item.authority}</p>
+              <p className="mt-2 text-xs font-semibold text-muted">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

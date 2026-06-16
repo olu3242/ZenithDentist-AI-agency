@@ -142,6 +142,38 @@ Owner:
 
 Zenith Platform
 
+### Migration ID: 20260704000000
+
+Purpose:
+
+Converge domain scoring, ALICE recommendations, forecasting, Practice Twin state, and autonomous action approval records into the unified ALICE intelligence framework.
+
+Dependencies:
+
+- 20260703000000
+- 20260702000000
+- 20260620000000
+
+Affected Tables:
+
+- `entity_scores`
+- `alice_recommendations`
+- `forecast_engine`
+- `practice_twins`
+- `autonomous_action_requests`
+
+Rollback Strategy:
+
+Restore backup or archive/drop unified intelligence convergence rows after export. Remove additive ALICE recommendation columns only with a forward rollback migration after dependent code is retired.
+
+Risk Level:
+
+High
+
+Owner:
+
+Zenith Platform
+
 ### Migration ID: 20260617000000
 
 Purpose:

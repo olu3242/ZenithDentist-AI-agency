@@ -57,15 +57,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} className={inter.variable}>
       <body className="font-sans antialiased">
-        <DatabaseProvider>
-          <BrandProvider>
-            <GlobalThemeProvider>
-              <AnalyticsProvider />
-              {children}
-              <LizChatWidget />
-            </GlobalThemeProvider>
-          </BrandProvider>
-        </DatabaseProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <DatabaseProvider>
+            <BrandProvider>
+              <GlobalThemeProvider>
+                <AnalyticsProvider />
+                {children}
+                <LizChatWidget />
+              </GlobalThemeProvider>
+            </BrandProvider>
+          </DatabaseProvider>
+        </NextIntlClientProvider>
         {env.NEXT_PUBLIC_GA_ID ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${env.NEXT_PUBLIC_GA_ID}`} strategy="afterInteractive" />

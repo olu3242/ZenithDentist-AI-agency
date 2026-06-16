@@ -1,16 +1,32 @@
 # Client Success Certification
 
-Status: PARTIALLY CERTIFIED
+## Decision
 
-## Certified
+Ready with remediation.
 
-- `customer_success_reviews` supports 30-day, 60-day, 90-day, quarterly business review, and renewal review scheduling.
-- `client_health_rollups` supports health score, risk score, and expansion score.
-- `client_operating_playbook_templates` defines post-onboarding operating procedures.
-- `client_operating_playbook_items` tracks owner, due date, status, evidence, and completion timestamp for every operating playbook checklist item.
-- Executive Center and Client Implementation OS expose risk, blocked clients, expansion, and go-live posture.
+## Evidence
 
-## Go-Live Requirements
+- `lib/client-implementation-os.ts`: 30/60/90 day success reviews, customer success playbook, renewal playbook, expansion workflow.
+- `lib/enterprise-operations.ts`: customer success metrics for clients, healthy, at risk, expansion candidates, renewal risks.
+- `components/internal/enterprise-operations-center.tsx`: customer success and agency CRM surfaces.
+- `lib/alice/commercial-intelligence.ts`: expansion and churn signal detection.
+- `docs/CLIENT_SUCCESS_OS.md`
+- `docs/CLIENT_HEALTH_FRAMEWORK.md`
 
-- Generate executive success summaries from revenue attribution, adoption metrics, support activity, and ALICE recommendations.
-- Automate renewal readiness once sufficient customer success history is available.
+## Certified Motions
+
+| Motion | Status | Evidence |
+| --- | --- | --- |
+| Health scores | Certified at model/surface level | health rollups and metrics |
+| Success reviews | Certified | 30/60/90 playbooks |
+| Executive reports | Certified | portal/internal reporting |
+| Renewals | Partial | playbook exists |
+| Churn prevention | Partial | signals exist |
+| Expansion opportunities | Partial | signals, workflow, quotes schema |
+
+## Client Success Score
+
+82.
+
+Reason: client success can be managed systematically, but live first-customer evidence and renewal automation are not yet proven.
+

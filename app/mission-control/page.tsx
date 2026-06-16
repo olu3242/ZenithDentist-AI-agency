@@ -24,7 +24,6 @@ import { PlatformizationPanel } from "@/components/mission-control/platformizati
 import { PredictiveAlertFeed } from "@/components/mission-control/predictive-alert-feed";
 import { ProviderHealthPanel } from "@/components/mission-control/provider-health-panel";
 import { RealtimeRefresh } from "@/components/portal/realtime-refresh";
-import { getTranslations } from "next-intl/server";
 import { ReplayCenter } from "@/components/mission-control/replay-center";
 import { RuntimeHealthDashboard } from "@/components/mission-control/runtime-health-dashboard";
 import { RuntimeHealthBar } from "@/components/mission-control/runtime-health-bar";
@@ -63,7 +62,6 @@ import { getTenantIntelligenceState } from "@/lib/runtime/tenant-intelligence";
 import { getCurrentZenithRole } from "@/lib/server-auth";
 
 export default async function MissionControlPage() {
-  const t = await getTranslations("missionControl");
   const [state, providers, incidents, memory, report, dentalPredictions, aliceInsights, governance, recovery, forecasts, simulations, tenantIntelligence, mesh, cognition, twin, awareness, executiveCloud, fabric, orchestrator, productization, tenantData, role] = await Promise.all([
     getRuntimeHealthState(),
     getProviderHealth(),

@@ -22,6 +22,24 @@ export const automationRegistry: AutomationBlueprint[] = [
     observability: fullObservability
   },
   {
+    id: "report_generated",
+    domain: "lead_operations",
+    name: "Report Generated",
+    description: "Delivers generated Revenue Assessment reports, records provider response evidence, and closes the report delivery loop.",
+    triggers: ["report.generated", "roi.report.generated"],
+    emittedEvents: ["report.email.sent", "report.email.failed", "workflow_execution_evidence"],
+    queueHandlers: ["report.load_generated_report", "notification.report_email", "evidence.provider_response"],
+    actions: ["load generated report", "load lead email", "build email payload", "send report email", "record provider response"],
+    intelligenceOutputs: ["delivery status", "provider message id", "report engagement readiness"],
+    aliceGroundingSurfaces: ["roi assessments", "audits", "lead attribution", "email delivery evidence"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 5,
+    requiredEnv: ["SUPABASE_SERVICE_ROLE_KEY", "RESEND_API_KEY"],
+    observability: fullObservability
+  },
+  {
     id: "recall_due",
     domain: "recall",
     name: "Recall Due",
@@ -777,6 +795,42 @@ export const automationRegistry: AutomationBlueprint[] = [
     deadLetterRequired: true,
     slaMinutes: 90,
     dependencies: ["workflow_os", "mission_control", "alice", "patient_revenue_engine"],
+    observability: fullObservability
+  },
+  {
+    id: "unified_intelligence_convergence_workflow",
+    domain: "unified_intelligence",
+    name: "Unified Intelligence Convergence Workflow",
+    description: "Normalizes domain scores, canonical ALICE recommendations, unified forecasts, and Practice Twin state without creating new intelligence engines.",
+    triggers: ["nightly intelligence convergence", "domain score updated", "recommendation generated", "forecast refreshed"],
+    emittedEvents: ["entity_scores_unified", "alice_recommendation_canonicalized", "forecast_unified", "practice_twin_updated", "intelligence_events"],
+    queueHandlers: ["alice.unify_scores", "alice.canonicalize_recommendations", "alice.unify_forecasts", "digital_twin.update_practice_twin"],
+    actions: ["normalize entity score", "canonicalize recommendation", "publish forecast", "update practice twin", "prepare action approval"],
+    intelligenceOutputs: ["unified entity score", "canonical ALICE recommendation", "unified forecast", "practice twin state", "autonomous action request"],
+    aliceGroundingSurfaces: ["entity_scores", "alice_recommendations", "forecast_engine", "practice_twins", "autonomous_action_requests"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 60,
+    dependencies: ["alice", "workflow_os", "mission_control", "patient_revenue_engine"],
+    observability: fullObservability
+  },
+  {
+    id: "autonomous_action_approval_workflow",
+    domain: "unified_intelligence",
+    name: "Autonomous Action Approval Workflow",
+    description: "Bridges ALICE recommendations to Workflow OS launch only after approval, execution, and measurement state are captured.",
+    triggers: ["high confidence recommendation created", "operator approval granted", "workflow outcome measured"],
+    emittedEvents: ["operator_approval_requested", "workflow_launch_approved", "autonomous_action_measured", "orchestration_events"],
+    queueHandlers: ["alice.prepare_action_request", "workflow_os.launch_approved_action", "execution_fabric.measure_outcome"],
+    actions: ["request approval", "launch approved workflow", "capture outcome", "feed learning loop"],
+    intelligenceOutputs: ["approval-ready recommendation", "workflow launch payload", "measured growth action", "ALICE learning signal"],
+    aliceGroundingSurfaces: ["alice_recommendations", "autonomous_action_requests", "workflow outcomes", "mission control decisions"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 30,
+    dependencies: ["alice", "workflow_os", "execution_fabric", "mission_control"],
     observability: fullObservability
   }
 ];

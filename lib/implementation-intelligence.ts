@@ -92,6 +92,44 @@ export interface ImplementationIntelligenceState {
     };
     aliceEvolution: Array<{ stage: string; status: "active" | "available" | "pending" }>;
   };
+  unifiedIntelligence: {
+    entityScores: {
+      total: number;
+      averageScore: number;
+      averageConfidence: number;
+      entities: string[];
+      scoreTypes: string[];
+    };
+    aliceRecommendations: {
+      total: number;
+      open: number;
+      approved: number;
+      estimatedValue: number;
+      topActions: string[];
+    };
+    forecasts: {
+      total: number;
+      averageConfidence: number;
+      horizons: string[];
+      categories: string[];
+      projectedValue: number;
+    };
+    practiceTwin: {
+      configured: boolean;
+      health: number;
+      growth: number;
+      risk: number;
+      capacity: number;
+      forecast: number;
+    };
+    actionRequests: {
+      pending: number;
+      approved: number;
+      launched: number;
+      measured: number;
+    };
+    convergence: Array<{ layer: string; authority: string; status: "canonical" | "extended" | "needs_review"; detail: string }>;
+  };
 }
 
 const supportedVendors = ["Open Dental", "Dentrix", "Eaglesoft", "Denticon"];
@@ -158,7 +196,12 @@ export async function getImplementationIntelligenceState(): Promise<Implementati
     practiceForecasts,
     growthForecasts,
     riskForecasts,
-    autonomousGrowthPlans
+    autonomousGrowthPlans,
+    entityScores,
+    aliceRecommendations,
+    forecastEngine,
+    practiceTwins,
+    autonomousActionRequests
   ] = await Promise.all([
     client.from("implementation_assessments").select("*").eq("organization_id", organizationId).order("updated_at", { ascending: false }).limit(100),
     client.from("implementation_scores").select("*").eq("organization_id", organizationId).order("scored_at", { ascending: false }).limit(100),
@@ -194,7 +237,12 @@ export async function getImplementationIntelligenceState(): Promise<Implementati
     client.from("practice_forecasts").select("*").eq("organization_id", organizationId).order("forecasted_at", { ascending: false }).limit(100),
     client.from("growth_forecasts").select("*").eq("organization_id", organizationId).order("forecasted_at", { ascending: false }).limit(100),
     client.from("risk_forecasts").select("*").eq("organization_id", organizationId).order("forecasted_at", { ascending: false }).limit(100),
-    client.from("autonomous_growth_plans").select("*").eq("organization_id", organizationId).order("generated_at", { ascending: false }).limit(100)
+    client.from("autonomous_growth_plans").select("*").eq("organization_id", organizationId).order("generated_at", { ascending: false }).limit(100),
+    client.from("entity_scores").select("*").eq("organization_id", organizationId).order("calculated_at", { ascending: false }).limit(500),
+    client.from("alice_recommendations").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(200),
+    client.from("forecast_engine").select("*").eq("organization_id", organizationId).order("forecasted_at", { ascending: false }).limit(200),
+    client.from("practice_twins").select("*").eq("organization_id", organizationId).order("updated_at", { ascending: false }).limit(10),
+    client.from("autonomous_action_requests").select("*").eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(200)
   ]);
 
   return buildState(true, {
@@ -232,7 +280,12 @@ export async function getImplementationIntelligenceState(): Promise<Implementati
     practiceForecasts: practiceForecasts.data ?? [],
     growthForecasts: growthForecasts.data ?? [],
     riskForecasts: riskForecasts.data ?? [],
-    autonomousGrowthPlans: autonomousGrowthPlans.data ?? []
+    autonomousGrowthPlans: autonomousGrowthPlans.data ?? [],
+    entityScores: entityScores.data ?? [],
+    aliceRecommendations: aliceRecommendations.data ?? [],
+    forecastEngine: forecastEngine.data ?? [],
+    practiceTwins: practiceTwins.data ?? [],
+    autonomousActionRequests: autonomousActionRequests.data ?? []
   });
 }
 
@@ -284,7 +337,8 @@ function buildState(configured: boolean, rows: Record<string, any[]> = {}): Impl
     },
     aliceAdvisor: buildAliceAdvisor(rows),
     workflowRegistrations: [...implementationWorkflowRegistrations, ...enterpriseMoatWorkflowRegistrations].map(item => ({ ...item })),
-    enterpriseMoat: buildEnterpriseMoat(rows)
+    enterpriseMoat: buildEnterpriseMoat(rows),
+    unifiedIntelligence: buildUnifiedIntelligence(rows)
   };
 }
 
@@ -402,6 +456,71 @@ function moatCenter(
     metric,
     recommendation
   };
+}
+
+function buildUnifiedIntelligence(rows: Record<string, any[]>): ImplementationIntelligenceState["unifiedIntelligence"] {
+  const entityScores = rows.entityScores ?? [];
+  const aliceRecommendations = rows.aliceRecommendations ?? [];
+  const forecasts = rows.forecastEngine ?? [];
+  const practiceTwin = rows.practiceTwins?.[0];
+  const actionRequests = rows.autonomousActionRequests ?? [];
+
+  return {
+    entityScores: {
+      total: entityScores.length,
+      averageScore: average(entityScores.map(item => Number(item.score ?? 0))),
+      averageConfidence: average(entityScores.map(item => Number(item.confidence ?? 0))),
+      entities: uniqueLabels(entityScores, "entity_type"),
+      scoreTypes: uniqueLabels(entityScores, "score_type")
+    },
+    aliceRecommendations: {
+      total: aliceRecommendations.length,
+      open: aliceRecommendations.filter(item => ["open", "pending", "recommended"].includes(String(item.status ?? "").toLowerCase())).length,
+      approved: aliceRecommendations.filter(item => ["approved", "launched"].includes(String(item.status ?? "").toLowerCase()) || item.approved_at).length,
+      estimatedValue: sum(aliceRecommendations, "estimated_value"),
+      topActions: aliceRecommendations
+        .slice(0, 3)
+        .map(item => item.recommended_action ?? item.recommendation ?? "Review ALICE recommendation")
+    },
+    forecasts: {
+      total: forecasts.length,
+      averageConfidence: average(forecasts.map(item => Number(item.confidence ?? 0))),
+      horizons: uniqueLabels(forecasts, "horizon"),
+      categories: uniqueLabels(forecasts, "forecast_category"),
+      projectedValue: sum(forecasts, "forecast_value")
+    },
+    practiceTwin: {
+      configured: Boolean(practiceTwin),
+      health: Number(practiceTwin?.health_score ?? 0),
+      growth: Number(practiceTwin?.growth_score ?? 0),
+      risk: Number(practiceTwin?.risk_score ?? 0),
+      capacity: Number(practiceTwin?.capacity_score ?? 0),
+      forecast: Number(practiceTwin?.forecast_score ?? 0)
+    },
+    actionRequests: {
+      pending: countStatus(actionRequests, "pending"),
+      approved: countStatus(actionRequests, "approved"),
+      launched: countStatus(actionRequests, "launched"),
+      measured: countStatus(actionRequests, "measured")
+    },
+    convergence: [
+      { layer: "ALICE", authority: "Intelligence, recommendations, forecasts", status: "canonical", detail: "Scores, recommendations, forecasts, and autonomous action requests converge through ALICE tables." },
+      { layer: "Mission Control", authority: "Executive visibility", status: "extended", detail: "Implementation Command Center surfaces unified intelligence without creating another dashboard." },
+      { layer: "Workflow OS", authority: "Orchestration and approvals", status: "canonical", detail: "Autonomous actions are queued for approval before Workflow OS launch." },
+      { layer: "Execution Fabric", authority: "Runtime execution", status: "extended", detail: "Approved actions retain workflow payloads, outcomes, and measurement state." },
+      { layer: "Patient Revenue Engine", authority: "Revenue grounding", status: "extended", detail: "Revenue, patient, provider, PMS, and insurance domains feed unified scores and forecasts." }
+    ]
+  };
+}
+
+function uniqueLabels(rows: any[], field: string) {
+  return [...new Set(rows.map(item => String(item[field] ?? "")).filter(Boolean))]
+    .map(titleCase)
+    .slice(0, 6);
+}
+
+function countStatus(rows: any[], status: string) {
+  return rows.filter(item => String(item.approval_status ?? item.status ?? "").toLowerCase() === status).length;
 }
 
 function blocked(rows: any[] | undefined) {

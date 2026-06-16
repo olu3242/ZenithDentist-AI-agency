@@ -1,33 +1,72 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { getTenantData } from "@/lib/data/tenants";
 
+type DiscoverySession = {
+  id: string;
+  organization_id: string;
+  practice_name: string | null;
+  created_at: string;
+  no_show_rate: number | null;
+  monthly_revenue: number | null;
+  recall_rate: number | null;
+};
+
+type DiscoveryQueryResult<T> = {
+  data: T[] | null;
+  count?: number | null;
+};
+
+type DiscoveryRowsQuery<T> = PromiseLike<DiscoveryQueryResult<T>> & {
+  eq(column: string, value: string): DiscoveryRowsQuery<T>;
+  order(column: string, options: { ascending: boolean }): DiscoveryRowsQuery<T>;
+  limit(count: number): DiscoveryRowsQuery<T>;
+};
+
+type DiscoveryCountQuery = PromiseLike<DiscoveryQueryResult<never>> & {
+  eq(column: string, value: string): DiscoveryCountQuery;
+};
+
+type DiscoveryTableQuery<T> = {
+  select(columns: string): DiscoveryRowsQuery<T>;
+};
+
+type CountTableQuery = {
+  select(columns: string, options: { count: "exact"; head: true }): DiscoveryCountQuery;
+};
+
+type DiscoveryReadClient = {
+  from(table: "discovery_sessions"): DiscoveryTableQuery<DiscoverySession>;
+  from(table: "opportunity_scores"): CountTableQuery;
+};
+
 export default async function DiscoveryPage() {
   const supabase = createServiceClient();
   const tenantData = await getTenantData();
   const organizationId = tenantData.tenant.organizationId;
 
-  let sessions: Record<string, unknown>[] = [];
+  let sessions: DiscoverySession[] = [];
   let totalOpportunities = 0;
 
   if (supabase) {
-    let sessionQuery = supabase
+    const discoveryClient = supabase as unknown as DiscoveryReadClient;
+    const sessionQuery = discoveryClient
       .from("discovery_sessions")
       .select("id, organization_id, practice_name, created_at, no_show_rate, monthly_revenue, recall_rate")
       .order("created_at", { ascending: false })
       .limit(50);
-    if (organizationId) sessionQuery = sessionQuery.eq("organization_id", organizationId);
 
-    const { data: sessionRows } = await sessionQuery;
-    if (sessionRows) {
-      sessions = sessionRows as Record<string, unknown>[];
-    }
+    const { data: sessionRows } = organizationId
+      ? await sessionQuery.eq("organization_id", organizationId)
+      : await sessionQuery;
+    sessions = (sessionRows ?? []).map(mapDiscoverySession);
 
-    let oppQuery = supabase
+    const oppQuery = discoveryClient
       .from("opportunity_scores")
       .select("id", { count: "exact", head: true });
-    if (organizationId) oppQuery = oppQuery.eq("organization_id", organizationId);
 
-    const { count } = await oppQuery;
+    const { count } = organizationId
+      ? await oppQuery.eq("organization_id", organizationId)
+      : await oppQuery;
     totalOpportunities = count ?? 0;
   }
 
@@ -81,9 +120,9 @@ export default async function DiscoveryPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {sessions.map((session) => (
-                <tr key={session.id as string} className="hover:bg-gray-50">
+                <tr key={session.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">
-                    {(session.practice_name as string) ?? "—"}
+                    {session.practice_name ?? "—"}
                   </td>
                   <td className="px-4 py-3">
                     ${Number(session.monthly_revenue ?? 0).toLocaleString()}
@@ -95,7 +134,7 @@ export default async function DiscoveryPage() {
                     {Number(session.recall_rate ?? 0).toFixed(1)}%
                   </td>
                   <td className="px-4 py-3 text-gray-400">
-                    {new Date(session.created_at as string).toLocaleDateString()}
+                    {new Date(session.created_at).toLocaleDateString()}
                   </td>
                 </tr>
               ))}
@@ -105,6 +144,18 @@ export default async function DiscoveryPage() {
       )}
     </div>
   );
+}
+
+function mapDiscoverySession(row: DiscoverySession): DiscoverySession {
+  return {
+    id: row.id,
+    organization_id: row.organization_id,
+    practice_name: row.practice_name,
+    created_at: row.created_at,
+    no_show_rate: row.no_show_rate,
+    monthly_revenue: row.monthly_revenue,
+    recall_rate: row.recall_rate
+  };
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {

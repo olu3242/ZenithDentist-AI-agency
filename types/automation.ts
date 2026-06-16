@@ -20,6 +20,7 @@ export type AutomationDomain =
   | "clinical_education"
   | "forecasting"
   | "autonomous_growth"
+  | "unified_intelligence"
   | "patient_influence"
   | "ai";
 

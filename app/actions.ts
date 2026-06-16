@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { createLeadFunnel, RevenueAuditError, trackBookingClick, trackOutreachEvent } from "@/lib/data/leads";
 import { publishFunnelEvent } from "@/lib/event-fabric";
-import { sendAuditEmails } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import { getErrorDiagnostics } from "@/lib/external-diagnostics";
 import { funnelSubmissionSchema } from "@/lib/validation";
@@ -55,25 +54,6 @@ export async function submitFunnelAction(input: unknown): Promise<FunnelActionSt
     });
 
     const result = await createLeadFunnel(parsed.data);
-    logger.info("[AUDIT] Email Send", {
-      status: "queued",
-      leadId: result.lead.id,
-      auditId: result.audit.id
-    });
-    void sendAuditEmails(result).then(() => {
-      logger.info("[AUDIT] Email Send", {
-        status: "success",
-        leadId: result.lead.id,
-        auditId: result.audit.id
-      });
-    }).catch(error => {
-      logger.warn("[AUDIT] Email Send", {
-        status: "failed_non_blocking",
-        leadId: result.lead.id,
-        auditId: result.audit.id,
-        error: getErrorDiagnostics(error)
-      });
-    });
     revalidatePath("/admin");
     logger.info("[AUDIT] Success", {
       leadId: result.lead.id,

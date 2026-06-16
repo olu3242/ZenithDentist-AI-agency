@@ -1,19 +1,12 @@
-import { Resend } from "resend";
-import { env } from "@/lib/env";
 import { brandConfig } from "@/lib/brand";
 import { logger } from "@/lib/logger";
 import type { FunnelResult } from "@/lib/data/leads";
-import { getLocalizedCurrency, getLocalizedText, type LocalizationContext } from "@/lib/localized-messaging";
+import type { LocalizationContext } from "@/lib/localized-messaging";
 import { formatCurrency } from "@/lib/utils";
+import { sendEmail } from "@/lib/adapters/email-adapter";
+import type { DeliveryResult } from "@/lib/adapters/communication-adapter";
 
-const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
-
-export async function sendAuditEmails(result: FunnelResult, localization: LocalizationContext = {}) {
-  if (!resend) {
-    logger.warn("resend_missing_audit_email_skipped", { leadId: result.lead.id });
-    return;
-  }
-
+export function buildAuditEmailPayload(result: FunnelResult) {
   const subject = `Your FREE Revenue Opportunity Assessment for ${result.lead.practice_name}`;
   const practiceHealthScore = result.roi.practice_health_score ? `${result.roi.practice_health_score}/100` : "Pending";
   const recallOpportunity = result.roi.recall_opportunity ?? 0;
@@ -34,14 +27,14 @@ export async function sendAuditEmails(result: FunnelResult, localization: Locali
     <p>Book your implementation walkthrough to review the recommended Zenith PROS Revenue Playbooks.</p>
   `;
 
-  await Promise.all([
-    resend.emails.send({
+  return {
+    visitor: {
       from: `${brandConfig.name} <audit@zenith-ai.com>`,
       to: result.lead.email,
       subject,
       html
-    }),
-    resend.emails.send({
+    },
+    operations: {
       from: `${brandConfig.name} <ops@zenith-ai.com>`,
       to: "ops@zenith-ai.com",
       subject: `New FREE Revenue Assessment: ${result.lead.practice_name}`,
@@ -57,6 +50,46 @@ export async function sendAuditEmails(result: FunnelResult, localization: Locali
         <p><strong>Revenue Recovery Estimate:</strong> ${formatCurrency(result.audit.projected_recovery)}</p>
         <p><strong>Lead Source:</strong> FREE Revenue Opportunity Assessment</p>
       `
+    }
+  };
+}
+
+export async function sendAuditEmails(
+  result: FunnelResult,
+  localization: LocalizationContext = {},
+  organizationId?: string | null
+): Promise<DeliveryResult[]> {
+  void localization;
+  const payload = buildAuditEmailPayload(result);
+  const results = await Promise.all([
+    sendEmail({
+      organizationId,
+      ...payload.visitor,
+      metadata: {
+        leadId: result.lead.id,
+        auditId: result.audit.id,
+        recipientType: "visitor"
+      }
+    }),
+    sendEmail({
+      organizationId,
+      ...payload.operations,
+      metadata: {
+        leadId: result.lead.id,
+        auditId: result.audit.id,
+        recipientType: "operations"
+      }
     })
   ]);
+
+  const failed = results.filter(item => !item.ok);
+  if (failed.length) {
+    logger.warn("audit_email_delivery_failed", {
+      leadId: result.lead.id,
+      auditId: result.audit.id,
+      failures: failed.map(item => ({ provider: item.provider, error: item.error }))
+    });
+  }
+
+  return results;
 }

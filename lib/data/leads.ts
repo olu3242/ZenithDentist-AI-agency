@@ -8,6 +8,12 @@ import { completeRuntimeTrace, failRuntimeTrace, startRuntimeTrace } from "@/lib
 import { getErrorDiagnostics, supabaseErrorContext } from "@/lib/external-diagnostics";
 import { executeRegisteredAutomation } from "@/lib/automation-os/registry";
 import { publishFunnelEvent } from "@/lib/event-fabric";
+import {
+  publishReportGeneratedEvent,
+  REPORT_GENERATED_EVENT,
+  REPORT_GENERATED_WORKFLOW_ID,
+  resolveWorkflowOrganizationId
+} from "@/lib/report-delivery";
 
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type RoiCalculation = Database["public"]["Tables"]["roi_calculations"]["Row"];
@@ -277,6 +283,39 @@ export async function createLeadFunnel(input: FunnelSubmissionInput): Promise<Fu
     operation: "insert",
     leadId: lead.id,
     auditId: audit.id
+  });
+
+  const workflowOrganizationId = await resolveWorkflowOrganizationId(lead.organization_id);
+  const reportEvent = await publishReportGeneratedEvent({
+    organizationId: workflowOrganizationId,
+    lead,
+    roi,
+    audit
+  });
+
+  logger.info("[AUDIT] Workflow Event", {
+    status: "persisted",
+    eventType: REPORT_GENERATED_EVENT,
+    workflowId: REPORT_GENERATED_WORKFLOW_ID,
+    workflowEventId: reportEvent.id,
+    leadId: lead.id,
+    auditId: audit.id
+  });
+
+  await executeRegisteredAutomation(REPORT_GENERATED_WORKFLOW_ID, {
+    organizationId: workflowOrganizationId,
+    triggerName: REPORT_GENERATED_EVENT,
+    actionName: "deliver_generated_report_email",
+    initiatedBy: "system",
+    payload: {
+      source: "landing_page_revenue_assessment",
+      workflowEventId: reportEvent.id,
+      leadId: lead.id,
+      assessmentId: roi.id,
+      auditId: audit.id,
+      recipientEmail: lead.email,
+      practiceName: lead.practice_name
+    }
   });
 
   void runLeadFunnelSideEffects({

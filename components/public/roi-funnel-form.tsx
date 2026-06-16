@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Bot, CheckCircle2, FileText, Loader2, LockKeyhole, Sparkles, TrendingUp } from "lucide-react";
@@ -60,7 +60,6 @@ const sliderConfig: Array<{
 ];
 
 export function RoiFunnelForm({ calendlyUrl }: { calendlyUrl: string }) {
-  const t = useTranslations("roi");
   const locale = normalizeLocale(useLocale());
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<FunnelActionState | null>(null);

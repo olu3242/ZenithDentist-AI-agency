@@ -14,6 +14,7 @@ export type AliceKnowledgeDomain =
   | "playbooks"
   | "implementation_intelligence"
   | "enterprise_moat"
+  | "unified_intelligence"
   | "rbac"
   | "tenant_isolation";
 
@@ -92,6 +93,20 @@ export const aliceKnowledgeMap: AliceKnowledgeRecord[] = [
     capabilities: ["PMS intelligence", "insurance recovery", "provider scoring", "hygiene growth", "AI workforce orchestration", "clinical education intelligence", "practice forecasting", "autonomous growth planning"],
     certification: "partial",
     summary: "ALICE extends existing Mission Control and Workflow OS intelligence with PMS, insurance, provider, hygiene, AI workforce, clinical education, forecasting, and autonomous growth plan grounding."
+  },
+  {
+    domain: "unified_intelligence",
+    version: "1.0.0",
+    owner: "ALICE Convergence Layer",
+    sources: [
+      "supabase/migrations/20260704000000_unified_intelligence_convergence.sql",
+      "lib/implementation-intelligence.ts",
+      "components/mission-control/implementation-command-center.tsx",
+      "lib/automation/registry.ts"
+    ],
+    capabilities: ["unified scoring", "canonical recommendations", "unified forecasts", "practice twin", "autonomous action approval bridge", "convergence certification"],
+    certification: "partial",
+    summary: "ALICE is the sole intelligence authority for unified scores, recommendations, forecasts, Practice Twin state, and approval-ready autonomous action requests."
   },
   {
     domain: "pms_operations",

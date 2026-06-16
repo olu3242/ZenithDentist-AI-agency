@@ -19,6 +19,7 @@ export type DeliveryResult = {
   externalId?: string;
   error?: string;
   deliveredAt?: string;
+  providerResponse?: Record<string, unknown>;
 };
 
 export type AdapterResult<T = void> = {
