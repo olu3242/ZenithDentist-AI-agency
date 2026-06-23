@@ -5,7 +5,7 @@ export interface ExecutionResult {
   agentId: string;
   tenantId: string;
   eventType: string;
-  status: "completed" | "failed";
+  status: "completed" | "failed" | "pending_approval";
   success: boolean;
   durationMs: number;
   outcome: Record<string, unknown>;

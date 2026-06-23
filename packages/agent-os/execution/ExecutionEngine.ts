@@ -8,6 +8,9 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { executeRegisteredAutomation } from "@/lib/automation-os/registry";
 import { createServiceClient } from "@/lib/supabase/server";
+import { ApprovalRuleEngine } from "@/packages/agent-os/approvals/ApprovalRuleEngine";
+import { ApprovalRequestStore } from "@/packages/agent-os/approvals/ApprovalRequestStore";
+import { AgentRevenueAttributionStore } from "@/packages/agent-os/revenue/AgentRevenueAttributionStore";
 import type { ExecutionResult } from "./ExecutionResult";
 
 export interface ExecutionEngineInput {
@@ -16,12 +19,15 @@ export interface ExecutionEngineInput {
   eventType: string;
   payload: unknown;
   workflowId?: string;
+  actionType?: string;
+  revenueImpact?: { revenueType: string; amount: number; sourceEvent: string };
 }
 
 export async function run(input: ExecutionEngineInput): Promise<ExecutionResult> {
   const supabase = createServiceClient();
   const executionId = randomUUID();
   const startedAt = new Date();
+  const actionType = input.actionType ?? input.eventType;
 
   let executionRowId: string | null = null;
 
@@ -39,6 +45,34 @@ export async function run(input: ExecutionEngineInput): Promise<ExecutionResult>
       .select("id")
       .maybeSingle();
     executionRowId = data?.id ?? null;
+  }
+
+  const approval = await ApprovalRuleEngine.checkApproval(input.agentId, actionType);
+  if (!approval.autoApproved) {
+    await ApprovalRequestStore.createRequest({
+      executionId: executionRowId ?? undefined,
+      agentId: input.agentId,
+      actionType,
+      payload: input.payload
+    });
+
+    if (supabase && executionRowId) {
+      await (supabase as any)
+        .from("agent_executions")
+        .update({ status: "pending_approval" })
+        .eq("id", executionRowId);
+    }
+
+    return {
+      executionId,
+      agentId: input.agentId,
+      tenantId: input.tenantId,
+      eventType: input.eventType,
+      status: "pending_approval",
+      success: false,
+      durationMs: new Date().getTime() - startedAt.getTime(),
+      outcome: { reason: "approval_required", actionType }
+    };
   }
 
   try {
@@ -67,7 +101,7 @@ export async function run(input: ExecutionEngineInput): Promise<ExecutionResult>
       await (supabase as any).from("agent_results").insert({
         execution_id: executionRowId,
         success: true,
-        revenue_impact: null,
+        revenue_impact: input.revenueImpact?.amount ?? null,
         outcome
       });
 
@@ -79,6 +113,17 @@ export async function run(input: ExecutionEngineInput): Promise<ExecutionResult>
           duration_ms: durationMs
         })
         .eq("id", executionRowId);
+    }
+
+    if (input.revenueImpact) {
+      await AgentRevenueAttributionStore.recordAttribution({
+        agentId: input.agentId,
+        executionId: executionRowId ?? undefined,
+        tenantId: input.tenantId,
+        revenueType: input.revenueImpact.revenueType,
+        revenueAmount: input.revenueImpact.amount,
+        sourceEvent: input.revenueImpact.sourceEvent
+      });
     }
 
     return {

@@ -94,6 +94,17 @@ describe("LizDelegationEngine.delegate", () => {
     };
     const actionsQuery: any = { insert: vi.fn(() => Promise.resolve({ data: null, error: null })) };
     const resultsQuery: any = { insert: vi.fn(() => Promise.resolve({ data: null, error: null })) };
+    const approvalRulesQuery: any = {
+      select: vi.fn(() => approvalRulesQuery),
+      eq: vi.fn(() => approvalRulesQuery),
+      is: vi.fn(() => approvalRulesQuery),
+      maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null }))
+    };
+    const revenueAttributionQuery: any = {
+      insert: vi.fn(() => ({
+        select: vi.fn(() => ({ maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null })) }))
+      }))
+    };
 
     (createServiceClient as any).mockReturnValue({
       from: vi.fn((table: string) => {
@@ -101,6 +112,8 @@ describe("LizDelegationEngine.delegate", () => {
         if (table === "agent_executions") return executionsQuery;
         if (table === "agent_actions") return actionsQuery;
         if (table === "agent_results") return resultsQuery;
+        if (table === "agent_approval_rules") return approvalRulesQuery;
+        if (table === "agent_revenue_attribution") return revenueAttributionQuery;
         throw new Error(`unexpected table ${table}`);
       })
     });
