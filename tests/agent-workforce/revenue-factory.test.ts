@@ -24,8 +24,22 @@ import {
   detectAgingClaims,
   detectNoShows,
   detectReviewRequests,
-  detectRevenueLeaks
+  detectRevenueLeaks,
+  detectRecallOverdue,
+  detectUnscheduledTreatment,
+  detectOverdueBalances,
+  detectFailedPayments,
+  detectOpenSlots,
+  detectScheduleGaps,
+  detectPromoters,
+  detectProductionRisk,
+  detectGoalMiss
 } from "@/lib/automation/detectors";
+
+vi.mock("@/packages/agent-os/revenue-intelligence/ForecastEngine", () => ({
+  ForecastEngine: { forecastRevenue: vi.fn() }
+}));
+import { ForecastEngine } from "@/packages/agent-os/revenue-intelligence/ForecastEngine";
 
 const AGENTS: Record<string, { id: string; agent_id: string; status: string }> = {
   ivy: { id: "ivy-uuid", agent_id: "ivy", status: "active" },
@@ -229,5 +243,309 @@ describe("Revenue Factory — Scenario 5: revenue.decline -> ALICE -> recommenda
     expect(inserted.agent_executions[0].agent_id).toBe("finn-uuid");
     expect(inserted.agent_revenue_attribution[0].agent_id).toBe("finn-uuid");
     expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("insurance_recovery");
+  });
+});
+
+describe("Revenue Factory — recall.overdue tiering (IVY)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectRecallOverdue end-to-end and attributes recall_booking revenue to ivy", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-7" });
+    const inserted = mockFullChain("recall_tracking", [
+      { id: "r1", organization_id: "org-1", patient_external_id: "p1", months_overdue: 19 },
+      { id: "r2", organization_id: "org-1", patient_external_id: "p2", months_overdue: 7 }
+    ]);
+
+    const result = await detectRecallOverdue();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("recall_recovery");
+    expect(inserted.agent_executions[0].agent_id).toBe("ivy-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("recall.overdue");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("recall_booking");
+  });
+});
+
+describe("Revenue Factory — treatment.unscheduled / treatment.high_value bucketing (IVY)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("splits rows into high_value and standard buckets and triggers both", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-8" });
+    const inserted = mockFullChain("roi_calculations", [
+      { id: "t1", lead_id: "lead-1", recoverable_revenue: 5000 },
+      { id: "t2", lead_id: "lead-2", recoverable_revenue: 800 }
+    ]);
+
+    const result = await detectUnscheduledTreatment();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("treatment_acceptance");
+    const eventTypes = inserted.agent_executions.map((e: any) => e.event_type);
+    expect(eventTypes).toContain("treatment.high_value");
+    expect(eventTypes).toContain("treatment.unscheduled");
+    expect(inserted.agent_revenue_attribution.every((r: any) => r.revenue_type === "treatment_acceptance")).toBe(true);
+  });
+});
+
+describe("Revenue Factory — balance.overdue (FINN)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectOverdueBalances end-to-end and attributes balance_recovery revenue to finn", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-9" });
+    const inserted = mockFullChain("invoices", [
+      { id: "inv-1", organization_id: "org-1", amount_due: 500, amount_paid: 100, due_date: "2020-01-01", status: "open" }
+    ]);
+
+    const result = await detectOverdueBalances();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("balance_recovery");
+    expect(inserted.agent_executions[0].agent_id).toBe("finn-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("balance.overdue");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("balance_recovery");
+  });
+});
+
+describe("Revenue Factory — payment.failed (FINN)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectFailedPayments end-to-end and attributes payment_recovery revenue to finn", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-10" });
+    const inserted = mockFullChain("payment_attempts", [
+      { id: "pa-1", organization_id: "org-1", failure_reason: "card_declined", attempted_at: "2020-01-01" }
+    ]);
+
+    const result = await detectFailedPayments();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("payment_recovery");
+    expect(inserted.agent_executions[0].agent_id).toBe("finn-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("payment.failed");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("payment_recovery");
+  });
+});
+
+describe("Revenue Factory — schedule.open_slot (MAX)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectOpenSlots end-to-end and attributes production_saved revenue to max", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-11" });
+    const inserted = mockFullChain("bookings", [
+      { id: "b1", lead_id: "lead-1", scheduled_at: "2020-01-01", created_at: new Date().toISOString() }
+    ]);
+
+    const result = await detectOpenSlots();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("open_chair_recovery");
+    expect(inserted.agent_executions[0].agent_id).toBe("max-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("schedule.open_slot");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("production_saved");
+  });
+});
+
+describe("Revenue Factory — schedule.gap_detected clustering (MAX)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("does not trigger below the minimum cluster threshold", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-12a" });
+    mockFullChain("bookings", [
+      { id: "b1", created_at: new Date().toISOString() },
+      { id: "b2", created_at: new Date().toISOString() }
+    ]);
+
+    const result = await detectScheduleGaps();
+
+    expect(result.triggered).toBe(false);
+    expect(executeRegisteredAutomation).not.toHaveBeenCalledWith("waitlist_fill");
+  });
+
+  it("triggers once cancellations cluster at or above the minimum threshold and attributes production_saved revenue to max", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-12b" });
+    const inserted = mockFullChain("bookings", [
+      { id: "b1", created_at: new Date().toISOString() },
+      { id: "b2", created_at: new Date().toISOString() },
+      { id: "b3", created_at: new Date().toISOString() }
+    ]);
+
+    const result = await detectScheduleGaps();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("waitlist_fill");
+    expect(inserted.agent_executions[0].agent_id).toBe("max-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("schedule.gap_detected");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("production_saved");
+  });
+});
+
+describe("Revenue Factory — review.positive / patient.promoter fan-out (NOVA)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectPromoters end-to-end and triggers both review.positive and patient.promoter for nova", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-13" });
+    const inserted = mockFullChain("reputation_events", [
+      { id: "rep-1", organization_id: "org-1", event_type: "review_received", sentiment: "positive", created_at: "2020-01-01" }
+    ]);
+
+    const result = await detectPromoters();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("patient_advocacy");
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("referral_growth");
+    const eventTypes = inserted.agent_executions.map((e: any) => e.event_type);
+    expect(eventTypes).toContain("review.positive");
+    expect(eventTypes).toContain("patient.promoter");
+    expect(inserted.agent_executions.every((e: any) => e.agent_id === "nova-uuid")).toBe(true);
+    const revenueTypes = inserted.agent_revenue_attribution.map((r: any) => r.revenue_type);
+    expect(revenueTypes).toContain("review_generated");
+    expect(revenueTypes).toContain("referral_conversion");
+  });
+});
+
+describe("Revenue Factory — production.at_risk (ALICE)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("runs detectProductionRisk end-to-end and attributes revenue_at_risk to alice", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-14" });
+    const inserted = mockFullChain("bookings", [{ id: "b1" }]);
+
+    const result = await detectProductionRisk();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("alice_revenue_opportunity_agent");
+    expect(inserted.agent_executions[0].agent_id).toBe("alice-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("production.at_risk");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("revenue_at_risk");
+  });
+});
+
+describe("Revenue Factory — goal.missed (ALICE)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("flags goal.missed only when ForecastEngine reports a down trend, attributing revenue_at_risk to alice", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-15" });
+    (ForecastEngine.forecastRevenue as any).mockResolvedValue({
+      trend: "down",
+      historicalDailyAverage: 1000,
+      projectedNext30Days: 20000
+    });
+
+    const inserted: Record<string, any[]> = {
+      agent_executions: [],
+      agent_actions: [],
+      agent_results: [],
+      agent_revenue_attribution: []
+    };
+
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn((table: string) => {
+        if (table === "agent_registry") {
+          const q: any = {
+            select: vi.fn(() => q),
+            eq: vi.fn((_col: string, val: string) => {
+              q.__slug = val;
+              return q;
+            }),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: AGENTS[q.__slug] ?? null, error: null }))
+          };
+          return q;
+        }
+        if (table === "agent_revenue_attribution") {
+          const q: any = {
+            select: vi.fn(() => q),
+            order: vi.fn(() => q),
+            limit: vi.fn(() => Promise.resolve({
+              data: [{ id: "attr-1", tenant_id: "org-1", revenue_amount: 100, created_at: "2020-01-01" }],
+              error: null
+            })),
+            insert: vi.fn((row: any) => {
+              inserted.agent_revenue_attribution.push(row);
+              return { select: vi.fn(() => ({ maybeSingle: vi.fn(() => Promise.resolve({ data: row, error: null })) })) };
+            })
+          };
+          return q;
+        }
+        if (table === "agent_executions") {
+          const q: any = {
+            insert: vi.fn((row: any) => {
+              inserted.agent_executions.push(row);
+              return q;
+            }),
+            select: vi.fn(() => q),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: { id: "exec-1" }, error: null })),
+            update: vi.fn(() => q),
+            eq: vi.fn(() => Promise.resolve({ data: null, error: null }))
+          };
+          return q;
+        }
+        if (table === "agent_actions") {
+          return { insert: vi.fn((row: any) => { inserted.agent_actions.push(row); return Promise.resolve({ data: null, error: null }); }) };
+        }
+        if (table === "agent_results") {
+          return { insert: vi.fn((row: any) => { inserted.agent_results.push(row); return Promise.resolve({ data: null, error: null }); }) };
+        }
+        if (table === "agent_approval_rules") {
+          const q: any = {
+            select: vi.fn(() => q),
+            eq: vi.fn(() => q),
+            is: vi.fn(() => q),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null }))
+          };
+          return q;
+        }
+        return buildQuery({ data: [], error: null });
+      })
+    });
+
+    const result = await detectGoalMiss();
+
+    expect(result.triggered).toBe(true);
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("alice_revenue_opportunity_agent");
+    expect(inserted.agent_executions[0].agent_id).toBe("alice-uuid");
+    expect(inserted.agent_executions[0].event_type).toBe("goal.missed");
+    expect(inserted.agent_revenue_attribution[0].revenue_type).toBe("revenue_at_risk");
+  });
+
+  it("does not trigger when ForecastEngine reports a non-down trend", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-16" });
+    (ForecastEngine.forecastRevenue as any).mockResolvedValue({
+      trend: "up",
+      historicalDailyAverage: 1000,
+      projectedNext30Days: 40000
+    });
+
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn((table: string) => {
+        if (table === "agent_registry") {
+          const q: any = {
+            select: vi.fn(() => q),
+            eq: vi.fn((_col: string, val: string) => {
+              q.__slug = val;
+              return q;
+            }),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: AGENTS[q.__slug] ?? null, error: null }))
+          };
+          return q;
+        }
+        if (table === "agent_revenue_attribution") {
+          return {
+            select: vi.fn(() => ({
+              order: vi.fn(() => ({
+                limit: vi.fn(() => Promise.resolve({
+                  data: [{ id: "attr-1", tenant_id: "org-1", revenue_amount: 100, created_at: "2020-01-01" }],
+                  error: null
+                }))
+              }))
+            }))
+          };
+        }
+        return buildQuery({ data: [], error: null });
+      })
+    });
+
+    const result = await detectGoalMiss();
+
+    expect(result.triggered).toBe(false);
+    expect(executeRegisteredAutomation).not.toHaveBeenCalledWith("alice_revenue_opportunity_agent");
   });
 });

@@ -12,7 +12,8 @@
     "smoke:pipeline": "node scripts/pipeline-smoke-test.js",
     "test:e2e": "node scripts/e2e-production-check.js",
     "migration:validate": "node scripts/validate-migrations.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -35,6 +36,7 @@
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@vitest/coverage-v8": "^4.1.9",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
     "eslint-config-next": "^15.3.3",
