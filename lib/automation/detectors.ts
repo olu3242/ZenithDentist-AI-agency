@@ -488,7 +488,13 @@ export async function detectFailedPayments(): Promise<DetectionResult> {
   return { detector: "payment_failed", workflowId: "payment_recovery", matches: rows.length, triggered: triggeredAny, error: lastError };
 }
 
-/** appointment.no_show — bookings whose scheduled time passed without completion or cancellation. */
+/**
+ * appointment.no_show — bookings whose scheduled time passed without
+ * completion or cancellation. Routed through ExecutionEngine with
+ * agentId=max (Chief Operations Officer) per
+ * docs/agent-os/AGENT_TRIGGER_MATRIX.md, instead of the legacy
+ * publishFunnelEvent+executeRegisteredAutomation pattern.
+ */
 export async function detectNoShows(): Promise<DetectionResult> {
   const supabase = createServiceClient();
   if (!supabase) return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches: 0, triggered: false, error: "supabase_unavailable" };
@@ -502,9 +508,153 @@ export async function detectNoShows(): Promise<DetectionResult> {
     .limit(200);
   if (error) return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches: 0, triggered: false, error: error.message };
 
-  return trigger("appointment_no_show", "appointment_no_show", "no_show_detected", data?.length ?? 0, {
-    graceHours: NO_SHOW_GRACE_HOURS
-  });
+  const matches = data?.length ?? 0;
+  if (matches === 0) {
+    return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches: 0, triggered: false };
+  }
+
+  const max = await getAgentBySlug("max");
+  if (!max) {
+    return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches, triggered: false, error: "max_agent_not_registered" };
+  }
+
+  try {
+    await ExecutionEngine.run({
+      agentId: max.id,
+      tenantId: "global",
+      eventType: "appointment.no_show",
+      payload: { graceHours: NO_SHOW_GRACE_HOURS, sample: (data ?? []).slice(0, 5).map((r: { id: string }) => r.id) },
+      workflowId: "appointment_no_show",
+      revenueImpact: {
+        revenueType: "production_saved",
+        amount: matches * 200,
+        sourceEvent: "appointment.no_show"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "appointment_no_show", workflowId: "appointment_no_show", matches });
+    return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "appointment_no_show", workflowId: "appointment_no_show", error: message });
+    return { detector: "appointment_no_show", workflowId: "appointment_no_show", matches, triggered: false, error: message };
+  }
+}
+
+/**
+ * schedule.open_slot / schedule.gap_detected — MAX (Chief Operations
+ * Officer). There is no dedicated provider-schedule/slot-availability table
+ * in the schema (bookings only records booked/cancelled/no-show events, not
+ * open capacity). This mirrors the existing M1 PMS gap: until a live PMS
+ * schedule feed is connected, this detector proxies "open chair" risk off
+ * recently cancelled bookings (a cancelled booking implies a now-open slot)
+ * — the same data Workflow OS's existing appointment_cancelled blueprint
+ * already tracks. detectScheduleGaps() escalates the same signal once a
+ * minimum number of cancellations cluster, treating it as a schedule gap
+ * rather than a single open slot.
+ */
+const OPEN_SLOT_LOOKBACK_HOURS = 24;
+const SCHEDULE_GAP_MIN_CLUSTER = 3;
+
+export async function detectOpenSlots(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const cutoff = new Date(Date.now() - OPEN_SLOT_LOOKBACK_HOURS * 60 * 60 * 1000).toISOString();
+  const { data, error } = await (supabase as any)
+    .from("bookings")
+    .select("id, lead_id, scheduled_at, created_at")
+    .eq("booking_status", "cancelled")
+    .gt("created_at", cutoff)
+    .limit(500);
+  if (error) {
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches: 0, triggered: false, error: error.message };
+  }
+
+  const matches = data?.length ?? 0;
+  if (matches === 0) {
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches: 0, triggered: false };
+  }
+
+  const max = await getAgentBySlug("max");
+  if (!max) {
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches, triggered: false, error: "max_agent_not_registered" };
+  }
+
+  try {
+    await ExecutionEngine.run({
+      agentId: max.id,
+      tenantId: "global",
+      eventType: "schedule.open_slot",
+      payload: { lookbackHours: OPEN_SLOT_LOOKBACK_HOURS, sample: (data ?? []).slice(0, 5).map((r: { id: string }) => r.id) },
+      workflowId: "open_chair_recovery",
+      revenueImpact: {
+        revenueType: "production_saved",
+        amount: matches * 150,
+        sourceEvent: "schedule.open_slot"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches });
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "schedule_open_slot", workflowId: "open_chair_recovery", error: message });
+    return { detector: "schedule_open_slot", workflowId: "open_chair_recovery", matches, triggered: false, error: message };
+  }
+}
+
+export async function detectScheduleGaps(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  // booking_status enum is ('clicked','scheduled','cancelled','completed') —
+  // there is no distinct 'no_show' status (no-shows are detected separately
+  // by detectNoShows() via scheduled+past-cutoff). Schedule gaps here are
+  // proxied off cancellations only.
+  const cutoff = new Date(Date.now() - OPEN_SLOT_LOOKBACK_HOURS * 60 * 60 * 1000).toISOString();
+  const { data, error } = await (supabase as any)
+    .from("bookings")
+    .select("id, lead_id, created_at")
+    .eq("booking_status", "cancelled")
+    .gt("created_at", cutoff)
+    .limit(500);
+  if (error) {
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string }> = data ?? [];
+  if (rows.length < SCHEDULE_GAP_MIN_CLUSTER) {
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: rows.length, triggered: false };
+  }
+
+  const max = await getAgentBySlug("max");
+  if (!max) {
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: rows.length, triggered: false, error: "max_agent_not_registered" };
+  }
+
+  try {
+    await ExecutionEngine.run({
+      agentId: max.id,
+      tenantId: "global",
+      eventType: "schedule.gap_detected",
+      payload: { minCluster: SCHEDULE_GAP_MIN_CLUSTER, sample: rows.slice(0, 5).map(r => r.id) },
+      workflowId: "waitlist_fill",
+      revenueImpact: {
+        revenueType: "production_saved",
+        amount: rows.length * 175,
+        sourceEvent: "schedule.gap_detected"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "schedule_gap", workflowId: "waitlist_fill", matches: rows.length });
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: rows.length, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "schedule_gap", workflowId: "waitlist_fill", error: message });
+    return { detector: "schedule_gap", workflowId: "waitlist_fill", matches: rows.length, triggered: false, error: message };
+  }
 }
 
 /** review.request — completed bookings past the review window with a linked lead. */
@@ -557,7 +707,9 @@ export async function runAllDetectors(): Promise<DetectionResult[]> {
     detectUnscheduledTreatment,
     detectAgingClaims,
     detectOverdueBalances,
-    detectFailedPayments
+    detectFailedPayments,
+    detectOpenSlots,
+    detectScheduleGaps
   ];
   const results: DetectionResult[] = [];
   for (const detector of detectors) {

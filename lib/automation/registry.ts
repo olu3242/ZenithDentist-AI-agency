@@ -585,6 +585,41 @@ export const automationRegistry: AutomationBlueprint[] = [
     slaMinutes: 30,
     observability: fullObservability
   },
+  {
+    id: "open_chair_recovery",
+    domain: "scheduling",
+    name: "Open Chair Recovery",
+    description:
+      "MAX's open-slot recovery automation — proxies open chair capacity off recent cancellations (no dedicated provider-schedule table exists; see lib/automation/detectors.ts detectOpenSlots comment).",
+    triggers: ["schedule.open_slot"],
+    emittedEvents: ["operational_events", "forecast_events", "recommendation_events", "orchestration_events"],
+    queueHandlers: ["agent.max.open_chair_recovery", "orchestration.gap_fill"],
+    actions: ["detect openings", "match eligible patients", "send booking offers", "track filled appointments"],
+    intelligenceOutputs: ["chair utilization lift", "filled appointment count", "revenue saved"],
+    aliceGroundingSurfaces: ["schedule availability", "patient eligibility", "booking response"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 15,
+    observability: fullObservability
+  },
+  {
+    id: "waitlist_fill",
+    domain: "scheduling",
+    name: "Waitlist Fill",
+    description: "MAX's schedule-gap-cluster waitlist fill automation — escalates clustered cancellations into waitlist outreach.",
+    triggers: ["schedule.gap_detected"],
+    emittedEvents: ["operational_events", "forecast_events", "recommendation_events", "orchestration_events"],
+    queueHandlers: ["agent.max.waitlist_fill", "orchestration.waitlist_match"],
+    actions: ["detect gap cluster", "match waitlist patients", "send fill offers", "track filled slots"],
+    intelligenceOutputs: ["waitlist conversion", "gap fill rate", "revenue saved"],
+    aliceGroundingSurfaces: ["schedule availability", "waitlist response", "provider capacity"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 15,
+    observability: fullObservability
+  },
   ...[
     ["video_confirmation", "Confirmation Video Journey", "appointment requires confirmation"],
     ["video_reminder", "Reminder Video Journey", "appointment reminder window reached"],
