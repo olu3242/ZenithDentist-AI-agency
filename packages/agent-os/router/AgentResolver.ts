@@ -11,7 +11,33 @@ const EVENT_TYPE_TO_AGENT: Record<string, string> = {
   executive_report: "tess",
   revenue_analysis: "alice",
   compliance_check: "quinn",
-  runtime_issue: "rex"
+  runtime_issue: "rex",
+
+  // Batch 11-15 — Autonomous Revenue Workforce (additive entries only,
+  // see docs/agent-os/AGENT_TRIGGER_MATRIX.md)
+  "recall.overdue": "ivy",
+  "treatment.unscheduled": "ivy",
+  "treatment.high_value": "ivy",
+  "patient.inactive": "ivy",
+
+  "claim.aging.30": "finn",
+  "claim.aging.60": "finn",
+  "claim.aging.90": "finn",
+  "balance.overdue": "finn",
+  "payment.failed": "finn",
+
+  "appointment.no_show": "max",
+  "appointment.cancelled": "max",
+  "schedule.open_slot": "max",
+  "schedule.gap_detected": "max",
+
+  "appointment.completed": "nova",
+  "review.positive": "nova",
+  "patient.promoter": "nova",
+
+  "revenue.decline": "alice",
+  "production.at_risk": "alice",
+  "goal.missed": "alice"
 };
 
 export function resolveAgentForEvent(eventType: string): string | null {
