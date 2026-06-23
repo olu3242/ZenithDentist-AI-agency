@@ -33,8 +33,10 @@ import {
   detectScheduleGaps,
   detectPromoters,
   detectProductionRisk,
-  detectGoalMiss
+  detectGoalMiss,
+  detectRecallDue
 } from "@/lib/automation/detectors";
+import { publishFunnelEvent } from "@/lib/event-fabric";
 
 vi.mock("@/packages/agent-os/revenue-intelligence/ForecastEngine", () => ({
   ForecastEngine: { forecastRevenue: vi.fn() }
@@ -547,5 +549,69 @@ describe("Revenue Factory — goal.missed (ALICE)", () => {
 
     expect(result.triggered).toBe(false);
     expect(executeRegisteredAutomation).not.toHaveBeenCalledWith("alice_revenue_opportunity_agent");
+  });
+});
+
+describe("Revenue Factory — recall.due (legacy publishFunnelEvent + executeRegisteredAutomation path)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("does not trigger when there are no matching rows", async () => {
+    (createServiceClient as any).mockReturnValue({ from: vi.fn(() => buildQuery({ data: [], error: null })) });
+    const result = await detectRecallDue();
+    expect(result.triggered).toBe(false);
+    expect(executeRegisteredAutomation).not.toHaveBeenCalled();
+  });
+
+  it("publishes the funnel event and triggers the workflow on a successful match", async () => {
+    (executeRegisteredAutomation as any).mockResolvedValue({ executionId: "wf-recall-due" });
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn(() => buildQuery({ data: [{ id: "r1", patient_external_id: "p1", months_overdue: 7 }], error: null }))
+    });
+
+    const result = await detectRecallDue();
+
+    expect(result.triggered).toBe(true);
+    expect(publishFunnelEvent).toHaveBeenCalledWith(expect.objectContaining({ eventType: "recall_due_detected" }));
+    expect(executeRegisteredAutomation).toHaveBeenCalledWith("recall_due");
+  });
+
+  it("returns triggered=false with the error message when executeRegisteredAutomation throws", async () => {
+    (executeRegisteredAutomation as any).mockRejectedValue(new Error("workflow exploded"));
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn(() => buildQuery({ data: [{ id: "r1", patient_external_id: "p1", months_overdue: 7 }], error: null }))
+    });
+
+    const result = await detectRecallDue();
+
+    expect(result.triggered).toBe(false);
+    expect(result.error).toBe("workflow exploded");
+  });
+
+  it("returns the supabase error message when the query itself errors", async () => {
+    (createServiceClient as any).mockReturnValue({ from: vi.fn(() => buildQuery({ data: null, error: { message: "db down" } })) });
+    const result = await detectRecallDue();
+    expect(result.triggered).toBe(false);
+    expect(result.error).toBe("db down");
+  });
+});
+
+describe("Revenue Factory — agent_not_registered defensive branches", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("detectInactivePatients reports ivy_agent_not_registered when IVY isn't in the registry", async () => {
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn((table: string) => {
+        if (table === "agent_registry") {
+          const q: any = { select: vi.fn(() => q), eq: vi.fn(() => q), maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null })) };
+          return q;
+        }
+        if (table === "leads") return buildQuery({ data: [{ id: "lead-1", created_at: "2020-01-01", status: "new" }], error: null });
+        return buildQuery({ data: [], error: null });
+      })
+    });
+
+    const result = await detectInactivePatients();
+    expect(result.triggered).toBe(false);
+    expect(result.error).toBe("ivy_agent_not_registered");
   });
 });

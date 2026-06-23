@@ -124,4 +124,54 @@ describe("ExecutionEngine.run", () => {
     expect(executeRegisteredAutomation).not.toHaveBeenCalled();
     expect(result.status).toBe("completed");
   });
+
+  it("returns pending_approval and records an approval request when the rule requires it", async () => {
+    const { executionsQuery, inserted } = mockSupabaseTables();
+    const approvalRequestInserts: any[] = [];
+    const actionsQuery: any = { insert: vi.fn(() => Promise.resolve({ data: null, error: null })) };
+    const resultsQuery: any = { insert: vi.fn(() => Promise.resolve({ data: null, error: null })) };
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn((table: string) => {
+        if (table === "agent_executions") return executionsQuery;
+        if (table === "agent_actions") return actionsQuery;
+        if (table === "agent_results") return resultsQuery;
+        if (table === "agent_approval_rules") {
+          const q: any = {
+            select: vi.fn(() => q),
+            eq: vi.fn(() => q),
+            is: vi.fn(() => q),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: { auto_approve: false }, error: null }))
+          };
+          return q;
+        }
+        if (table === "agent_approval_requests") {
+          const q: any = {
+            insert: vi.fn((row: any) => {
+              approvalRequestInserts.push(row);
+              return q;
+            }),
+            select: vi.fn(() => q),
+            maybeSingle: vi.fn(() => Promise.resolve({ data: { id: "req-1" }, error: null }))
+          };
+          return q;
+        }
+        throw new Error(`unexpected table ${table}`);
+      })
+    });
+
+    const result = await run({
+      agentId: "agent-uuid",
+      tenantId: "tenant-1",
+      eventType: "mass_campaign",
+      payload: { foo: "bar" }
+    });
+
+    expect(result.status).toBe("pending_approval");
+    expect(result.success).toBe(false);
+    expect(approvalRequestInserts).toHaveLength(1);
+    expect(executionsQuery.update).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "pending_approval" })
+    );
+    expect(executeRegisteredAutomation).not.toHaveBeenCalled();
+  });
 });

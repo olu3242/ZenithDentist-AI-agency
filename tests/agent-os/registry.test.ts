@@ -96,4 +96,35 @@ describe("AgentRegistry", () => {
     const result = await agentHasCapability("max", "scheduling");
     expect(result).toBe(true);
   });
+
+  it("getActiveAgents returns [] when the query errors", async () => {
+    const query: any = {
+      select: vi.fn(() => query),
+      eq: vi.fn(() => query),
+      order: vi.fn(() => Promise.resolve({ data: null, error: new Error("db down") }))
+    };
+    (createServiceClient as any).mockReturnValue({ from: vi.fn(() => query) });
+
+    const result = await getActiveAgents();
+    expect(result).toEqual([]);
+  });
+
+  it("agentHasCapability returns false when the capability query errors", async () => {
+    let call = 0;
+    const agentRow = { id: "uuid-1", agent_id: "max", status: "active" };
+    const query: any = {
+      select: vi.fn(() => query),
+      eq: vi.fn(() => query),
+      maybeSingle: vi.fn(() => {
+        call += 1;
+        return Promise.resolve(
+          call === 1 ? { data: agentRow, error: null } : { data: null, error: new Error("db down") }
+        );
+      })
+    };
+    (createServiceClient as any).mockReturnValue({ from: vi.fn(() => query) });
+
+    const result = await agentHasCapability("max", "scheduling");
+    expect(result).toBe(false);
+  });
 });

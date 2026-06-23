@@ -84,6 +84,21 @@ describe("ApprovalRequestStore", () => {
     expect(result).toEqual(row);
   });
 
+  it("createRequest returns null when supabase is unavailable", async () => {
+    (createServiceClient as any).mockReturnValue(null);
+    expect(await createRequest({ agentId: "a1", actionType: "mass_campaign" })).toBeNull();
+  });
+
+  it("createRequest returns null when the insert errors", async () => {
+    const query: any = {
+      insert: vi.fn(() => query),
+      select: vi.fn(() => query),
+      maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: new Error("db down") }))
+    };
+    (createServiceClient as any).mockReturnValue({ from: vi.fn(() => query) });
+    expect(await createRequest({ agentId: "a1", actionType: "mass_campaign" })).toBeNull();
+  });
+
   it("getRequest returns null when not found", async () => {
     const query: any = {
       select: vi.fn(() => query),

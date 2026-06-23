@@ -69,6 +69,30 @@ describe("AgentAnalyticsEngine.getAgentStats", () => {
     expect(stats.revenueInfluenced).toBe(300);
     expect(stats.automationCoverage).toBeCloseTo(50);
   });
+
+  it("scopes the executions query to a tenant when tenantId is provided", async () => {
+    const tenantEq = vi.fn(() => Promise.resolve({ data: [{ id: "e1", status: "completed" }], error: null }));
+    const executionsQuery: any = {
+      select: vi.fn(() => executionsQuery),
+      eq: vi.fn(() => ({ eq: tenantEq }))
+    };
+    const emptyQuery: any = {
+      select: vi.fn(() => emptyQuery),
+      eq: vi.fn(() => Promise.resolve({ data: [], error: null })),
+      in: vi.fn(() => Promise.resolve({ data: [], error: null }))
+    };
+
+    (createServiceClient as any).mockReturnValue({
+      from: vi.fn((table: string) => {
+        if (table === "agent_executions") return executionsQuery;
+        return emptyQuery;
+      })
+    });
+
+    const stats = await getAgentStats("a1", "tenant-1");
+    expect(stats.executionsCount).toBe(1);
+    expect(tenantEq).toHaveBeenCalledWith("tenant_id", "tenant-1");
+  });
 });
 
 describe("AgentScorecardEngine.getScorecard", () => {
