@@ -7,6 +7,7 @@ import { logger } from "@/lib/logger";
 import type { OutreachEventType } from "@/lib/database.types";
 import { ExecutionEngine } from "@/packages/agent-os/execution/ExecutionEngine";
 import { getAgentBySlug } from "@/packages/agent-os/router/AgentRegistry";
+import { ForecastEngine } from "@/packages/agent-os/revenue-intelligence/ForecastEngine";
 
 export interface DetectionResult {
   detector: string;
@@ -785,7 +786,15 @@ export async function detectPromoters(): Promise<DetectionResult> {
   return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: rows.length, triggered: triggeredAny, error: lastError };
 }
 
-/** revenue.leak — assessed practices with large unconverted recovery opportunity. */
+/**
+ * revenue.decline — assessed practices with large unconverted recovery
+ * opportunity. Routed through ExecutionEngine with agentId=alice (Chief
+ * Intelligence Officer) per docs/agent-os/AGENT_TRIGGER_MATRIX.md. ALICE
+ * does not execute patient-facing actions herself — revenueImpact here
+ * represents the at-risk amount she is flagging, not dollars she recovered
+ * directly (recovery dollars are attributed to IVY/FINN/MAX/NOVA when they
+ * act on her recommendations).
+ */
 export async function detectRevenueLeaks(): Promise<DetectionResult> {
   const supabase = createServiceClient();
   if (!supabase) return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: "supabase_unavailable" };
@@ -798,9 +807,148 @@ export async function detectRevenueLeaks(): Promise<DetectionResult> {
     .limit(200);
   if (error) return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: error.message };
 
-  return trigger("revenue_leak", "alice_revenue_opportunity_agent", "revenue_leak_detected", data?.length ?? 0, {
-    thresholdUsd: REVENUE_LEAK_THRESHOLD
-  });
+  const matches = data?.length ?? 0;
+  if (matches === 0) {
+    return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false };
+  }
+
+  const alice = await getAgentBySlug("alice");
+  if (!alice) {
+    return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches, triggered: false, error: "alice_agent_not_registered" };
+  }
+
+  try {
+    const totalAtRisk = (data ?? []).reduce((sum: number, r: any) => sum + Number(r.recoverable_revenue ?? 0), 0);
+    await ExecutionEngine.run({
+      agentId: alice.id,
+      tenantId: "global",
+      eventType: "revenue.decline",
+      payload: { thresholdUsd: REVENUE_LEAK_THRESHOLD, sample: (data ?? []).slice(0, 5).map((r: { id: string }) => r.id) },
+      workflowId: "alice_revenue_opportunity_agent",
+      revenueImpact: {
+        revenueType: "revenue_at_risk",
+        amount: totalAtRisk,
+        sourceEvent: "revenue.decline"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches });
+    return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", error: message });
+    return { detector: "revenue_leak", workflowId: "alice_revenue_opportunity_agent", matches, triggered: false, error: message };
+  }
+}
+
+/**
+ * production.at_risk / goal.missed — ALICE. Both reuse the same
+ * roi_calculations-derived signal as detectRevenueLeaks (no separate
+ * "production targets" or "goals" table exists in the schema — this is the
+ * same M1-style proxy-data gap). detectProductionRisk reuses the
+ * RevenueLeakageEngine's scheduling_leakage category to flag at-risk
+ * production from cancellations; detectGoalMiss compares the
+ * ForecastEngine's trend direction against a flat/declining signal to flag
+ * a missed growth goal. Both call ExecutionEngine with agentId=alice.
+ */
+export async function detectProductionRisk(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any).from("bookings").select("id").eq("booking_status", "cancelled").limit(500);
+  if (error) {
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: error.message };
+  }
+
+  const matches = data?.length ?? 0;
+  if (matches === 0) {
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false };
+  }
+
+  const alice = await getAgentBySlug("alice");
+  if (!alice) {
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches, triggered: false, error: "alice_agent_not_registered" };
+  }
+
+  try {
+    await ExecutionEngine.run({
+      agentId: alice.id,
+      tenantId: "global",
+      eventType: "production.at_risk",
+      payload: { sample: (data ?? []).slice(0, 5).map((r: { id: string }) => r.id) },
+      workflowId: "alice_revenue_opportunity_agent",
+      revenueImpact: {
+        revenueType: "revenue_at_risk",
+        amount: matches * 150,
+        sourceEvent: "production.at_risk"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches });
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", error: message });
+    return { detector: "production_at_risk", workflowId: "alice_revenue_opportunity_agent", matches, triggered: false, error: message };
+  }
+}
+
+export async function detectGoalMiss(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any)
+    .from("agent_revenue_attribution")
+    .select("id, tenant_id, revenue_amount, created_at")
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (error) {
+    return { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; tenant_id: string }> = data ?? [];
+  if (rows.length === 0) {
+    return { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", matches: 0, triggered: false };
+  }
+
+  const alice = await getAgentBySlug("alice");
+  if (!alice) {
+    return { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", matches: rows.length, triggered: false, error: "alice_agent_not_registered" };
+  }
+
+  const tenantIds = Array.from(new Set(rows.map(r => r.tenant_id).filter(Boolean)));
+  let triggeredAny = false;
+  let lastError: string | undefined;
+  let flaggedCount = 0;
+
+  for (const tenantId of tenantIds) {
+    try {
+      const forecast = await ForecastEngine.forecastRevenue(tenantId);
+      if (forecast.trend !== "down") continue;
+      flaggedCount += 1;
+      await ExecutionEngine.run({
+        agentId: alice.id,
+        tenantId,
+        eventType: "goal.missed",
+        payload: { trend: forecast.trend, historicalDailyAverage: forecast.historicalDailyAverage },
+        workflowId: "alice_revenue_opportunity_agent",
+        revenueImpact: {
+          revenueType: "revenue_at_risk",
+          amount: Math.max(0, forecast.historicalDailyAverage * 30 - forecast.projectedNext30Days),
+          sourceEvent: "goal.missed"
+        }
+      });
+      triggeredAny = true;
+      logger.info("detector_workflow_triggered", { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", tenantId });
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      logger.warn("detector_workflow_failed", { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", error: lastError, tenantId });
+    }
+  }
+
+  return { detector: "goal_missed", workflowId: "alice_revenue_opportunity_agent", matches: flaggedCount, triggered: triggeredAny, error: lastError };
 }
 
 /** Runs every detector; failures in one detector never block the others. */
@@ -818,7 +966,9 @@ export async function runAllDetectors(): Promise<DetectionResult[]> {
     detectFailedPayments,
     detectOpenSlots,
     detectScheduleGaps,
-    detectPromoters
+    detectPromoters,
+    detectProductionRisk,
+    detectGoalMiss
   ];
   const results: DetectionResult[] = [];
   for (const detector of detectors) {
