@@ -20,7 +20,16 @@ describe("AgentResolver", () => {
 
   it("exposes a read-only routing table covering all spec entries", () => {
     const table = getEventTypeRoutingTable();
-    expect(Object.keys(table)).toHaveLength(9);
+    expect(Object.keys(table).length).toBeGreaterThanOrEqual(9);
+    expect(table.patient_recall).toBe("ivy");
+    expect(table.treatment_followup).toBe("ivy");
+    expect(table.appointment_reschedule).toBe("max");
+    expect(table.insurance_claim).toBe("finn");
+    expect(table.review_request).toBe("nova");
+    expect(table.executive_report).toBe("tess");
+    expect(table.revenue_analysis).toBe("alice");
+    expect(table.compliance_check).toBe("quinn");
+    expect(table.runtime_issue).toBe("rex");
   });
 });
 

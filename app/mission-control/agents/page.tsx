@@ -13,6 +13,8 @@ import { AgentInsightsEngine } from "@/packages/agent-os/analytics/AgentInsights
 import { ApprovalRequestStore } from "@/packages/agent-os/approvals/ApprovalRequestStore";
 import { AgentRevenueAttributionStore } from "@/packages/agent-os/revenue/AgentRevenueAttributionStore";
 import { LearningEventStore } from "@/packages/agent-os/learning/LearningEventStore";
+import { RevenueLeakageEngine } from "@/packages/agent-os/revenue-intelligence/RevenueLeakageEngine";
+import { OpportunityEngine } from "@/packages/agent-os/revenue-intelligence/OpportunityEngine";
 
 interface AgentRegistryRow {
   id: string;
@@ -89,6 +91,41 @@ export default async function AgentCenterPage() {
   const revenueSummary = tenantData.organization?.id
     ? await AgentRevenueAttributionStore.getAttributionSummary(tenantData.organization.id)
     : { totalRevenue: 0, byAgent: {}, byRevenueType: {}, recordCount: 0 };
+
+  // Revenue Workforce (Batch 11-15, Phase 6) — IVY/FINN/MAX/NOVA/ALICE.
+  // Read-only: reuses AgentAnalyticsEngine stats + AgentRevenueAttributionStore
+  // summary already computed above, plus ALICE's RevenueLeakageEngine /
+  // OpportunityEngine for at-risk / opportunity figures. No new aggregation
+  // pipeline.
+  const WORKFORCE_SLUGS = ["ivy", "finn", "max", "nova", "alice"] as const;
+  const workforceAgents = registry.filter(agent => (WORKFORCE_SLUGS as readonly string[]).includes(agent.agent_id));
+
+  const [leakage, opportunities] = tenantData.organization?.id
+    ? await Promise.all([
+        RevenueLeakageEngine.detectLeakage(tenantData.organization.id),
+        OpportunityEngine.detectOpportunities(tenantData.organization.id)
+      ])
+    : [[], []];
+
+  const revenueAtRisk = leakage.reduce((sum, entry) => sum + entry.revenueAtRisk, 0);
+  const revenueOpportunities = opportunities.reduce((sum, opp) => sum + opp.potentialRevenue, 0);
+
+  const workforceCards = workforceAgents.map(agent => {
+    const stat = stats.find(s => s.agentId === agent.id);
+    const revenue = stat?.revenueInfluenced ?? 0;
+    return {
+      slug: agent.agent_id,
+      name: agent.agent_name,
+      title: agent.title,
+      revenueRecovered: revenue,
+      executions: stat?.executionsCount ?? 0,
+      successRate: stat?.successRate ?? 0,
+      // ALICE doesn't execute patient-facing actions herself — show
+      // leakage/opportunity instead of an execution-driven figure.
+      revenueAtRisk: agent.agent_id === "alice" ? revenueAtRisk : undefined,
+      revenueOpportunities: agent.agent_id === "alice" ? revenueOpportunities : undefined
+    };
+  });
 
   const learningEventsByAgent = await Promise.all(
     registry.slice(0, 9).map(async agent => ({
@@ -195,6 +232,36 @@ export default async function AgentCenterPage() {
               <div key={type} className="rounded border border-line bg-paper p-4">
                 <p className="text-xs font-black uppercase tracking-wider text-muted">{type}</p>
                 <strong className="mt-2 block text-xl font-black text-ink">${amount.toFixed(2)}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Revenue Workforce */}
+        <section className="rounded border border-line bg-white p-5 shadow-sm">
+          <h2 className="text-xl font-black text-ink">Revenue Workforce</h2>
+          <p className="mt-2 text-sm font-semibold text-muted">
+            IVY (patient success), FINN (financial recovery), MAX (operations), NOVA (growth), and ALICE (intelligence)
+            — revenue recovered, executions, and (for ALICE) revenue at risk / opportunities.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {workforceCards.map(card => (
+              <div key={card.slug} className="rounded border border-line bg-paper p-4">
+                <p className="text-xs font-black uppercase tracking-wider text-muted">
+                  {card.name} {card.title ? `— ${card.title}` : ""}
+                </p>
+                <strong className="mt-2 block text-xl font-black text-ink">${card.revenueRecovered.toFixed(2)}</strong>
+                <p className="mt-1 text-sm font-semibold text-muted">
+                  {card.executions} executions, {card.successRate.toFixed(1)}% success
+                </p>
+                {card.revenueAtRisk !== undefined ? (
+                  <p className="mt-1 text-sm font-semibold text-muted">Revenue at risk: ${card.revenueAtRisk.toFixed(2)}</p>
+                ) : null}
+                {card.revenueOpportunities !== undefined ? (
+                  <p className="mt-1 text-sm font-semibold text-muted">
+                    Revenue opportunities: ${card.revenueOpportunities.toFixed(2)}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>
