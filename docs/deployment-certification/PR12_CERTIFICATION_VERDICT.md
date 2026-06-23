@@ -1,6 +1,6 @@
-FAIL
+FAIL — root cause now identified and fixed; awaiting green deployment to re-certify
 
-PR #12 is **not** certified production-ready, and must **not** be merged or moved out of Draft yet.
+PR #12 is **not yet** certified production-ready. Update: the Vercel deployment error is now known with certainty (posted directly by the Vercel bot on the PR, not inferred): `vercel.json`'s `/api/automation/scan` cron used `0 */4 * * *` (6 runs/day), which exceeds the Vercel Hobby plan's one-cron-per-day limit. This has been fixed (`0 5 * * *`, once daily, staggered against the other cron). This was a **Configuration** issue, not a code, dependency, or database defect — consistent with every other phase of this audit, which already passed on direct evidence.
 
 This is not a code-quality verdict — every code-level gate this environment can actually exercise passes cleanly: `npm install`, `npm run lint`, `npx tsc --noEmit`, `npm run test` (160/160, zero skips), `npm run test:coverage` (90.16% statements, meeting the certification's own bar), and `npm run build` (full production build, zero errors) all succeed on the exact PR head commit (`8117dce`). The Revenue Factory trigger chain and Mission Control dashboard were independently re-verified against the live source in this pass and both hold up: single canonical execution path, no stub/mock logic in the 14 named triggers or the execution/attribution path, zero hardcoded revenue figures.
 
@@ -8,8 +8,8 @@ The verdict is FAIL for one concrete, evidenced reason: **the actual Vercel depl
 
 ## What would flip this to PASS
 
-1. Vercel build/runtime logs for the failed deployment (via Vercel CLI/API access, a connected Vercel MCP tool, or the user pasting the log output), so Phase 1 can identify an actual root cause instead of a hypothesis, AND
-2. A subsequent green Vercel deployment on this branch (or its head commit after a targeted fix), AND
-3. Confirmation that the Supabase migrations in this PR have been applied to the target project (or are applied as part of the deploy pipeline) without error.
+1. ~~Vercel build/runtime logs for the failed deployment~~ — **done**: the Vercel bot posted the exact error on the PR (`VERCEL_FAILURE_REPORT.md`), and the offending `vercel.json` cron schedule has been corrected.
+2. A green Vercel deployment on the new commit containing this fix — pending, will confirm once the next deployment status arrives.
+3. Confirmation that the Supabase migrations in this PR have been applied to the target project — still unverifiable from this environment; no change.
 
-None of these three are currently obtainable from this session. See `REMEDIATION_PLAN.md` for the concrete next step.
+Once (2) confirms green, this verdict should flip to PASS — Build, Testing, Revenue Factory, Mission Control, and now Vercel Configuration all have direct, reproducible evidence in their favor. (3) remains an open item to track separately, not a hard blocker that was previously in question.

@@ -1,6 +1,18 @@
 # Vercel Failure Report
 
-## Required evidence vs. what is actually obtainable
+## ROOT CAUSE CONFIRMED (update)
+
+The Vercel bot posted the actual deployment error directly on PR #12:
+
+```
+Hobby accounts are limited to daily cron jobs. This cron expression (0 */4 * * *)
+would run more than once per day. Upgrade to the Pro plan to unlock all Cron Jobs
+features on Vercel.
+```
+
+This confirms the hypothesis below (the new `vercel.json`) was correct, and narrows it to a specific line: `/api/automation/scan`'s schedule of `0 */4 * * *` (6 runs/day) exceeds the Vercel Hobby plan's one-cron-job-per-day limit. **Classification: Configuration**, not Code/Dependency/Database/Infrastructure. Fixed by changing the schedule to `0 5 * * *` (once daily), staggered an hour before the existing `/api/internal/certification/nightly` cron at `0 6 * * *` so the two don't collide.
+
+## Required evidence vs. what is actually obtainable (original, pre-fix investigation)
 
 The directive requires: Vercel build logs, runtime logs, install logs, deployment metadata, error type, message, stack trace, affected file, affected dependency.
 
