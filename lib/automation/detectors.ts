@@ -269,6 +269,225 @@ export async function detectUnscheduledTreatment(): Promise<DetectionResult> {
   return { detector: "treatment_unscheduled", workflowId: "treatment_acceptance", matches: rows.length, triggered: triggeredAny, error: lastError };
 }
 
+/**
+ * claim.aging.30/60/90 — FINN (Chief Financial Recovery Officer). Tiers
+ * public.claims (added in migration 202606230001_finn_financial_tables.sql —
+ * see that file for why a new minimal table was needed: no existing table
+ * represents dental insurance claims) by days since submission.
+ */
+const CLAIM_AGING_TIERS = [
+  { days: 90, eventType: "claim.aging.90" as const },
+  { days: 60, eventType: "claim.aging.60" as const },
+  { days: 30, eventType: "claim.aging.30" as const }
+];
+
+export async function detectAgingClaims(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "claim_aging", workflowId: "claim_recovery", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any)
+    .from("claims")
+    .select("id, organization_id, claim_amount, submitted_at")
+    .in("status", ["submitted", "pending"])
+    .limit(1000);
+  if (error) {
+    // Degrade gracefully if the table doesn't exist yet in an older environment.
+    return { detector: "claim_aging", workflowId: "claim_recovery", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; organization_id: string; claim_amount: number; submitted_at: string }> = data ?? [];
+  if (rows.length === 0) {
+    return { detector: "claim_aging", workflowId: "claim_recovery", matches: 0, triggered: false };
+  }
+
+  const finn = await getAgentBySlug("finn");
+  if (!finn) {
+    return { detector: "claim_aging", workflowId: "claim_recovery", matches: rows.length, triggered: false, error: "finn_agent_not_registered" };
+  }
+
+  const now = Date.now();
+  const ageDays = (submittedAt: string) => (now - new Date(submittedAt).getTime()) / (24 * 60 * 60 * 1000);
+
+  let triggeredAny = false;
+  let lastError: string | undefined;
+  let claimedCount = 0;
+  const claimed = new Set<string>();
+
+  for (const tier of CLAIM_AGING_TIERS) {
+    const bucket = rows.filter(r => !claimed.has(r.id) && ageDays(r.submitted_at) >= tier.days);
+    bucket.forEach(r => claimed.add(r.id));
+    if (bucket.length === 0) continue;
+    claimedCount += bucket.length;
+
+    const byOrg = new Map<string, typeof bucket>();
+    for (const row of bucket) {
+      const list = byOrg.get(row.organization_id) ?? [];
+      list.push(row);
+      byOrg.set(row.organization_id, list);
+    }
+
+    for (const [organizationId, orgRows] of byOrg) {
+      try {
+        const totalAmount = orgRows.reduce((sum, r) => sum + Number(r.claim_amount), 0);
+        await ExecutionEngine.run({
+          agentId: finn.id,
+          tenantId: organizationId,
+          eventType: tier.eventType,
+          payload: { sample: orgRows.slice(0, 5).map(r => r.id), tierDays: tier.days },
+          workflowId: "claim_recovery",
+          revenueImpact: {
+            revenueType: "insurance_recovery",
+            amount: totalAmount,
+            sourceEvent: tier.eventType
+          }
+        });
+        triggeredAny = true;
+        logger.info("detector_workflow_triggered", { detector: "claim_aging", workflowId: "claim_recovery", matches: orgRows.length, eventType: tier.eventType, organizationId });
+      } catch (err) {
+        lastError = err instanceof Error ? err.message : String(err);
+        logger.warn("detector_workflow_failed", { detector: "claim_aging", workflowId: "claim_recovery", error: lastError, eventType: tier.eventType, organizationId });
+      }
+    }
+  }
+
+  return { detector: "claim_aging", workflowId: "claim_recovery", matches: claimedCount, triggered: triggeredAny, error: lastError };
+}
+
+/**
+ * balance.overdue — FINN. Reuses existing public.invoices
+ * (amount_due/amount_paid/due_date) rather than introducing a new
+ * patient_balances table, per the Phase 2 data-source decision documented
+ * in 202606230001_finn_financial_tables.sql.
+ */
+export async function detectOverdueBalances(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "balance_overdue", workflowId: "balance_recovery", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await (supabase as any)
+    .from("invoices")
+    .select("id, organization_id, amount_due, amount_paid, due_date")
+    .lt("due_date", today)
+    .not("status", "in", "(paid,void,cancelled)")
+    .limit(1000);
+  if (error) {
+    return { detector: "balance_overdue", workflowId: "balance_recovery", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; organization_id: string; amount_due: number; amount_paid: number }> = (data ?? []).filter(
+    (r: { amount_due: number; amount_paid: number }) => Number(r.amount_due) > Number(r.amount_paid)
+  );
+  if (rows.length === 0) {
+    return { detector: "balance_overdue", workflowId: "balance_recovery", matches: 0, triggered: false };
+  }
+
+  const finn = await getAgentBySlug("finn");
+  if (!finn) {
+    return { detector: "balance_overdue", workflowId: "balance_recovery", matches: rows.length, triggered: false, error: "finn_agent_not_registered" };
+  }
+
+  const byOrg = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = byOrg.get(row.organization_id) ?? [];
+    list.push(row);
+    byOrg.set(row.organization_id, list);
+  }
+
+  let triggeredAny = false;
+  let lastError: string | undefined;
+  for (const [organizationId, orgRows] of byOrg) {
+    try {
+      const outstanding = orgRows.reduce((sum, r) => sum + (Number(r.amount_due) - Number(r.amount_paid)), 0);
+      await ExecutionEngine.run({
+        agentId: finn.id,
+        tenantId: organizationId,
+        eventType: "balance.overdue",
+        payload: { sample: orgRows.slice(0, 5).map(r => r.id) },
+        workflowId: "balance_recovery",
+        revenueImpact: {
+          revenueType: "balance_recovery",
+          amount: outstanding,
+          sourceEvent: "balance.overdue"
+        }
+      });
+      triggeredAny = true;
+      logger.info("detector_workflow_triggered", { detector: "balance_overdue", workflowId: "balance_recovery", matches: orgRows.length, organizationId });
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      logger.warn("detector_workflow_failed", { detector: "balance_overdue", workflowId: "balance_recovery", error: lastError, organizationId });
+    }
+  }
+
+  return { detector: "balance_overdue", workflowId: "balance_recovery", matches: rows.length, triggered: triggeredAny, error: lastError };
+}
+
+/**
+ * payment.failed — FINN. Reuses existing public.payment_attempts
+ * (status/failure_reason) rather than a new table.
+ */
+export async function detectFailedPayments(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "payment_failed", workflowId: "payment_recovery", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any)
+    .from("payment_attempts")
+    .select("id, organization_id, failure_reason, attempted_at")
+    .eq("status", "failed")
+    .limit(1000);
+  if (error) {
+    return { detector: "payment_failed", workflowId: "payment_recovery", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; organization_id: string }> = data ?? [];
+  if (rows.length === 0) {
+    return { detector: "payment_failed", workflowId: "payment_recovery", matches: 0, triggered: false };
+  }
+
+  const finn = await getAgentBySlug("finn");
+  if (!finn) {
+    return { detector: "payment_failed", workflowId: "payment_recovery", matches: rows.length, triggered: false, error: "finn_agent_not_registered" };
+  }
+
+  const byOrg = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = byOrg.get(row.organization_id) ?? [];
+    list.push(row);
+    byOrg.set(row.organization_id, list);
+  }
+
+  let triggeredAny = false;
+  let lastError: string | undefined;
+  for (const [organizationId, orgRows] of byOrg) {
+    try {
+      await ExecutionEngine.run({
+        agentId: finn.id,
+        tenantId: organizationId,
+        eventType: "payment.failed",
+        payload: { sample: orgRows.slice(0, 5).map(r => r.id) },
+        workflowId: "payment_recovery",
+        revenueImpact: {
+          revenueType: "payment_recovery",
+          amount: orgRows.length * 250,
+          sourceEvent: "payment.failed"
+        }
+      });
+      triggeredAny = true;
+      logger.info("detector_workflow_triggered", { detector: "payment_failed", workflowId: "payment_recovery", matches: orgRows.length, organizationId });
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      logger.warn("detector_workflow_failed", { detector: "payment_failed", workflowId: "payment_recovery", error: lastError, organizationId });
+    }
+  }
+
+  return { detector: "payment_failed", workflowId: "payment_recovery", matches: rows.length, triggered: triggeredAny, error: lastError };
+}
+
 /** appointment.no_show — bookings whose scheduled time passed without completion or cancellation. */
 export async function detectNoShows(): Promise<DetectionResult> {
   const supabase = createServiceClient();
@@ -335,7 +554,10 @@ export async function runAllDetectors(): Promise<DetectionResult[]> {
     detectReviewRequests,
     detectRevenueLeaks,
     detectRecallOverdue,
-    detectUnscheduledTreatment
+    detectUnscheduledTreatment,
+    detectAgingClaims,
+    detectOverdueBalances,
+    detectFailedPayments
   ];
   const results: DetectionResult[] = [];
   for (const detector of detectors) {
