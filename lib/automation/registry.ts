@@ -620,6 +620,23 @@ export const automationRegistry: AutomationBlueprint[] = [
     slaMinutes: 15,
     observability: fullObservability
   },
+  {
+    id: "patient_advocacy",
+    domain: "reputation",
+    name: "Patient Advocacy",
+    description: "NOVA's positive-review-to-advocacy automation — turns review.positive signals into advocacy/testimonial outreach.",
+    triggers: ["review.positive"],
+    emittedEvents: ["operational_events", "benchmark_events", "recommendation_events", "intelligence_events"],
+    queueHandlers: ["agent.nova.patient_advocacy", "recommendation.advocacy_outreach"],
+    actions: ["identify positive reviewers", "send advocacy invitation", "track testimonial conversion", "measure reputation lift"],
+    intelligenceOutputs: ["advocacy conversion", "testimonial yield", "reputation lift"],
+    aliceGroundingSurfaces: ["review sentiment", "patient value", "advocacy outcomes"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 180,
+    observability: fullObservability
+  },
   ...[
     ["video_confirmation", "Confirmation Video Journey", "appointment requires confirmation"],
     ["video_reminder", "Reminder Video Journey", "appointment reminder window reached"],

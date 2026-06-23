@@ -657,7 +657,13 @@ export async function detectScheduleGaps(): Promise<DetectionResult> {
   }
 }
 
-/** review.request — completed bookings past the review window with a linked lead. */
+/**
+ * appointment.completed / review.request — completed bookings past the
+ * review window with a linked lead. Routed through ExecutionEngine with
+ * agentId=nova (Chief Growth Officer) per
+ * docs/agent-os/AGENT_TRIGGER_MATRIX.md (trigger renamed appointment.completed
+ * -> review_request_due, same blueprint as before).
+ */
 export async function detectReviewRequests(): Promise<DetectionResult> {
   const supabase = createServiceClient();
   if (!supabase) return { detector: "review_request", workflowId: "review_request_due", matches: 0, triggered: false, error: "supabase_unavailable" };
@@ -672,9 +678,111 @@ export async function detectReviewRequests(): Promise<DetectionResult> {
     .limit(200);
   if (error) return { detector: "review_request", workflowId: "review_request_due", matches: 0, triggered: false, error: error.message };
 
-  return trigger("review_request", "review_request_due", "review_request_triggered", data?.length ?? 0, {
-    minHoursSinceVisit: REVIEW_REQUEST_MIN_HOURS
-  });
+  const matches = data?.length ?? 0;
+  if (matches === 0) {
+    return { detector: "review_request", workflowId: "review_request_due", matches: 0, triggered: false };
+  }
+
+  const nova = await getAgentBySlug("nova");
+  if (!nova) {
+    return { detector: "review_request", workflowId: "review_request_due", matches, triggered: false, error: "nova_agent_not_registered" };
+  }
+
+  try {
+    await ExecutionEngine.run({
+      agentId: nova.id,
+      tenantId: "global",
+      eventType: "appointment.completed",
+      payload: { minHoursSinceVisit: REVIEW_REQUEST_MIN_HOURS, sample: (data ?? []).slice(0, 5).map((r: { id: string }) => r.id) },
+      workflowId: "review_request_due",
+      revenueImpact: {
+        revenueType: "review_generated",
+        amount: matches * 25,
+        sourceEvent: "appointment.completed"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "review_request", workflowId: "review_request_due", matches });
+    return { detector: "review_request", workflowId: "review_request_due", matches, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "review_request", workflowId: "review_request_due", error: message });
+    return { detector: "review_request", workflowId: "review_request_due", matches, triggered: false, error: message };
+  }
+}
+
+/**
+ * review.positive / patient.promoter — NOVA (Chief Growth Officer). There
+ * is no dedicated reviews/sentiment table wired to leads/bookings yet (see
+ * `reputation_events` in 202606030004_dental_growth_os.sql, which is
+ * org-scoped and disjoint from the global leads/bookings tables used by the
+ * lead-funnel detectors above). This mirrors the existing M1 PMS-data gap:
+ * detectPromoters() reads `reputation_events` where event_type indicates a
+ * positive review/rating, and degrades gracefully (zero matches, no error)
+ * if the table has no rows for an org yet.
+ */
+export async function detectPromoters(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any)
+    .from("reputation_events")
+    .select("id, organization_id, event_type, sentiment, created_at")
+    .eq("event_type", "review_received")
+    .eq("sentiment", "positive")
+    .limit(500);
+  if (error) {
+    return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; organization_id: string; event_type: string; sentiment: string }> = data ?? [];
+  if (rows.length === 0) {
+    return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: 0, triggered: false };
+  }
+
+  const nova = await getAgentBySlug("nova");
+  if (!nova) {
+    return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: rows.length, triggered: false, error: "nova_agent_not_registered" };
+  }
+
+  const byOrg = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = byOrg.get(row.organization_id) ?? [];
+    list.push(row);
+    byOrg.set(row.organization_id, list);
+  }
+
+  let triggeredAny = false;
+  let lastError: string | undefined;
+  for (const [organizationId, orgRows] of byOrg) {
+    for (const [eventType, workflowId, revenueType] of [
+      ["review.positive", "patient_advocacy", "review_generated"],
+      ["patient.promoter", "referral_growth", "referral_conversion"]
+    ] as const) {
+      try {
+        await ExecutionEngine.run({
+          agentId: nova.id,
+          tenantId: organizationId,
+          eventType,
+          payload: { sample: orgRows.slice(0, 5).map(r => r.id) },
+          workflowId,
+          revenueImpact: {
+            revenueType,
+            amount: orgRows.length * 100,
+            sourceEvent: eventType
+          }
+        });
+        triggeredAny = true;
+        logger.info("detector_workflow_triggered", { detector: "promoter_detected", workflowId, matches: orgRows.length, eventType, organizationId });
+      } catch (err) {
+        lastError = err instanceof Error ? err.message : String(err);
+        logger.warn("detector_workflow_failed", { detector: "promoter_detected", workflowId, error: lastError, eventType, organizationId });
+      }
+    }
+  }
+
+  return { detector: "promoter_detected", workflowId: "patient_advocacy", matches: rows.length, triggered: triggeredAny, error: lastError };
 }
 
 /** revenue.leak — assessed practices with large unconverted recovery opportunity. */
@@ -709,7 +817,8 @@ export async function runAllDetectors(): Promise<DetectionResult[]> {
     detectOverdueBalances,
     detectFailedPayments,
     detectOpenSlots,
-    detectScheduleGaps
+    detectScheduleGaps,
+    detectPromoters
   ];
   const results: DetectionResult[] = [];
   for (const detector of detectors) {
