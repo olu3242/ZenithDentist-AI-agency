@@ -10,6 +10,7 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: optionalString,
   RESEND_API_KEY: optionalString,
   STRIPE_API_KEY: optionalString,
+  STRIPE_WEBHOOK_SECRET: optionalString,
   NEXT_PUBLIC_GA_ID: optionalString,
   NEXT_PUBLIC_META_PIXEL_ID: optionalString,
   NEXT_PUBLIC_LINKEDIN_PARTNER_ID: optionalString,

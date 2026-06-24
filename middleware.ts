@@ -127,6 +127,7 @@ function requiresClientApproval(pathname: string) {
 
 function isProtectedApiPath(pathname: string) {
   return [
+    "/api/agents",
     "/api/alice",
     "/api/autonomous",
     "/api/enterprise",
@@ -164,6 +165,7 @@ export const config = {
     "/onboarding/:path*",
     "/api/mission-control/:path*",
     "/api/gtm-command-center/:path*",
+    "/api/agents/:path*",
     "/api/alice/:path*",
     "/api/autonomous/:path*",
     "/api/enterprise/:path*",

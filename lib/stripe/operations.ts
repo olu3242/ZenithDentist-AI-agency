@@ -9,12 +9,19 @@ export function isStripeConfigured() {
   return Boolean(env.STRIPE_API_KEY);
 }
 
-export function verifyStripeWebhookPayload(payload: string, signature: string | null, secret = env.STRIPE_API_KEY) {
+export function verifyStripeWebhookPayload(payload: string, signature: string | null, secret = env.STRIPE_WEBHOOK_SECRET) {
   if (!secret) return { verified: false, reason: "missing_secret" };
   if (!signature) return { verified: false, reason: "missing_signature" };
-  const expected = createHmac("sha256", secret).update(payload).digest("hex");
-  const actual = signature.replace(/^sha256=/, "");
-  const verified = safeCompare(expected, actual);
+
+  const parts = new Map(
+    signature.split(",").map(part => part.split("=")).filter(pair => pair.length === 2).map(([key, value]) => [key, value])
+  );
+  const timestamp = parts.get("t");
+  const v1 = parts.get("v1");
+  if (!timestamp || !v1) return { verified: false, reason: "malformed_signature" };
+
+  const expected = createHmac("sha256", secret).update(`${timestamp}.${payload}`).digest("hex");
+  const verified = safeCompare(expected, v1);
   return { verified, reason: verified ? null : "signature_mismatch" };
 }
 
