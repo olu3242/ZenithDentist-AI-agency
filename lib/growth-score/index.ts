@@ -1,6 +1,7 @@
 import "server-only";
 import { createServiceClient } from "@/lib/supabase/server";
 import { publishRuntimeFabricEvent } from "@/lib/runtime/event-fabric";
+import { getPatientEducationReadinessScore } from "@/lib/treatment-visualization";
 
 export type GrowthScoreBreakdown = {
   organizationId: string;
@@ -13,18 +14,20 @@ export type GrowthScoreBreakdown = {
   treatmentAcceptanceScore: number;
   newPatientScore: number;
   revenueGrowthScore: number;
+  patientEducationReadinessScore: number;
   grade: "A" | "B" | "C" | "D" | "F";
   topOpportunity: string;
 };
 
 const WEIGHTS = {
-  reviews: 20,
-  referrals: 15,
-  membership: 15,
-  recall: 15,
-  treatment_acceptance: 20,
+  reviews: 18,
+  referrals: 13,
+  membership: 13,
+  recall: 13,
+  treatment_acceptance: 18,
   new_patients: 10,
   revenue_growth: 5,
+  patient_education_readiness: 10,
 } as const;
 
 function deriveGrade(score: number): "A" | "B" | "C" | "D" | "F" {
@@ -44,6 +47,7 @@ function deriveTopOpportunity(breakdown: Record<string, number>): string {
     treatment_acceptance: "Enhance treatment presentation and case acceptance",
     new_patients: "Optimize new patient lead conversion funnel",
     revenue_growth: "Expand production and revenue growth strategies",
+    patient_education_readiness: "Increase treatment education delivery and engagement",
   };
   const sorted = Object.entries(breakdown).sort(([, a], [, b]) => a - b);
   return labels[sorted[0][0]] ?? "Review all growth dimensions";
@@ -131,6 +135,9 @@ export async function calculateGrowthScore(organizationId: string): Promise<Grow
   // Revenue growth score — static 50 if no data
   const revenueGrowthScore = 50;
 
+  // Patient Education Readiness — TVA treatment visualization engagement (APS extension)
+  const patientEducationReadinessScore = await getPatientEducationReadinessScore(organizationId);
+
   const dimensionScores: Record<string, number> = {
     reviews: reviewScore,
     referrals: referralScore,
@@ -139,6 +146,7 @@ export async function calculateGrowthScore(organizationId: string): Promise<Grow
     treatment_acceptance: treatmentAcceptanceScore,
     new_patients: newPatientScore,
     revenue_growth: revenueGrowthScore,
+    patient_education_readiness: patientEducationReadinessScore,
   };
 
   const overallScore = Math.round(
@@ -148,7 +156,8 @@ export async function calculateGrowthScore(organizationId: string): Promise<Grow
       recallScore * WEIGHTS.recall +
       treatmentAcceptanceScore * WEIGHTS.treatment_acceptance +
       newPatientScore * WEIGHTS.new_patients +
-      revenueGrowthScore * WEIGHTS.revenue_growth) /
+      revenueGrowthScore * WEIGHTS.revenue_growth +
+      patientEducationReadinessScore * WEIGHTS.patient_education_readiness) /
       100
   );
 
@@ -163,6 +172,7 @@ export async function calculateGrowthScore(organizationId: string): Promise<Grow
     treatmentAcceptanceScore,
     newPatientScore,
     revenueGrowthScore,
+    patientEducationReadinessScore,
     grade: deriveGrade(overallScore),
     topOpportunity: deriveTopOpportunity(dimensionScores),
   };

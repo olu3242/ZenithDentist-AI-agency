@@ -271,6 +271,64 @@ export async function detectUnscheduledTreatment(): Promise<DetectionResult> {
 }
 
 /**
+ * treatment.visualization_required — Treatment Visualization Journey (TVA).
+ * Shares the same roi_calculations-derived proxy signal as
+ * detectUnscheduledTreatment (no dedicated treatment_plans table yet — see
+ * that detector's comment), but scoped to high-value unscheduled cases only,
+ * since visualization/education content is reserved for the higher-value
+ * segment per the journey design ("Appointment → Treatment Selected → TVA
+ * Triggered..."). Routed through ExecutionEngine with agentId=tva.
+ */
+export async function detectUnscheduledTreatmentForVisualization(): Promise<DetectionResult> {
+  const supabase = createServiceClient();
+  if (!supabase) {
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: 0, triggered: false, error: "supabase_unavailable" };
+  }
+
+  const { data, error } = await (supabase as any)
+    .from("roi_calculations")
+    .select("id, lead_id, recoverable_revenue, leads!inner(status)")
+    .gte("recoverable_revenue", HIGH_VALUE_TREATMENT_THRESHOLD)
+    .not("leads.status", "in", "(booked,won,closed)")
+    .limit(500);
+  if (error) {
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: 0, triggered: false, error: error.message };
+  }
+
+  const rows: Array<{ id: string; lead_id: string; recoverable_revenue: number }> = data ?? [];
+  if (rows.length === 0) {
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: 0, triggered: false };
+  }
+
+  const tva = await getAgentBySlug("tva");
+  if (!tva) {
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: rows.length, triggered: false, error: "tva_agent_not_registered" };
+  }
+
+  try {
+    const totalValue = rows.reduce((sum, r) => sum + Number(r.recoverable_revenue), 0);
+    await ExecutionEngine.run({
+      agentId: tva.id,
+      tenantId: "global",
+      eventType: "treatment.visualization_required",
+      payload: { sample: rows.slice(0, 5).map(r => r.id), threshold: HIGH_VALUE_TREATMENT_THRESHOLD },
+      workflowId: "treatment_visualization",
+      revenueImpact: {
+        revenueType: "treatment_visualization_sent",
+        amount: totalValue,
+        sourceEvent: "treatment.visualization_required"
+      }
+    });
+    logger.info("detector_workflow_triggered", { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: rows.length });
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: rows.length, triggered: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.warn("detector_workflow_failed", { detector: "treatment_visualization_required", workflowId: "treatment_visualization", error: message });
+    return { detector: "treatment_visualization_required", workflowId: "treatment_visualization", matches: rows.length, triggered: false, error: message };
+  }
+}
+
+/**
  * claim.aging.30/60/90 — FINN (Chief Financial Recovery Officer). Tiers
  * public.claims (added in migration 202606230001_finn_financial_tables.sql —
  * see that file for why a new minimal table was needed: no existing table
@@ -961,6 +1019,7 @@ export async function runAllDetectors(): Promise<DetectionResult[]> {
     detectRevenueLeaks,
     detectRecallOverdue,
     detectUnscheduledTreatment,
+    detectUnscheduledTreatmentForVisualization,
     detectAgingClaims,
     detectOverdueBalances,
     detectFailedPayments,

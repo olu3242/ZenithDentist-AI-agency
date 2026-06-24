@@ -637,6 +637,24 @@ export const automationRegistry: AutomationBlueprint[] = [
     slaMinutes: 180,
     observability: fullObservability
   },
+  {
+    id: "treatment_visualization",
+    domain: "patient_influence",
+    name: "Treatment Visualization Journey",
+    description:
+      "TVA's treatment education automation — generates and delivers treatment overview, expected outcome, recovery timeline, and FAQ for unscheduled high-value treatment plans, tracks engagement, and attributes treatment acceptance revenue.",
+    triggers: ["treatment.visualization_required", "unscheduled high-value treatment plan detected"],
+    emittedEvents: ["operational_events", "recommendation_events", "intelligence_events"],
+    queueHandlers: ["agent.tva.treatment_visualization", "recommendation.treatment_education"],
+    actions: ["generate treatment education", "deliver education media", "track engagement", "attribute acceptance revenue"],
+    intelligenceOutputs: ["patient education readiness", "acceptance risk", "revenue influence"],
+    aliceGroundingSurfaces: ["treatment plan value", "education engagement", "acceptance outcomes", "revenue attribution"],
+    replayRequired: true,
+    retryEnabled: true,
+    deadLetterRequired: true,
+    slaMinutes: 60,
+    observability: fullObservability
+  },
   ...[
     ["video_confirmation", "Confirmation Video Journey", "appointment requires confirmation"],
     ["video_reminder", "Reminder Video Journey", "appointment reminder window reached"],

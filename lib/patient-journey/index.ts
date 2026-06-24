@@ -14,6 +14,7 @@ export type PatientLifecycleState =
   | "confirmed"
   | "seen"
   | "treatment_planned"
+  | "treatment_visualization_pending"
   | "treatment_accepted"
   | "completed"
   | "recall"
@@ -39,7 +40,8 @@ export const LIFECYCLE_TRANSITIONS: Record<PatientLifecycleState, PatientLifecyc
   scheduled: ["confirmed", "lead"], // lead = no-show fallback
   confirmed: ["seen", "scheduled"], // scheduled = rescheduled
   seen: ["treatment_planned", "recall", "completed"],
-  treatment_planned: ["treatment_accepted", "recall"],
+  treatment_planned: ["treatment_visualization_pending", "treatment_accepted", "recall"],
+  treatment_visualization_pending: ["treatment_accepted", "recall"],
   treatment_accepted: ["scheduled", "completed"],
   completed: ["recall", "advocate"],
   recall: ["scheduled", "advocate"],
@@ -65,6 +67,11 @@ export const WORKFLOW_TRIGGERS: Partial<Record<PatientLifecycleState, Partial<Re
     completed: "review_request_due",
   },
   treatment_planned: {
+    treatment_visualization_pending: "treatment_visualization",
+    treatment_accepted: "ai_followup_required",
+    recall: "recall_due",
+  },
+  treatment_visualization_pending: {
     treatment_accepted: "ai_followup_required",
     recall: "recall_due",
   },

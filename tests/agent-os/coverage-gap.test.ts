@@ -494,7 +494,7 @@ describe("detectors.runAllDetectors orchestrator", () => {
   it("runs every registered detector and degrades gracefully when supabase is unavailable", async () => {
     (createServiceClient as any).mockReturnValue(null);
     const results = await runAllDetectors();
-    expect(results.length).toBe(15);
+    expect(results.length).toBe(16);
     expect(results.every(r => r.triggered === false)).toBe(true);
     expect(results.every(r => r.error === "supabase_unavailable")).toBe(true);
   });
@@ -506,7 +506,7 @@ describe("detectors.runAllDetectors orchestrator", () => {
       })
     });
     const results = await runAllDetectors();
-    expect(results.length).toBe(15);
+    expect(results.length).toBe(16);
     expect(results.every(r => r.triggered === false)).toBe(true);
     expect(results.some(r => r.error === "catastrophic table failure")).toBe(true);
   });

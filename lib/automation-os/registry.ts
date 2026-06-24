@@ -49,7 +49,8 @@ export const dentalAutomationLibrary = [
   { workflowId: "video_referral_request", category: "Patient Influence", pack: "Referral Growth Video Journey" },
   { workflowId: "video_membership", category: "Patient Influence", pack: "Membership Enrollment Video Journey" },
   { workflowId: "video_treatment_acceptance", category: "Patient Influence", pack: "Treatment Acceptance Video Journey" },
-  { workflowId: "video_vip_loyalty", category: "Patient Influence", pack: "VIP Loyalty Video Journey" }
+  { workflowId: "video_vip_loyalty", category: "Patient Influence", pack: "VIP Loyalty Video Journey" },
+  { workflowId: "treatment_visualization", category: "Patient Influence", pack: "Treatment Visualization Journey" }
 ] as const;
 
 export interface AutomationPerformance {

@@ -15,6 +15,7 @@ import { AgentRevenueAttributionStore } from "@/packages/agent-os/revenue/AgentR
 import { LearningEventStore } from "@/packages/agent-os/learning/LearningEventStore";
 import { RevenueLeakageEngine } from "@/packages/agent-os/revenue-intelligence/RevenueLeakageEngine";
 import { OpportunityEngine } from "@/packages/agent-os/revenue-intelligence/OpportunityEngine";
+import { getEducationPipeline, getAcceptanceRisk, getRevenueInfluence } from "@/lib/treatment-visualization";
 
 interface AgentRegistryRow {
   id: string;
@@ -126,6 +127,21 @@ export default async function AgentCenterPage() {
       revenueOpportunities: agent.agent_id === "alice" ? revenueOpportunities : undefined
     };
   });
+
+  // Treatment Visualization Journey (TVA) — Education Pipeline / Acceptance
+  // Risk / Revenue Influence. Reuses lib/treatment-visualization, no new
+  // aggregation pipeline.
+  const [educationPipeline, acceptanceRisk, treatmentRevenueInfluence] = tenantData.organization?.id
+    ? await Promise.all([
+        getEducationPipeline(tenantData.organization.id),
+        getAcceptanceRisk(tenantData.organization.id),
+        getRevenueInfluence(tenantData.organization.id)
+      ])
+    : [
+        { pending: 0, educationSent: 0, viewed: 0, accepted: 0, declined: 0, failed: 0 },
+        { atRiskCount: 0, revenueAtRisk: 0 },
+        { revenueGenerated: 0, treatmentsAccepted: 0 }
+      ];
 
   const learningEventsByAgent = await Promise.all(
     registry.slice(0, 9).map(async agent => ({
@@ -264,6 +280,36 @@ export default async function AgentCenterPage() {
                 ) : null}
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Treatment Visualization Journey (TVA) */}
+        <section className="rounded border border-line bg-white p-5 shadow-sm">
+          <h2 className="text-xl font-black text-ink">Treatment Visualization Journey</h2>
+          <p className="mt-2 text-sm font-semibold text-muted">
+            TVA (Treatment Visualization Agent) — education pipeline, acceptance risk, and revenue influence for
+            unscheduled high-value treatment plans.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded border border-line bg-paper p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-muted">Education Pipeline</p>
+              <strong className="mt-2 block text-xl font-black text-ink">
+                {educationPipeline.pending} pending · {educationPipeline.educationSent} sent · {educationPipeline.viewed} viewed
+              </strong>
+              <p className="mt-1 text-sm font-semibold text-muted">
+                {educationPipeline.accepted} accepted, {educationPipeline.declined} declined, {educationPipeline.failed} failed
+              </p>
+            </div>
+            <div className="rounded border border-line bg-paper p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-muted">Acceptance Risk</p>
+              <strong className="mt-2 block text-2xl font-black text-ink">{acceptanceRisk.atRiskCount}</strong>
+              <p className="mt-1 text-sm font-semibold text-muted">${acceptanceRisk.revenueAtRisk.toFixed(2)} revenue at risk</p>
+            </div>
+            <div className="rounded border border-line bg-paper p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-muted">Revenue Influence</p>
+              <strong className="mt-2 block text-2xl font-black text-ink">${treatmentRevenueInfluence.revenueGenerated.toFixed(2)}</strong>
+              <p className="mt-1 text-sm font-semibold text-muted">{treatmentRevenueInfluence.treatmentsAccepted} treatments accepted</p>
+            </div>
           </div>
         </section>
 

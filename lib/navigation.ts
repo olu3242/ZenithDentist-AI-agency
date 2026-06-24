@@ -113,6 +113,7 @@ export const portalNavItems: NavItem[] = [
   { href: "/portal/locations", label: "Locations", description: "Multi-location performance", roles: ["practice_owner", "super_admin"], icon: Building2 },
   { href: "/portal/reports", label: "Reports", description: "Executive reporting", roles: ["practice_owner", "super_admin"], icon: FileText },
   { href: "/portal/video", label: "Video Intelligence", description: "Video Engagement OS, patient journeys, attention scores and attribution", roles: ["practice_owner", "super_admin"], icon: PlayCircle },
+  { href: "/portal/treatment-visualization", label: "Treatment Visualization", description: "Treatment education journey, engagement, and acceptance revenue", roles: ["practice_owner", "super_admin"], icon: BookOpenCheck },
   { href: "/portal/simulations", label: "Simulations", description: "Operational scenario modeling", roles: ["practice_owner", "super_admin"], icon: SlidersHorizontal }
 ];
 
