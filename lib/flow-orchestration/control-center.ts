@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createServiceClient } from "@/lib/supabase/server";
+import { evaluateFlowIntelligence, type FlowIntelligence } from "@/lib/flow-orchestration/intelligence";
 
 export type FlowHealth = "healthy" | "attention" | "critical";
 
@@ -37,6 +38,7 @@ export interface FlowControlCenterRun {
   workflowExecutionCount: number;
   operatorActionCount: number;
   recentOperatorActions: FlowOperatorAuditEntry[];
+  intelligence: FlowIntelligence;
   lineage: Array<{
     stepKey: string;
     attempt: number;
@@ -62,6 +64,13 @@ export interface FlowControlCenterSnapshot {
     succeeded: number;
     operatorActions: number;
   };
+  intelligence: {
+    criticalPriority: number;
+    highPriority: number;
+    anomalyCount: number;
+    revenueAtRisk: number;
+    averageSlaRisk: number;
+  };
   sla: {
     attentionAfterMinutes: number;
     criticalAfterMinutes: number;
@@ -82,7 +91,7 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
 
   let runQuery = client
     .from("flow_runs")
-    .select("id,organization_id,flow_key,flow_version,status,current_step_key,correlation_id,started_at,updated_at,completed_at,last_error")
+    .select("id,organization_id,flow_key,flow_version,status,current_step_key,correlation_id,started_at,updated_at,completed_at,last_error,input,context")
     .order("updated_at", { ascending: false })
     .limit(100);
   if (organizationId) runQuery = runQuery.eq("organization_id", organizationId);
@@ -125,6 +134,28 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
       : !isTerminal && (ageMinutes >= ATTENTION_MINUTES || runWaits.length > 0)
         ? "attention"
         : "healthy";
+    const failedSteps = runSteps.filter((step: any) => step.status === "failed").length;
+    const approvalWaits = runWaits.filter((wait: any) => wait.wait_type === "approval").length;
+    const retryWaits = runWaits.filter((wait: any) => wait.wait_type === "retry").length;
+    const eventWaits = runWaits.filter((wait: any) => wait.wait_type === "event").length;
+    const retryCount = runSteps.filter((step: any) => step.status === "retry_scheduled").length;
+    const workflowExecutionCount = runSteps.filter((step: any) => Boolean(step.workflow_execution_id)).length;
+    const intelligence = evaluateFlowIntelligence({
+      status: row.status,
+      currentStepKey: row.current_step_key,
+      ageMinutes,
+      health,
+      failedSteps,
+      activeWaits: runWaits.length,
+      approvalWaits,
+      retryWaits,
+      eventWaits,
+      retryCount,
+      workflowExecutionCount,
+      operatorActionCount: runOperatorActions.length,
+      input: row.input,
+      context: row.context
+    });
 
     return {
       id: row.id,
@@ -141,13 +172,13 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
       ageMinutes,
       health,
       stepCount: runSteps.length,
-      failedSteps: runSteps.filter((step: any) => step.status === "failed").length,
+      failedSteps,
       activeWaits: runWaits.length,
-      approvalWaits: runWaits.filter((wait: any) => wait.wait_type === "approval").length,
-      retryWaits: runWaits.filter((wait: any) => wait.wait_type === "retry").length,
-      eventWaits: runWaits.filter((wait: any) => wait.wait_type === "event").length,
-      retryCount: runSteps.filter((step: any) => step.status === "retry_scheduled").length,
-      workflowExecutionCount: runSteps.filter((step: any) => Boolean(step.workflow_execution_id)).length,
+      approvalWaits,
+      retryWaits,
+      eventWaits,
+      retryCount,
+      workflowExecutionCount,
       operatorActionCount: runOperatorActions.length,
       recentOperatorActions: runOperatorActions.slice(0, 5).map((action: any) => ({
         id: action.id,
@@ -157,6 +188,7 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
         note: action.note,
         createdAt: action.created_at
       })),
+      intelligence,
       lineage: runSteps.map((step: any) => ({
         stepKey: step.step_key,
         attempt: Number(step.attempt),
@@ -168,9 +200,14 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
         lastError: step.last_error
       }))
     };
-  });
+  }).sort((a, b) => b.intelligence.priorityScore - a.intelligence.priorityScore || b.ageMinutes - a.ageMinutes);
 
   const active = runs.filter(run => !["succeeded", "failed", "cancelled"].includes(run.status));
+  const activeRevenueAtRisk = active.reduce((sum, run) => sum + run.intelligence.revenueImpactEstimate, 0);
+  const averageSlaRisk = active.length
+    ? Math.round(active.reduce((sum, run) => sum + run.intelligence.slaRiskPercent, 0) / active.length)
+    : 0;
+
   return {
     generatedAt,
     counts: {
@@ -183,6 +220,13 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
       failed: runs.filter(run => run.status === "failed").length,
       succeeded: runs.filter(run => run.status === "succeeded").length,
       operatorActions: runs.reduce((sum, run) => sum + run.operatorActionCount, 0)
+    },
+    intelligence: {
+      criticalPriority: active.filter(run => run.intelligence.priorityBand === "critical").length,
+      highPriority: active.filter(run => run.intelligence.priorityBand === "high").length,
+      anomalyCount: active.reduce((sum, run) => sum + run.intelligence.anomalies.length, 0),
+      revenueAtRisk: Math.round(activeRevenueAtRisk),
+      averageSlaRisk
     },
     sla: {
       attentionAfterMinutes: ATTENTION_MINUTES,
@@ -198,6 +242,7 @@ function emptySnapshot(generatedAt: string): FlowControlCenterSnapshot {
   return {
     generatedAt,
     counts: { total: 0, active: 0, waiting: 0, approvals: 0, retries: 0, blocked: 0, failed: 0, succeeded: 0, operatorActions: 0 },
+    intelligence: { criticalPriority: 0, highPriority: 0, anomalyCount: 0, revenueAtRisk: 0, averageSlaRisk: 0 },
     sla: { attentionAfterMinutes: ATTENTION_MINUTES, criticalAfterMinutes: CRITICAL_MINUTES, attention: 0, critical: 0 },
     runs: []
   };
