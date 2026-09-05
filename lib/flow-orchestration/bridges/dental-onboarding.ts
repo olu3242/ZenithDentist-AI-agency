@@ -7,15 +7,17 @@ import { logger } from "@/lib/logger";
 const FLOW_KEY = "dental_practice_activation_v1";
 const FLOW_VERSION = 1;
 
-const EVENT_STEPS = [
+const PRE_GOVERNANCE_EVENTS = [
   ["goals_captured", "onboarding.goals_captured"],
   ["systems_connected", "integration.installed"],
   ["data_validated", "integration.healthy"],
   ["baseline_generated", "practice.baseline_generated"],
-  ["opportunities_identified", "revenue.opportunities_identified"],
+  ["opportunities_identified", "revenue.opportunities_identified"]
+] as const;
+
+const POST_GOVERNANCE_EVENTS = [
   ["playbooks_selected", "onboarding.playbooks_selected"],
-  ["simulation_passed", "sandbox.certified"],
-  ["activated", "practice.activated"]
+  ["simulation_passed", "sandbox.certified"]
 ] as const;
 
 export async function reconcileDentalOnboardingFlow(input: {
@@ -37,10 +39,10 @@ export async function reconcileDentalOnboardingFlow(input: {
     const flowRunId = started.flowRunId;
     const completed = new Set(input.completedSteps);
 
-    // Move the entry checkpoint to the first durable wait.
+    // Entry checkpoint is safe to replay; terminal/advanced runs return without mutation.
     await advanceFlow(flowRunId);
 
-    for (const [step, eventType] of EVENT_STEPS) {
+    for (const [step, eventType] of PRE_GOVERNANCE_EVENTS) {
       if (!completed.has(step)) break;
       await advanceFlow(flowRunId);
       await signalFlow(flowRunId, {
@@ -53,10 +55,11 @@ export async function reconcileDentalOnboardingFlow(input: {
     if (completed.has("governance_configured")) {
       await advanceFlow(flowRunId);
       await decideApproval(flowRunId, true, "tenant_onboarding_bridge", "Explicit practice governance is persisted.");
+    } else {
+      return { ok: true, flowRunId };
     }
 
-    // Governance sits before playbook/sandbox steps; reconcile them after approval.
-    for (const [step, eventType] of EVENT_STEPS.slice(5, 7)) {
+    for (const [step, eventType] of POST_GOVERNANCE_EVENTS) {
       if (!completed.has(step)) break;
       await advanceFlow(flowRunId);
       await signalFlow(flowRunId, {
@@ -69,6 +72,8 @@ export async function reconcileDentalOnboardingFlow(input: {
     if (completed.has("readiness_certified")) {
       await advanceFlow(flowRunId);
       await decideApproval(flowRunId, true, "tenant_onboarding_bridge", "Dental onboarding readiness certification is persisted.");
+    } else {
+      return { ok: true, flowRunId };
     }
 
     if (completed.has("activated")) {
@@ -76,8 +81,10 @@ export async function reconcileDentalOnboardingFlow(input: {
       await signalFlow(flowRunId, {
         eventType: "practice.activated",
         idempotencyKey: `${flowRunId}:practice.activated`,
-        payload: { source: "tenant_onboarding_runs", ...(input.context ?? {}) }
+        payload: { source: "tenant_onboarding_runs", step: "activated", ...(input.context ?? {}) }
       });
+    } else {
+      return { ok: true, flowRunId };
     }
 
     if (completed.has("value_measurement_active")) await advanceFlow(flowRunId);
