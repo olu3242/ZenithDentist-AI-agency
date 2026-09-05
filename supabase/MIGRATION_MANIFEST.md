@@ -53,6 +53,7 @@ This manifest is the migration authority for Zenith PROS. Historical migrations 
 | 202609040001 | Converge dental onboarding on canonical tenant runs | `20260616000000`, `20260629000000` | `tenant_onboarding_runs` | Drop new indexes after duplicate audit | Medium | Zenith Platform |
 | 202609040002 | Add deterministic zero-dispatch onboarding sandbox evidence | `202609040001`, `20260616000000` | `dental_onboarding_simulation_runs` | Export evidence then forward-drop table | Medium | Zenith Platform |
 | 202609040003 | Add Flow Orchestration OS durable coordination state | `202609040001`, `202609040002`, existing Automation Runtime/Event Fabric | `flow_runs`, `flow_step_runs`, `flow_waits`, `flow_events` | Export orchestration evidence then forward-drop tables in dependency order | High | Zenith Platform |
+| 202609040004 | Add immutable Flow Control Center operator-action evidence | `202609040003` | `flow_operator_actions` | Export evidence, disable operator mutations, then forward-drop table | Medium | Zenith Platform |
 
 ## Forward Migration Details
 
@@ -182,4 +183,12 @@ Dependencies: `202609040001`, `202609040002`, canonical Automation Runtime, Even
 Affected Tables: `flow_runs`, `flow_step_runs`, `flow_waits`, `flow_events`.
 Rollback Strategy: Export flow evidence, disable Flow OS consumers, then forward-drop `flow_events`, `flow_waits`, `flow_step_runs`, and `flow_runs` in dependency order.
 Risk Level: High.
+Owner: Zenith Platform.
+
+### Migration ID: 202609040004
+Purpose: Persist immutable operator action evidence for Flow Control Center approvals, rejections, retries, cancellations, wait overrides, and workflow drill-through without making the UI a source of orchestration truth.
+Dependencies: `202609040003`.
+Affected Tables: `flow_operator_actions`.
+Rollback Strategy: Export operator evidence, disable Flow Control Center mutation actions, then apply a forward rollback migration to drop `flow_operator_actions`.
+Risk Level: Medium.
 Owner: Zenith Platform.
