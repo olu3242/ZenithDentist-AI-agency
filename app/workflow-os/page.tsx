@@ -8,7 +8,12 @@ import { getCurrentZenithRole } from "@/lib/server-auth";
 import { getWorkflowAnalyticsSummary } from "@/lib/workflow-os/workflow-analytics";
 import { getWorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";
 
-export default async function WorkflowOSPage() {
+export default async function WorkflowOSPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ executionId?: string; flowRunId?: string }>;
+}) {
+  const params = await searchParams;
   const t = await getTranslations("workflowOS");
   const [tenantData, role, analytics, runtime, automationOS] = await Promise.all([
     getTenantData(),
@@ -38,6 +43,26 @@ export default async function WorkflowOSPage() {
             Open Flow Control Center
           </Link>
         </header>
+
+        {params?.executionId ? (
+          <section className="rounded border border-teal/30 bg-teal/5 p-4 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wider text-teal">Execution drill-through</p>
+            <div className="mt-2 grid gap-2 md:grid-cols-[1fr_1fr_auto] md:items-center">
+              <div>
+                <p className="text-xs font-semibold text-muted">Workflow execution</p>
+                <strong className="break-all text-sm text-ink">{params.executionId}</strong>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-muted">Parent flow</p>
+                <strong className="break-all text-sm text-ink">{params.flowRunId ?? "Unknown"}</strong>
+              </div>
+              <Link href="/workflow-os/flows" className="text-sm font-black text-teal underline decoration-2 underline-offset-4">
+                Back to flow →
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard label={t("registeredWorkflows")} value={automationOS.registry.length} detail={`${automationOS.counts.active} active in registry`} tone="teal" />
           <MetricCard label={t("operationalScore")} value={`${runtime.operationalScore}%`} detail="Runtime health signal" tone="green" />
