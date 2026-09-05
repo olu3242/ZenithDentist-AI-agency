@@ -4,6 +4,15 @@ import { createServiceClient } from "@/lib/supabase/server";
 
 export type FlowHealth = "healthy" | "attention" | "critical";
 
+export interface FlowOperatorAuditEntry {
+  id: string;
+  actionType: string;
+  actorId: string;
+  actorRole: string;
+  note: string | null;
+  createdAt: string;
+}
+
 export interface FlowControlCenterRun {
   id: string;
   flowKey: string;
@@ -22,8 +31,12 @@ export interface FlowControlCenterRun {
   failedSteps: number;
   activeWaits: number;
   approvalWaits: number;
+  retryWaits: number;
+  eventWaits: number;
   retryCount: number;
   workflowExecutionCount: number;
+  operatorActionCount: number;
+  recentOperatorActions: FlowOperatorAuditEntry[];
   lineage: Array<{
     stepKey: string;
     attempt: number;
@@ -47,6 +60,7 @@ export interface FlowControlCenterSnapshot {
     blocked: number;
     failed: number;
     succeeded: number;
+    operatorActions: number;
   };
   sla: {
     attentionAfterMinutes: number;
@@ -77,7 +91,7 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
   if (runError || runRows.length === 0) return emptySnapshot(generatedAt);
 
   const runIds = runRows.map((row: any) => row.id);
-  const [stepsResult, waitsResult] = await Promise.all([
+  const [stepsResult, waitsResult, operatorResult] = await Promise.all([
     client
       .from("flow_step_runs")
       .select("flow_run_id,step_key,attempt,status,workflow_execution_id,started_at,completed_at,next_retry_at,last_error")
@@ -86,16 +100,23 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
     client
       .from("flow_waits")
       .select("flow_run_id,wait_type,status,wait_key,expires_at,created_at")
+      .in("flow_run_id", runIds),
+    client
+      .from("flow_operator_actions")
+      .select("id,flow_run_id,action_type,actor_id,actor_role,note,created_at")
       .in("flow_run_id", runIds)
+      .order("created_at", { ascending: false })
   ]);
 
   const steps = stepsResult.data ?? [];
   const waits = waitsResult.data ?? [];
+  const operatorActions = operatorResult.data ?? [];
   const now = Date.now();
 
   const runs: FlowControlCenterRun[] = runRows.map((row: any) => {
     const runSteps = steps.filter((step: any) => step.flow_run_id === row.id);
     const runWaits = waits.filter((wait: any) => wait.flow_run_id === row.id && wait.status === "waiting");
+    const runOperatorActions = operatorActions.filter((action: any) => action.flow_run_id === row.id);
     const referenceTime = row.completed_at ?? row.started_at ?? row.updated_at;
     const ageMinutes = Math.max(0, Math.round((now - new Date(referenceTime).getTime()) / 60000));
     const isTerminal = ["succeeded", "failed", "cancelled"].includes(row.status);
@@ -123,8 +144,19 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
       failedSteps: runSteps.filter((step: any) => step.status === "failed").length,
       activeWaits: runWaits.length,
       approvalWaits: runWaits.filter((wait: any) => wait.wait_type === "approval").length,
+      retryWaits: runWaits.filter((wait: any) => wait.wait_type === "retry").length,
+      eventWaits: runWaits.filter((wait: any) => wait.wait_type === "event").length,
       retryCount: runSteps.filter((step: any) => step.status === "retry_scheduled").length,
       workflowExecutionCount: runSteps.filter((step: any) => Boolean(step.workflow_execution_id)).length,
+      operatorActionCount: runOperatorActions.length,
+      recentOperatorActions: runOperatorActions.slice(0, 5).map((action: any) => ({
+        id: action.id,
+        actionType: action.action_type,
+        actorId: action.actor_id,
+        actorRole: action.actor_role,
+        note: action.note,
+        createdAt: action.created_at
+      })),
       lineage: runSteps.map((step: any) => ({
         stepKey: step.step_key,
         attempt: Number(step.attempt),
@@ -149,7 +181,8 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
       retries: runs.reduce((sum, run) => sum + run.retryCount, 0),
       blocked: runs.filter(run => run.status === "blocked").length,
       failed: runs.filter(run => run.status === "failed").length,
-      succeeded: runs.filter(run => run.status === "succeeded").length
+      succeeded: runs.filter(run => run.status === "succeeded").length,
+      operatorActions: runs.reduce((sum, run) => sum + run.operatorActionCount, 0)
     },
     sla: {
       attentionAfterMinutes: ATTENTION_MINUTES,
@@ -164,7 +197,7 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
 function emptySnapshot(generatedAt: string): FlowControlCenterSnapshot {
   return {
     generatedAt,
-    counts: { total: 0, active: 0, waiting: 0, approvals: 0, retries: 0, blocked: 0, failed: 0, succeeded: 0 },
+    counts: { total: 0, active: 0, waiting: 0, approvals: 0, retries: 0, blocked: 0, failed: 0, succeeded: 0, operatorActions: 0 },
     sla: { attentionAfterMinutes: ATTENTION_MINUTES, criticalAfterMinutes: CRITICAL_MINUTES, attention: 0, critical: 0 },
     runs: []
   };
