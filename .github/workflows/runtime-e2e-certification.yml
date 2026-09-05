@@ -1,0 +1,70 @@
+name: Zenith Live Runtime E2E Certification
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: "Exact Vercel Preview URL for the selected ref"
+        required: true
+        type: string
+      cert_org_a_id:
+        description: "Synthetic certification organization A UUID"
+        required: true
+        type: string
+      cert_org_b_id:
+        description: "Synthetic certification organization B UUID"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  ZENITH_PREVIEW_URL: ${{ inputs.preview_url }}
+  ZENITH_EXPECTED_HEAD_SHA: ${{ github.sha }}
+  ZENITH_SUPABASE_URL: ${{ vars.ZENITH_SUPABASE_URL }}
+  ZENITH_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.ZENITH_SUPABASE_PUBLISHABLE_KEY }}
+  ZENITH_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.ZENITH_SUPABASE_SERVICE_ROLE_KEY }}
+  ZENITH_CERT_USER_A_JWT: ${{ secrets.ZENITH_CERT_USER_A_JWT }}
+  ZENITH_CERT_USER_B_JWT: ${{ secrets.ZENITH_CERT_USER_B_JWT }}
+  ZENITH_CERT_ORG_A_ID: ${{ inputs.cert_org_a_id }}
+  ZENITH_CERT_ORG_B_ID: ${{ inputs.cert_org_b_id }}
+
+jobs:
+  runtime-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: preview-certification
+    steps:
+      - name: Checkout exact selected ref
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Runtime certification contract
+        run: npm run test:runtime:contract
+
+      - name: Migration governance
+        run: npm run migration:validate
+
+      - name: Dental onboarding invariants
+        run: npm run test:onboarding
+
+      - name: Flow Orchestration OS invariants
+        run: npm run test:flow-os
+
+      - name: Live Preview + Supabase runtime E2E
+        run: npm run certify:runtime:live
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build
