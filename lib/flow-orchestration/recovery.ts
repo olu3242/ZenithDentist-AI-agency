@@ -2,6 +2,7 @@ import "server-only";
 
 import { createServiceClient } from "@/lib/supabase/server";
 import { advanceFlow } from "@/lib/flow-orchestration/engine";
+import { getFlowDefinition } from "@/lib/flow-orchestration/registry";
 import type { FlowExecutionAdapter } from "@/lib/flow-orchestration/types";
 import { publishEvent } from "@/lib/event-fabric";
 
@@ -52,16 +53,56 @@ export async function recoverDueFlowRetries(adapter: FlowExecutionAdapter, limit
   return { recovered, failed };
 }
 
+/**
+ * Converts step-definition timeoutSeconds into durable DB deadlines. This is
+ * intentionally a recovery operation so a process restart cannot erase timers.
+ */
+export async function materializeFlowWaitDeadlines(limit = 100) {
+  const supabase = createServiceClient();
+  if (!supabase) return { materialized: 0 };
+  const client = supabase as any;
+
+  const { data: waits = [] } = await client
+    .from("flow_waits")
+    .select("id,flow_run_id,step_run_id,wait_type,created_at")
+    .eq("status", "waiting")
+    .in("wait_type", ["event", "approval", "timer"])
+    .is("expires_at", null)
+    .order("created_at", { ascending: true })
+    .limit(limit);
+
+  let materialized = 0;
+  for (const wait of waits) {
+    const [{ data: run }, { data: stepRun }] = await Promise.all([
+      client.from("flow_runs").select("flow_key,flow_version").eq("id", wait.flow_run_id).maybeSingle(),
+      client.from("flow_step_runs").select("step_key").eq("id", wait.step_run_id).maybeSingle()
+    ]);
+    if (!run || !stepRun) continue;
+    const definition = getFlowDefinition(run.flow_key, run.flow_version);
+    const step = definition?.steps.find(item => item.key === stepRun.step_key);
+    if (!step?.timeoutSeconds) continue;
+
+    const expiresAt = new Date(new Date(wait.created_at).getTime() + step.timeoutSeconds * 1000).toISOString();
+    await client.from("flow_waits").update({ expires_at: expiresAt }).eq("id", wait.id).is("expires_at", null);
+    materialized += 1;
+  }
+
+  return { materialized };
+}
+
 export async function expireStaleFlowWaits(limit = 100) {
   const supabase = createServiceClient();
   if (!supabase) return { expired: 0 };
   const client = supabase as any;
   const now = new Date().toISOString();
 
+  await materializeFlowWaitDeadlines(limit);
+
   const { data: waits = [] } = await client
     .from("flow_waits")
-    .select("id,organization_id,flow_run_id,step_run_id,wait_key")
+    .select("id,organization_id,flow_run_id,step_run_id,wait_key,wait_type")
     .eq("status", "waiting")
+    .neq("wait_type", "retry")
     .not("expires_at", "is", null)
     .lte("expires_at", now)
     .order("expires_at", { ascending: true })
@@ -76,7 +117,7 @@ export async function expireStaleFlowWaits(limit = 100) {
       event_source: "flow_orchestration_os",
       tenant_id: wait.organization_id,
       correlation_id: wait.flow_run_id,
-      payload: { flowRunId: wait.flow_run_id, waitKey: wait.wait_key }
+      payload: { flowRunId: wait.flow_run_id, waitKey: wait.wait_key, waitType: wait.wait_type }
     });
   }
 
