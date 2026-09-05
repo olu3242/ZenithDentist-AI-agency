@@ -24,11 +24,14 @@ const required = [
   "lib/flow-orchestration/recovery.ts",
   "lib/flow-orchestration/runtime-adapter.ts",
   "lib/flow-orchestration/control-center.ts",
+  "lib/flow-orchestration/operator-actions.ts",
   "lib/flow-orchestration/definitions/dental-practice-activation.ts",
   "lib/flow-orchestration/bridges/dental-onboarding.ts",
   "components/flow-orchestration/flow-control-center.tsx",
   "app/workflow-os/flows/page.tsx",
-  "supabase/migrations/202609040003_flow_orchestration_os.sql"
+  "app/workflow-os/flows/actions.ts",
+  "supabase/migrations/202609040003_flow_orchestration_os.sql",
+  "supabase/migrations/202609040004_flow_operator_actions.sql"
 ];
 for (const file of required) check(fs.existsSync(path.join(root, file)), `required file exists: ${file}`);
 
@@ -39,10 +42,13 @@ if (!failures.length) {
   const adapter = read("lib/flow-orchestration/runtime-adapter.ts");
   const bridge = read("lib/flow-orchestration/bridges/dental-onboarding.ts");
   const controlCenter = read("lib/flow-orchestration/control-center.ts");
+  const operatorActions = read("lib/flow-orchestration/operator-actions.ts");
+  const serverActions = read("app/workflow-os/flows/actions.ts");
   const controlCenterUi = read("components/flow-orchestration/flow-control-center.tsx");
   const workflowPage = read("app/workflow-os/page.tsx");
   const flowPage = read("app/workflow-os/flows/page.tsx");
   const migration = read("supabase/migrations/202609040003_flow_orchestration_os.sql");
+  const operatorMigration = read("supabase/migrations/202609040004_flow_operator_actions.sql");
   const manifest = read("supabase/MIGRATION_MANIFEST.md");
 
   check(types.includes("FlowExecutionAdapter") && types.includes("canonical Automation Runtime"), "Flow OS delegates execution instead of duplicating runtime");
@@ -79,10 +85,24 @@ if (!failures.length) {
   check(controlCenter.includes('.eq("organization_id", organizationId)'), "control center read model is tenant-scoped");
   check(controlCenter.includes("attentionAfterMinutes") && controlCenter.includes("criticalAfterMinutes"), "control center computes deterministic SLA aging");
   check(controlCenter.includes("workflowExecutionCount") && controlCenter.includes("workflowExecutionId"), "control center exposes workflow execution lineage");
+  check(controlCenter.includes('.from("flow_operator_actions")') && controlCenter.includes("recentOperatorActions"), "control center exposes immutable operator audit evidence");
   check(controlCenterUi.includes("Human Approvals") && controlCenterUi.includes("Retries Scheduled") && controlCenterUi.includes("Execution lineage"), "operator UI surfaces approvals retries and lineage");
   check(flowPage.includes("getFlowControlCenterSnapshot") && flowPage.includes("tenantData.tenant.organizationId"), "Flow Control Center route loads tenant-scoped server data");
   check(workflowPage.includes('href="/workflow-os/flows"'), "Workflow OS exposes Flow Control Center navigation");
+  check(workflowPage.includes("executionId") && workflowPage.includes("flowRunId"), "workflow drill-through preserves execution and parent-flow context");
   check(!flowPage.includes("use client") && !controlCenter.includes("NEXT_PUBLIC"), "Flow Control Center keeps privileged orchestration reads on the server");
+
+  check(operatorMigration.includes("public.flow_operator_actions") && operatorMigration.includes("organization_id uuid not null"), "operator audit evidence is tenant-owned");
+  check(operatorMigration.includes("enable row level security") && operatorMigration.includes("service_role_all_flow_operator_actions"), "operator audit table enforces RLS and service-role mutation");
+  check(manifest.includes("Migration ID: 202609040004"), "operator audit migration is registered in canonical migration governance");
+  check(serverActions.includes('role !== "super_admin"'), "operator mutations are super-admin only");
+  check(serverActions.includes("getTenantData") && operatorActions.includes('.eq("organization_id", organizationId)'), "operator mutations verify current tenant ownership");
+  check(operatorActions.includes("decideApproval") && operatorActions.includes("approveFlowGate") && operatorActions.includes("rejectFlowGate"), "approval actions preserve canonical Flow Engine semantics");
+  check(operatorActions.includes("nextAttempt") && operatorActions.includes("flow_step_runs") && operatorActions.includes("advanceFlow(input.flowRunId, canonicalWorkflowExecutionAdapter)"), "operator retry creates a new durable attempt and re-enters canonical execution");
+  check(operatorActions.includes('wait.wait_type === "approval"') && operatorActions.includes("Approval waits must use Approve or Reject"), "operator resume cannot bypass approval gates");
+  check(operatorActions.includes('.from("flow_operator_actions")') && operatorActions.includes("auditAction"), "every governed mutation has a durable audit writer");
+  check(controlCenterUi.includes("Approve gate") && controlCenterUi.includes("Reject gate") && controlCenterUi.includes("Retry now") && controlCenterUi.includes("Resume event wait") && controlCenterUi.includes("Cancel flow"), "Control Center exposes governed operator action set");
+  check(controlCenterUi.includes("openWorkflowExecutionAction") && controlCenterUi.includes("Operator evidence"), "Control Center supports audited workflow drill-through and evidence review");
 }
 
 console.log(`Flow Orchestration OS certification invariants: ${passes.length} passed, ${failures.length} failed.`);
@@ -93,6 +113,7 @@ if (failures.length) {
 }
 console.log("FLOW_ORCHESTRATION_OS_CERTIFICATION=PASS");
 console.log("FLOW_CONTROL_CENTER_CERTIFICATION=PASS");
+console.log("FLOW_OPERATOR_ACTION_LAYER=PASS");
 console.log("CANONICAL_WORKFLOW_RUNTIME_DELEGATION=PASS");
 console.log("RUNTIME_DUPLICATION_GUARD=PASS");
 console.log("REPLAY_SAFE_APPROVAL_GUARD=PASS");
