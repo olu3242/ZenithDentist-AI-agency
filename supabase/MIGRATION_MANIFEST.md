@@ -1,6 +1,6 @@
 # Migration Manifest
 
-Date: 2026-06-02
+Date: 2026-09-04
 
 This manifest is the migration authority for PROS. Every new migration must include a migration ID, purpose, dependencies, affected tables, rollback strategy, risk level, and owner.
 
@@ -9,7 +9,7 @@ This manifest is the migration authority for PROS. Every new migration must incl
 - Historical migrations before `20260615000000_canonical_baseline.sql` are frozen legacy history.
 - Do not rename, reorder, edit, squash, or delete historical migrations.
 - All new migrations after the baseline must use `YYYYMMDDHHMMSS_description.sql`.
-- Every new migration must be additive unless explicitly approved with backup/restore evidence.
+- Every new migration after the baseline must be additive unless explicitly approved with backup/restore evidence.
 
 ## Frozen Legacy History
 
@@ -51,49 +51,37 @@ These files are retained for historical replay only and must not be modified:
 | 20260624000000 | Add FinClarity legal entity governance for Zenith brand commercial controls | `20260623000000` | `commercial_packages`, `client_commercial_controls` | Restore backup or archive/drop legal entity governance columns after export | Medium | Zenith Platform |
 | 20260625000000 | Add approved-client access lockdown, client accounts, and authorized email/domain allowlist | `20260624000000` | `client_accounts`, `authorized_domains` | Restore backup or archive/drop access approval records after export | High | Zenith Platform |
 | 20260629000000 | Add i18n and multi-currency preference columns | `20260625000000` | `organizations`, `profiles`, `patients` | Restore backup or apply forward migration to drop added preference columns after export | Medium | Zenith Platform |
+| 202609040001 | Converge dental practice onboarding onto canonical tenant onboarding runs | `20260616000000`, `20260629000000` | `tenant_onboarding_runs` | Drop added indexes only after confirming no duplicate onboarding runs were reintroduced | Medium | Zenith Platform |
+| 202609040002 | Add deterministic dental onboarding sandbox certification evidence | `202609040001`, `20260616000000` | `dental_onboarding_simulation_runs` | Export evidence then drop the simulation table through a forward rollback migration | Medium | Zenith Platform |
 
 ## Forward Migration Details
 
 ### Migration ID: 20260615000000
 
-Purpose:
-
-Establish the canonical migration governance baseline and freeze all prior mixed-number migrations as legacy history.
+Purpose: Establish the canonical migration governance baseline and freeze all prior mixed-number migrations as legacy history.
 
 Dependencies:
-
 - Frozen legacy migrations listed above.
 
 Affected Tables:
-
 - None.
 
-Rollback Strategy:
+Rollback Strategy: No rollback required. If this marker is applied incorrectly, restore from backup and replay the approved migration chain.
 
-No rollback required. If this marker is applied incorrectly, restore from backup and replay the approved migration chain.
+Risk Level: Low
 
-Risk Level:
-
-Low
-
-Owner:
-
-Zenith Platform Governance
+Owner: Zenith Platform Governance
 
 ### Migration ID: 20260616000000
 
-Purpose:
-
-Repair deployments where the public schema cache does not contain the core tenancy bootstrap tables required by signup, onboarding, dashboard filtering, and runtime event routing.
+Purpose: Repair deployments where the public schema cache does not contain the core tenancy bootstrap tables required by signup, onboarding, dashboard filtering, and runtime event routing.
 
 Dependencies:
-
 - 20260615000000
 - 202605210003
 - 202605310001
 
 Affected Tables:
-
 - `organizations`
 - `profiles`
 - `organization_members`
@@ -105,57 +93,37 @@ Affected Tables:
 - `platform_events`
 - `tenant_onboarding_runs`
 
-Rollback Strategy:
+Rollback Strategy: Restore a pre-migration database backup. If data is already written, export affected rows, apply a forward rollback migration, and replay validated core tenancy migrations.
 
-Restore a pre-migration database backup. If data is already written, export affected rows, apply a forward rollback migration, and replay validated core tenancy migrations.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260617000000
 
-Purpose:
-
-Persist LIZ action clicks, assessment starts, workflow launches, and escalation telemetry.
+Purpose: Persist LIZ action clicks, assessment starts, workflow launches, and escalation telemetry.
 
 Dependencies:
-
 - 20260616000000
 
 Affected Tables:
-
 - `liz_action_events`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop LIZ telemetry events after export.
 
-Restore backup or archive/drop LIZ telemetry events after export.
+Risk Level: Medium
 
-Risk Level:
-
-Medium
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260618000000
 
-Purpose:
-
-Add production evidence and certification proof tables for claim validation, connector proof, report generation, forecasts, and role workspace certification.
+Purpose: Add production evidence and certification proof tables for claim validation, connector proof, report generation, forecasts, and role workspace certification.
 
 Dependencies:
-
 - 20260616000000
 - 20260617000000
 
 Affected Tables:
-
 - `alice_recommendation_traces`
 - `workflow_execution_evidence`
 - `revenue_attribution_records`
@@ -168,167 +136,107 @@ Affected Tables:
 - `role_workspace_certifications`
 - `claim_registry`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop certification evidence tables after export.
 
-Restore backup or archive/drop certification evidence tables after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260619000000
 
-Purpose:
-
-Add Video Engagement OS, patient journey video model, scoring, and attribution tables.
+Purpose: Add Video Engagement OS, patient journey video model, scoring, and attribution tables.
 
 Dependencies:
-
 - 20260616000000
 
 Affected Tables:
-
 - Video engagement and patient video scoring tables.
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop video engagement tables after export.
 
-Restore backup or archive/drop video engagement tables after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260619120000
 
-Purpose:
-
-Add Smart Video Journey and Patient Influence Engine tables.
+Purpose: Add Smart Video Journey and Patient Influence Engine tables.
 
 Dependencies:
-
 - 20260616000000
 - 20260618000000
 
 Affected Tables:
-
 - `journey_outcomes`
 - `behavioral_signals`
 - `engagement_patterns`
 - `conversion_profiles`
 - Video intelligence tables.
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop video intelligence tables after export.
 
-Restore backup or archive/drop video intelligence tables after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260620000000
 
-Purpose:
-
-Add Enterprise Operations and Evidence OS governance tables for executive oversight, NOC operations, incident management, SLA governance, debug/recovery tracking, evidence, ALICE traceability, revenue attribution, customer success, and agency CRM.
+Purpose: Add Enterprise Operations and Evidence OS governance tables for executive oversight, NOC operations, incident management, SLA governance, debug/recovery tracking, evidence, ALICE traceability, revenue attribution, customer success, and agency CRM.
 
 Dependencies:
-
 - 20260616000000
 - 20260619000000
 - 20260619120000
 
 Affected Tables:
-
 - Incident, SLA, debug, recovery, evidence, ALICE traceability, revenue attribution, customer success, and agency CRM tables.
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop enterprise operations evidence tables after export.
 
-Restore backup or archive/drop enterprise operations evidence tables after export.
+Risk Level: Critical
 
-Risk Level:
-
-Critical
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260621000000
 
-Purpose:
-
-Add Operational Proving Ground and Patient Commerce OS tables.
+Purpose: Add Operational Proving Ground and Patient Commerce OS tables.
 
 Dependencies:
-
 - 20260620000000
 
 Affected Tables:
-
 - Certification, recovery timeline, communication template, payment, treatment acceptance, and financing tables.
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop proving ground and commerce tables after export.
 
-Restore backup or archive/drop proving ground and commerce tables after export.
+Risk Level: Critical
 
-Risk Level:
-
-Critical
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260622000000
 
-Purpose:
-
-Add Client Implementation OS deployment, training, adoption, go-live, and success automation tables.
+Purpose: Add Client Implementation OS deployment, training, adoption, go-live, and success automation tables.
 
 Dependencies:
-
 - 20260621000000
 
 Affected Tables:
-
 - Implementation, onboarding, readiness, training, adoption, go-live, customer success, and client playbook tables.
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop implementation OS tables after export.
 
-Restore backup or archive/drop implementation OS tables after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260623000000
 
-Purpose:
-
-Add Commercial Lockdown payment gates, package controls, scope protection, expansion quotes, and offboarding rules.
+Purpose: Add Commercial Lockdown payment gates, package controls, scope protection, expansion quotes, and offboarding rules.
 
 Dependencies:
-
 - 20260622000000
 
 Affected Tables:
-
 - `commercial_packages`
 - `commercial_payment_gates`
 - `client_commercial_controls`
@@ -337,96 +245,94 @@ Affected Tables:
 - `expansion_quotes`
 - `client_offboarding_checklists`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop commercial lockdown tables after export.
 
-Restore backup or archive/drop commercial lockdown tables after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260624000000
 
-Purpose:
-
-Add FinClarity legal entity governance for Zenith brand commercial controls.
+Purpose: Add FinClarity legal entity governance for Zenith brand commercial controls.
 
 Dependencies:
-
 - 20260623000000
 
 Affected Tables:
-
 - `commercial_packages`
 - `client_commercial_controls`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop legal entity governance columns after export.
 
-Restore backup or archive/drop legal entity governance columns after export.
+Risk Level: Medium
 
-Risk Level:
-
-Medium
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260625000000
 
-Purpose:
-
-Add approved-client access lockdown, client account approval records, and authorized email/domain allowlist records.
+Purpose: Add approved-client access lockdown, client account approval records, and authorized email/domain allowlist records.
 
 Dependencies:
-
 - 20260624000000
 
 Affected Tables:
-
 - `client_accounts`
 - `authorized_domains`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or archive/drop access approval records after export.
 
-Restore backup or archive/drop access approval records after export.
+Risk Level: High
 
-Risk Level:
-
-High
-
-Owner:
-
-Zenith Platform
+Owner: Zenith Platform
 
 ### Migration ID: 20260629000000
 
-Purpose:
-
-Add organization, profile, and patient locale/currency preferences for supported US and Canada operating modes.
+Purpose: Add organization, profile, and patient locale/currency preferences for supported US and Canada operating modes.
 
 Dependencies:
-
 - 20260625000000
 
 Affected Tables:
-
 - `organizations`
 - `profiles`
 - `patients`
 
-Rollback Strategy:
+Rollback Strategy: Restore backup or apply a forward rollback migration to drop added locale/currency preference columns after exporting affected preference data.
 
-Restore backup or apply a forward rollback migration to drop added locale/currency preference columns after exporting affected preference data.
+Risk Level: Medium
 
-Risk Level:
+Owner: Zenith Platform
 
-Medium
+### Migration ID: 202609040001
 
-Owner:
+Purpose: Harmonize dental-practice activation with the existing `tenant_onboarding_runs` persistence model and make resumable onboarding idempotent by organization and onboarding key.
 
-Zenith Platform
+Dependencies:
+- 20260616000000
+- 20260629000000
+
+Affected Tables:
+- `tenant_onboarding_runs`
+
+Rollback Strategy: After export and duplicate-run audit, apply a forward rollback migration that drops `uq_tenant_onboarding_runs_org_key` and `idx_tenant_onboarding_runs_key_status`.
+
+Risk Level: Medium
+
+Owner: Zenith Platform
+
+### Migration ID: 202609040002
+
+Purpose: Persist deterministic synthetic dental-onboarding sandbox evidence while enforcing a database-level zero-live-dispatch invariant.
+
+Dependencies:
+- 202609040001
+- 20260616000000
+
+Affected Tables:
+- `dental_onboarding_simulation_runs`
+
+Rollback Strategy: Export certification evidence and apply a forward rollback migration to remove the simulation evidence table.
+
+Risk Level: Medium
+
+Owner: Zenith Platform
