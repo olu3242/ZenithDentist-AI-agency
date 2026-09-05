@@ -2,6 +2,7 @@ import "server-only";
 
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/database.types";
+import { runDentalOnboardingSandbox } from "@/lib/onboarding/dental-sandbox";
 
 export const DENTAL_ONBOARDING_KEY = "dental_practice_activation_v1";
 
@@ -40,12 +41,24 @@ export interface DentalGovernanceSettings {
   requireHumanApprovalForClinicalMessages: boolean;
 }
 
+export interface DentalSimulationEvidenceSummary {
+  evidenceHash: string;
+  version: string;
+  scenarioCount: number;
+  liveDispatchCount: number;
+  projectedRevenue: number;
+  projectedAppointments: number;
+  humanApprovalCount: number;
+  passed: boolean;
+}
+
 export interface DentalOnboardingPayload {
   goals: DentalOnboardingGoal[];
   governance: DentalGovernanceSettings;
   selectedPlaybooks: string[];
   completedSteps: DentalOnboardingStep[];
   readinessChecks: Record<string, boolean>;
+  simulationEvidence?: DentalSimulationEvidenceSummary;
   baselineGeneratedAt?: string;
   certifiedAt?: string;
   activatedAt?: string;
@@ -104,7 +117,11 @@ function asPayload(value: unknown): DentalOnboardingPayload {
     readinessChecks:
       raw.readinessChecks && typeof raw.readinessChecks === "object"
         ? (raw.readinessChecks as Record<string, boolean>)
-        : defaults.readinessChecks
+        : defaults.readinessChecks,
+    simulationEvidence:
+      raw.simulationEvidence && typeof raw.simulationEvidence === "object"
+        ? (raw.simulationEvidence as DentalSimulationEvidenceSummary)
+        : undefined
   };
 }
 
@@ -118,6 +135,15 @@ function progressFor(completed: DentalOnboardingStep[]) {
 
 function uniqueSteps(steps: DentalOnboardingStep[]) {
   return DENTAL_ONBOARDING_STEPS.filter(step => steps.includes(step));
+}
+
+function hasValidSimulationEvidence(payload: DentalOnboardingPayload) {
+  return Boolean(
+    payload.simulationEvidence?.passed &&
+      payload.simulationEvidence.liveDispatchCount === 0 &&
+      payload.simulationEvidence.scenarioCount > 0 &&
+      payload.simulationEvidence.evidenceHash
+  );
 }
 
 async function capabilitySnapshot(organizationId: string) {
@@ -184,7 +210,8 @@ export async function getDentalPracticeOnboarding(organizationId: string): Promi
   if (capabilities.opportunitiesAvailable || payload.selectedPlaybooks.length > 0) completed.add("opportunities_identified");
   if (explicitlyCompleted.has("governance_configured")) completed.add("governance_configured");
   if (payload.selectedPlaybooks.length > 0) completed.add("playbooks_selected");
-  if (payload.readinessChecks.simulationPassed) completed.add("simulation_passed");
+  if (hasValidSimulationEvidence(payload)) completed.add("simulation_passed");
+  else completed.delete("simulation_passed");
   if (payload.certifiedAt) completed.add("readiness_certified");
   if (payload.activatedAt) completed.add("activated");
   if (payload.valueMeasurementStartedAt) completed.add("value_measurement_active");
@@ -198,9 +225,9 @@ export async function getDentalPracticeOnboarding(organizationId: string): Promi
     baseline: completed.has("baseline_generated"),
     governance: completed.has("governance_configured"),
     playbooks: payload.selectedPlaybooks.length > 0,
-    simulation: Boolean(payload.readinessChecks.simulationPassed)
+    simulation: hasValidSimulationEvidence(payload)
   };
-  payload.readinessChecks = { ...payload.readinessChecks, ...readinessChecks };
+  payload.readinessChecks = { ...payload.readinessChecks, ...readinessChecks, simulationPassed: readinessChecks.simulation };
 
   const readinessValues = Object.values(readinessChecks);
   const readinessScore = Math.round((readinessValues.filter(Boolean).length / readinessValues.length) * 100);
@@ -245,7 +272,9 @@ export async function saveDentalGovernance(organizationId: string, governance: P
   return patchDentalOnboarding(organizationId, payload => ({
     ...payload,
     governance: { ...payload.governance, ...governance },
-    completedSteps: uniqueSteps([...payload.completedSteps, "governance_configured"])
+    simulationEvidence: undefined,
+    readinessChecks: { ...payload.readinessChecks, simulationPassed: false },
+    completedSteps: uniqueSteps(payload.completedSteps.filter(step => step !== "simulation_passed" && step !== "readiness_certified"))
   }));
 }
 
@@ -253,22 +282,57 @@ export async function saveDentalPlaybooks(organizationId: string, selectedPlaybo
   return patchDentalOnboarding(organizationId, payload => ({
     ...payload,
     selectedPlaybooks,
-    completedSteps: uniqueSteps([...payload.completedSteps, "opportunities_identified", "playbooks_selected"])
+    simulationEvidence: undefined,
+    readinessChecks: { ...payload.readinessChecks, simulationPassed: false },
+    completedSteps: uniqueSteps([
+      ...payload.completedSteps.filter(step => step !== "simulation_passed" && step !== "readiness_certified"),
+      "opportunities_identified",
+      "playbooks_selected"
+    ])
   }));
 }
 
 export async function markDentalSimulationPassed(organizationId: string) {
-  return patchDentalOnboarding(organizationId, payload => ({
+  const state = await getDentalPracticeOnboarding(organizationId);
+  if (!state.payload.completedSteps.includes("governance_configured")) {
+    return { ok: false, message: "Configure automation governance before running the sandbox." };
+  }
+  if (state.payload.selectedPlaybooks.length === 0) {
+    return { ok: false, message: "Select at least one revenue playbook before running the sandbox." };
+  }
+
+  const simulation = await runDentalOnboardingSandbox({
+    organizationId,
+    onboardingKey: DENTAL_ONBOARDING_KEY,
+    selectedPlaybooks: state.payload.selectedPlaybooks,
+    governance: state.payload.governance
+  });
+  if (!simulation.ok) return { ok: false, message: simulation.message };
+
+  const evidence = simulation.evidence;
+  const result = await patchDentalOnboarding(organizationId, payload => ({
     ...payload,
+    simulationEvidence: {
+      evidenceHash: evidence.evidenceHash,
+      version: evidence.version,
+      scenarioCount: evidence.scenarioCount,
+      liveDispatchCount: evidence.liveDispatchCount,
+      projectedRevenue: evidence.projectedRevenue,
+      projectedAppointments: evidence.projectedAppointments,
+      humanApprovalCount: evidence.humanApprovalCount,
+      passed: evidence.passed
+    },
     readinessChecks: { ...payload.readinessChecks, simulationPassed: true },
     completedSteps: uniqueSteps([...payload.completedSteps, "simulation_passed"])
   }));
+
+  return result.ok ? { ok: true, message: simulation.message } : result;
 }
 
 export async function certifyDentalOnboarding(organizationId: string) {
   const state = await getDentalPracticeOnboarding(organizationId);
-  if (state.readinessScore < 100) {
-    return { ok: false, message: `Readiness is ${state.readinessScore}%. Complete all required checks before certification.` };
+  if (state.readinessScore < 100 || !hasValidSimulationEvidence(state.payload)) {
+    return { ok: false, message: `Readiness is ${state.readinessScore}%. Complete all required checks and a zero-dispatch sandbox run before certification.` };
   }
   await patchDentalOnboarding(organizationId, payload => ({
     ...payload,
@@ -280,7 +344,9 @@ export async function certifyDentalOnboarding(organizationId: string) {
 
 export async function activateDentalPractice(organizationId: string) {
   const state = await getDentalPracticeOnboarding(organizationId);
-  if (!state.canActivate) return { ok: false, message: "Practice must be readiness-certified before activation." };
+  if (!state.canActivate || !hasValidSimulationEvidence(state.payload)) {
+    return { ok: false, message: "Practice must be readiness-certified with zero-dispatch sandbox evidence before activation." };
+  }
   await patchDentalOnboarding(organizationId, payload => ({
     ...payload,
     activatedAt: new Date().toISOString(),
