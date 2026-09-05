@@ -21,6 +21,7 @@ create index if not exists idx_flow_operator_actions_flow_created
 
 alter table public.flow_operator_actions enable row level security;
 
+drop policy if exists "member_read_flow_operator_actions" on public.flow_operator_actions;
 create policy "member_read_flow_operator_actions"
   on public.flow_operator_actions for select
   using (
@@ -31,6 +32,7 @@ create policy "member_read_flow_operator_actions"
     )
   );
 
+drop policy if exists "service_role_all_flow_operator_actions" on public.flow_operator_actions;
 create policy "service_role_all_flow_operator_actions"
   on public.flow_operator_actions for all
   using (auth.role() = 'service_role')
