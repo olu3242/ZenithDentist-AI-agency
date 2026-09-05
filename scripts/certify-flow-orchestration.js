@@ -23,8 +23,11 @@ const required = [
   "lib/flow-orchestration/state.ts",
   "lib/flow-orchestration/recovery.ts",
   "lib/flow-orchestration/runtime-adapter.ts",
+  "lib/flow-orchestration/control-center.ts",
   "lib/flow-orchestration/definitions/dental-practice-activation.ts",
   "lib/flow-orchestration/bridges/dental-onboarding.ts",
+  "components/flow-orchestration/flow-control-center.tsx",
+  "app/workflow-os/flows/page.tsx",
   "supabase/migrations/202609040003_flow_orchestration_os.sql"
 ];
 for (const file of required) check(fs.existsSync(path.join(root, file)), `required file exists: ${file}`);
@@ -35,13 +38,17 @@ if (!failures.length) {
   const recovery = read("lib/flow-orchestration/recovery.ts");
   const adapter = read("lib/flow-orchestration/runtime-adapter.ts");
   const bridge = read("lib/flow-orchestration/bridges/dental-onboarding.ts");
+  const controlCenter = read("lib/flow-orchestration/control-center.ts");
+  const controlCenterUi = read("components/flow-orchestration/flow-control-center.tsx");
+  const workflowPage = read("app/workflow-os/page.tsx");
+  const flowPage = read("app/workflow-os/flows/page.tsx");
   const migration = read("supabase/migrations/202609040003_flow_orchestration_os.sql");
   const manifest = read("supabase/MIGRATION_MANIFEST.md");
 
   check(types.includes("FlowExecutionAdapter") && types.includes("canonical Automation Runtime"), "Flow OS delegates execution instead of duplicating runtime");
-  check(adapter.includes('executeWorkflow') && adapter.includes('@/lib/workflow-os/workflow-engine'), "Flow OS delegates workflow steps to canonical Workflow OS executeWorkflow entrypoint");
-  check(adapter.includes('correlationId: request.flowRunId') && adapter.includes('idempotencyKey: request.idempotencyKey'), "Flow-to-Workflow bridge preserves correlation and idempotency");
-  check(adapter.includes('failFlowFromTerminalWorkflowFailure') && adapter.includes('status === "failed"'), "terminal workflow failures cannot advance a flow as success");
+  check(adapter.includes("executeWorkflow") && adapter.includes("@/lib/workflow-os/workflow-engine"), "Flow OS delegates workflow steps to canonical Workflow OS executeWorkflow entrypoint");
+  check(adapter.includes("correlationId: request.flowRunId") && adapter.includes("idempotencyKey: request.idempotencyKey"), "Flow-to-Workflow bridge preserves correlation and idempotency");
+  check(adapter.includes("failFlowFromTerminalWorkflowFailure") && adapter.includes('status === "failed"'), "terminal workflow failures cannot advance a flow as success");
 
   check(engine.includes("idempotencyKey") && migration.includes("unique (organization_id, idempotency_key)"), "flow starts are tenant-idempotent");
   check(engine.includes("waiting_approval") && engine.includes("waiting_event"), "engine supports approval and event waits");
@@ -67,6 +74,15 @@ if (!failures.length) {
   check(bridge.includes("for (let guard = 0; guard < 20; guard += 1)"), "bridge reconciliation is bounded against accidental infinite loops");
   check(bridge.includes("tenant_onboarding_runs"), "dental bridge preserves existing onboarding business-state authority");
   contains("app/onboarding/page.tsx", "reconcileDentalOnboardingFlow", "real onboarding UI exercises Flow OS convergence");
+
+  check(controlCenter.includes('.from("flow_runs")') && controlCenter.includes('.from("flow_step_runs")') && controlCenter.includes('.from("flow_waits")'), "control center reads canonical Flow OS persistence");
+  check(controlCenter.includes('.eq("organization_id", organizationId)'), "control center read model is tenant-scoped");
+  check(controlCenter.includes("attentionAfterMinutes") && controlCenter.includes("criticalAfterMinutes"), "control center computes deterministic SLA aging");
+  check(controlCenter.includes("workflowExecutionCount") && controlCenter.includes("workflowExecutionId"), "control center exposes workflow execution lineage");
+  check(controlCenterUi.includes("Human Approvals") && controlCenterUi.includes("Retries Scheduled") && controlCenterUi.includes("Execution lineage"), "operator UI surfaces approvals retries and lineage");
+  check(flowPage.includes("getFlowControlCenterSnapshot") && flowPage.includes("tenantData.tenant.organizationId"), "Flow Control Center route loads tenant-scoped server data");
+  check(workflowPage.includes('href="/workflow-os/flows"'), "Workflow OS exposes Flow Control Center navigation");
+  check(!flowPage.includes("use client") && !controlCenter.includes("NEXT_PUBLIC"), "Flow Control Center keeps privileged orchestration reads on the server");
 }
 
 console.log(`Flow Orchestration OS certification invariants: ${passes.length} passed, ${failures.length} failed.`);
@@ -76,6 +92,7 @@ if (failures.length) {
   process.exit(1);
 }
 console.log("FLOW_ORCHESTRATION_OS_CERTIFICATION=PASS");
+console.log("FLOW_CONTROL_CENTER_CERTIFICATION=PASS");
 console.log("CANONICAL_WORKFLOW_RUNTIME_DELEGATION=PASS");
 console.log("RUNTIME_DUPLICATION_GUARD=PASS");
 console.log("REPLAY_SAFE_APPROVAL_GUARD=PASS");
