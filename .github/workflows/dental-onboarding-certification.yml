@@ -1,0 +1,69 @@
+name: Dental Onboarding + Flow OS Certification
+
+on:
+  pull_request:
+    paths:
+      - "app/onboarding/**"
+      - "app/workflow-os/**"
+      - "app/api/runtime-certification/**"
+      - "components/onboarding/**"
+      - "components/flow-orchestration/**"
+      - "lib/onboarding/**"
+      - "lib/flow-orchestration/**"
+      - "supabase/migrations/**"
+      - "supabase/MIGRATION_MANIFEST.md"
+      - "scripts/certify-dental-onboarding.js"
+      - "scripts/certify-flow-orchestration.js"
+      - "scripts/certify-runtime-contract.js"
+      - "scripts/certify-runtime-e2e.js"
+      - "scripts/e2e-production-check.js"
+      - "scripts/validate-migrations.js"
+      - ".github/workflows/runtime-e2e-certification.yml"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Preserve the repository's previously certified build toolchain.
+          # The protected live runtime workflow uses Node 22 for current Supabase support.
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        # Existing lockfile was generated with legacy peer resolution. Preserve
+        # that resolution here instead of mutating the lock during certification.
+        run: npm ci --legacy-peer-deps
+
+      - name: Migration governance
+        run: npm run migration:validate
+
+      - name: Existing E2E invariants
+        run: npm run test:e2e
+
+      - name: Dental onboarding invariants
+        run: npm run test:onboarding
+
+      - name: Flow Orchestration OS invariants
+        run: npm run test:flow-os
+
+      - name: Runtime certification contract
+        run: npm run test:runtime:contract
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build

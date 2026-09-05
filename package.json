@@ -11,6 +11,12 @@
     "smoke": "node smoke-test.js && node scripts/pipeline-smoke-test.js",
     "smoke:pipeline": "node scripts/pipeline-smoke-test.js",
     "test:e2e": "node scripts/e2e-production-check.js",
+    "test:onboarding": "node scripts/certify-dental-onboarding.js",
+    "test:flow-os": "node scripts/certify-flow-orchestration.js",
+    "test:runtime:contract": "node scripts/certify-runtime-contract.js",
+    "certify:runtime:live": "node scripts/certify-runtime-e2e.js",
+    "certify:onboarding": "npm run migration:validate && npm run test:e2e && npm run test:onboarding && npm run test:flow-os && npm run test:runtime:contract && npm run typecheck && npm run build",
+    "certify:flow-os": "npm run migration:validate && npm run test:flow-os && npm run test:runtime:contract && npm run typecheck && npm run build",
     "migration:validate": "node scripts/validate-migrations.js"
   },
   "dependencies": {

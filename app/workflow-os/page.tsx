@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/app/app-shell";
 import { MetricCard } from "@/components/metric-card";
 import { getTranslations } from "next-intl/server";
@@ -7,7 +8,12 @@ import { getCurrentZenithRole } from "@/lib/server-auth";
 import { getWorkflowAnalyticsSummary } from "@/lib/workflow-os/workflow-analytics";
 import { getWorkflowRuntimeHealth } from "@/lib/workflow-os/workflow-runtime";
 
-export default async function WorkflowOSPage() {
+export default async function WorkflowOSPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ executionId?: string; flowRunId?: string }>;
+}) {
+  const params = await searchParams;
   const t = await getTranslations("workflowOS");
   const [tenantData, role, analytics, runtime, automationOS] = await Promise.all([
     getTenantData(),
@@ -17,22 +23,66 @@ export default async function WorkflowOSPage() {
     getAutomationOSState()
   ]);
 
+  void analytics;
+
   return (
     <AppShell role={role} organization={tenantData.organization} locations={tenantData.locations}>
       <div className="space-y-6">
-        <header>
-          <p className="brand-kicker">{t("kicker")}</p>
-          <h1 className="mt-2 text-4xl font-black text-ink">{t("title")}</h1>
-          <p className="mt-2 max-w-3xl text-base font-semibold text-muted">
-            {t("subtitle")}
-          </p>
+        <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="brand-kicker">{t("kicker")}</p>
+            <h1 className="mt-2 text-4xl font-black text-ink">{t("title")}</h1>
+            <p className="mt-2 max-w-3xl text-base font-semibold text-muted">
+              {t("subtitle")}
+            </p>
+          </div>
+          <Link
+            href="/workflow-os/flows"
+            className="inline-flex items-center justify-center rounded bg-teal px-4 py-3 text-sm font-black text-white shadow-sm transition hover:opacity-90"
+          >
+            Open Flow Control Center
+          </Link>
         </header>
+
+        {params?.executionId ? (
+          <section className="rounded border border-teal/30 bg-teal/5 p-4 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-wider text-teal">Execution drill-through</p>
+            <div className="mt-2 grid gap-2 md:grid-cols-[1fr_1fr_auto] md:items-center">
+              <div>
+                <p className="text-xs font-semibold text-muted">Workflow execution</p>
+                <strong className="break-all text-sm text-ink">{params.executionId}</strong>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-muted">Parent flow</p>
+                <strong className="break-all text-sm text-ink">{params.flowRunId ?? "Unknown"}</strong>
+              </div>
+              <Link href="/workflow-os/flows" className="text-sm font-black text-teal underline decoration-2 underline-offset-4">
+                Back to flow →
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard label={t("registeredWorkflows")} value={automationOS.registry.length} detail={`${automationOS.counts.active} active in registry`} tone="teal" />
           <MetricCard label={t("operationalScore")} value={`${runtime.operationalScore}%`} detail="Runtime health signal" tone="green" />
           <MetricCard label={t("replayQueue")} value={runtime.replayQueue} detail="Recovery candidates" tone="gold" />
           <MetricCard label={t("slaBreaches")} value={runtime.slaBreachCount} detail="Workflow pressure" tone="rust" />
         </div>
+        <section className="rounded border border-line bg-white p-5 shadow-sm">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-muted">Orchestration layer</p>
+              <h2 className="mt-1 text-xl font-black text-ink">Cross-workflow business process control</h2>
+              <p className="mt-2 max-w-3xl text-sm font-semibold text-muted">
+                Flow OS coordinates multi-step business processes, waits, approvals, retries, and recovery while Workflow OS remains the canonical automation execution boundary.
+              </p>
+            </div>
+            <Link href="/workflow-os/flows" className="text-sm font-black text-teal underline decoration-2 underline-offset-4">
+              Inspect active flows →
+            </Link>
+          </div>
+        </section>
         <section className="rounded border border-line bg-white shadow-sm">
           <div className="border-b border-line p-5">
             <h2 className="text-xl font-black text-ink">{t("registry")}</h2>

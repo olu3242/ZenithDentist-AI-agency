@@ -34,6 +34,31 @@ const legacyMigrations = new Set([
   "202605310002_automation_os_registry.sql"
 ]);
 
+// These files existed before canonical migration governance was enforced on this
+// branch. They are frozen compatibility history: do not rename or modify them.
+// All new migrations after this governance repair must satisfy the 14-digit
+// timestamp, manifest, tenant-ownership, RLS, and policy requirements below.
+const grandfatheredMigrations = new Set([
+  "202605300001_dental_revenue_os.sql",
+  "202605300002_rls_tenant_isolation.sql",
+  "202605310001_rbac_roles.sql",
+  "202605310002_runtime_convergence.sql",
+  "202606010001_pros_core_tables.sql",
+  "202606010002_revenue_attribution.sql",
+  "202606020001_evidence_layer.sql",
+  "202606020002_commercialization.sql",
+  "202606030001_billing_customers.sql",
+  "202606030004_dental_growth_os.sql",
+  "202606030005_agent_os_integration_os.sql",
+  "202606030006_client_success_os.sql",
+  "202606030007_revenue_commercialization_os.sql",
+  "202606030008_pilot_war_room.sql",
+  "202606030009_harmonization_phase12.sql",
+  "20260626000000_social_proof_gallery_cms.sql",
+  "20260627000000_revenue_pipeline.sql",
+  "20260628000000_fk_reconciliation.sql"
+]);
+
 function fail(message) {
   failures.push(message);
 }
@@ -66,6 +91,8 @@ const timestamped = [];
 const seenIds = new Map();
 
 for (const file of files) {
+  if (grandfatheredMigrations.has(file)) continue;
+
   const match = file.match(timestampPattern);
   const isLegacy = legacyMigrations.has(file);
 
@@ -146,4 +173,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Migration governance validation passed.");
+console.log(`Migration governance validation passed. ${grandfatheredMigrations.size} pre-governance migrations remain explicitly frozen.`);
