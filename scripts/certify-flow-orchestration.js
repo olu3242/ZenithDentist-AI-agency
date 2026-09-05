@@ -30,8 +30,8 @@ const required = [
   "components/flow-orchestration/flow-control-center.tsx",
   "app/workflow-os/flows/page.tsx",
   "app/workflow-os/flows/actions.ts",
-  "supabase/migrations/202609040003_flow_orchestration_os.sql",
-  "supabase/migrations/202609040004_flow_operator_actions.sql"
+  "supabase/migrations/20260904000300_flow_orchestration_os.sql",
+  "supabase/migrations/20260904000400_flow_operator_actions.sql"
 ];
 for (const file of required) check(fs.existsSync(path.join(root, file)), `required file exists: ${file}`);
 
@@ -47,8 +47,8 @@ if (!failures.length) {
   const controlCenterUi = read("components/flow-orchestration/flow-control-center.tsx");
   const workflowPage = read("app/workflow-os/page.tsx");
   const flowPage = read("app/workflow-os/flows/page.tsx");
-  const migration = read("supabase/migrations/202609040003_flow_orchestration_os.sql");
-  const operatorMigration = read("supabase/migrations/202609040004_flow_operator_actions.sql");
+  const migration = read("supabase/migrations/20260904000300_flow_orchestration_os.sql");
+  const operatorMigration = read("supabase/migrations/20260904000400_flow_operator_actions.sql");
   const manifest = read("supabase/MIGRATION_MANIFEST.md");
 
   check(types.includes("FlowExecutionAdapter") && types.includes("canonical Automation Runtime"), "Flow OS delegates execution instead of duplicating runtime");
@@ -73,7 +73,7 @@ if (!failures.length) {
   check((migration.match(/enable row level security/g) || []).length >= 4, "all Flow OS tables enable RLS");
   check(migration.includes("member_read_flow_runs") && migration.includes("service_role_all_flow_runs"), "Flow OS has tenant read and service-role write governance");
   check(migration.includes("workflow_execution_id uuid") && !migration.includes("references public.workflow_executions"), "step runs reference canonical execution IDs without invalid FK to compatibility view");
-  check(manifest.includes("Migration ID: 202609040003") && manifest.includes("Flow Orchestration Operating System"), "Flow OS migration is registered in canonical migration governance");
+  check(manifest.includes("Migration ID: 20260904000300") && manifest.includes("Flow Orchestration Operating System"), "Flow OS migration is registered in canonical migration governance");
 
   contains("lib/flow-orchestration/definitions/dental-practice-activation.ts", 'key: "dental_practice_activation_v1"', "dental activation is registered as first canonical flow");
   check(bridge.includes("getFlowRunSnapshot") && bridge.includes("currentStepKey"), "dental bridge is state-aware on replay");
@@ -94,7 +94,7 @@ if (!failures.length) {
 
   check(operatorMigration.includes("public.flow_operator_actions") && operatorMigration.includes("organization_id uuid not null"), "operator audit evidence is tenant-owned");
   check(operatorMigration.includes("enable row level security") && operatorMigration.includes("service_role_all_flow_operator_actions"), "operator audit table enforces RLS and service-role mutation");
-  check(manifest.includes("Migration ID: 202609040004"), "operator audit migration is registered in canonical migration governance");
+  check(manifest.includes("Migration ID: 20260904000400"), "operator audit migration is registered in canonical migration governance");
   check(serverActions.includes('role !== "super_admin"'), "operator mutations are super-admin only");
   check(serverActions.includes("getTenantData") && operatorActions.includes('.eq("organization_id", organizationId)'), "operator mutations verify current tenant ownership");
   check(operatorActions.includes("decideApproval") && operatorActions.includes("approveFlowGate") && operatorActions.includes("rejectFlowGate"), "approval actions preserve canonical Flow Engine semantics");
