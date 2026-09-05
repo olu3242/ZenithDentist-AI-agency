@@ -200,7 +200,7 @@ export async function getFlowControlCenterSnapshot(organizationId?: string | nul
         lastError: step.last_error
       }))
     };
-  }).sort((a, b) => b.intelligence.priorityScore - a.intelligence.priorityScore || b.ageMinutes - a.ageMinutes);
+  }).sort((a: FlowControlCenterRun, b: FlowControlCenterRun) => b.intelligence.priorityScore - a.intelligence.priorityScore || b.ageMinutes - a.ageMinutes);
 
   const active = runs.filter(run => !["succeeded", "failed", "cancelled"].includes(run.status));
   const activeRevenueAtRisk = active.reduce((sum, run) => sum + run.intelligence.revenueImpactEstimate, 0);
