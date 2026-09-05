@@ -11,6 +11,8 @@
     "smoke": "node smoke-test.js && node scripts/pipeline-smoke-test.js",
     "smoke:pipeline": "node scripts/pipeline-smoke-test.js",
     "test:e2e": "node scripts/e2e-production-check.js",
+    "test:onboarding": "node scripts/certify-dental-onboarding.js",
+    "certify:onboarding": "npm run migration:validate && npm run test:e2e && npm run test:onboarding && npm run typecheck && npm run build",
     "migration:validate": "node scripts/validate-migrations.js"
   },
   "dependencies": {
