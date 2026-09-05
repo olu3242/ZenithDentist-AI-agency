@@ -5,6 +5,7 @@ on:
     paths:
       - "app/onboarding/**"
       - "app/workflow-os/**"
+      - "app/api/runtime-certification/**"
       - "components/onboarding/**"
       - "components/flow-orchestration/**"
       - "lib/onboarding/**"
@@ -13,8 +14,11 @@ on:
       - "supabase/MIGRATION_MANIFEST.md"
       - "scripts/certify-dental-onboarding.js"
       - "scripts/certify-flow-orchestration.js"
+      - "scripts/certify-runtime-contract.js"
+      - "scripts/certify-runtime-e2e.js"
       - "scripts/e2e-production-check.js"
       - "scripts/validate-migrations.js"
+      - ".github/workflows/runtime-e2e-certification.yml"
       - "package.json"
       - "package-lock.json"
   workflow_dispatch:
@@ -33,7 +37,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -52,6 +56,9 @@ jobs:
 
       - name: Flow Orchestration OS invariants
         run: npm run test:flow-os
+
+      - name: Runtime certification contract
+        run: npm run test:runtime:contract
 
       - name: Typecheck
         run: npm run typecheck
