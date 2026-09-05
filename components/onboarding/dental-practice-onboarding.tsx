@@ -49,6 +49,7 @@ const phases = [
 
 export function DentalPracticeOnboarding({ state }: { state: DentalPracticeOnboardingState }) {
   const completed = new Set(state.payload.completedSteps);
+  const simulation = state.payload.simulationEvidence;
 
   return (
     <div className="space-y-6">
@@ -151,23 +152,30 @@ export function DentalPracticeOnboarding({ state }: { state: DentalPracticeOnboa
             </form>
           </OnboardingCard>
 
-          <OnboardingCard number="06" title="Run safe simulation" done={completed.has("simulation_passed")}>
+          <OnboardingCard number="06" title="Certify the safe sandbox" done={completed.has("simulation_passed")}>
             <div className="rounded border border-border bg-surface p-4">
               <div className="flex items-start gap-3">
                 <Sparkles className="mt-0.5 h-5 w-5 text-primary" />
                 <div>
-                  <strong className="text-sm text-foreground">No patient outreach is sent from this step.</strong>
-                  <p className="mt-1 text-sm font-semibold text-muted">Review candidate populations, recommended playbooks, projected impact, and escalation behavior using synthetic/demo-safe execution before activation.</p>
+                  <strong className="text-sm text-foreground">Synthetic patients only. Live delivery is structurally suppressed.</strong>
+                  <p className="mt-1 text-sm font-semibold text-muted">Zenith deterministically runs the selected playbooks against SYNTH-* scenarios, projects outcomes, records escalation behavior, hashes the evidence, and requires zero live dispatches before readiness can pass.</p>
                 </div>
               </div>
             </div>
             {!completed.has("simulation_passed") ? (
               <form action={passOnboardingSimulationAction} className="mt-4">
-                <button className="min-h-11 rounded border border-primary px-4 text-sm font-black text-primary">Record simulation review as passed</button>
+                <button className="min-h-11 rounded border border-primary px-4 text-sm font-black text-primary">Run deterministic sandbox</button>
               </form>
-            ) : (
-              <p className="mt-3 text-sm font-black text-success">Simulation review passed.</p>
-            )}
+            ) : simulation ? (
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <Metric label="Synthetic scenarios" value={simulation.scenarioCount} />
+                <Metric label="Live dispatches" value={simulation.liveDispatchCount} />
+                <Metric label="Projected appointments" value={simulation.projectedAppointments} />
+                <div className="rounded bg-success/10 p-3 text-sm font-black text-success sm:col-span-3">
+                  Sandbox certified · {simulation.version} · Evidence {simulation.evidenceHash.slice(0, 12)}…
+                </div>
+              </div>
+            ) : null}
           </OnboardingCard>
         </div>
 
@@ -214,6 +222,7 @@ export function DentalPracticeOnboarding({ state }: { state: DentalPracticeOnboa
               <li>Revenue Playbooks → actions</li>
               <li>Patient Journey → communication lifecycle</li>
               <li>Automation Runtime → governed execution</li>
+              <li>Sandbox Engine → zero-dispatch certification</li>
               <li>Command Center → post-launch measurement</li>
             </ul>
           </section>
@@ -245,6 +254,15 @@ function Capability({ label, ready, compact = false }: { label: string; ready: b
   );
 }
 
+function Metric({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded border border-border bg-surface p-3">
+      <p className="text-xs font-black uppercase tracking-wider text-muted">{label}</p>
+      <strong className="mt-1 block text-xl font-black text-foreground">{value}</strong>
+    </div>
+  );
+}
+
 function Toggle({ name, label, checked }: { name: string; label: string; checked: boolean }) {
   return (
     <label className="flex items-center gap-3 rounded border border-border bg-surface p-3 text-sm font-bold text-foreground">
@@ -263,6 +281,6 @@ function readinessLabel(key: string) {
     baseline: "Practice baseline",
     governance: "Automation governance",
     playbooks: "Revenue playbooks",
-    simulation: "Simulation review"
+    simulation: "Zero-dispatch sandbox"
   } as Record<string, string>)[key] ?? key;
 }
