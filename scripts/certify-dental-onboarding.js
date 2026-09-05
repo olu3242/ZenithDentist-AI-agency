@@ -29,8 +29,8 @@ const requiredFiles = [
   "lib/onboarding/bootstrap.ts",
   "lib/onboarding/dental-practice.ts",
   "lib/onboarding/dental-sandbox.ts",
-  "supabase/migrations/202609040001_dental_practice_onboarding_convergence.sql",
-  "supabase/migrations/202609040002_dental_onboarding_sandbox.sql"
+  "supabase/migrations/20260904000100_dental_practice_onboarding_convergence.sql",
+  "supabase/migrations/20260904000200_dental_onboarding_sandbox.sql"
 ];
 
 for (const relativePath of requiredFiles) {
@@ -42,8 +42,8 @@ if (failures.length === 0) {
   const sandbox = read("lib/onboarding/dental-sandbox.ts");
   const actions = read("app/onboarding/actions.ts");
   const ui = read("components/onboarding/dental-practice-onboarding.tsx");
-  const convergenceMigration = read("supabase/migrations/202609040001_dental_practice_onboarding_convergence.sql");
-  const sandboxMigration = read("supabase/migrations/202609040002_dental_onboarding_sandbox.sql");
+  const convergenceMigration = read("supabase/migrations/20260904000100_dental_practice_onboarding_convergence.sql");
+  const sandboxMigration = read("supabase/migrations/20260904000200_dental_onboarding_sandbox.sql");
 
   const orderedSteps = [
     "practice_created",
