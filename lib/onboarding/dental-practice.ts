@@ -174,6 +174,7 @@ export async function getDentalPracticeOnboarding(organizationId: string): Promi
     .maybeSingle();
 
   const payload = asPayload(data?.setup_payload);
+  const explicitlyCompleted = new Set<DentalOnboardingStep>(payload.completedSteps);
   const completed = new Set<DentalOnboardingStep>(payload.completedSteps);
   completed.add("practice_created");
   if (payload.goals.length > 0) completed.add("goals_captured");
@@ -181,7 +182,7 @@ export async function getDentalPracticeOnboarding(organizationId: string): Promi
   if (capabilities.integrationHealthy) completed.add("data_validated");
   if (capabilities.baselineAvailable || payload.baselineGeneratedAt) completed.add("baseline_generated");
   if (capabilities.opportunitiesAvailable || payload.selectedPlaybooks.length > 0) completed.add("opportunities_identified");
-  if (payload.governance) completed.add("governance_configured");
+  if (explicitlyCompleted.has("governance_configured")) completed.add("governance_configured");
   if (payload.selectedPlaybooks.length > 0) completed.add("playbooks_selected");
   if (payload.readinessChecks.simulationPassed) completed.add("simulation_passed");
   if (payload.certifiedAt) completed.add("readiness_certified");
