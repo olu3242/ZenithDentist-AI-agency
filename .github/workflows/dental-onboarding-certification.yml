@@ -4,7 +4,9 @@ on:
   pull_request:
     paths:
       - "app/onboarding/**"
+      - "app/workflow-os/**"
       - "components/onboarding/**"
+      - "components/flow-orchestration/**"
       - "lib/onboarding/**"
       - "lib/flow-orchestration/**"
       - "supabase/migrations/**"
