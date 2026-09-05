@@ -1,0 +1,51 @@
+name: Dental Onboarding Certification
+
+on:
+  pull_request:
+    paths:
+      - "app/onboarding/**"
+      - "components/onboarding/**"
+      - "lib/onboarding/**"
+      - "supabase/migrations/**"
+      - "supabase/MIGRATION_MANIFEST.md"
+      - "scripts/certify-dental-onboarding.js"
+      - "scripts/e2e-production-check.js"
+      - "scripts/validate-migrations.js"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Migration governance
+        run: npm run migration:validate
+
+      - name: Existing E2E invariants
+        run: npm run test:e2e
+
+      - name: Dental onboarding invariants
+        run: npm run test:onboarding
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build
