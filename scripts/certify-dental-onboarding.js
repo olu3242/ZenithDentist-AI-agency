@@ -94,6 +94,18 @@ if (failures.length === 0) {
   check(sandboxMigration.includes("service_role_all_dental_onboarding_simulation_runs"), "sandbox evidence writes are service-role governed");
 
   check(!ui.includes("Record simulation review as passed"), "manual simulation-pass shortcut is removed");
+
+  const packageJson = JSON.parse(read("package.json"));
+  check(packageJson.scripts?.["test:onboarding"] === "node scripts/certify-dental-onboarding.js", "package exposes onboarding certification command");
+  check(Boolean(packageJson.scripts?.["certify:onboarding"]), "package exposes aggregate onboarding certification gate");
+  check(fs.existsSync(file(".github/workflows/dental-onboarding-certification.yml")), "pull-request certification workflow exists");
+  if (fs.existsSync(file(".github/workflows/dental-onboarding-certification.yml"))) {
+    const workflow = read(".github/workflows/dental-onboarding-certification.yml");
+    check(workflow.includes("npm run migration:validate"), "CI validates migration governance");
+    check(workflow.includes("npm run test:e2e"), "CI preserves existing E2E invariants");
+    check(workflow.includes("npm run test:onboarding"), "CI executes dental onboarding certification");
+    check(workflow.includes("npm run typecheck") && workflow.includes("npm run build"), "CI gates on typecheck and production build");
+  }
 }
 
 console.log(`Dental onboarding certification invariants: ${passes.length} passed, ${failures.length} failed.`);
