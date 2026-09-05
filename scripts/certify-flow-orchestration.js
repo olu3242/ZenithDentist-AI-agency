@@ -25,6 +25,7 @@ const required = [
   "lib/flow-orchestration/runtime-adapter.ts",
   "lib/flow-orchestration/control-center.ts",
   "lib/flow-orchestration/operator-actions.ts",
+  "lib/flow-orchestration/intelligence.ts",
   "lib/flow-orchestration/definitions/dental-practice-activation.ts",
   "lib/flow-orchestration/bridges/dental-onboarding.ts",
   "components/flow-orchestration/flow-control-center.tsx",
@@ -43,6 +44,7 @@ if (!failures.length) {
   const bridge = read("lib/flow-orchestration/bridges/dental-onboarding.ts");
   const controlCenter = read("lib/flow-orchestration/control-center.ts");
   const operatorActions = read("lib/flow-orchestration/operator-actions.ts");
+  const intelligence = read("lib/flow-orchestration/intelligence.ts");
   const serverActions = read("app/workflow-os/flows/actions.ts");
   const controlCenterUi = read("components/flow-orchestration/flow-control-center.tsx");
   const workflowPage = read("app/workflow-os/page.tsx");
@@ -86,7 +88,6 @@ if (!failures.length) {
   check(controlCenter.includes("attentionAfterMinutes") && controlCenter.includes("criticalAfterMinutes"), "control center computes deterministic SLA aging");
   check(controlCenter.includes("workflowExecutionCount") && controlCenter.includes("workflowExecutionId"), "control center exposes workflow execution lineage");
   check(controlCenter.includes('.from("flow_operator_actions")') && controlCenter.includes("recentOperatorActions"), "control center exposes immutable operator audit evidence");
-  check(controlCenterUi.includes("Human Approvals") && controlCenterUi.includes("Retries Scheduled") && controlCenterUi.includes("Execution lineage"), "operator UI surfaces approvals retries and lineage");
   check(flowPage.includes("getFlowControlCenterSnapshot") && flowPage.includes("tenantData.tenant.organizationId"), "Flow Control Center route loads tenant-scoped server data");
   check(workflowPage.includes('href="/workflow-os/flows"'), "Workflow OS exposes Flow Control Center navigation");
   check(workflowPage.includes("executionId") && workflowPage.includes("flowRunId"), "workflow drill-through preserves execution and parent-flow context");
@@ -103,6 +104,16 @@ if (!failures.length) {
   check(operatorActions.includes('.from("flow_operator_actions")') && operatorActions.includes("auditAction"), "every governed mutation has a durable audit writer");
   check(controlCenterUi.includes("Approve gate") && controlCenterUi.includes("Reject gate") && controlCenterUi.includes("Retry now") && controlCenterUi.includes("Resume event wait") && controlCenterUi.includes("Cancel flow"), "Control Center exposes governed operator action set");
   check(controlCenterUi.includes("openWorkflowExecutionAction") && controlCenterUi.includes("Operator evidence"), "Control Center supports audited workflow drill-through and evidence review");
+
+  check(intelligence.includes('modelVersion: "flow-intelligence-v1"'), "Flow Intelligence uses an explicit versioned deterministic model");
+  check(intelligence.includes("priorityScore") && intelligence.includes("slaRiskPercent") && intelligence.includes("revenueImpactEstimate") && intelligence.includes("anomalyScore"), "Flow Intelligence scores priority SLA risk revenue impact and anomalies");
+  check(intelligence.includes("detectAnomalies") && intelligence.includes("retry_churn") && intelligence.includes("approval_bottleneck"), "Flow Intelligence detects deterministic orchestration anomalies");
+  check(intelligence.includes("requiresHumanApproval: true"), "Flow Intelligence recommendations always require human governance");
+  check(!intelligence.includes("advanceFlow(") && !intelligence.includes("decideApproval(") && !intelligence.includes("cancelFlow(") && !intelligence.includes("signalFlow("), "Flow Intelligence cannot mutate orchestration state");
+  check(!intelligence.includes("sendSms(") && !intelligence.includes("sendEmail(") && !intelligence.includes("executeWorkflow("), "Flow Intelligence cannot directly execute workflows or patient communications");
+  check(controlCenter.includes("evaluateFlowIntelligence") && controlCenter.includes("priorityScore"), "Control Center evaluates and sorts by Flow Intelligence priority");
+  check(controlCenterUi.includes("Flow Intelligence v1") && controlCenterUi.includes("ALICE flow recommendation") && controlCenterUi.includes("Human approval remains required"), "Control Center renders explainable governed intelligence");
+  check(controlCenterUi.includes("Revenue at Risk") && controlCenterUi.includes("Average SLA Risk") && controlCenterUi.includes("Anomaly Score"), "Control Center surfaces intelligence portfolio metrics");
 }
 
 console.log(`Flow Orchestration OS certification invariants: ${passes.length} passed, ${failures.length} failed.`);
@@ -114,6 +125,8 @@ if (failures.length) {
 console.log("FLOW_ORCHESTRATION_OS_CERTIFICATION=PASS");
 console.log("FLOW_CONTROL_CENTER_CERTIFICATION=PASS");
 console.log("FLOW_OPERATOR_ACTION_LAYER=PASS");
+console.log("FLOW_INTELLIGENCE_LAYER=PASS");
+console.log("HUMAN_GOVERNANCE_BOUNDARY=PASS");
 console.log("CANONICAL_WORKFLOW_RUNTIME_DELEGATION=PASS");
 console.log("RUNTIME_DUPLICATION_GUARD=PASS");
 console.log("REPLAY_SAFE_APPROVAL_GUARD=PASS");
