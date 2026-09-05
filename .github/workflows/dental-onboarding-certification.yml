@@ -37,7 +37,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Preserve the repository's previously certified build toolchain.
+          # The protected live runtime workflow uses Node 22 for current Supabase support.
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
