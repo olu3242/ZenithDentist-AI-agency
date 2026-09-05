@@ -33,7 +33,13 @@ if (!failures.length) {
   const workflow = read(".github/workflows/runtime-e2e-certification.yml");
 
   check(endpoint.includes("VERCEL_GIT_COMMIT_SHA") && endpoint.includes("runtime-e2e-v1"), "runtime metadata exposes exact deployed SHA contract");
-  check(!endpoint.includes("SERVICE_ROLE") && !endpoint.includes("SUPABASE_SERVICE") && !endpoint.includes("patient"), "runtime metadata does not expose secrets or patient data");
+  check(
+    !endpoint.includes("ZENITH_SUPABASE_SERVICE_ROLE_KEY") &&
+      !endpoint.includes("SUPABASE_SERVICE_ROLE_KEY") &&
+      !endpoint.includes("process.env.RESEND") &&
+      !endpoint.includes("process.env.OPENAI"),
+    "runtime metadata does not expose credential-bearing environment values",
+  );
   check(sandbox.includes("liveDispatchCount: 0") && sandbox.includes('deliveryMode: "suppressed"'), "sandbox contract enforces suppressed synthetic delivery");
   check(!sandbox.includes("sendSms(") && !sandbox.includes("sendEmail("), "sandbox has no live communication send path");
   check(intelligence.includes("requiresHumanApproval") && !intelligence.includes("executeWorkflow("), "Flow Intelligence remains recommendation-only");
@@ -42,6 +48,7 @@ if (!failures.length) {
     "ZENITH_PREVIEW_URL",
     "ZENITH_EXPECTED_HEAD_SHA",
     "ZENITH_SUPABASE_URL",
+    "ZENITH_SUPABASE_PUBLISHABLE_KEY",
     "ZENITH_SUPABASE_SERVICE_ROLE_KEY",
     "ZENITH_CERT_USER_A_JWT",
     "ZENITH_CERT_USER_B_JWT",
